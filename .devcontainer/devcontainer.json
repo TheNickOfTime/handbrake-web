@@ -1,0 +1,15 @@
+{
+	"name": "handbrake-web",
+	"build": {"dockerfile": "Dockerfile"},
+	"runArgs": ["--name", "handbrake-web"],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"dbaeumer.vscode-eslint",
+				"christian-kohler.npm-intellisense",
+				"esbenp.prettier-vscode"
+			]
+		}
+	}
+
+}
