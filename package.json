@@ -13,10 +13,13 @@
 		"url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
 	},
 	"dependencies": {
+		"bootstrap": "^5.3.3",
+		"cors": "^2.8.5",
 		"dotenv": "^16.4.5",
 		"express": "^4.19.2",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
+		"sass": "^1.77.0",
 		"socket.io": "^4.7.5",
 		"socket.io-client": "^4.7.5",
 		"ts-node": "^10.9.2",
