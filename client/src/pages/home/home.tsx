@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
@@ -18,7 +20,14 @@ export default function Home() {
 		};
 	}, []);
 
-	const handleSubmitButton = () => {};
+	const handleAddToQueue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		event.preventDefault();
+		socket.emit('transcode-job');
+	};
+
+	const handleStartQueue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		socket.emit('start-queue');
+	};
 
 	return (
 		<div className='container'>
@@ -46,10 +55,15 @@ export default function Home() {
 						/>
 					</div>
 				</div>
-				<button type='submit' className='btn btn-primary mt-3' onClick={handleSubmitButton}>
-					Transcode
-				</button>
 			</form>
+			<div className='container mt-2 d-flex gap-2'>
+				<button className='btn btn-secondary' onClick={handleAddToQueue}>
+					Add to Queue
+				</button>
+				<button className='btn btn-primary' onClick={handleStartQueue}>
+					Start Queue
+				</button>
+			</div>
 			{/* {transcodeInfo && <TranscodeInfo transcodeStatus={transcodeInfo} />} */}
 		</div>
 	);
