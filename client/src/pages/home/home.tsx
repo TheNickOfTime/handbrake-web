@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
-import { Queue as QueueType } from '../../../../types/queue';
+import { QueueStatus, Queue as QueueType } from '../../../../types/queue';
 import { ConnectionIDs } from '../../../../types/socket';
 import Queue from '../../components/home/queue';
 import ServerInfo from '../../components/home/server-info';
@@ -17,6 +17,7 @@ export default function Home() {
 	const [socket] = useState(io(server, { autoConnect: false }));
 	const [queue, setQueue] = useState<QueueType>([]);
 	const [connections, setConnections] = useState<ConnectionIDs>();
+	const [queueStatus, setQueueStatus] = useState<QueueStatus>(QueueStatus.Idle);
 	// Socket connection & disconnection
 	useEffect(() => {
 		socket.connect();
@@ -37,22 +38,26 @@ export default function Home() {
 		setQueue(data);
 	};
 
+	const onQueueStatusChanged = (status: QueueStatus) => {
+		setQueueStatus(status);
+	};
+
 	useEffect(() => {
 		socket.on('connections-update', onConnectionsUpdate);
 		socket.on('queue-update', onQueueUpdate);
+		socket.on('queue-status-changed', onQueueStatusChanged);
 
 		return () => {
 			socket.off('connections-update', onConnectionsUpdate);
 			socket.off('queue-update', onQueueUpdate);
+			socket.off('queue-status-changed', onQueueStatusChanged);
 		};
 	});
 
 	return (
-		<div className='container'>
+		<div className='container d-flex flex-column gap-4'>
 			<h1 className='mt-3 mb-3'>HandBrake Web</h1>
-			<hr />
 			<ServerInfo server={server} setServer={setServer} connections={connections!} />
-			<hr />
 			<CreateJob
 				socket={socket}
 				input={input}
@@ -62,9 +67,7 @@ export default function Home() {
 				preset={preset!}
 				setPreset={setPreset}
 			/>
-			<hr />
-			<Queue queue={queue} />
-			{/* {transcodeInfo && <TranscodeInfo transcodeStatus={transcodeInfo} />} */}
+			<Queue queue={queue} queueStatus={queueStatus} />
 		</div>
 	);
 }

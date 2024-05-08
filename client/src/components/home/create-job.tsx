@@ -1,5 +1,5 @@
 import TextInput from '../test/text-input';
-import { QueueEntry } from '../../../../types/queue';
+import { QueueRequest } from '../../../../types/queue';
 import { Socket } from 'socket.io-client';
 
 type Params = {
@@ -37,7 +37,7 @@ export default function CreateJob({
 
 	const handleAddToQueue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		event.preventDefault();
-		const data: QueueEntry = {
+		const data: QueueRequest = {
 			input: input,
 			output: output,
 			preset: preset!,
@@ -48,6 +48,11 @@ export default function CreateJob({
 	const handleStartQueue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		event.preventDefault();
 		socket.emit('start-queue');
+	};
+
+	const handleStopQueue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		event.preventDefault();
+		socket.emit('stop-queue');
 	};
 
 	return (
@@ -87,12 +92,15 @@ export default function CreateJob({
 					</div>
 				</div>
 			</form>
-			<div className='container d-flex gap-2 mt-3'>
-				<button className='btn btn-secondary' onClick={handleAddToQueue}>
+			<div className='d-flex gap-2 mt-3'>
+				<button className='btn btn-warning' onClick={handleAddToQueue}>
 					Add to Queue
 				</button>
 				<button className='btn btn-primary' onClick={handleStartQueue}>
 					Start Queue
+				</button>
+				<button className='btn btn-danger' onClick={handleStopQueue}>
+					Stop Queue
 				</button>
 			</div>
 		</div>

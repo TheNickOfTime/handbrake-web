@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
-import { AddEntry, StartQueue, queue } from '../scripts/queue';
-import { QueueEntry } from '../../types/queue';
+import { AddEntry, StartQueue, StopQueue, queue } from '../scripts/queue';
+import { QueueRequest } from '../../types/queue';
 import { AddClient, RemoveClient, connections } from '../scripts/connections';
 
 export default function ClientSocket(io: Server) {
@@ -13,7 +13,7 @@ export default function ClientSocket(io: Server) {
 			RemoveClient(socket);
 		});
 
-		socket.on('add-to-queue', (data: QueueEntry) => {
+		socket.on('add-to-queue', (data: QueueRequest) => {
 			console.log(
 				`[server] Client '${socket.id}' has requested to add a job for '${data.input}' to the queue.`
 			);
@@ -22,7 +22,11 @@ export default function ClientSocket(io: Server) {
 		});
 
 		socket.on('start-queue', () => {
-			StartQueue();
+			StartQueue(socket.id);
+		});
+
+		socket.on('stop-queue', () => {
+			StopQueue(socket.id);
 		});
 	});
 }
