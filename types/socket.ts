@@ -8,3 +8,8 @@ export type Connections = {
 	clients: Client[];
 	workers: Worker[];
 };
+
+export type ConnectionIDs = {
+	clients: string[];
+	workers: string[];
+};

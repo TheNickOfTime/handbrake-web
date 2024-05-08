@@ -1,11 +1,15 @@
+import { Queue, QueueEntry } from '../../types/queue';
 import { connections } from './connections';
 
-export const queue: string[] = [];
+export const queue: Queue = [];
 
-export function AddEntry(id: string) {
-	queue.push(id);
+export function AddEntry(data: QueueEntry) {
+	queue.push(data);
 	// console.log(`[server] Adding '${id} to queue.`);
 	console.log(`[server] Queue: ${queue}`);
+	connections.clients.forEach((client) => {
+		client.emit('queue-update', queue);
+	});
 }
 
 export function StartQueue() {

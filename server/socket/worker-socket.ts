@@ -10,5 +10,9 @@ export default function WorkerSocket(io: Server) {
 			console.log(`[server] Worker '${socket.id}' has disconnected.`);
 			RemoveWorker(socket);
 		});
+
+		socket.on('transcoding', () => {
+			console.log(`[server] Worker '${socket.id}' is transcoding.`);
+		});
 	});
 }

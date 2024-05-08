@@ -3,14 +3,20 @@
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
-import TextInput from '../../components/test/text-input';
+import { Queue as QueueType } from '../../../../types/queue';
+import { ConnectionIDs } from '../../../../types/socket';
+import Queue from '../../components/home/queue';
+import ServerInfo from '../../components/home/server-info';
+import CreateJob from '../../components/home/create-job';
 
 export default function Home() {
 	const [server, setServer] = useState('http://localhost:9999/client');
 	const [input, setInput] = useState('/workspaces/handbrake-server/video/video.mov');
 	const [output, setOutput] = useState('/workspaces/handbrake-server/video/video.mkv');
+	const [preset, setPreset] = useState<null | object>(null);
 	const [socket] = useState(io(server, { autoConnect: false }));
-
+	const [queue, setQueue] = useState<QueueType>([]);
+	const [connections, setConnections] = useState<ConnectionIDs>();
 	// Socket connection & disconnection
 	useEffect(() => {
 		socket.connect();
@@ -20,50 +26,44 @@ export default function Home() {
 		};
 	}, []);
 
-	const handleAddToQueue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-		event.preventDefault();
-		socket.emit('transcode-job');
+	const onConnectionsUpdate = (data: ConnectionIDs) => {
+		console.log(`[client] Connections have been updated.`);
+		console.log(data);
+		setConnections(data);
 	};
 
-	const handleStartQueue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-		socket.emit('start-queue');
+	const onQueueUpdate = (data: QueueType) => {
+		console.log(`[client] The queue has been updated.`);
+		setQueue(data);
 	};
+
+	useEffect(() => {
+		socket.on('connections-update', onConnectionsUpdate);
+		socket.on('queue-update', onQueueUpdate);
+
+		return () => {
+			socket.off('connections-update', onConnectionsUpdate);
+			socket.off('queue-update', onQueueUpdate);
+		};
+	});
 
 	return (
 		<div className='container'>
-			<h1>HandBrake Web</h1>
-			<form
-				className='container'
-				// onSubmit={(e) => e.preventDefault()}
-			>
-				<TextInput id='server' label='Server URL:' value={server} setValue={setServer} />
-				<div className='row'>
-					<div className='col'>
-						<TextInput
-							id='input'
-							label='Input Path:'
-							value={input}
-							setValue={setInput}
-						/>
-					</div>
-					<div className='col'>
-						<TextInput
-							id='output'
-							label='Output Path:'
-							value={output}
-							setValue={setOutput}
-						/>
-					</div>
-				</div>
-			</form>
-			<div className='container mt-2 d-flex gap-2'>
-				<button className='btn btn-secondary' onClick={handleAddToQueue}>
-					Add to Queue
-				</button>
-				<button className='btn btn-primary' onClick={handleStartQueue}>
-					Start Queue
-				</button>
-			</div>
+			<h1 className='mt-3 mb-3'>HandBrake Web</h1>
+			<hr />
+			<ServerInfo server={server} setServer={setServer} connections={connections!} />
+			<hr />
+			<CreateJob
+				socket={socket}
+				input={input}
+				setInput={setInput}
+				output={output}
+				setOutput={setOutput}
+				preset={preset!}
+				setPreset={setPreset}
+			/>
+			<hr />
+			<Queue queue={queue} />
 			{/* {transcodeInfo && <TranscodeInfo transcodeStatus={transcodeInfo} />} */}
 		</div>
 	);
