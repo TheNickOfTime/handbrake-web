@@ -1,13 +1,15 @@
+import { HandbrakePreset } from './preset';
+
 export type QueueRequest = {
 	input: string;
 	output: string;
-	preset: object;
+	preset: HandbrakePreset;
 };
 
 export type Job = {
 	input: string;
 	output: string;
-	preset: object;
+	preset: HandbrakePreset;
 	worker: string | null;
 	status: string;
 };

@@ -1,5 +1,6 @@
 import { Server } from 'socket.io';
 import { AddWorker, RemoveWorker } from '../scripts/connections';
+import { TranscodeStage, TranscodeStatus } from '../../types/transcode';
 
 export default function WorkerSocket(io: Server) {
 	io.of('/worker').on('connection', (socket) => {
@@ -11,8 +12,12 @@ export default function WorkerSocket(io: Server) {
 			RemoveWorker(socket);
 		});
 
-		socket.on('transcoding', () => {
-			console.log(`[server] Worker '${socket.id}' is transcoding.`);
+		socket.on('transcoding', (data: TranscodeStatus) => {
+			console.log(
+				`[server] Worker '${socket.id}' is ${TranscodeStage[data.stage]} at ${
+					data.info.percentage
+				}`
+			);
 		});
 	});
 }

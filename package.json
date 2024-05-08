@@ -5,8 +5,8 @@
 	"main": "index.js",
 	"scripts": {
 		"client": "vite ./client",
-		"server": "nodemon ./server/server.ts",
-		"worker": "nodemon ./worker/worker.ts"
+		"server": "nodemon ./server/server.ts --watch server",
+		"worker": "nodemon ./worker/worker.ts --watch worker"
 	},
 	"repository": {
 		"type": "git",

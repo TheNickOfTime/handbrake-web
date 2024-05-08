@@ -11,8 +11,8 @@ import CreateJob from '../../components/home/create-job';
 
 export default function Home() {
 	const [server, setServer] = useState('http://localhost:9999/client');
-	const [input, setInput] = useState('/workspaces/handbrake-server/video/video.mov');
-	const [output, setOutput] = useState('/workspaces/handbrake-server/video/video.mkv');
+	const [input, setInput] = useState('/workspaces/handbrake-web/video/video.mov');
+	const [output, setOutput] = useState('/workspaces/handbrake-web/video/video.mkv');
 	const [preset, setPreset] = useState<null | object>(null);
 	const [socket] = useState(io(server, { autoConnect: false }));
 	const [queue, setQueue] = useState<QueueType>([]);
