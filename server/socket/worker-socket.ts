@@ -1,6 +1,7 @@
 import { Server } from 'socket.io';
 import { AddWorker, RemoveWorker } from '../scripts/connections';
-import { TranscodeStage, TranscodeStatus } from '../../types/transcode';
+import { TranscodeStage, TranscodeStatus, TranscodeStatusUpdate } from '../../types/transcode';
+import { UpdateJob } from '../scripts/queue';
 
 export default function WorkerSocket(io: Server) {
 	io.of('/worker').on('connection', (socket) => {
@@ -12,12 +13,14 @@ export default function WorkerSocket(io: Server) {
 			RemoveWorker(socket);
 		});
 
-		socket.on('transcoding', (data: TranscodeStatus) => {
-			console.log(
-				`[server] Worker '${socket.id}' is ${TranscodeStage[data.stage]} at ${
-					data.info.percentage
-				}`
-			);
+		socket.on('transcoding', (data: TranscodeStatusUpdate) => {
+			// console.log(data);
+			// console.log(
+			// 	`[server] Worker '${socket.id}' is ${TranscodeStage[data.status.stage]} at ${
+			// 		data.status.info.percentage
+			// 	}`
+			// );
+			UpdateJob(data);
 		});
 	});
 }

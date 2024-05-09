@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import { Socket } from 'socket.io-client';
-import { Job } from '../../types/queue';
-import { TranscodeStage, TranscodeStatus } from '../../types/transcode';
+import { Job, QueueEntry } from '../../types/queue';
+import { TranscodeStage, TranscodeStatus, TranscodeStatusUpdate } from '../../types/transcode';
 import fs from 'fs';
 
 const writePresetToFile = (preset: object) => {
@@ -15,30 +15,14 @@ const writePresetToFile = (preset: object) => {
 	});
 };
 
-const importPresetFileToHandbrake = () => {
-	console.log('[worker] Importing preset file to HandBrake.');
-	const handbrake = spawn('handbrake', [
-		'--preset-import-file',
-		'/workspaces/handbrake-web/presets/preset.json',
-	]);
+export default function Transcode(queueEntry: QueueEntry, socket: Socket) {
+	console.log(queueEntry);
 
-	handbrake.stdout.on('data', (data) => {
-		console.log('[worker] ', data.toString());
-	});
+	writePresetToFile(queueEntry.job.preset);
 
-	handbrake.stderr.on('data', (data) => {
-		console.error('[error] ', data.toString());
-	});
-};
+	// return;
 
-// const getPresetName = (preset: object) => {
-// 	preset['PresetName'];
-// };
-
-export default function Transcode(data: Job, socket: Socket) {
-	writePresetToFile(data.preset);
-
-	const presetName = data.preset.PresetList[0].PresetName;
+	const presetName = queueEntry.job.preset.PresetList[0].PresetName;
 	console.log(presetName);
 
 	const handbrake = spawn('handbrake', [
@@ -47,9 +31,10 @@ export default function Transcode(data: Job, socket: Socket) {
 		'--preset',
 		presetName,
 		'-i',
-		data.input,
+		queueEntry.job.input,
 		'-o',
-		data.output,
+		queueEntry.job.output,
+		// '--json',
 	]);
 
 	const transcodeStatus: TranscodeStatus = {
@@ -76,7 +61,12 @@ export default function Transcode(data: Job, socket: Socket) {
 
 			// console.log(`[encoding] ${transcodeStatus.info.percentage}`);
 
-			socket.emit('transcoding', transcodeStatus);
+			const update: TranscodeStatusUpdate = {
+				id: queueEntry.id,
+				status: transcodeStatus,
+			};
+
+			socket.emit('transcoding', update);
 		}
 
 		console.log(output);
@@ -91,7 +81,11 @@ export default function Transcode(data: Job, socket: Socket) {
 		if (scanningMatch) {
 			transcodeStatus.stage = TranscodeStage.Scanning;
 			transcodeStatus.info = { percentage: scanningMatch[1] };
-			socket.emit('transcoding', transcodeStatus);
+			const update: TranscodeStatusUpdate = {
+				id: queueEntry.id,
+				status: transcodeStatus,
+			};
+			socket.emit('transcoding', update);
 			// console.log(`[scanning] ${transcodeStatus.info.percentage}`);
 		}
 
@@ -99,11 +93,14 @@ export default function Transcode(data: Job, socket: Socket) {
 	});
 
 	handbrake.on('close', () => {
-		const data: TranscodeStatus = {
-			stage: TranscodeStage.Finished,
-			info: { percentage: '100.00%' },
+		const update: TranscodeStatusUpdate = {
+			id: queueEntry.id,
+			status: {
+				stage: TranscodeStage.Finished,
+				info: { percentage: '100.00%' },
+			},
 		};
-		socket.emit('transcoding', data);
+		socket.emit('transcoding', update);
 		socket.emit('transcode-finished');
 	});
 }

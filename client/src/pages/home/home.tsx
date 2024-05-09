@@ -15,7 +15,7 @@ export default function Home() {
 	const [output, setOutput] = useState('/workspaces/handbrake-web/video/video.mkv');
 	const [preset, setPreset] = useState<null | object>(null);
 	const [socket] = useState(io(server, { autoConnect: false }));
-	const [queue, setQueue] = useState<QueueType>([]);
+	const [queue, setQueue] = useState<QueueType>({});
 	const [connections, setConnections] = useState<ConnectionIDs>();
 	const [queueStatus, setQueueStatus] = useState<QueueStatus>(QueueStatus.Idle);
 	// Socket connection & disconnection

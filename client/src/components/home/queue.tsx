@@ -1,4 +1,5 @@
 import { QueueStatus, Queue as QueueType } from '../../../../types/queue';
+import { TranscodeStage } from '../../../../types/transcode';
 
 type Params = {
 	queue: QueueType;
@@ -20,13 +21,13 @@ export default function Queue({ queue, queueStatus }: Params) {
 					</tr>
 				</thead>
 				<tbody>
-					{queue.map((entry, index) => (
+					{Object.values(queue).map((entry, index) => (
 						<tr>
 							<th>{index + 1}</th>
 							<td>{entry.input}</td>
 							<td>{entry.output}</td>
 							<td>{entry.worker ? entry.worker : 'N/A'}</td>
-							<td>{entry.status}</td>
+							<td>{TranscodeStage[entry.status.stage]}</td>
 						</tr>
 					))}
 				</tbody>

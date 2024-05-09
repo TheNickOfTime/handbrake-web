@@ -16,3 +16,8 @@ export type TranscodeStatus = {
 	stage: TranscodeStage;
 	info: TranscodeInfo;
 };
+
+export type TranscodeStatusUpdate = {
+	id: number;
+	status: TranscodeStatus;
+};

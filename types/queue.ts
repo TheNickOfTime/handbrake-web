@@ -1,4 +1,5 @@
 import { HandbrakePreset } from './preset';
+import { TranscodeStatus } from './transcode';
 
 export type QueueRequest = {
 	input: string;
@@ -11,10 +12,17 @@ export type Job = {
 	output: string;
 	preset: HandbrakePreset;
 	worker: string | null;
-	status: string;
+	status: TranscodeStatus;
 };
 
-export type Queue = Job[];
+export type QueueEntry = {
+	id: number;
+	job: Job;
+};
+
+export type Queue = {
+	[index: number]: Job;
+};
 
 export enum QueueStatus {
 	Idle,
