@@ -33,9 +33,13 @@ export function AddJob(data: QueueRequest) {
 
 export function UpdateJob(data: TranscodeStatusUpdate) {
 	queue[data.id].status = data.status;
-	// console.log(data.id);
+	if (queue[data.id].status.stage == TranscodeStage.Finished) {
+		queue[data.id].worker = null;
+	}
 	EmitToAllClients('queue-update', queue);
 }
+
+export function FinishJob(data: TranscodeStatusUpdate) {}
 
 export function StartQueue(clientID: string) {
 	if (state != QueueStatus.Active) {
@@ -82,7 +86,10 @@ const searchForWorker = () => {
 	);
 
 	if (availableWorkers.length > 0) {
-		const selectedJob = Object.keys(queue).map((key) => parseInt(key))[0];
+		const validJobs = Object.keys(queue).filter(
+			(key) => queue[parseInt(key)].status.stage == TranscodeStage.Waiting
+		);
+		const selectedJob = validJobs.map((key) => parseInt(key))[0];
 		const selectedWorker = availableWorkers[0];
 		console.log(`[server] Found free worker '${selectedWorker}'.`);
 
