@@ -1,6 +1,8 @@
 import TextInput from '../test/text-input';
 import { QueueRequest } from '../../../../types/queue';
 import { Socket } from 'socket.io-client';
+import { HandbrakePreset } from '../../../../types/preset';
+import { useState } from 'react';
 
 type Params = {
 	socket: Socket;
@@ -8,8 +10,8 @@ type Params = {
 	setInput: React.Dispatch<React.SetStateAction<string>>;
 	output: string;
 	setOutput: React.Dispatch<React.SetStateAction<string>>;
-	preset: object;
-	setPreset: React.Dispatch<React.SetStateAction<object>>;
+	preset: HandbrakePreset;
+	setPreset: React.Dispatch<React.SetStateAction<HandbrakePreset>>;
 };
 
 export default function CreateJob({
@@ -21,9 +23,15 @@ export default function CreateJob({
 	preset,
 	setPreset,
 }: Params) {
+	const [showError, setShowError] = useState(false);
+
 	const handlePresetFile = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
 		if (file && file.type == 'application/json') {
+			if (showError) {
+				setShowError(false);
+			}
+
 			const reader = new FileReader();
 			reader.onload = (event) => {
 				const result = event.target?.result?.toString();
@@ -37,12 +45,17 @@ export default function CreateJob({
 
 	const handleAddToQueue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		event.preventDefault();
-		const data: QueueRequest = {
-			input: input,
-			output: output,
-			preset: preset!,
-		};
-		socket.emit('add-to-queue', data);
+		if (preset) {
+			const data: QueueRequest = {
+				input: input,
+				output: output,
+				preset: preset!,
+			};
+			socket.emit('add-to-queue', data);
+		} else {
+			console.error('[client] There is no preset file to send to the server.');
+			setShowError(true);
+		}
 	};
 
 	const handleStartQueue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -58,6 +71,9 @@ export default function CreateJob({
 	return (
 		<div className='container'>
 			<h2>Create Job</h2>
+			{showError && (
+				<div className='alert alert-danger'>No preset file has been attached.</div>
+			)}
 			<form>
 				<div className='row'>
 					<div className='col'>
