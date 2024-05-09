@@ -2,11 +2,17 @@ import { Server } from 'socket.io';
 import { AddJob, StartQueue, StopQueue, queue } from '../scripts/queue';
 import { QueueRequest } from '../../types/queue';
 import { AddClient, RemoveClient, connections } from '../scripts/connections';
+import { Client } from '../../types/socket';
+
+const initClient = (socket: Client) => {
+	socket.emit('queue-update', queue);
+};
 
 export default function ClientSocket(io: Server) {
 	io.of('/client').on('connection', (socket) => {
 		console.log(`[server] Client '${socket.id}' has connected.`);
 		AddClient(socket);
+		initClient(socket);
 
 		socket.on('disconnect', () => {
 			console.log(`[server] Client '${socket.id}' has disconnected.`);
