@@ -3,6 +3,8 @@ import { AddJob, StartQueue, StopQueue, queue } from '../scripts/queue';
 import { QueueRequest } from '../../types/queue';
 import { AddClient, RemoveClient, connections } from '../scripts/connections';
 import { Client } from '../../types/socket';
+import { GetDirectoryTree } from '../scripts/files';
+import directoryTree from 'directory-tree';
 
 const initClient = (socket: Client) => {
 	socket.emit('queue-update', queue);
@@ -33,6 +35,11 @@ export default function ClientSocket(io: Server) {
 
 		socket.on('stop-queue', () => {
 			StopQueue(socket.id);
+		});
+
+		socket.on('get-directory-tree', () => {
+			const tree = GetDirectoryTree('/workspaces/handbrake-web/video');
+			socket.emit('get-directory-tree', tree);
 		});
 	});
 }
