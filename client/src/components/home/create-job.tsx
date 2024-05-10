@@ -3,6 +3,7 @@ import { QueueRequest } from '../../../../types/queue';
 import { Socket } from 'socket.io-client';
 import { HandbrakePreset } from '../../../../types/preset';
 import { useState } from 'react';
+import FileBrowser from '../file-browser/file-browser';
 
 type Params = {
 	socket: Socket;
@@ -24,6 +25,15 @@ export default function CreateJob({
 	setPreset,
 }: Params) {
 	const [showError, setShowError] = useState(false);
+
+	const defaultFileExtension = '.mkv';
+
+	const handleFileConfirm = (file: string) => {
+		const newInput = file;
+		const newOutput = file.replace(/\.[\w\d]+$/, defaultFileExtension);
+		setInput(newInput);
+		setOutput(newOutput);
+	};
 
 	const handlePresetFile = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
@@ -71,9 +81,8 @@ export default function CreateJob({
 	return (
 		<div className='container'>
 			<h2>Create Job</h2>
-			{showError && (
-				<div className='alert alert-danger'>No preset file has been attached.</div>
-			)}
+			<FileBrowser socket={socket} onConfirm={handleFileConfirm} />
+			<br />
 			<form>
 				<div className='row'>
 					<div className='col'>
@@ -82,6 +91,7 @@ export default function CreateJob({
 							label='Input Path:'
 							value={input}
 							setValue={setInput}
+							readOnly={true}
 						/>
 					</div>
 					<div className='col'>
@@ -90,10 +100,14 @@ export default function CreateJob({
 							label='Output Path:'
 							value={output}
 							setValue={setOutput}
+							readOnly={true}
 						/>
 					</div>
 				</div>
 				<div className='row'>
+					{showError && (
+						<div className='alert alert-danger'>No preset file has been attached.</div>
+					)}
 					<label className='col-2 col-form-label' htmlFor='preset-file'>
 						Preset File (JSON):
 					</label>

@@ -11,7 +11,7 @@ import FileBrowserSelection from './components/file-browser-selection';
 
 type Params = {
 	socket: Socket;
-	onConfirm: React.Dispatch<React.SetStateAction<string>>;
+	onConfirm: (file: string) => void;
 };
 
 export default function FileBrowser({ socket, onConfirm }: Params) {
@@ -19,7 +19,7 @@ export default function FileBrowser({ socket, onConfirm }: Params) {
 	const [basePath, setBasePath] = useState('');
 	const [basePathName, setBasePathName] = useState('');
 	const [currentPath, setCurrentPath] = useState('');
-	const [selectedFile, setSelectedFile] = useState('');
+	const [selectedFile, setSelectedFile] = useState('N/A');
 
 	const onGetDirectoryTree = (tree: DirectoryTree) => {
 		setDirectoryTree(tree);

@@ -1,14 +1,12 @@
-export default function TextInput({
-	id,
-	label,
-	value,
-	setValue,
-}: {
+type Params = {
 	id: string;
 	label: string;
 	value: string;
 	setValue: React.Dispatch<React.SetStateAction<string>>;
-}) {
+	readOnly?: boolean;
+};
+
+export default function TextInput({ id, label, value, setValue, readOnly = false }: Params) {
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setValue(event.target.value);
 	};
@@ -18,7 +16,14 @@ export default function TextInput({
 			<label className='form-label' htmlFor={id}>
 				{label}
 			</label>
-			<input type='text' name={id} id={id} value={value} onChange={handleChange} />
+			<input
+				type='text'
+				name={id}
+				id={id}
+				value={value}
+				disabled={readOnly}
+				onChange={handleChange}
+			/>
 		</div>
 	);
 }

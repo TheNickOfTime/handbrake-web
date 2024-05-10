@@ -1,14 +1,21 @@
 type Params = {
 	selectedFile: string;
-	onConfirm: React.Dispatch<React.SetStateAction<string>>;
+	onConfirm: (file: string) => void;
 };
 
 export default function FileBrowserSelection({ selectedFile, onConfirm }: Params) {
+	const canConfirm = selectedFile != 'N/A' && selectedFile != null;
+	const buttonClass = canConfirm ? 'btn-primary' : 'btn-secondary';
+
 	return (
 		<div className='file-browser-selection'>
 			<span>Selected File: </span>
-			<span className='selected-file'>{selectedFile}</span>
-			<button className='btn btn-primary' onClick={() => onConfirm(selectedFile)}>
+			<div className='selected-file'>{selectedFile}</div>
+			<button
+				className={`btn ${buttonClass}`}
+				disabled={!canConfirm}
+				onClick={() => onConfirm(selectedFile)}
+			>
 				Confirm
 			</button>
 		</div>
