@@ -59,7 +59,7 @@ export default function Home() {
 	return (
 		<div className='container d-flex flex-column gap-4'>
 			<h1 className='mt-3 mb-3'>HandBrake Web</h1>
-			<FileBrowser socket={socket} />
+			<FileBrowser socket={socket} onConfirm={setInput} />
 			<ServerInfo server={server} setServer={setServer} connections={connections!} />
 			<CreateJob
 				socket={socket}

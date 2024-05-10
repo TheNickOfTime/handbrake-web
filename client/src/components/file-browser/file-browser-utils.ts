@@ -10,7 +10,6 @@ export const getCurrentPathTree = (
 	tree: DirectoryTree
 ): DirectoryTree => {
 	if (basePath == absolutePath) {
-		console.log('root path');
 		return tree;
 	}
 
@@ -19,14 +18,12 @@ export const getCurrentPathTree = (
 		''
 	);
 	const splitPath = currentRelativePath.split('/');
-	console.log(splitPath);
 	let pathIndex = 1;
 	let childTree: DirectoryTree = tree;
 	const recurseTree = (key: string, tree: DirectoryTree) => {
 		const validChildren = tree.children?.filter((child) => child.children != undefined);
 		for (const child of validChildren!) {
 			const nameIsKey = child.name == key;
-			console.log(child.name, key, nameIsKey);
 			if (nameIsKey) {
 				pathIndex += 1;
 				const nextKey = splitPath[pathIndex];

@@ -7,17 +7,19 @@ import { FileBrowserContext } from './file-browser-context';
 import FileBrowserToolbar from './components/file-browser-toolbar';
 import FileBrowserBody from './components/file-browser-body';
 import './file-browser.scss';
+import FileBrowserSelection from './components/file-browser-selection';
 
 type Params = {
 	socket: Socket;
+	onConfirm: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function FileBrowser({ socket }: Params) {
+export default function FileBrowser({ socket, onConfirm }: Params) {
 	const [directoryTree, setDirectoryTree] = useState<null | DirectoryTree>(null);
 	const [basePath, setBasePath] = useState('');
 	const [basePathName, setBasePathName] = useState('');
 	const [currentPath, setCurrentPath] = useState('');
-	// const [selectedFile, setSelectedFile] = useState('');
+	const [selectedFile, setSelectedFile] = useState('');
 
 	const onGetDirectoryTree = (tree: DirectoryTree) => {
 		setDirectoryTree(tree);
@@ -53,7 +55,9 @@ export default function FileBrowser({ socket }: Params) {
 							tree={directoryTree}
 							currentPath={currentPath}
 							setCurrentPath={setCurrentPath}
+							setSelectedFile={setSelectedFile}
 						/>
+						<FileBrowserSelection selectedFile={selectedFile} onConfirm={onConfirm} />
 					</div>
 				</FileBrowserContext.Provider>
 			</div>

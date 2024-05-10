@@ -8,9 +8,15 @@ type Params = {
 	tree: DirectoryTree;
 	currentPath: string;
 	setCurrentPath: React.Dispatch<React.SetStateAction<string>>;
+	setSelectedFile: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function DirectoryDisplay({ tree, currentPath, setCurrentPath }: Params) {
+export default function DirectoryDisplay({
+	tree,
+	currentPath,
+	setCurrentPath,
+	setSelectedFile,
+}: Params) {
 	const context = useContext(FileBrowserContext);
 	const currentTree = getCurrentPathTree(currentPath, context.basePath, tree);
 	const parentPath = currentPath.replace(new RegExp(`/${currentTree.name}$`), '');
@@ -29,7 +35,7 @@ export default function DirectoryDisplay({ tree, currentPath, setCurrentPath }: 
 				const icon = isDirectory ? 'bi-folder-fill' : 'bi-file-earmark-fill';
 				const onClick = isDirectory
 					? () => setCurrentPath(child.path)
-					: () => console.log('wow');
+					: () => setSelectedFile(child.path);
 				return <DirectoryItem name={child.name} icon={icon} onClick={onClick} />;
 			})}
 		</div>
