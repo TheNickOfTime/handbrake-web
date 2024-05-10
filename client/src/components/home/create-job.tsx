@@ -11,7 +11,7 @@ type Params = {
 	output: string;
 	setOutput: React.Dispatch<React.SetStateAction<string>>;
 	preset: HandbrakePreset;
-	setPreset: React.Dispatch<React.SetStateAction<HandbrakePreset>>;
+	setPreset: React.Dispatch<React.SetStateAction<HandbrakePreset | null>>;
 };
 
 export default function CreateJob({

@@ -1,0 +1,41 @@
+// @import '/node_modules/bootstrap/scss/variables-dark';
+
+.file-browser {
+	overflow: hidden;
+
+	border-radius: 1rem;
+	background-color: var(--bs-secondary-bg);
+}
+
+.file-browser-toolbar {
+	padding: 0.5rem 1rem;
+
+	background-color: var(--bs-tertiary-bg);
+}
+
+.file-browser-body {
+	padding: 1rem;
+}
+
+.directory-item {
+	width: 100%;
+	padding: 0.25rem 0.75rem;
+	display: block;
+	background-color: transparent;
+
+	text-align: left;
+	border: none;
+	// outline: none;
+
+	.icon {
+		margin-right: 1rem;
+	}
+}
+
+.directory-item:hover {
+	background-color: hsla(0, 0%, 100%, 0.1);
+}
+
+.directory-item:active {
+	background-color: hsla(0, 0%, 100%, 0.05);
+}

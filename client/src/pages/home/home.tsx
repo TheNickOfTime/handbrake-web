@@ -8,12 +8,14 @@ import { ConnectionIDs } from '../../../../types/socket';
 import Queue from '../../components/home/queue';
 import ServerInfo from '../../components/home/server-info';
 import CreateJob from '../../components/home/create-job';
+import FileBrowser from '../../components/file-browser/file-browser';
+import { HandbrakePreset } from '../../../../types/preset';
 
 export default function Home() {
 	const [server, setServer] = useState('http://localhost:9999/client');
 	const [input, setInput] = useState('/workspaces/handbrake-web/video/video.mov');
 	const [output, setOutput] = useState('/workspaces/handbrake-web/video/video.mkv');
-	const [preset, setPreset] = useState<null | object>(null);
+	const [preset, setPreset] = useState<null | HandbrakePreset>(null);
 	const [socket] = useState(io(server, { autoConnect: false }));
 	const [queue, setQueue] = useState<QueueType>({});
 	const [connections, setConnections] = useState<ConnectionIDs>();
@@ -57,6 +59,7 @@ export default function Home() {
 	return (
 		<div className='container d-flex flex-column gap-4'>
 			<h1 className='mt-3 mb-3'>HandBrake Web</h1>
+			<FileBrowser socket={socket} />
 			<ServerInfo server={server} setServer={setServer} connections={connections!} />
 			<CreateJob
 				socket={socket}
