@@ -4,7 +4,7 @@ import { TranscodeStatus } from './transcode';
 export type QueueRequest = {
 	input: string;
 	output: string;
-	preset: HandbrakePreset;
+	preset: string;
 };
 
 export type Job = {

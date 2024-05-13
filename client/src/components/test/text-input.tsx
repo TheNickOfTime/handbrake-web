@@ -17,6 +17,7 @@ export default function TextInput({ id, label, value, setValue, readOnly = false
 				{label}
 			</label>
 			<input
+				className='form-control'
 				type='text'
 				name={id}
 				id={id}

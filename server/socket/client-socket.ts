@@ -1,13 +1,16 @@
 import { Server } from 'socket.io';
 import { AddJob, ClearQueue, StartQueue, StopQueue, queue } from '../scripts/queue';
 import { QueueRequest } from '../../types/queue';
-import { AddClient, RemoveClient, connections } from '../scripts/connections';
+import { AddClient, EmitToAllClients, RemoveClient, connections } from '../scripts/connections';
 import { Client } from '../../types/socket';
 import { GetDirectoryTree } from '../scripts/files';
 import directoryTree from 'directory-tree';
+import { HandbrakePreset } from '../../types/preset';
+import { AddPreset, GetPresetNames } from '../scripts/presets';
 
 const initClient = (socket: Client) => {
 	socket.emit('queue-update', queue);
+	socket.emit('presets-update', GetPresetNames());
 };
 
 export default function ClientSocket(io: Server) {
@@ -21,6 +24,7 @@ export default function ClientSocket(io: Server) {
 			RemoveClient(socket);
 		});
 
+		// Queue -----------------------------------------------------------------------------------
 		socket.on('add-to-queue', (data: QueueRequest) => {
 			console.log(
 				`[server] Client '${socket.id}' has requested to add a job for '${data.input}' to the queue.`
@@ -41,9 +45,15 @@ export default function ClientSocket(io: Server) {
 			ClearQueue(socket.id, finishedOnly);
 		});
 
+		// Directory -------------------------------------------------------------------------------
 		socket.on('get-directory-tree', () => {
 			const tree = GetDirectoryTree('/workspaces/handbrake-web/video');
 			socket.emit('get-directory-tree', tree);
+		});
+
+		// Preset ----------------------------------------------------------------------------------
+		socket.on('add-preset', (preset: HandbrakePreset) => {
+			AddPreset(preset);
 		});
 	});
 }

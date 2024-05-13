@@ -1,7 +1,6 @@
 import TextInput from '../test/text-input';
 import { QueueRequest } from '../../../../types/queue';
 import { Socket } from 'socket.io-client';
-import { HandbrakePreset } from '../../../../types/preset';
 import { useState } from 'react';
 import FileBrowser from '../file-browser/file-browser';
 
@@ -11,8 +10,9 @@ type Params = {
 	setInput: React.Dispatch<React.SetStateAction<string>>;
 	output: string;
 	setOutput: React.Dispatch<React.SetStateAction<string>>;
-	preset: HandbrakePreset;
-	setPreset: React.Dispatch<React.SetStateAction<HandbrakePreset | null>>;
+	presets: string[];
+	preset: string | null;
+	setPreset: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export default function CreateJob({
@@ -21,6 +21,7 @@ export default function CreateJob({
 	setInput,
 	output,
 	setOutput,
+	presets,
 	preset,
 	setPreset,
 }: Params) {
@@ -35,22 +36,12 @@ export default function CreateJob({
 		setOutput(newOutput);
 	};
 
-	const handlePresetFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0];
-		if (file && file.type == 'application/json') {
-			if (showError) {
-				setShowError(false);
-			}
-
-			const reader = new FileReader();
-			reader.onload = (event) => {
-				const result = event.target?.result?.toString();
-				const json = JSON.parse(result!);
-				setPreset(json!);
-				console.log(`[client] Preset has been updated to '${file.name}'`);
-			};
-			reader.readAsText(file);
+	const handlePresetChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const isNA = event.target.value == 'N/A';
+		if (showError && !isNA) {
+			setShowError(false);
 		}
+		setPreset(isNA ? null : event.target.value);
 	};
 
 	const handleAddToQueue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -86,13 +77,24 @@ export default function CreateJob({
 			<form>
 				<div className='row'>
 					<div className='col'>
-						<TextInput
-							id='input'
-							label='Input Path:'
-							value={input}
-							setValue={setInput}
-							readOnly={true}
-						/>
+						<label htmlFor='preset-select' className='form-label'>
+							Select Preset:
+						</label>
+						<select
+							className='form-select'
+							id='preset-select'
+							onChange={handlePresetChange}
+							value={preset ? preset : 'N/A'}
+						>
+							<option value={undefined} selected>
+								N/A
+							</option>
+							{presets.map((preset) => (
+								<option key={preset} value={preset}>
+									{preset}
+								</option>
+							))}
+						</select>
 					</div>
 					<div className='col'>
 						<TextInput
@@ -104,24 +106,8 @@ export default function CreateJob({
 						/>
 					</div>
 				</div>
-				<div className='row'>
-					{showError && (
-						<div className='alert alert-danger'>No preset file has been attached.</div>
-					)}
-					<label className='col-2 col-form-label' htmlFor='preset-file'>
-						Preset File (JSON):
-					</label>
-					<div className='col-10'>
-						<input
-							className='form-control'
-							type='file'
-							id='preset-file'
-							accept='.json'
-							onChange={handlePresetFile}
-						/>
-					</div>
-				</div>
 			</form>
+			{showError && <div className='alert alert-danger'>No preset has been selected.</div>}
 			<div className='d-flex gap-2 mt-3'>
 				<button className='btn btn-warning' onClick={handleAddToQueue}>
 					Add to Queue

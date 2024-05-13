@@ -2,6 +2,7 @@ import { Job, Queue, QueueEntry, QueueRequest, QueueStatus } from '../../types/q
 import { Worker } from '../../types/socket';
 import { TranscodeStage, TranscodeStatusUpdate } from '../../types/transcode';
 import { EmitToAllClients, EmitToAllConnections, connections } from './connections';
+import { GetPresets } from './presets';
 
 export const queue: Queue = {};
 export let state: QueueStatus = QueueStatus.Idle;
@@ -16,7 +17,9 @@ export function AddJob(data: QueueRequest) {
 	const jobID = new Date().getTime();
 	console.log(jobID);
 	const newJob: Job = {
-		...data,
+		input: data.input,
+		output: data.output,
+		preset: GetPresets()[data.preset],
 		worker: null,
 		status: {
 			stage: TranscodeStage.Waiting,
