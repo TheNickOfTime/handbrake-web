@@ -9,6 +9,16 @@ type Params = {
 };
 
 export default function Queue({ socket, queue, queueStatus }: Params) {
+	const handleStartQueue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		event.preventDefault();
+		socket.emit('start-queue');
+	};
+
+	const handleStopQueue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		event.preventDefault();
+		socket.emit('stop-queue');
+	};
+
 	const handleClearQueue = (finishedOnly: boolean) => {
 		socket.emit('clear-queue', finishedOnly);
 	};
@@ -17,6 +27,20 @@ export default function Queue({ socket, queue, queueStatus }: Params) {
 		<div className='container'>
 			<h2>Queue ({QueueStatus[queueStatus]})</h2>
 			<div className='d-flex gap-2'>
+				<button
+					className='btn btn-primary'
+					onClick={handleStartQueue}
+					disabled={queueStatus == QueueStatus.Active}
+				>
+					Start Queue
+				</button>
+				<button
+					className='btn btn-danger'
+					onClick={handleStopQueue}
+					disabled={queueStatus == QueueStatus.Idle}
+				>
+					Stop Queue
+				</button>
 				<button className='btn btn-secondary' onClick={() => handleClearQueue(false)}>
 					Clear All
 				</button>

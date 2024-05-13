@@ -59,16 +59,6 @@ export default function CreateJob({
 		}
 	};
 
-	const handleStartQueue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-		event.preventDefault();
-		socket.emit('start-queue');
-	};
-
-	const handleStopQueue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-		event.preventDefault();
-		socket.emit('stop-queue');
-	};
-
 	return (
 		<div className='container'>
 			<h2>Create Job</h2>
@@ -111,12 +101,6 @@ export default function CreateJob({
 			<div className='d-flex gap-2 mt-3'>
 				<button className='btn btn-warning' onClick={handleAddToQueue}>
 					Add to Queue
-				</button>
-				<button className='btn btn-primary' onClick={handleStartQueue}>
-					Start Queue
-				</button>
-				<button className='btn btn-danger' onClick={handleStopQueue}>
-					Stop Queue
 				</button>
 			</div>
 		</div>
