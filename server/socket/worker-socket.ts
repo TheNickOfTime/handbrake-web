@@ -15,11 +15,11 @@ export default function WorkerSocket(io: Server) {
 
 		socket.on('transcoding', (data: TranscodeStatusUpdate) => {
 			// console.log(data);
-			// console.log(
-			// 	`[server] Worker '${socket.id}' is ${TranscodeStage[data.status.stage]} at ${
-			// 		data.status.info.percentage
-			// 	}`
-			// );
+			console.log(
+				`[server] Worker '${socket.id}' is ${TranscodeStage[data.status.stage]} at ${
+					data.status.info.percentage
+				}`
+			);
 			UpdateJob(data);
 		});
 	});
