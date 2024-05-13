@@ -69,7 +69,7 @@ export default function Home() {
 				preset={preset!}
 				setPreset={setPreset}
 			/>
-			<Queue queue={queue} queueStatus={queueStatus} />
+			<Queue socket={socket} queue={queue} queueStatus={queueStatus} />
 		</div>
 	);
 }

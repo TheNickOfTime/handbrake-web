@@ -1,15 +1,29 @@
+import { Socket } from 'socket.io-client';
 import { QueueStatus, Queue as QueueType } from '../../../../types/queue';
 import { TranscodeStage } from '../../../../types/transcode';
 
 type Params = {
+	socket: Socket;
 	queue: QueueType;
 	queueStatus: QueueStatus;
 };
 
-export default function Queue({ queue, queueStatus }: Params) {
+export default function Queue({ socket, queue, queueStatus }: Params) {
+	const handleClearQueue = (finishedOnly: boolean) => {
+		socket.emit('clear-queue', finishedOnly);
+	};
+
 	return (
 		<div className='container'>
 			<h2>Queue ({QueueStatus[queueStatus]})</h2>
+			<div className='d-flex gap-2'>
+				<button className='btn btn-secondary' onClick={() => handleClearQueue(false)}>
+					Clear All
+				</button>
+				<button className='btn btn-secondary' onClick={() => handleClearQueue(true)}>
+					Clear Finished
+				</button>
+			</div>
 			<table className='table'>
 				<thead>
 					<tr>

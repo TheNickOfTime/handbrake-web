@@ -1,5 +1,5 @@
 import { Server } from 'socket.io';
-import { AddJob, StartQueue, StopQueue, queue } from '../scripts/queue';
+import { AddJob, ClearQueue, StartQueue, StopQueue, queue } from '../scripts/queue';
 import { QueueRequest } from '../../types/queue';
 import { AddClient, RemoveClient, connections } from '../scripts/connections';
 import { Client } from '../../types/socket';
@@ -35,6 +35,10 @@ export default function ClientSocket(io: Server) {
 
 		socket.on('stop-queue', () => {
 			StopQueue(socket.id);
+		});
+
+		socket.on('clear-queue', (finishedOnly: boolean) => {
+			ClearQueue(socket.id, finishedOnly);
 		});
 
 		socket.on('get-directory-tree', () => {

@@ -67,6 +67,35 @@ export function StopQueue(clientID?: string) {
 	}
 }
 
+export function ClearQueue(clientID: string, finishedOnly: boolean = false) {
+	for (const key of Object.keys(queue)) {
+		const job: Job = queue[parseInt(key)];
+
+		switch (job.status.stage) {
+			case TranscodeStage.Waiting:
+				if (!finishedOnly) {
+					delete queue[parseInt(key)];
+					console.log(
+						`[server] Removing job '${key}' from the queue due to being 'Wainting'.`
+					);
+				}
+				break;
+			// case TranscodeStage.Scanning:
+			// 	break;
+			// case TranscodeStage.Transcoding:
+			// 	break;
+			case TranscodeStage.Finished:
+				delete queue[parseInt(key)];
+				console.log(
+					`[server] Removing job '${key}' from the queue due to being 'Finished'.`
+				);
+				break;
+		}
+	}
+
+	EmitToAllClients('queue-update', queue);
+}
+
 const searchForWorker = () => {
 	if (
 		Object.keys(queue).length == 0 ||
