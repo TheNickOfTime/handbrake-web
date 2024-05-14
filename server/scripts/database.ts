@@ -1,6 +1,6 @@
 import sqlite3 from 'sqlite3';
 import { Database, open } from 'sqlite';
-import { Job, Queue } from '../../types/queue';
+import { Job, Queue, QueueEntry } from '../../types/queue';
 
 const databasePath = './handbrake.db';
 
@@ -34,7 +34,7 @@ export async function DatabaseConnect() {
 	// console.log(await GetQueueJobs());
 }
 
-export async function GetQueueJobs(): Promise<Queue | null> {
+export async function GetQueueFromDatabase(): Promise<Queue | null> {
 	try {
 		const result: Queue = (await database!.all('SELECT * FROM queue'))
 			.map((entry) => {
@@ -58,7 +58,21 @@ export async function GetQueueJobs(): Promise<Queue | null> {
 	}
 }
 
-export async function InsertQueueJob(id: string, job: Job) {
+export async function GetJobFromDatabase(id: string): Promise<Job | null> {
+	try {
+		const result: Job = await database!
+			.get(`SELECT job FROM queue WHERE id = ${id}`)
+			.then((data) => JSON.parse(data));
+		console.log(result);
+		return result;
+	} catch (err) {
+		console.error(`[database] [error] Could not get jobs from the queue table.`);
+		console.error(err);
+		return null;
+	}
+}
+
+export async function InsertJobToDatabase(id: string, job: Job) {
 	try {
 		const jobJSON = JSON.stringify(job);
 		const result = await database?.run(
@@ -72,7 +86,7 @@ export async function InsertQueueJob(id: string, job: Job) {
 	}
 }
 
-export async function UpdateQueueJob(id: string, job: Job) {
+export async function UpdateJobInDatabase(id: string, job: Job) {
 	try {
 		const jobJSON = JSON.stringify(job);
 		const result = await database?.run(
@@ -86,7 +100,7 @@ export async function UpdateQueueJob(id: string, job: Job) {
 	}
 }
 
-export async function RemoveQueueJob(id: string) {
+export async function RemoveJobFromDatabase(id: string) {
 	try {
 		const result = await database?.run(`DELETE FROM queue WHERE id = ${id}`);
 		console.log(`[server] [database] Successfully removed job '${id}' from the database.`);
