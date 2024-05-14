@@ -1,7 +1,7 @@
 import { Server } from 'socket.io';
 import { AddWorker, RemoveWorker } from '../scripts/connections';
 import { TranscodeStage, TranscodeStatus, TranscodeStatusUpdate } from '../../types/transcode';
-import { UpdateJob } from '../scripts/queue';
+import { FinishJob, UpdateJob } from '../scripts/queue';
 
 export default function WorkerSocket(io: Server) {
 	io.of('/worker').on('connection', (socket) => {
@@ -20,7 +20,12 @@ export default function WorkerSocket(io: Server) {
 					data.status.info.percentage
 				}`
 			);
-			UpdateJob(data);
+
+			if (data.status.stage != TranscodeStage.Finished) {
+				UpdateJob(data);
+			} else {
+				FinishJob(data);
+			}
 		});
 	});
 }

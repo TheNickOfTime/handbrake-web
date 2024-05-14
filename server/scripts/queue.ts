@@ -2,15 +2,24 @@ import { Job, Queue, QueueEntry, QueueRequest, QueueStatus } from '../../types/q
 import { Worker } from '../../types/socket';
 import { TranscodeStage, TranscodeStatusUpdate } from '../../types/transcode';
 import { EmitToAllClients, EmitToAllConnections, connections } from './connections';
+import { ReadDataFromFile, WriteDataToFile } from './data';
 import { GetPresets } from './presets';
 
-export const queue: Queue = {};
+export const queuePath: string = './data/queue.json';
+
+export let queue: Queue = {};
+
 export let state: QueueStatus = QueueStatus.Idle;
 
-// let maxJobIndex = 0;
 let workerSearchInterval: null | NodeJS.Timeout = null;
-// const availableWorkers: Worker[] = [];
-// const busyWorkers: string[] = [];
+
+export function GetQueue() {
+	return queue;
+}
+
+export function SetQueue(newQueue: Queue) {
+	queue = newQueue;
+}
 
 export function AddJob(data: QueueRequest) {
 	// maxJobIndex += 1;
@@ -31,6 +40,7 @@ export function AddJob(data: QueueRequest) {
 	queue[jobID] = newJob;
 	// console.log(`[server] Adding '${id} to queue.`);
 	console.log(`[server] Queue: ${queue}`);
+	WriteDataToFile(queuePath, queue);
 	EmitToAllClients('queue-update', queue);
 }
 
@@ -39,10 +49,14 @@ export function UpdateJob(data: TranscodeStatusUpdate) {
 	if (queue[data.id].status.stage == TranscodeStage.Finished) {
 		queue[data.id].worker = null;
 	}
+	// WriteDataToFile(queuePath, queue);
 	EmitToAllClients('queue-update', queue);
 }
 
-export function FinishJob(data: TranscodeStatusUpdate) {}
+export function FinishJob(data: TranscodeStatusUpdate) {
+	UpdateJob(data);
+	WriteDataToFile(queuePath, queue);
+}
 
 export function StartQueue(clientID: string) {
 	if (state != QueueStatus.Active) {
@@ -96,6 +110,7 @@ export function ClearQueue(clientID: string, finishedOnly: boolean = false) {
 		}
 	}
 
+	WriteDataToFile(queuePath, queue);
 	EmitToAllClients('queue-update', queue);
 }
 
