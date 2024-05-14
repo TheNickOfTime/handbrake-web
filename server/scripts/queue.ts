@@ -87,12 +87,12 @@ export function StopQueue(clientID?: string) {
 
 export function ClearQueue(clientID: string, finishedOnly: boolean = false) {
 	for (const key of Object.keys(queue)) {
-		const job: Job = queue[parseInt(key)];
+		const job: Job = queue[key];
 
 		switch (job.status.stage) {
 			case TranscodeStage.Waiting:
 				if (!finishedOnly) {
-					delete queue[parseInt(key)];
+					delete queue[key];
 					RemoveQueueJob(key);
 					console.log(
 						`[server] Removing job '${key}' from the queue due to being 'Wainting'.`
@@ -104,7 +104,7 @@ export function ClearQueue(clientID: string, finishedOnly: boolean = false) {
 			// case TranscodeStage.Transcoding:
 			// 	break;
 			case TranscodeStage.Finished:
-				delete queue[parseInt(key)];
+				delete queue[key];
 				RemoveQueueJob(key);
 				console.log(
 					`[server] Removing job '${key}' from the queue due to being 'Finished'.`
@@ -137,9 +137,9 @@ const searchForWorker = () => {
 
 	if (availableWorkers.length > 0) {
 		const validJobs = Object.keys(queue).filter(
-			(key) => queue[parseInt(key)].status.stage == TranscodeStage.Waiting
+			(key) => queue[key].status.stage == TranscodeStage.Waiting
 		);
-		const selectedJob = validJobs.map((key) => parseInt(key))[0];
+		const selectedJob = validJobs[0];
 		const selectedWorker = availableWorkers[0];
 		console.log(`[server] Found free worker '${selectedWorker}'.`);
 

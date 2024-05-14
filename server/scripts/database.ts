@@ -1,6 +1,6 @@
 import sqlite3 from 'sqlite3';
 import { Database, open } from 'sqlite';
-import { Job } from '../../types/queue';
+import { Job, Queue } from '../../types/queue';
 
 const databasePath = './handbrake.db';
 
@@ -34,28 +34,27 @@ export async function DatabaseConnect() {
 	// console.log(await GetQueueJobs());
 }
 
-export async function GetQueueJobs() {
+export async function GetQueueJobs(): Promise<Queue | null> {
 	try {
-		let result = await database?.all('SELECT * FROM queue');
-		if (result) {
-			result = result.map((entry) => {
+		const result: Queue = (await database!.all('SELECT * FROM queue'))
+			.map((entry) => {
 				entry.job = JSON.parse(entry.job);
 				return entry;
-			});
-			result = result.reduce((prev, curr) => {
-				prev[parseInt(curr.id)] = curr.job;
+			})
+			.reduce((prev, curr) => {
+				prev[curr.id] = curr.job;
 				return prev;
 			}, {});
-			console.log(
-				`[server] [database] Retrieved ${
-					Object.keys(result!).length
-				} queue jobs from the database.`
-			);
-		}
+		console.log(
+			`[server] [database] Retrieved ${
+				Object.keys(result!).length
+			} queue jobs from the database.`
+		);
 		return result;
 	} catch (err) {
 		console.error(`[database] [error] Could not get jobs from the queue table.`);
 		console.error(err);
+		return null;
 	}
 }
 

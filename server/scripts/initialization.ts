@@ -3,6 +3,7 @@ import { ReadDataFromFile } from './data';
 import { SetPresets, presetsPath } from './presets';
 import { SetQueue, queuePath } from './queue';
 import { DatabaseConnect, GetQueueJobs } from './database';
+import { Queue } from '../../types/queue';
 
 export default async function Initialization(io: Server) {
 	// JSON ----------------------------------------------------------------------------------------

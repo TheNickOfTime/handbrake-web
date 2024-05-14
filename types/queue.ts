@@ -16,12 +16,12 @@ export type Job = {
 };
 
 export type QueueEntry = {
-	id: number;
+	id: string;
 	job: Job;
 };
 
 export type Queue = {
-	[index: number]: Job;
+	[index: string]: Job;
 };
 
 export enum QueueStatus {
