@@ -1,14 +1,14 @@
 import { Server } from 'socket.io';
-import { AddJob, ClearQueue, StartQueue, StopQueue, queue } from '../scripts/queue';
+import { AddJob, ClearQueue, GetQueue, StartQueue, StopQueue } from '../scripts/queue';
 import { QueueRequest } from '../../types/queue';
-import { AddClient, EmitToAllClients, RemoveClient, connections } from '../scripts/connections';
+import { AddClient, RemoveClient } from '../scripts/connections';
 import { Client } from '../../types/socket';
 import { GetDirectoryTree } from '../scripts/files';
-import directoryTree from 'directory-tree';
 import { HandbrakePreset } from '../../types/preset';
 import { AddPreset, GetPresetNames } from '../scripts/presets';
 
-const initClient = (socket: Client) => {
+const initClient = async (socket: Client) => {
+	const queue = await GetQueue();
 	socket.emit('queue-update', queue);
 	socket.emit('presets-update', GetPresetNames());
 };

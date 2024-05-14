@@ -18,6 +18,6 @@ export type TranscodeStatus = {
 };
 
 export type TranscodeStatusUpdate = {
-	id: number;
+	id: string;
 	status: TranscodeStatus;
 };

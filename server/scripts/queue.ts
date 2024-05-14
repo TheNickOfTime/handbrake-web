@@ -1,29 +1,37 @@
 import { Job, Queue, QueueEntry, QueueRequest, QueueStatus } from '../../types/queue';
 import { TranscodeStage, TranscodeStatusUpdate } from '../../types/transcode';
 import { EmitToAllClients, EmitToAllConnections, connections } from './connections';
-import { InsertQueueJob, RemoveQueueJob, UpdateQueueJob } from './database';
+import {
+	GetJobFromDatabase,
+	GetQueueFromDatabase,
+	InsertJobToDatabase,
+	RemoveJobFromDatabase,
+	UpdateJobInDatabase,
+} from './database';
 import { GetPresets } from './presets';
 
 export const queuePath: string = './data/queue.json';
 
-export let queue: Queue = {};
+// export let queue: Queue = {};
 
 export let state: QueueStatus = QueueStatus.Idle;
 
 let workerSearchInterval: null | NodeJS.Timeout = null;
 
-export function GetQueue() {
-	return queue;
+export async function GetQueue() {
+	return await GetQueueFromDatabase();
 }
 
-export function SetQueue(newQueue: Queue) {
-	queue = newQueue;
+export async function UpdateQueue() {
+	const updatedQueue = await GetQueueFromDatabase();
+	if (updatedQueue) {
+		// queue = updatedQueue;
+		EmitToAllClients('queue-update', updatedQueue);
+	}
 }
 
-export function AddJob(data: QueueRequest) {
-	// maxJobIndex += 1;
+export async function AddJob(data: QueueRequest) {
 	const jobID = new Date().getTime();
-	// console.log(jobID);
 	const newJob: Job = {
 		input: data.input,
 		output: data.output,
@@ -36,27 +44,21 @@ export function AddJob(data: QueueRequest) {
 			},
 		},
 	};
-	queue[jobID] = newJob;
 
-	InsertQueueJob(jobID.toString(), newJob);
-	// GetQueueJobs();
-	EmitToAllClients('queue-update', queue);
+	await InsertJobToDatabase(jobID.toString(), newJob);
+	await UpdateQueue();
 }
 
-export function UpdateJob(data: TranscodeStatusUpdate) {
-	queue[data.id].status = data.status;
-	if (queue[data.id].status.stage == TranscodeStage.Finished) {
-		queue[data.id].worker = null;
+export async function UpdateJob(data: TranscodeStatusUpdate) {
+	const job = await GetJobFromDatabase(data.id);
+	if (job) {
+		job.status = data.status;
+		if (job.status.stage == TranscodeStage.Finished) {
+			job.worker = null;
+		}
+		await UpdateJobInDatabase(data.id.toString(), job);
+		await UpdateQueue();
 	}
-	// WriteDataToFile(queuePath, queue);
-	UpdateQueueJob(data.id.toString(), queue[data.id]);
-	EmitToAllClients('queue-update', queue);
-}
-
-export function FinishJob(data: TranscodeStatusUpdate) {
-	UpdateJob(data);
-	UpdateQueueJob(data.id.toString(), queue[data.id]);
-	// WriteDataToFile(queuePath, queue);
 }
 
 export function StartQueue(clientID: string) {
@@ -85,72 +87,78 @@ export function StopQueue(clientID?: string) {
 	}
 }
 
-export function ClearQueue(clientID: string, finishedOnly: boolean = false) {
-	for (const key of Object.keys(queue)) {
-		const job: Job = queue[key];
+export async function ClearQueue(clientID: string, finishedOnly: boolean = false) {
+	console.log(
+		`[server] [queue] Client '${clientID}' has requested to clear ${
+			finishedOnly ? 'finished' : 'all'
+		} jobs from the queue.`
+	);
+	const queue = await GetQueueFromDatabase();
+	if (queue) {
+		for (const key of Object.keys(queue)) {
+			const job: Job = queue[key];
 
-		switch (job.status.stage) {
-			case TranscodeStage.Waiting:
-				if (!finishedOnly) {
-					delete queue[key];
-					RemoveQueueJob(key);
+			switch (job.status.stage) {
+				case TranscodeStage.Waiting:
+					if (!finishedOnly) {
+						RemoveJobFromDatabase(key);
+						console.log(
+							`[server] Removing job '${key}' from the queue due to being 'Waiting'.`
+						);
+					}
+					break;
+				case TranscodeStage.Finished:
+					RemoveJobFromDatabase(key);
 					console.log(
-						`[server] Removing job '${key}' from the queue due to being 'Wainting'.`
+						`[server] Removing job '${key}' from the queue due to being 'Finished'.`
 					);
-				}
-				break;
-			// case TranscodeStage.Scanning:
-			// 	break;
-			// case TranscodeStage.Transcoding:
-			// 	break;
-			case TranscodeStage.Finished:
-				delete queue[key];
-				RemoveQueueJob(key);
-				console.log(
-					`[server] Removing job '${key}' from the queue due to being 'Finished'.`
-				);
-				break;
+					break;
+			}
 		}
-	}
 
-	// WriteDataToFile(queuePath, queue);
-	EmitToAllClients('queue-update', queue);
+		UpdateQueue();
+	}
 }
 
-const searchForWorker = () => {
-	if (
-		Object.keys(queue).length == 0 ||
-		Object.values(queue).every((job) => job.status.stage == TranscodeStage.Finished)
-	) {
-		console.log(`[server] The queue is empty, stopping queue.`);
-		StopQueue();
-		return;
-	}
+const searchForWorker = async () => {
+	const queue = await GetQueueFromDatabase();
+	if (queue) {
+		if (
+			Object.keys(queue).length == 0 ||
+			Object.values(queue).every((job) => job.status.stage == TranscodeStage.Finished)
+		) {
+			console.log(`[server] The queue is empty, stopping queue.`);
+			StopQueue();
+			return;
+		}
 
-	console.log(`[server] Searching for a free worker...`);
-	const busyWorkers = Object.values(queue)
-		.filter((job) => job.worker != null)
-		.map((job) => job.worker);
-	const availableWorkers = connections.workers.filter(
-		(worker) => !busyWorkers.includes(worker.id)
-	);
-
-	if (availableWorkers.length > 0) {
-		const validJobs = Object.keys(queue).filter(
-			(key) => queue[key].status.stage == TranscodeStage.Waiting
+		console.log(`[server] Searching for a free worker...`);
+		const busyWorkers = Object.values(queue)
+			.filter((job) => job.worker != null)
+			.map((job) => job.worker);
+		const availableWorkers = connections.workers.filter(
+			(worker) => !busyWorkers.includes(worker.id)
 		);
-		const selectedJob = validJobs[0];
-		const selectedWorker = availableWorkers[0];
-		console.log(`[server] Found free worker '${selectedWorker}'.`);
 
-		queue[selectedJob].worker = selectedWorker.id;
+		if (availableWorkers.length > 0) {
+			const validJobs = Object.keys(queue).filter(
+				(key) => queue[key].status.stage == TranscodeStage.Waiting
+			);
+			const selectedJobID = validJobs[0];
+			const selectedWorker = availableWorkers[0];
+			console.log(`[server] Found free worker '${selectedWorker}'.`);
 
-		EmitToAllClients('queue-update', queue);
+			const selectedJob = queue[selectedJobID];
+			selectedJob.worker = selectedWorker.id;
+			UpdateJobInDatabase(selectedJobID, selectedJob);
 
-		const data: QueueEntry = {
-			id: selectedJob,
-			job: queue[selectedJob],
-		};
-		selectedWorker.emit('transcode', data);
+			// EmitToAllClients('queue-update', queue);
+
+			const data: QueueEntry = {
+				id: selectedJobID,
+				job: selectedJob,
+			};
+			selectedWorker.emit('transcode', data);
+		}
 	}
 };

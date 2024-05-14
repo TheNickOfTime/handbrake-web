@@ -1,9 +1,8 @@
 import { Server } from 'socket.io';
 import { ReadDataFromFile } from './data';
 import { SetPresets, presetsPath } from './presets';
-import { SetQueue, queuePath } from './queue';
-import { DatabaseConnect, GetQueueJobs } from './database';
-import { Queue } from '../../types/queue';
+import { UpdateQueue } from './queue';
+import { DatabaseConnect } from './database';
 
 export default async function Initialization(io: Server) {
 	// JSON ----------------------------------------------------------------------------------------
@@ -14,12 +13,9 @@ export default async function Initialization(io: Server) {
 
 	// Database ------------------------------------------------------------------------------------
 	await DatabaseConnect();
+	await UpdateQueue();
 
-	const queue = await GetQueueJobs();
-	if (queue) {
-		SetQueue(queue);
-	}
-
+	// Start Server --------------------------------------------------------------------------------
 	io.listen(9999);
 	console.log(`[server] Available at http://localhost:9999`);
 }

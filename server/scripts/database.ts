@@ -62,8 +62,11 @@ export async function GetJobFromDatabase(id: string): Promise<Job | null> {
 	try {
 		const result: Job = await database!
 			.get(`SELECT job FROM queue WHERE id = ${id}`)
-			.then((data) => JSON.parse(data));
-		console.log(result);
+			.then((data) => {
+				// console.log(data);
+				return JSON.parse(data.job);
+			});
+		// console.log(result);
 		return result;
 	} catch (err) {
 		console.error(`[database] [error] Could not get jobs from the queue table.`);
