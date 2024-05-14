@@ -1,8 +1,7 @@
 import { Job, Queue, QueueEntry, QueueRequest, QueueStatus } from '../../types/queue';
-import { Worker } from '../../types/socket';
 import { TranscodeStage, TranscodeStatusUpdate } from '../../types/transcode';
 import { EmitToAllClients, EmitToAllConnections, connections } from './connections';
-import { ReadDataFromFile, WriteDataToFile } from './data';
+import { InsertQueueJob, RemoveQueueJob, UpdateQueueJob } from './database';
 import { GetPresets } from './presets';
 
 export const queuePath: string = './data/queue.json';
@@ -24,7 +23,7 @@ export function SetQueue(newQueue: Queue) {
 export function AddJob(data: QueueRequest) {
 	// maxJobIndex += 1;
 	const jobID = new Date().getTime();
-	console.log(jobID);
+	// console.log(jobID);
 	const newJob: Job = {
 		input: data.input,
 		output: data.output,
@@ -38,9 +37,9 @@ export function AddJob(data: QueueRequest) {
 		},
 	};
 	queue[jobID] = newJob;
-	// console.log(`[server] Adding '${id} to queue.`);
-	console.log(`[server] Queue: ${queue}`);
-	WriteDataToFile(queuePath, queue);
+
+	InsertQueueJob(jobID.toString(), newJob);
+	// GetQueueJobs();
 	EmitToAllClients('queue-update', queue);
 }
 
@@ -50,12 +49,14 @@ export function UpdateJob(data: TranscodeStatusUpdate) {
 		queue[data.id].worker = null;
 	}
 	// WriteDataToFile(queuePath, queue);
+	UpdateQueueJob(data.id.toString(), queue[data.id]);
 	EmitToAllClients('queue-update', queue);
 }
 
 export function FinishJob(data: TranscodeStatusUpdate) {
 	UpdateJob(data);
-	WriteDataToFile(queuePath, queue);
+	UpdateQueueJob(data.id.toString(), queue[data.id]);
+	// WriteDataToFile(queuePath, queue);
 }
 
 export function StartQueue(clientID: string) {
@@ -92,6 +93,7 @@ export function ClearQueue(clientID: string, finishedOnly: boolean = false) {
 			case TranscodeStage.Waiting:
 				if (!finishedOnly) {
 					delete queue[parseInt(key)];
+					RemoveQueueJob(key);
 					console.log(
 						`[server] Removing job '${key}' from the queue due to being 'Wainting'.`
 					);
@@ -103,6 +105,7 @@ export function ClearQueue(clientID: string, finishedOnly: boolean = false) {
 			// 	break;
 			case TranscodeStage.Finished:
 				delete queue[parseInt(key)];
+				RemoveQueueJob(key);
 				console.log(
 					`[server] Removing job '${key}' from the queue due to being 'Finished'.`
 				);
@@ -110,7 +113,7 @@ export function ClearQueue(clientID: string, finishedOnly: boolean = false) {
 		}
 	}
 
-	WriteDataToFile(queuePath, queue);
+	// WriteDataToFile(queuePath, queue);
 	EmitToAllClients('queue-update', queue);
 }
 
