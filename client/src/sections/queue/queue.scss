@@ -1,0 +1,71 @@
+@import '../../style/modules/colors';
+
+.section#queue {
+	.queue-section {
+		padding: 1rem;
+		margin-bottom: 2rem;
+
+		display: flex;
+		flex-flow: column nowrap;
+		gap: 1rem;
+
+		border-radius: 1rem;
+		background-color: $background-secondary;
+
+		h2 {
+			margin: 0;
+			margin-bottom: 1rem;
+		}
+	}
+
+	.queue-section.status {
+		.status-section {
+			display: flex;
+			flex-flow: row wrap;
+			justify-content: space-between;
+
+			.status-info {
+				display: flex;
+				flex-flow: row wrap;
+				align-items: center;
+				gap: 1rem;
+
+				&.Idle {
+					color: $handbrake-yellow;
+				}
+
+				&.Active {
+					color: $handbrake-blue;
+				}
+
+				.info-text {
+					font-size: 2rem;
+				}
+			}
+
+			.status-buttons {
+				display: flex;
+				flex-flow: row wrap;
+				gap: 1rem;
+			}
+		}
+	}
+
+	.queue-section.jobs {
+		.job-section.paths {
+			.bi {
+				width: 100%;
+				display: block;
+				text-align: center;
+			}
+		}
+	}
+
+	.buttons {
+		// margin: 2rem 0;
+		margin-bottom: 1rem;
+		display: flex;
+		flex-flow: row wrap;
+		gap: 1rem;
+	}
+}

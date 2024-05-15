@@ -1,0 +1,22 @@
+@import '../../../style/modules/colors';
+
+.progress-bar {
+	position: relative;
+	height: 2rem;
+	border-radius: 0.5rem;
+	background-color: hsla(0, 0%, 100%, 0.1);
+
+	.progress-value {
+		height: 100%;
+		background-color: $handbrake-blue;
+		display: block;
+	}
+
+	.progress-label {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		text-align: center;
+	}
+}

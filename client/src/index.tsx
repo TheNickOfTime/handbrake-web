@@ -1,11 +1,36 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { createBrowserRouter, RouteObject, RouterProvider } from 'react-router-dom';
 
 import './index.scss';
-import Home from './pages/home/home';
+import '@fontsource/noto-sans';
+import '@fontsource/inter';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-	<React.StrictMode>
-		<Home />
-	</React.StrictMode>
-);
+import Primary from './pages/primary/primary';
+import Error from './sections/error/error';
+import QueueSection from './sections/queue/queue';
+
+const routes: RouteObject[] = [
+	{
+		path: '/',
+		element: <Primary />,
+		errorElement: <Error />,
+		children: [
+			{
+				path: '',
+				element: <QueueSection />,
+			},
+			{
+				path: 'queue',
+				element: <QueueSection />,
+			},
+			{
+				path: '*',
+				element: <Error />,
+				errorElement: <Error />,
+			},
+		],
+	},
+];
+const router = createBrowserRouter(routes);
+
+ReactDOM.createRoot(document.getElementById('root')!).render(<RouterProvider router={router} />);

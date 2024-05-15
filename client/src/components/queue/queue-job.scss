@@ -1,0 +1,30 @@
+@import '../../style/modules/colors';
+
+.queue-job {
+	display: flex;
+	flex-flow: row nowrap;
+	overflow: hidden;
+
+	border-radius: 1rem;
+	background-color: $background-tertiary;
+
+	h4 {
+		margin: 0;
+	}
+
+	.job-number {
+		padding: 0 1rem;
+		display: flex;
+		align-items: center;
+		background-color: hsla(0, 0%, 100%, 0.1);
+	}
+
+	.job-info {
+		padding: 1rem 2rem;
+		flex-grow: 1;
+
+		display: flex;
+		flex-flow: row wrap;
+		gap: 2rem;
+	}
+}

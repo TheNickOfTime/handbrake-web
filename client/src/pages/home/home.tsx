@@ -10,6 +10,8 @@ import ServerInfo from '../../components/home/server-info';
 import CreateJob from '../../components/home/create-job';
 import AddPreset from '../../components/home/add-preset';
 
+import './home.scss';
+
 export default function Home() {
 	const [server, setServer] = useState('http://localhost:9999/client');
 	const [input, setInput] = useState('/workspaces/handbrake-web/video/video.mov');

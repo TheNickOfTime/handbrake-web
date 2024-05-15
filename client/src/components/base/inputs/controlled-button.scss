@@ -1,0 +1,59 @@
+@import '../../../style/modules/font';
+@import '../../../style/modules/colors';
+
+.controlled-button {
+	// margin: 1rem;
+	padding: 0.5rem 1rem;
+	border: none;
+	border-radius: 0.75rem;
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	gap: 1rem;
+	box-shadow: 0 0 1rem black;
+
+	background-color: $handbrake-green;
+	color: $text-color-primary;
+	text-shadow: 0 0 1rem $background-primary;
+
+	.button-icon {
+		font-size: 2.5rem;
+	}
+
+	.button-label {
+		font-family: $font-family-primary;
+		font-size: 2rem;
+	}
+}
+
+.controlled-button:hover {
+	opacity: 80%;
+}
+
+.controlled-button:disabled {
+	opacity: 50%;
+}
+
+.controlled-button.red {
+	background-color: $handbrake-red;
+}
+
+.controlled-button.orange {
+	background-color: $handbrake-orange;
+}
+
+.controlled-button.yellow {
+	background-color: $handbrake-yellow;
+}
+
+.controlled-button.green {
+	background-color: $handbrake-green;
+}
+
+.controlled-button.blue {
+	background-color: $handbrake-blue;
+}
+
+.controlled-button.magenta {
+	background-color: $handbrake-magenta;
+}

@@ -1,2 +1,33 @@
-@import '../../node_modules/bootstrap/scss/bootstrap';
 @import '../../node_modules/bootstrap-icons/font/bootstrap-icons.css';
+
+@import './style/modules/colors';
+@import './style/modules/font';
+
+:root {
+	font-size: 10px;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	min-height: 100vh;
+	max-height: 100vh;
+	// overflow: clip;
+
+	margin: 0;
+	padding: 0;
+
+	// Font --------------------------------------------------------------------
+	font-size: 1.5rem;
+	font-family: $font-family-primary;
+
+	// Color -------------------------------------------------------------------
+	background-color: $background-primary;
+	color: $text-color-primary;
+
+	#root {
+		height: 100vh;
+	}
+}
