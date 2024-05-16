@@ -20,6 +20,9 @@ export default function SideBar() {
 					<li>
 						<NavLink to='/queue'>Queue</NavLink>
 					</li>
+					<li>
+						<NavLink to='/workers'>Workers</NavLink>
+					</li>
 					{/* <li>
 						<NavLink to='/workers'>Workers</NavLink>
 					</li>

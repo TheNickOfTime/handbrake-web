@@ -3,7 +3,8 @@
 
 .side-bar {
 	height: 100%;
-	width: $sidebar-width;
+	min-width: $sidebar-width;
+	max-width: $sidebar-width;
 
 	display: flex;
 	flex-flow: column nowrap;

@@ -8,6 +8,7 @@ import '@fontsource/inter';
 import Primary from './pages/primary/primary';
 import Error from './sections/error/error';
 import QueueSection from './sections/queue/queue';
+import WorkersSection from './sections/workers/workers';
 
 const routes: RouteObject[] = [
 	{
@@ -22,6 +23,10 @@ const routes: RouteObject[] = [
 			{
 				path: 'queue',
 				element: <QueueSection />,
+			},
+			{
+				path: 'workers',
+				element: <WorkersSection />,
 			},
 			{
 				path: '*',

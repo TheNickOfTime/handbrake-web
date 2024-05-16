@@ -1,3 +1,5 @@
+@import '../../style/modules/colors';
+
 .section {
 	position: relative;
 	height: 100%;
@@ -15,5 +17,23 @@
 
 	.section-divider {
 		margin-bottom: 3rem;
+	}
+
+	.sub-section {
+		padding: 1rem;
+		margin-bottom: 2rem;
+
+		display: flex;
+		flex-flow: column nowrap;
+		gap: 1rem;
+
+		border-radius: 1rem;
+		background-color: $background-secondary;
+
+		h2 {
+			margin: 0;
+			margin-bottom: 1rem;
+			color: $text-color-tertiary;
+		}
 	}
 }
