@@ -1,16 +1,17 @@
-// @import '/node_modules/bootstrap/scss/variables-dark';
+@import '../../style/modules/colors';
+@import '../../style/modules/font';
 
 .file-browser {
 	overflow: hidden;
 
 	border-radius: 1rem;
-	background-color: var(--bs-secondary-bg);
+	border: 0.2rem solid $background-primary;
 }
 
 .file-browser-toolbar {
 	padding: 0.5rem 1rem;
 
-	background-color: var(--bs-tertiary-bg);
+	background-color: $background-primary;
 }
 
 .file-browser-body {
@@ -28,10 +29,12 @@
 
 	.selected-file {
 		// min-height: 1rem;
-		padding: 0.5rem;
 		flex-grow: 1;
 		border-radius: 0.5rem;
-		background-color: var(--bs-tertiary-bg);
+		background-color: hsla(0, 0%, 100%, 0.1);
+		padding: 0.5rem 1rem;
+		font-family: $font-family-primary;
+		// font-size: 2rem;
 	}
 }
 
@@ -39,11 +42,14 @@
 	width: 100%;
 	padding: 0.5rem 0.75rem;
 	display: block;
-	background-color: transparent;
 
-	text-align: left;
 	border: none;
-	border-bottom: 0.1rem solid var(--bs-tertiary-bg);
+	border-bottom: 0.1rem solid $background-primary;
+	background-color: transparent;
+	color: $text-color-primary;
+
+	font-size: 1.5rem;
+	text-align: left;
 	// outline: none;
 
 	.icon {
@@ -53,6 +59,7 @@
 
 .directory-item:hover {
 	background-color: hsla(0, 0%, 100%, 0.1);
+	cursor: pointer;
 }
 
 .directory-item:active {

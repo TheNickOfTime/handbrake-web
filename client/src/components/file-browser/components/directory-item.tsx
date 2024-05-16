@@ -1,7 +1,7 @@
 type Params = {
 	name: string;
 	icon: string;
-	onClick: () => void;
+	onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 };
 
 export default function DirectoryItem({ name, icon, onClick }: Params) {

@@ -3,5 +3,5 @@ type Params = {
 };
 
 export default function DirectoryPath({ path }: Params) {
-	return <div id='directory-path'>{path}</div>;
+	return <div id='directory-path'>Directory: {path}</div>;
 }

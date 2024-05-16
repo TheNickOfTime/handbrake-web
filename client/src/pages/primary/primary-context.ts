@@ -5,4 +5,5 @@ export type PrimaryOutletContextType = {
 	socket: Socket;
 	queue: Queue;
 	queueStatus: QueueStatus;
+	presets: string[];
 };

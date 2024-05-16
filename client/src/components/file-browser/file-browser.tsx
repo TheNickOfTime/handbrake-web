@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react';
-import { Socket } from 'socket.io-client';
+import { useState } from 'react';
 import { DirectoryTree } from 'directory-tree';
 
 import { FileBrowserContext } from './file-browser-context';
@@ -10,57 +9,36 @@ import './file-browser.scss';
 import FileBrowserSelection from './components/file-browser-selection';
 
 type Params = {
-	socket: Socket;
+	tree: DirectoryTree;
 	onConfirm: (file: string) => void;
 };
 
-export default function FileBrowser({ socket, onConfirm }: Params) {
-	const [directoryTree, setDirectoryTree] = useState<null | DirectoryTree>(null);
-	const [basePath, setBasePath] = useState('');
-	const [basePathName, setBasePathName] = useState('');
-	const [currentPath, setCurrentPath] = useState('');
+export default function FileBrowser({ tree, onConfirm }: Params) {
+	// const [directoryTree, setDirectoryTree] = useState<null | DirectoryTree>(null);
+	const [basePath] = useState(tree.path);
+	const [basePathName] = useState(tree.name);
+	const [currentPath, setCurrentPath] = useState(tree.path);
 	const [selectedFile, setSelectedFile] = useState('N/A');
-
-	const onGetDirectoryTree = (tree: DirectoryTree) => {
-		setDirectoryTree(tree);
-		setBasePath(tree.path);
-		setBasePathName(tree.name);
-		setCurrentPath(tree.path);
-	};
-
-	useEffect(() => {
-		socket.on('get-directory-tree', onGetDirectoryTree);
-
-		return () => {
-			socket.off('get-directory-tree', onGetDirectoryTree);
-		};
-	}, []);
-
-	useEffect(() => {
-		socket.emit('get-directory-tree');
-	}, []);
 
 	const context = {
 		basePath: basePath,
 		basePathName: basePathName,
 	};
 
-	if (directoryTree) {
-		return (
-			<div className='file-browser bg'>
-				<FileBrowserContext.Provider value={context}>
-					<div>
-						<FileBrowserToolbar path={currentPath} />
-						<FileBrowserBody
-							tree={directoryTree}
-							currentPath={currentPath}
-							setCurrentPath={setCurrentPath}
-							setSelectedFile={setSelectedFile}
-						/>
-						<FileBrowserSelection selectedFile={selectedFile} onConfirm={onConfirm} />
-					</div>
-				</FileBrowserContext.Provider>
-			</div>
-		);
-	}
+	return (
+		<div className='file-browser bg'>
+			<FileBrowserContext.Provider value={context}>
+				<div>
+					<FileBrowserToolbar path={currentPath} />
+					<FileBrowserBody
+						tree={tree}
+						currentPath={currentPath}
+						setCurrentPath={setCurrentPath}
+						setSelectedFile={setSelectedFile}
+					/>
+					<FileBrowserSelection selectedFile={selectedFile} onConfirm={onConfirm} />
+				</div>
+			</FileBrowserContext.Provider>
+		</div>
+	);
 }

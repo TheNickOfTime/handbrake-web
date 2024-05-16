@@ -33,9 +33,13 @@ export default function DirectoryDisplay({
 			{currentTree.children?.map((child) => {
 				const isDirectory = child.children != undefined;
 				const icon = isDirectory ? 'bi-folder-fill' : 'bi-file-earmark-fill';
-				const onClick = isDirectory
-					? () => setCurrentPath(child.path)
-					: () => setSelectedFile(child.path);
+				// const onClick = isDirectory
+				// 	? () => setCurrentPath(child.path)
+				// 	: () => setSelectedFile(child.path);
+				const onClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+					event.preventDefault();
+					isDirectory ? setCurrentPath(child.path) : setSelectedFile(child.path);
+				};
 				return <DirectoryItem name={child.name} icon={icon} onClick={onClick} />;
 			})}
 		</div>
