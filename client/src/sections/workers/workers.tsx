@@ -56,6 +56,10 @@ export default function WorkersSection() {
 								}
 							</span>
 						</div>
+						<div className='info jobs'>
+							<span>Available Jobs: </span>
+							<span>{Object.keys(queue).length}</span>
+						</div>
 					</div>
 				</div>
 			</div>
