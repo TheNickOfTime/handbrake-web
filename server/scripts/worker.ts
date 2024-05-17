@@ -9,7 +9,7 @@ export async function SearchForWorker() {
 	if (queue) {
 		if (
 			Object.keys(queue).length == 0 ||
-			Object.values(queue).every((job) => job.status.stage == TranscodeStage.Finished)
+			Object.values(queue).every((job) => job.status.stage != TranscodeStage.Waiting)
 		) {
 			console.log(`[server] The queue is empty, stopping queue.`);
 			StopQueue();
