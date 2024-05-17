@@ -46,7 +46,7 @@ export default function PresetsSection() {
 				<div className='sub-section presets'>
 					<h2>List</h2>
 					{Object.keys(presets).map((key) => {
-						console.log(presets[key]);
+						// console.log(presets[key]);
 						const presetData = presets[key].PresetList[0];
 						const resolution = `${presetData.PictureWidth}x${presetData.PictureHeight}`;
 						return (
