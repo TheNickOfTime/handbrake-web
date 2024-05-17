@@ -65,11 +65,9 @@ export default function Primary() {
 		};
 	});
 
-	console.log('sidebar rerender');
-
 	return (
 		<div id='primary'>
-			<SideBar showSidebar={showSidebar} />
+			<SideBar showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
 			<div className={`dark-overlay ${showSidebar ? 'visible' : 'hidden'}`} />
 			<div className='primary-section'>
 				<div className='mobile-toolbar'>

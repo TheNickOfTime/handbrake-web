@@ -3,9 +3,16 @@ import './side-bar.scss';
 
 type Params = {
 	showSidebar: boolean;
+	setShowSidebar: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function SideBar({ showSidebar }: Params) {
+export default function SideBar({ showSidebar, setShowSidebar }: Params) {
+	const handleNavLinkClick = () => {
+		if (showSidebar) {
+			setShowSidebar(false);
+		}
+	};
+
 	return (
 		<div className={`side-bar ${showSidebar ? 'expanded' : ''}`}>
 			<div className='side-bar-background' />
@@ -21,16 +28,24 @@ export default function SideBar({ showSidebar }: Params) {
 				<div className='side-bar-nav'>
 					<ul>
 						<li>
-							<NavLink to='/'>Dashboard</NavLink>
+							<NavLink to='/' onClick={handleNavLinkClick}>
+								Dashboard
+							</NavLink>
 						</li>
 						<li>
-							<NavLink to='/queue'>Queue</NavLink>
+							<NavLink to='/queue' onClick={handleNavLinkClick}>
+								Queue
+							</NavLink>
 						</li>
 						<li>
-							<NavLink to='/workers'>Workers</NavLink>
+							<NavLink to='/workers' onClick={handleNavLinkClick}>
+								Workers
+							</NavLink>
 						</li>
 						<li>
-							<NavLink to='/presets'>Presets</NavLink>
+							<NavLink to='/presets' onClick={handleNavLinkClick}>
+								Presets
+							</NavLink>
 						</li>
 						{/* <li>
 						<NavLink to='/workers'>Workers</NavLink>
