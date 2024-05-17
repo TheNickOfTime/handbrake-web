@@ -86,7 +86,7 @@ export default function WorkersSection() {
 						</thead>
 						<tbody>
 							{connections.workers.map((worker) => (
-								<tr id='worker'>
+								<tr key={worker} id={worker}>
 									<td className='id'>{worker}</td>
 									<td
 										className={

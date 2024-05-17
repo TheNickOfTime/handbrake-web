@@ -48,19 +48,22 @@ export default function DashboardSection() {
 				<div className='table-scroll'>
 					<table>
 						<thead>
-							<th>Input</th>
-							<th>Output</th>
-							<th>Status</th>
-							<th>Progress</th>
+							<tr>
+								<th>Input</th>
+								<th>Output</th>
+								<th>Status</th>
+								<th>Progress</th>
+							</tr>
 						</thead>
 						<tbody>
-							{Object.values(queue).map((job) => {
+							{Object.keys(queue).map((key) => {
+								const job = queue[key];
 								const percentage = parseFloat(
 									job.status.info.percentage.replace(' %', '')
 								);
 
 								return (
-									<tr>
+									<tr key={`queue-job-${key}`}>
 										<td>{job.input}</td>
 										<td>{job.output}</td>
 										<td
@@ -97,8 +100,10 @@ export default function DashboardSection() {
 				<div className='table-scroll'>
 					<table>
 						<thead>
-							<th>ID</th>
-							<th>Status</th>
+							<tr>
+								<th>ID</th>
+								<th>Status</th>
+							</tr>
 						</thead>
 						<tbody>
 							{connections.workers.map((worker) => {
@@ -109,7 +114,7 @@ export default function DashboardSection() {
 									: 'Idle';
 
 								return (
-									<tr>
+									<tr key={`worker-${worker}`}>
 										<td>{worker}</td>
 										<td
 											className={`center ${
@@ -134,10 +139,12 @@ export default function DashboardSection() {
 				<div className='table-scroll'>
 					<table>
 						<thead>
-							<th>Name</th>
-							<th>Format</th>
-							<th>Resolution</th>
-							<th>Encoder</th>
+							<tr>
+								<th>Name</th>
+								<th>Format</th>
+								<th>Resolution</th>
+								<th>Encoder</th>
+							</tr>
 						</thead>
 						<tbody>
 							{Object.values(presets).map((preset) => {
@@ -145,7 +152,7 @@ export default function DashboardSection() {
 								const resolution = `${info.PictureWidth}x${info.PictureHeight}`;
 
 								return (
-									<tr>
+									<tr key={`preset-${info.PresetName}`}>
 										<td>{info.PresetName}</td>
 										<td className='center'>{info.FileFormat}</td>
 										<td className='center'>{resolution}</td>
