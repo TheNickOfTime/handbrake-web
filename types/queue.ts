@@ -25,6 +25,7 @@ export type Queue = {
 };
 
 export enum QueueStatus {
+	Stopped,
 	Idle,
 	Active,
 }

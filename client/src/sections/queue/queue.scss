@@ -30,6 +30,10 @@
 				align-items: center;
 				gap: 1rem;
 
+				&.Stopped {
+					color: $handbrake-red;
+				}
+
 				&.Idle {
 					color: $handbrake-yellow;
 				}

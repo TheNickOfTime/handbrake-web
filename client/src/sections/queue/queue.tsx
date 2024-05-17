@@ -49,14 +49,14 @@ export default function QueueSection() {
 							label='Start Queue'
 							icon='bi-play-fill'
 							color='blue'
-							disabled={queueStatus == QueueStatus.Active}
+							disabled={queueStatus != QueueStatus.Stopped}
 							onClick={handleStartQueue}
 						/>
 						<ButtonInput
 							label='Stop Queue'
 							icon='bi-stop-fill'
 							color='red'
-							disabled={queueStatus == QueueStatus.Idle}
+							disabled={queueStatus == QueueStatus.Stopped}
 							onClick={handleStopQueue}
 						/>
 					</div>

@@ -15,7 +15,7 @@ export const queuePath: string = './data/queue.json';
 
 // export let queue: Queue = {};
 
-export let state: QueueStatus = QueueStatus.Idle;
+export let state: QueueStatus = QueueStatus.Stopped;
 
 let workerSearchInterval: null | NodeJS.Timeout = null;
 
@@ -62,20 +62,28 @@ export async function UpdateJob(data: TranscodeStatusUpdate) {
 	}
 }
 
+export function GetQueueStatus() {
+	return state;
+}
+
+export function SetQueueStatus(newState: QueueStatus) {
+	state = newState;
+	EmitToAllClients('queue-status-update', state);
+}
+
 export function StartQueue(clientID: string) {
-	if (state != QueueStatus.Active) {
-		state = QueueStatus.Active;
+	if (state == QueueStatus.Stopped) {
+		SetQueueStatus(QueueStatus.Active);
 
 		console.log(`[server] The queue has been started by client '${clientID}'`);
 
 		workerSearchInterval = setInterval(SearchForWorker, 1000);
-		EmitToAllConnections('queue-status-changed', state);
 	}
 }
 
 export function StopQueue(clientID?: string) {
-	if (state != QueueStatus.Idle) {
-		state = QueueStatus.Idle;
+	if (state != QueueStatus.Stopped) {
+		SetQueueStatus(QueueStatus.Stopped);
 
 		const stoppedBy = clientID ? `client '${clientID}'` : 'the server.';
 

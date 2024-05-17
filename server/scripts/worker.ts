@@ -1,19 +1,30 @@
-import { QueueEntry } from '../../types/queue';
+import { QueueEntry, QueueStatus } from '../../types/queue';
 import { TranscodeStage } from '../../types/transcode';
 import { connections } from './connections';
 import { GetQueueFromDatabase, UpdateJobInDatabase } from './database';
-import { StopQueue } from './queue';
+import { GetQueueStatus, SetQueueStatus, StopQueue } from './queue';
 
 export async function SearchForWorker() {
 	const queue = await GetQueueFromDatabase();
 	if (queue) {
 		if (
 			Object.keys(queue).length == 0 ||
-			Object.values(queue).every((job) => job.status.stage != TranscodeStage.Waiting)
+			Object.values(queue).every((job) => job.status.stage == TranscodeStage.Finished)
 		) {
-			console.log(`[server] The queue is empty, stopping queue.`);
-			StopQueue();
+			if (GetQueueStatus() != QueueStatus.Idle) {
+				console.log(
+					`[server] There are no active or available jobs, setting the queue to idle.`
+				);
+				SetQueueStatus(QueueStatus.Idle);
+			} else {
+				console.log(`[server] There are no jobs available for the queue.`);
+			}
 			return;
+		} else {
+			if (GetQueueStatus() != QueueStatus.Active) {
+				console.log(`[server] Jobs are now available, setting the queue to active.`);
+				SetQueueStatus(QueueStatus.Active);
+			}
 		}
 
 		console.log(`[server] Searching for a free worker...`);

@@ -1,5 +1,12 @@
 import { Server } from 'socket.io';
-import { AddJob, ClearQueue, GetQueue, StartQueue, StopQueue } from '../scripts/queue';
+import {
+	AddJob,
+	ClearQueue,
+	GetQueue,
+	GetQueueStatus,
+	StartQueue,
+	StopQueue,
+} from '../scripts/queue';
 import { QueueRequest } from '../../types/queue';
 import { AddClient, RemoveClient } from '../scripts/connections';
 import { Client } from '../../types/socket';
@@ -11,6 +18,7 @@ const initClient = async (socket: Client) => {
 	const queue = await GetQueue();
 	socket.emit('queue-update', queue);
 	socket.emit('presets-update', GetPresets());
+	socket.emit('queue-status-update', GetQueueStatus());
 };
 
 export default function ClientSocket(io: Server) {
