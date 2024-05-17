@@ -42,55 +42,60 @@ export default function PresetsSection() {
 					onClick={() => setShowUploadPreset(true)}
 				/>
 			</div>
-			<div className='sub-section presets'>
-				<h2>List</h2>
-				{Object.keys(presets).map((key) => {
-					console.log(presets[key]);
-					const presetData = presets[key].PresetList[0];
-					const resolution = `${presetData.PictureWidth}x${presetData.PictureHeight}`;
-					return (
-						<div className='preset-section' key={key}>
-							<div className='preset-header'>
-								<h3 className='preset-label'>{key}</h3>
-								<div className='preset-buttons'>
-									{/* <ButtonInput
+			{Object.keys(presets).length > 0 && (
+				<div className='sub-section presets'>
+					<h2>List</h2>
+					{Object.keys(presets).map((key) => {
+						console.log(presets[key]);
+						const presetData = presets[key].PresetList[0];
+						const resolution = `${presetData.PictureWidth}x${presetData.PictureHeight}`;
+						return (
+							<div className='preset-section' key={key}>
+								<div className='preset-header'>
+									<h3 className='preset-label'>{key}</h3>
+									<div className='preset-buttons'>
+										{/* <ButtonInput
 										icon='bi-pencil-square'
 										color='yellow'
 										onClick={() => {}}
 									/> */}
-									<ButtonInput
-										icon='bi-trash-fill'
-										color='red'
-										onClick={() => handleRemovePreset(key)}
+										<ButtonInput
+											icon='bi-trash-fill'
+											color='red'
+											onClick={() => handleRemovePreset(key)}
+										/>
+									</div>
+								</div>
+								<div className='preset-data'>
+									<PresetInfo label='Format' info={presetData.FileFormat} />
+									<PresetInfo label='Resolution' info={resolution} />
+									<PresetInfo label='Encoder' info={presetData.VideoEncoder} />
+									<PresetInfo
+										label='Encoder Profile'
+										info={presetData.VideoProfile}
+									/>
+									<PresetInfo
+										label='Encoder Preset'
+										info={presetData.VideoPreset}
+									/>
+									<PresetInfo
+										label='Quality Mode'
+										info={presetData.VideoQualityType.toString()}
+									/>
+									<PresetInfo
+										label='Quality'
+										info={presetData.VideoQualitySlider.toString()}
+									/>
+									<PresetInfo
+										label='Extra Options'
+										info={presetData.VideoOptionExtra}
 									/>
 								</div>
 							</div>
-							<div className='preset-data'>
-								<PresetInfo label='Format' info={presetData.FileFormat} />
-								<PresetInfo label='Resolution' info={resolution} />
-								<PresetInfo label='Encoder' info={presetData.VideoEncoder} />
-								<PresetInfo
-									label='Encoder Profile'
-									info={presetData.VideoProfile}
-								/>
-								<PresetInfo label='Encoder Preset' info={presetData.VideoPreset} />
-								<PresetInfo
-									label='Quality Mode'
-									info={presetData.VideoQualityType.toString()}
-								/>
-								<PresetInfo
-									label='Quality'
-									info={presetData.VideoQualitySlider.toString()}
-								/>
-								<PresetInfo
-									label='Extra Options'
-									info={presetData.VideoOptionExtra}
-								/>
-							</div>
-						</div>
-					);
-				})}
-			</div>
+						);
+					})}
+				</div>
+			)}
 			{showUploadPreset && (
 				<UploadPreset socket={socket} handleClose={handleCloseUploadPreset} />
 			)}
