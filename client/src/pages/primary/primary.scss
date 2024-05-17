@@ -21,6 +21,10 @@
 			.mobile-toolbar {
 				display: inherit !important;
 			}
+
+			.content {
+				max-height: calc(100% - 5rem) !important;
+			}
 		}
 	}
 }
@@ -43,8 +47,11 @@
 	.primary-section {
 		flex-grow: 1;
 		max-width: 100%;
+		max-height: 100%;
 		display: flex;
 		flex-flow: column nowrap;
+		align-items: flex-start;
+		overflow: hidden;
 
 		.mobile-toolbar {
 			position: relative;
@@ -71,6 +78,7 @@
 
 		.content {
 			flex-grow: 1;
+			max-height: 100%;
 			// max-width: 100%;
 		}
 	}
