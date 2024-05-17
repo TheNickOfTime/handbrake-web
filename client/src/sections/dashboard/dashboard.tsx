@@ -1,4 +1,4 @@
-import { useOutletContext } from 'react-router-dom';
+import { NavLink, useOutletContext } from 'react-router-dom';
 import { PrimaryOutletContextType } from '../../pages/primary/primary-context';
 import Section from '../../components/section/section';
 import './dashboard.scss';
@@ -40,7 +40,11 @@ export default function DashboardSection() {
 				</div>
 			</div>
 			<div className='sub-section queue'>
-				<h2>Queue</h2>
+				<NavLink to='/queue'>
+					<h2>
+						Queue <i className='bi bi-arrow-right-short' />
+					</h2>
+				</NavLink>
 				<div className='table-scroll'>
 					<table>
 						<thead>
@@ -85,7 +89,11 @@ export default function DashboardSection() {
 				</div>
 			</div>
 			<div className='sub-section workers'>
-				<h2>Workers</h2>
+				<NavLink to='/workers'>
+					<h2>
+						Workers <i className='bi bi-arrow-right-short' />
+					</h2>
+				</NavLink>
 				<div className='table-scroll'>
 					<table>
 						<thead>
@@ -118,7 +126,11 @@ export default function DashboardSection() {
 				</div>
 			</div>
 			<div className='sub-section presets'>
-				<h2>Presets</h2>
+				<NavLink to='/presets'>
+					<h2>
+						Presets <i className='bi bi-arrow-right-short' />
+					</h2>
+				</NavLink>
 				<div className='table-scroll'>
 					<table>
 						<thead>

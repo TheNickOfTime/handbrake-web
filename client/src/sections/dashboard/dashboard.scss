@@ -25,6 +25,31 @@
 		padding-bottom: 2rem;
 	}
 
+	a {
+		text-decoration: none;
+
+		i {
+			// height: 100%;
+			// width: 2.75rem;
+			display: inline-block;
+			border-radius: 50%;
+			line-height: 1rem;
+			// aspect-ratio: 1;
+			// display: inline-block;
+			// // background-color: red;
+			// text-align: center;
+		}
+
+		&:hover {
+			color: $text-color-primary;
+			// text-decoration: underline;
+			i {
+				background-color: $text-color-primary;
+				color: $background-primary;
+			}
+		}
+	}
+
 	table {
 		width: 100%;
 
