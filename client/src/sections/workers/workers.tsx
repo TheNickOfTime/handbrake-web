@@ -3,6 +3,7 @@ import { PrimaryOutletContextType } from '../../pages/primary/primary-context';
 import Section from '../../components/section/section';
 import './workers.scss';
 import ProgressBar from '../../components/base/progress/progress-bar';
+import { TranscodeStage } from '../../../../types/transcode';
 
 type WorkerInfo = {
 	[index: string]: {
@@ -58,7 +59,15 @@ export default function WorkersSection() {
 						</div>
 						<div className='info jobs'>
 							<span>Available Jobs: </span>
-							<span>{Object.keys(queue).length}</span>
+							<span>
+								{
+									Object.values(queue).filter(
+										(job) =>
+											job.status.stage !=
+											(TranscodeStage.Finished || TranscodeStage.Transcoding)
+									).length
+								}
+							</span>
 						</div>
 					</div>
 				</div>
