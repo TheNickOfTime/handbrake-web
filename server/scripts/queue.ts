@@ -96,20 +96,20 @@ export async function ClearQueue(clientID: string, finishedOnly: boolean = false
 	);
 	const queue = await GetQueueFromDatabase();
 	if (queue) {
-		for (const key of Object.keys(queue)) {
+		for await (const key of Object.keys(queue)) {
 			const job: Job = queue[key];
 
 			switch (job.status.stage) {
 				case TranscodeStage.Waiting:
 					if (!finishedOnly) {
-						RemoveJobFromDatabase(key);
+						await RemoveJobFromDatabase(key);
 						console.log(
 							`[server] Removing job '${key}' from the queue due to being 'Waiting'.`
 						);
 					}
 					break;
 				case TranscodeStage.Finished:
-					RemoveJobFromDatabase(key);
+					await RemoveJobFromDatabase(key);
 					console.log(
 						`[server] Removing job '${key}' from the queue due to being 'Finished'.`
 					);
