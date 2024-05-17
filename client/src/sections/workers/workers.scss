@@ -74,6 +74,12 @@
 			.status.idle {
 				color: $handbrake-yellow;
 			}
+
+			.status,
+			.job,
+			.progress {
+				text-align: right;
+			}
 		}
 	}
 }

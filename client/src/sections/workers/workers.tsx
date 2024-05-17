@@ -87,7 +87,7 @@ export default function WorkersSection() {
 						<tbody>
 							{connections.workers.map((worker) => (
 								<tr id='worker'>
-									<td>{worker}</td>
+									<td className='id'>{worker}</td>
 									<td
 										className={
 											workerInfo[worker].status == 'Idle'
@@ -98,8 +98,8 @@ export default function WorkersSection() {
 										<i className='bi bi-circle-fill' />
 										<span>{workerInfo[worker].status}</span>
 									</td>
-									<td>{workerInfo[worker].job}</td>
-									<td>
+									<td className='job'>{workerInfo[worker].job}</td>
+									<td className='progress'>
 										{workerInfo[worker].job != 'N/A' ? (
 											<ProgressBar
 												percentage={parseFloat(workerInfo[worker].progress)}
