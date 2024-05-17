@@ -1,6 +1,76 @@
+@import '../../style/modules/colors';
+
+@media (max-width: 1000px) {
+	#primary {
+		.dark-overlay {
+			display: inherit !important;
+			transition: background-color 0.25s ease-in-out;
+
+			&.visible {
+				background-color: rgba(0, 0, 0, 0.75);
+			}
+
+			&.hidden {
+				background-color: transparent;
+			}
+		}
+
+		.primary-section {
+			min-width: 100%;
+
+			.mobile-toolbar {
+				display: inherit !important;
+			}
+		}
+	}
+}
+
 #primary {
 	height: 100%;
 
 	display: flex;
 	flex-flow: row nowrap;
+
+	.dark-overlay {
+		position: absolute;
+		z-index: 9;
+		height: 100%;
+		width: 100%;
+		display: none;
+	}
+
+	.primary-section {
+		flex-grow: 1;
+		max-width: 100%;
+		display: flex;
+		flex-flow: column nowrap;
+
+		.mobile-toolbar {
+			position: relative;
+			min-height: 5rem;
+			display: none;
+			// max-width: 100%;
+
+			background-color: $background-secondary;
+
+			button {
+				position: absolute;
+				z-index: 100;
+				height: 100%;
+				aspect-ratio: 1;
+				background-color: transparent;
+				border: none;
+
+				i {
+					color: $text-color-primary;
+					font-size: 3.5rem;
+				}
+			}
+		}
+
+		.content {
+			flex-grow: 1;
+			// max-width: 100%;
+		}
+	}
 }

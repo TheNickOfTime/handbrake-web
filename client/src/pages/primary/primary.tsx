@@ -11,14 +11,16 @@ import { PrimaryOutletContextType } from './primary-context';
 import SideBar from '../../components/side-bar/side-bar';
 
 import './primary.scss';
+import { HandbrakePreset } from '../../../../types/preset';
 
 export default function Primary() {
 	const [server] = useState('http://localhost:9999/client');
 	const [socket] = useState(io(server, { autoConnect: false }));
 	const [queue, setQueue] = useState<Queue>({});
 	const [queueStatus, setQueueStatus] = useState<QueueStatus>(QueueStatus.Idle);
-	const [presets, setPresets] = useState<string[]>([]);
+	const [presets, setPresets] = useState<{ [index: string]: HandbrakePreset }>({});
 	const [connections, setConnections] = useState<ConnectionIDs>({ clients: [], workers: [] });
+	const [showSidebar, setShowSidebar] = useState(false);
 
 	useEffect(() => {
 		socket.connect();
@@ -63,20 +65,32 @@ export default function Primary() {
 		};
 	});
 
+	console.log('sidebar rerender');
+
 	return (
 		<div id='primary'>
-			<SideBar />
-			<Outlet
-				context={
-					{
-						socket,
-						queue,
-						queueStatus,
-						presets,
-						connections,
-					} satisfies PrimaryOutletContextType
-				}
-			/>
+			<SideBar showSidebar={showSidebar} />
+			<div className={`dark-overlay ${showSidebar ? 'visible' : 'hidden'}`} />
+			<div className='primary-section'>
+				<div className='mobile-toolbar'>
+					<button onClick={() => setShowSidebar(!showSidebar)}>
+						<i className='bi-list' />
+					</button>
+				</div>
+				<div className='content'>
+					<Outlet
+						context={
+							{
+								socket,
+								queue,
+								queueStatus,
+								presets,
+								connections,
+							} satisfies PrimaryOutletContextType
+						}
+					/>
+				</div>
+			</div>
 		</div>
 	);
 }

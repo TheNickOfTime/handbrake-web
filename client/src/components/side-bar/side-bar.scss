@@ -1,16 +1,51 @@
 @import '../../style/modules/colors';
 @import '../../style/modules/sizing';
 
+@media (max-width: 1000px) {
+	.side-bar {
+		position: absolute !important;
+		z-index: 10;
+
+		transition: max-width 0.25s ease-in-out;
+		// transition: background-color 0.25s linear;
+	}
+
+	.side-bar:not(.expanded) {
+		// background-color: transparent;
+		min-width: 0 !important;
+		max-width: 0 !important;
+	}
+
+	.side-bar.expanded {
+		// background-color: red;
+		// min-width: 100% !important;
+		max-width: $sidebar-width !important;
+	}
+}
+
 .side-bar {
+	// position: relative;
 	height: 100%;
-	min-width: $sidebar-width;
-	max-width: $sidebar-width;
+	// min-width: $sidebar-width;
+	// max-width: $sidebar-width;
+	// max-width: 100px;
 
-	display: flex;
-	flex-flow: column nowrap;
-	align-items: center;
+	// display: flex;
+	// flex-flow: column nowrap;
+	// align-items: center;
+	overflow: hidden;
 
-	background-color: $background-secondary;
+	.side-bar-background {
+		position: absolute;
+		width: 100%;
+	}
+
+	.side-bar-inner {
+		height: 100%;
+		min-width: $sidebar-width;
+		max-width: $sidebar-width;
+		background-color: $background-secondary;
+	}
 
 	.side-bar-header {
 		width: 100%;
