@@ -73,6 +73,10 @@ export default function Primary() {
 			<div className={`dark-overlay ${showSidebar ? 'visible' : 'hidden'}`} />
 			<div className='primary-section'>
 				<div className='mobile-toolbar'>
+					<div className='title'>
+						<img src='/handbrake-icon.png' alt='Handbrake Icon' />
+						<h1>HandBrake Web</h1>
+					</div>
 					<button onClick={() => setShowSidebar(!showSidebar)}>
 						<i className='bi-list' />
 					</button>

@@ -56,10 +56,36 @@
 		.mobile-toolbar {
 			position: relative;
 			min-height: 5rem;
+			max-height: 5rem;
 			display: none;
-			// max-width: 100%;
+			min-width: 100%;
+			max-width: 100%;
 
 			background-color: $background-secondary;
+
+			.title {
+				min-width: 100%;
+				max-width: 100%;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				gap: 1rem;
+				// position: relative;
+
+				img {
+					height: 100%;
+					padding: 0.75rem 0;
+					// width: 100%;
+					object-fit: scale-down;
+					// position: absolute;
+					// left: 0;
+				}
+
+				h1 {
+					font-size: 2.25rem;
+					font-weight: 400;
+				}
+			}
 
 			button {
 				position: absolute;
@@ -78,6 +104,8 @@
 
 		.content {
 			flex-grow: 1;
+			// min-width: none;
+			width: 100%;
 			max-height: 100%;
 			// max-width: 100%;
 		}
