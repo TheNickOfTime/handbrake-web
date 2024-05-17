@@ -10,6 +10,7 @@ import Error from './sections/error/error';
 import QueueSection from './sections/queue/queue';
 import WorkersSection from './sections/workers/workers';
 import PresetsSection from './sections/presets/presets';
+import DashboardSection from './sections/dashboard/dashboard';
 
 const routes: RouteObject[] = [
 	{
@@ -19,7 +20,7 @@ const routes: RouteObject[] = [
 		children: [
 			{
 				path: '',
-				element: <QueueSection />,
+				element: <DashboardSection />,
 			},
 			{
 				path: 'queue',

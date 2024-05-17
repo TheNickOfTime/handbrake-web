@@ -12,3 +12,30 @@ $handbrake-yellow: #d09e00;
 $handbrake-green: #508f0b;
 $handbrake-blue: #4853ec;
 $handbrake-magenta: #e64fb4;
+
+$transparent-light-primary: rgba(255, 255, 255, 0.1);
+$transparent-light-secondary: rgba(255, 255, 255, 0.05);
+
+.color-red {
+	color: $handbrake-red;
+}
+
+.color-orange {
+	color: $handbrake-orange;
+}
+
+.color-yellow {
+	color: $handbrake-yellow;
+}
+
+.color-green {
+	color: $handbrake-green;
+}
+
+.color-blue {
+	color: $handbrake-blue;
+}
+
+.color-magenta {
+	color: $handbrake-magenta;
+}

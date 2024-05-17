@@ -1,0 +1,60 @@
+@import '../../style/modules/colors';
+
+#dashboard-section {
+	.sub-section.summary {
+		.summary-info {
+			display: flex;
+			flex-flow: row wrap;
+			gap: 1rem;
+			font-size: 1.75rem;
+
+			.info {
+				min-width: 30%;
+				padding: 1rem;
+				flex-grow: 1;
+				text-align: center;
+				border-radius: 0.75rem;
+				background-color: $transparent-light-primary;
+			}
+		}
+	}
+
+	.table-scroll {
+		max-width: 100%;
+		overflow-x: auto;
+		padding-bottom: 2rem;
+	}
+
+	table {
+		width: 100%;
+
+		tr:hover {
+			background-color: rgba(255, 255, 255, 0.1);
+		}
+
+		th,
+		td {
+			padding: 0.5rem 1rem;
+
+			&.left {
+				text-align: left;
+			}
+
+			&.center {
+				text-align: center;
+			}
+
+			&.right {
+				text-align: right;
+			}
+		}
+
+		th {
+			border-bottom: 0.1rem solid $text-color-tertiary;
+		}
+
+		td {
+			white-space: nowrap;
+		}
+	}
+}
