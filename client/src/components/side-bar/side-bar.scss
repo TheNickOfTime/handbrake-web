@@ -37,11 +37,15 @@
 			padding: 0;
 
 			li {
-				padding: 1rem 2rem;
+				// width: 100%;
 				font-size: 1.75rem;
 				border-bottom: 0.2rem solid $background-primary;
 
 				a {
+					width: 100%;
+					padding: 1rem 2rem;
+
+					display: block;
 					color: $text-color-secondary;
 					text-decoration: none;
 				}
@@ -50,6 +54,10 @@
 					color: $text-color-primary;
 					font-weight: bold;
 					text-decoration: underline;
+				}
+
+				a:hover {
+					background-color: $background-tertiary;
 				}
 			}
 		}
