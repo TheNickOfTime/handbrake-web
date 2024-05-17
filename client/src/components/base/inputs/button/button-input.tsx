@@ -1,7 +1,7 @@
 import './button-input.scss';
 
 type Params = {
-	label: string;
+	label?: string;
 	icon?: string;
 	color?: string;
 	disabled?: boolean;
@@ -12,7 +12,7 @@ export default function ButtonInput({ label, icon, color, disabled = false, onCl
 	return (
 		<button className={`controlled-button ${color}`} onClick={onClick} disabled={disabled}>
 			{icon && <i className={`button-icon bi ${icon}`} />}
-			<span className='button-label'>{label}</span>
+			{label && <span className='button-label'>{label}</span>}
 		</button>
 	);
 }

@@ -89,7 +89,7 @@ export default function CreateJob({ socket, onClose }: Params) {
 						<label htmlFor='preset-select'>Preset:</label>
 						<select id='preset-select' value={preset} onChange={handlePresetChange}>
 							<option value=''>N/A</option>
-							{presets.map((preset) => (
+							{Object.keys(presets).map((preset) => (
 								<option value={preset}>{preset}</option>
 							))}
 						</select>

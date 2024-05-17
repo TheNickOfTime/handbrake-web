@@ -5,12 +5,12 @@ import { AddClient, RemoveClient } from '../scripts/connections';
 import { Client } from '../../types/socket';
 import { GetDirectoryTree } from '../scripts/files';
 import { HandbrakePreset } from '../../types/preset';
-import { AddPreset, GetPresetNames } from '../scripts/presets';
+import { AddPreset, GetPresetNames, GetPresets, RemovePreset } from '../scripts/presets';
 
 const initClient = async (socket: Client) => {
 	const queue = await GetQueue();
 	socket.emit('queue-update', queue);
-	socket.emit('presets-update', GetPresetNames());
+	socket.emit('presets-update', GetPresets());
 };
 
 export default function ClientSocket(io: Server) {
@@ -54,6 +54,10 @@ export default function ClientSocket(io: Server) {
 		// Preset ----------------------------------------------------------------------------------
 		socket.on('add-preset', (preset: HandbrakePreset) => {
 			AddPreset(preset);
+		});
+
+		socket.on('remove-preset', (presetName: string) => {
+			RemovePreset(presetName);
 		});
 	});
 }

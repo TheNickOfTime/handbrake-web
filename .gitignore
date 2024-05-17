@@ -1,6 +1,7 @@
-data/
+/data/
+/presets/
+/video/
+
 node_modules/
-presets/
-video/
 
 handbrake.db

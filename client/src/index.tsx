@@ -9,6 +9,7 @@ import Primary from './pages/primary/primary';
 import Error from './sections/error/error';
 import QueueSection from './sections/queue/queue';
 import WorkersSection from './sections/workers/workers';
+import PresetsSection from './sections/presets/presets';
 
 const routes: RouteObject[] = [
 	{
@@ -27,6 +28,10 @@ const routes: RouteObject[] = [
 			{
 				path: 'workers',
 				element: <WorkersSection />,
+			},
+			{
+				path: 'presets',
+				element: <PresetsSection />,
 			},
 			{
 				path: '*',

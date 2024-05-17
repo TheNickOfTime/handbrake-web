@@ -26,12 +26,17 @@
 	}
 }
 
-.controlled-button:hover {
+.controlled-button:hover:not(:disabled) {
 	opacity: 80%;
+	cursor: pointer;
 }
 
 .controlled-button:disabled {
 	opacity: 50%;
+}
+
+.controlled-button:hover:disabled {
+	cursor: not-allowed;
 }
 
 .controlled-button.red {

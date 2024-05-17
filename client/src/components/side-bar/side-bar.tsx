@@ -23,6 +23,9 @@ export default function SideBar() {
 					<li>
 						<NavLink to='/workers'>Workers</NavLink>
 					</li>
+					<li>
+						<NavLink to='/presets'>Presets</NavLink>
+					</li>
 					{/* <li>
 						<NavLink to='/workers'>Workers</NavLink>
 					</li>
