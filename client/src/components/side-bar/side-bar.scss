@@ -6,14 +6,16 @@
 		position: absolute !important;
 		z-index: 10;
 
+		min-width: 0 !important;
+
 		transition: max-width 0.25s ease-in-out;
 		// transition: background-color 0.25s linear;
 	}
 
 	.side-bar:not(.expanded) {
 		// background-color: transparent;
-		min-width: 0 !important;
 		max-width: 0 !important;
+		// max-width: 0 !important;
 	}
 
 	.side-bar.expanded {
@@ -26,7 +28,7 @@
 .side-bar {
 	// position: relative;
 	height: 100%;
-	// min-width: $sidebar-width;
+	min-width: $sidebar-width;
 	// max-width: $sidebar-width;
 	// max-width: 100px;
 
