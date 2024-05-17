@@ -11,14 +11,14 @@ import { PrimaryOutletContextType } from './primary-context';
 import SideBar from '../../components/side-bar/side-bar';
 
 import './primary.scss';
-import { HandbrakePreset } from '../../../../types/preset';
+import { HandbrakePresetList } from '../../../../types/preset';
 
 export default function Primary() {
 	const [server] = useState('http://localhost:9999/client');
 	const [socket] = useState(io(server, { autoConnect: false }));
 	const [queue, setQueue] = useState<Queue>({});
 	const [queueStatus, setQueueStatus] = useState<QueueStatus>(QueueStatus.Idle);
-	const [presets, setPresets] = useState<{ [index: string]: HandbrakePreset }>({});
+	const [presets, setPresets] = useState<HandbrakePresetList>({});
 	const [connections, setConnections] = useState<ConnectionIDs>({ clients: [], workers: [] });
 	const [showSidebar, setShowSidebar] = useState(false);
 
@@ -41,7 +41,7 @@ export default function Primary() {
 		setQueueStatus(queueStatus);
 	};
 
-	const onPresetsUpdate = (presets: string[]) => {
+	const onPresetsUpdate = (presets: HandbrakePresetList) => {
 		console.log('[client] Available presets have been updated.');
 		setPresets(presets);
 	};

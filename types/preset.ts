@@ -108,3 +108,7 @@ export type HandbrakePreset = {
 		}
 	];
 };
+
+export type HandbrakePresetList = {
+	[index: string]: HandbrakePreset;
+};
