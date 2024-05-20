@@ -1,7 +1,7 @@
 {
 	"name": "handbrake-web",
-	"build": {"dockerfile": "Dockerfile"},
-	"runArgs": ["--name", "handbrake-web"],
+	"build": { "dockerfile": "Dockerfile" },
+	"runArgs": ["--name", "handbrake-web-dev"],
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -11,5 +11,4 @@
 			]
 		}
 	}
-
 }
