@@ -1,10 +1,11 @@
-import { Server } from 'socket.io';
+// import { Server } from 'socket.io';
 import { ReadDataFromFile } from './data';
 import { SetPresets, presetsPath } from './presets';
 import { UpdateQueue } from './queue';
 import { DatabaseConnect } from './database';
+import { Server } from 'http';
 
-export default async function Initialization(io: Server) {
+export default async function Initialization(server: Server) {
 	// JSON ----------------------------------------------------------------------------------------
 	const presets = await ReadDataFromFile(presetsPath);
 	if (presets) {
@@ -16,6 +17,8 @@ export default async function Initialization(io: Server) {
 	await UpdateQueue();
 
 	// Start Server --------------------------------------------------------------------------------
-	io.listen(9999);
-	console.log(`[server] Available at http://localhost:9999`);
+	const port = process.env.SERVER_PORT || 9999;
+	server.listen(port, () => {
+		console.log(`[server] Available at http://localhost:${port}`);
+	});
 }
