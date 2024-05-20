@@ -2,6 +2,7 @@
 /presets/
 /video/
 
+build/
 node_modules/
 
 handbrake.db

@@ -1,12 +1,14 @@
 {
 	"name": "handbrake-web",
 	"version": "0.0.0",
-	"description": "",
-	"main": "index.js",
+	"description": "HandBrake Web",
 	"scripts": {
 		"client": "vite ./client",
 		"server": "nodemon ./server/server.ts --watch server",
-		"worker": "nodemon ./worker/worker.ts --watch worker"
+		"worker": "nodemon ./worker/worker.ts --watch worker",
+		"build-client": "vite build ./client",
+		"build-server": "tsc --project ./server/tsconfig.json",
+		"build-worker": "tsc --project ./worker/tsconfig.json"
 	},
 	"repository": {
 		"type": "git",
@@ -24,16 +26,13 @@
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
 		"react-router-dom": "^6.23.1",
-		"sass": "^1.77.0",
 		"socket.io": "^4.7.5",
 		"socket.io-client": "^4.7.5",
 		"sqlite": "^5.1.1",
-		"sqlite3": "^5.1.7",
-		"ts-node": "^10.9.2",
-		"typescript": "^5.4.5",
-		"vite": "^5.2.11"
+		"sqlite3": "^5.1.7"
 	},
 	"devDependencies": {
+		"@types/express": "^4.17.21",
 		"@types/react": "^18.2.66",
 		"@types/react-dom": "^18.2.22",
 		"@typescript-eslint/eslint-plugin": "^7.2.0",
@@ -43,7 +42,9 @@
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-react-refresh": "^0.4.6",
 		"nodemon": "^3.1.0",
-		"typescript": "^5.2.2",
-		"vite": "^5.2.0"
+		"sass": "^1.77.2",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.4.5",
+		"vite": "^5.2.11"
 	}
 }
