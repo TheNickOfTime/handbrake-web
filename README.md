@@ -25,6 +25,10 @@ HandBrake Web is deployed via docker, and most easily via `docker compose`. The 
     - The client interface will be available at the address & port you configured.
     - The worker(s) will automatically connect to the server and wait for jobs.
 
+#### Recommended Additional Steps
+
+-   Use a reverse proxy (traefik, nginx, etc) to access your interface at a custom url over https.
+
 #### Additional Workers
 
 To run additional workers, simply launch additional worker container instances on different machines by omitting the `handbrake-server` service from the example compose file. **Reminder** - It is recommended to run only one worker instance per machine, as a single worker will very likely push most CPUs to 100% utilization during transcoding.
@@ -56,6 +60,7 @@ exported to .json files to configure transcoding jobs. Exported presets can then
 -   Add Jobs Via Directory - bulk add videos to transcode
 -   Directory Monitoring - for automatic job creation
 -   Preset Creator - create presets directly in the web interface
+-   User Sessions - logging in required to access the web interface
 
 ## Known Issues & Current Limitations
 
@@ -66,3 +71,4 @@ Please see the planned features section, as all of these are intended to be addr
 -   Jobs can only be added one at a time
 -   Jobs can only be created manually via the web interface
 -   Presets have to be created externally and uploaded to HandBrake Web
+-   No security features on the client interface
