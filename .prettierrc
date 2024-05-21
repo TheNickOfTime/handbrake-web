@@ -1,0 +1,12 @@
+{
+  "tabWidth": 4,
+  "useTabs": true,
+  "overrides": [
+    {
+      "files": "*.yaml",
+      "options": {
+        "tabWidth": 2
+      }
+    }
+  ]
+}
