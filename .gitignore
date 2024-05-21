@@ -5,4 +5,5 @@
 build/
 node_modules/
 
+.env
 handbrake.db

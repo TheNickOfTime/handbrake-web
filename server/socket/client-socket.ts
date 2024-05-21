@@ -13,6 +13,7 @@ import { Client } from '../../types/socket';
 import { GetDirectoryTree } from '../scripts/files';
 import { HandbrakePreset } from '../../types/preset';
 import { AddPreset, GetPresetNames, GetPresets, RemovePreset } from '../scripts/presets';
+import { videoPath } from '../scripts/video';
 
 const initClient = async (socket: Client) => {
 	const queue = await GetQueue();
@@ -55,7 +56,7 @@ export default function ClientSocket(io: Server) {
 
 		// Directory -------------------------------------------------------------------------------
 		socket.on('get-directory-tree', () => {
-			const tree = GetDirectoryTree('/workspaces/handbrake-web/video');
+			const tree = GetDirectoryTree(videoPath);
 			socket.emit('get-directory-tree', tree);
 		});
 

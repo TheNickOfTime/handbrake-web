@@ -17,8 +17,9 @@ export default async function Initialization(server: Server) {
 	await UpdateQueue();
 
 	// Start Server --------------------------------------------------------------------------------
-	const port = process.env.SERVER_PORT || 9999;
+	const url = process.env.SERVER_URL || 'http://localhost';
+	const port = 9999;
 	server.listen(port, () => {
-		console.log(`[server] Available at http://localhost:${port}`);
+		console.log(`[server] Available at http://${url}:${port}`);
 	});
 }

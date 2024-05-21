@@ -1,13 +1,16 @@
 import sqlite3 from 'sqlite3';
 import { Database, open } from 'sqlite';
+import path from 'path';
+
+import { dataPath } from './data';
 import { Job, Queue, QueueEntry } from '../../types/queue';
 
-const databasePath = './handbrake.db';
+const databasePath = path.join(dataPath, 'handbrake.db');
 
 export let database: null | Database<sqlite3.Database, sqlite3.Statement> = null;
 
 async function InitializeDatabase(db: Database<sqlite3.Database, sqlite3.Statement>) {
-	console.log(`[database] Initializing database...`);
+	console.log(`[database] Initializing database at '${databasePath}'...`);
 
 	await db.exec('CREATE TABLE queue(id TEXT NOT NULL, job TEXT NOT NULL, PRIMARY KEY (id))');
 	// await db.exec('CREATE TABLE presets(id TEXT NOT NULL, preset TEXT NOT NULL, PRIMARY KEY (id))');
@@ -25,7 +28,9 @@ export async function DatabaseConnect() {
 
 	try {
 		await db.get('SELECT * FROM queue');
-		console.log(`[server] [database] The database has already been initialized.`);
+		console.log(
+			`[server] [database] The database has already been initialized at '${databasePath}'.`
+		);
 	} catch (err) {
 		InitializeDatabase(db);
 	}
@@ -45,11 +50,11 @@ export async function GetQueueFromDatabase(): Promise<Queue | null> {
 				prev[curr.id] = curr.job;
 				return prev;
 			}, {});
-		console.log(
-			`[server] [database] Retrieved ${
-				Object.keys(result!).length
-			} queue jobs from the database.`
-		);
+		// console.log(
+		// 	`[server] [database] Retrieved ${
+		// 		Object.keys(result!).length
+		// 	} queue jobs from the database.`
+		// );
 		return result;
 	} catch (err) {
 		console.error(`[database] [error] Could not get jobs from the queue table.`);

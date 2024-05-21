@@ -26,6 +26,8 @@ RUN npm install
 # Default environment variables & ports
 EXPOSE 9999
 ENV HANDBRAKE_MODE=server
+ENV DATA_PATH=/data
+ENV VIDEO_PATH=/video
 
 # Start application
 CMD ./start.sh

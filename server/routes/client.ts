@@ -2,7 +2,7 @@ import express, { Express } from 'express';
 import path from 'path';
 
 export default function ClientRoutes(app: Express) {
-	const clientBuildPath = path.join(__dirname, '../../build/client');
+	const clientBuildPath = path.join('/handbrake-web/client');
 	const isProduction = process.env.NODE_ENV == 'production';
 
 	if (isProduction) {
