@@ -3,7 +3,7 @@ import { Socket } from 'socket.io-client';
 import { Job, QueueEntry } from '../../types/queue';
 import { TranscodeStage, TranscodeStatus, TranscodeStatusUpdate } from '../../types/transcode';
 import fs from 'fs';
-import { HandbrakeJSONOutput, Scanning, WorkDone, Working } from '../../types/handbrake';
+import { HandbrakeJSONOutput, Muxing, Scanning, WorkDone, Working } from '../../types/handbrake';
 
 const writePresetToFile = (preset: object) => {
 	const presetString = JSON.stringify(preset);
@@ -21,7 +21,7 @@ export default function Transcode(queueEntry: QueueEntry, socket: Socket) {
 
 	const presetName = queueEntry.job.preset.PresetList[0].PresetName;
 
-	const handbrake = spawn('handbrake', [
+	const handbrake = spawn('HandBrakeCLI', [
 		'--preset-import-file',
 		'./presets/preset.json',
 		'--preset',
@@ -51,7 +51,7 @@ export default function Transcode(queueEntry: QueueEntry, socket: Socket) {
 
 			switch (outputKind) {
 				case 'Version':
-					// console.log('Version: ', outputJSON);
+					console.log('Version: ', outputJSON);
 					break;
 				case 'Progress':
 					switch (outputJSON['State']) {
@@ -82,6 +82,11 @@ export default function Transcode(queueEntry: QueueEntry, socket: Socket) {
 							socket.emit('transcoding', workingUpdate);
 							console.log(`Transcoding: ${(working.Progress * 100).toFixed(2)} %`);
 							break;
+						case 'MUXING':
+							const muxing: Muxing = outputJSON.Muxing!;
+
+							console.log(`Muxing: ${(muxing.Progress * 100).toFixed(2)} %`);
+							break;
 						case 'WORKDONE':
 							const workDone: WorkDone = outputJSON.WorkDone!;
 
@@ -111,36 +116,6 @@ export default function Transcode(queueEntry: QueueEntry, socket: Socket) {
 	handbrake.stderr.on('data', (data) => {
 		const output: string = data.toString();
 
-		// const outputMatches: { [index: string]: RegExp } = {
-		// 	'json-job': /^.+json job:\n/,
-		// };
-
-		// Object.keys(outputMatches).forEach((matchKey) => {
-		// 	const match = output.match(outputMatches[matchKey]);
-		// 	if (match) {
-		// 		switch (matchKey) {
-		// 			case 'json-job':
-		// 				const jsonJob = JSON.parse(output.replace(outputMatches[matchKey], ''));
-		// 				// console.log(jsonJob);
-		// 				break;
-		// 			default:
-		// 				break;
-		// 		}
-		// 	}
-		// });
-
 		console.error('[error] ', output);
 	});
-
-	// handbrake.on('close', () => {
-	// 	const update: TranscodeStatusUpdate = {
-	// 		id: queueEntry.id,
-	// 		status: {
-	// 			stage: TranscodeStage.Finished,
-	// 			info: { percentage: '100.00%' },
-	// 		},
-	// 	};
-	// 	socket.emit('transcoding', update);
-	// 	socket.emit('transcode-finished');
-	// });
 }

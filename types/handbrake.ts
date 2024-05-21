@@ -2,6 +2,7 @@ export type HandbrakeJSONOutput = {
 	State: string;
 	Scanning?: Scanning;
 	Working?: Working;
+	Muxing?: Muxing;
 	WorkDone?: WorkDone;
 };
 
@@ -27,6 +28,10 @@ export type Working = {
 	RateAvg: number;
 	Seconds: number;
 	SequenceID: number;
+};
+
+export type Muxing = {
+	Progress: number;
 };
 
 export type WorkDone = {
