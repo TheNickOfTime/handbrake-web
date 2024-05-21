@@ -3,18 +3,22 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { io } from 'socket.io-client';
+// import 'dotenv/config';
 
 import { Queue, QueueStatus } from '../../../../types/queue';
 import { ConnectionIDs } from '../../../../types/socket';
+import { HandbrakePresetList } from '../../../../types/preset';
 import { PrimaryOutletContextType } from './primary-context';
 
 import SideBar from '../../components/side-bar/side-bar';
 
 import './primary.scss';
-import { HandbrakePresetList } from '../../../../types/preset';
 
 export default function Primary() {
-	const [server] = useState('http://localhost:9999/client');
+	const serverURL = import.meta.env.PROD ? window.location.href : 'http://localhost:9999';
+	const serverSocketPath = 'client';
+	const server = `${serverURL}${serverSocketPath}`;
+
 	const [socket] = useState(io(server, { autoConnect: false }));
 	const [queue, setQueue] = useState<Queue>({});
 	const [queueStatus, setQueueStatus] = useState<QueueStatus>(QueueStatus.Idle);
@@ -22,7 +26,9 @@ export default function Primary() {
 	const [connections, setConnections] = useState<ConnectionIDs>({ clients: [], workers: [] });
 	const [showSidebar, setShowSidebar] = useState(false);
 
+	// Connect to server -------------------------------------------------------
 	useEffect(() => {
+		console.log(`[client] Connecting to '${server}...'`);
 		socket.connect();
 
 		return () => {
@@ -30,6 +36,33 @@ export default function Primary() {
 		};
 	}, []);
 
+	// Error event listeners ---------------------------------------------------
+	const onConnect = () => {
+		console.log(`[client] Connection established to '${server}'`);
+	};
+
+	const onConnectError = (error: Error) => {
+		console.error(`[client] Error has occurred connecting to '${server}':`);
+		console.error(error);
+	};
+
+	const onDisconnect = (reason: string) => {
+		console.log(`[client] Disconnected from '${server}' because ${reason}`);
+	};
+
+	useEffect(() => {
+		socket.on('connect', onConnect);
+		socket.on('connect_error', onConnectError);
+		socket.on('disconnect', onDisconnect);
+
+		return () => {
+			socket.off('connect', onConnect);
+			socket.off('connect_error', onConnectError);
+			socket.off('disconnect', onDisconnect);
+		};
+	});
+
+	// Server event listeners --------------------------------------------------
 	const onQueueUpdate = (queue: Queue) => {
 		console.log(`[client] The queue has been updated.`);
 		setQueue(queue);

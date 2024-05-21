@@ -6,8 +6,10 @@ export default defineConfig({
 	plugins: [react()],
 	server: {
 		host: '127.0.0.1',
+		port: process.env.CLIENT_PORT ? parseInt(process.env.CLIENT_PORT) : 5173,
 	},
 	build: {
 		outDir: '../build/client',
+		emptyOutDir: true,
 	},
 });
