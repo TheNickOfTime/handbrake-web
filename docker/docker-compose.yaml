@@ -1,0 +1,25 @@
+services:
+  handbrake-server:
+    image: thenickoftime/handbrake-web:latest
+    container_name: handbrake-web-server
+    environment:
+      - HANDBRAKE_MODE=server
+      - SERVER_URL=http://192.168.10.2
+      - SERVER_PORT=9999
+    ports:
+      - 9998:9999
+    volumes:
+      - ./data/data:/data
+      - ./data/video:/video
+
+  handbrake-worker:
+    image: thenickoftime/handbrake-web:latest
+    container_name: handbrake-web-worker
+    environment:
+      - HANDBRAKE_MODE=worker
+      - SERVER_URL=http://192.168.10.2
+      - SERVER_PORT=9998
+    volumes:
+      - ./data/video:/video
+    depends_on:
+      - handbrake-server
