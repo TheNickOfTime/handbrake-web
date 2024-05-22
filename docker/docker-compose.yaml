@@ -1,6 +1,6 @@
 services:
   handbrake-server:
-    image: thenickoftime/handbrake-web:latest
+    image: ghcr.io/thenickoftime/handbrake-web:latest
     container_name: handbrake-web-server
     environment:
       - HANDBRAKE_MODE=server
@@ -11,7 +11,7 @@ services:
       - /path/to/your/media:/video
 
   handbrake-worker:
-    image: thenickoftime/handbrake-web:latest
+    image: ghcr.io/thenickoftime/handbrake-web:latest
     container_name: handbrake-web-worker
     environment:
       - HANDBRAKE_MODE=worker
