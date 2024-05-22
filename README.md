@@ -1,5 +1,9 @@
 # HandBrake Web
 
+<p align='center'>
+	<img src='./images/readme/readme-thumb.png' width=540>
+</p>
+
 HandBrake Web is a program for interfacing with handbrake across multiple machines via a web browser. It consists of two components: the **server** and one or more **worker**(s). **_Warning_** - This application is still under heavy development, use at your own risk, to learn more please see the [Known Issues & Limitations](#planned-features-not-yet-implemented) section.
 
 ### Server
