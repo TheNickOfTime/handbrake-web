@@ -1,4 +1,4 @@
-import { Client, Connections, Worker } from '../../types/socket';
+import { Client, Connections, Worker } from "../../types/socket";
 
 export const connections: Connections = {
 	clients: [],
@@ -45,10 +45,13 @@ export function EmitToAllConnections(event: string, data: any) {
 const updateConnections = () => {
 	// console.log(connections);
 	const clients = connections.clients.map((client) => client.id);
-	const workers = connections.workers.map((worker) => worker.id);
+	const workers = connections.workers.map((worker) => ({
+		workerID: worker.handshake.query["workerID"],
+		connectionID: worker.id,
+	}));
 	const data = {
 		clients: clients,
 		workers: workers,
 	};
-	EmitToAllClients('connections-update', data);
+	EmitToAllClients("connections-update", data);
 };

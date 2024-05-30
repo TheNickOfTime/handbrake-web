@@ -17,8 +17,8 @@ export default function WorkersSection() {
 	const { connections, queue } = useOutletContext<PrimaryOutletContextType>();
 
 	const workerInfo = connections.workers.reduce((prev: WorkerInfo, cur) => {
-		const job = Object.values(queue).find((job) => job.worker == cur);
-		prev[cur] = {
+		const job = Object.values(queue).find((job) => job.worker == cur.workerID);
+		prev[cur.workerID] = {
 			status: job ? 'Working' : 'Idle',
 			job: job ? job.input : 'N/A',
 			progress: job ? job.status.info.percentage.replace(' %', '') : 'N/A',
@@ -86,26 +86,28 @@ export default function WorkersSection() {
 						</thead>
 						<tbody>
 							{connections.workers.map((worker) => (
-								<tr key={worker} id={worker}>
-									<td className='id'>{worker}</td>
+								<tr key={worker.workerID} id={worker.workerID}>
+									<td className='id'>{worker.workerID}</td>
 									<td
 										className={
-											workerInfo[worker].status == 'Idle'
+											workerInfo[worker.workerID].status == 'Idle'
 												? 'status idle'
 												: 'status working'
 										}
 									>
 										<i className='bi bi-circle-fill' />
-										<span>{workerInfo[worker].status}</span>
+										<span>{workerInfo[worker.workerID].status}</span>
 									</td>
-									<td className='job'>{workerInfo[worker].job}</td>
+									<td className='job'>{workerInfo[worker.workerID].job}</td>
 									<td className='progress'>
-										{workerInfo[worker].job != 'N/A' ? (
+										{workerInfo[worker.workerID].job != 'N/A' ? (
 											<ProgressBar
-												percentage={parseFloat(workerInfo[worker].progress)}
+												percentage={parseFloat(
+													workerInfo[worker.workerID].progress
+												)}
 											/>
 										) : (
-											workerInfo[worker].progress
+											workerInfo[worker.workerID].progress
 										)}
 									</td>
 								</tr>

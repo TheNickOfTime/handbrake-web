@@ -101,21 +101,23 @@ export default function DashboardSection() {
 					<table>
 						<thead>
 							<tr>
-								<th>ID</th>
+								<th>Worker ID</th>
+								<th>Connection ID</th>
 								<th>Status</th>
 							</tr>
 						</thead>
 						<tbody>
 							{connections.workers.map((worker) => {
 								const status = Object.values(queue).find(
-									(job) => job.worker == worker
+									(job) => job.worker == worker.workerID
 								)
 									? 'Working'
 									: 'Idle';
 
 								return (
 									<tr key={`worker-${worker}`}>
-										<td>{worker}</td>
+										<td>{worker.workerID}</td>
+										<td>{worker.connectionID}</td>
 										<td
 											className={`center ${
 												status == 'Working' ? 'color-blue' : 'color-yellow'

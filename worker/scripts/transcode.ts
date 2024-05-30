@@ -3,13 +3,22 @@ import { Socket } from 'socket.io-client';
 import { Job, QueueEntry } from '../../types/queue';
 import { TranscodeStage, TranscodeStatus, TranscodeStatusUpdate } from '../../types/transcode';
 import fs from 'fs';
+import path from 'path';
 import { HandbrakeJSONOutput, Muxing, Scanning, WorkDone, Working } from '../../types/handbrake';
 
 const writePresetToFile = (preset: object) => {
 	const presetString = JSON.stringify(preset);
-	const presetFile = fs.writeFile('presets/preset.json', presetString, (err) => {
+	const presetDir = './temp';
+	const presetName = 'preset.json';
+
+	if (!fs.existsSync(presetDir)) {
+		fs.mkdirSync(presetDir);
+	}
+
+	const presetFile = fs.writeFile(path.join(presetDir, presetName), presetString, (err) => {
 		if (err) {
 			console.error('[worker] Preset failed to write to file.');
+			console.error(err);
 		} else {
 			console.log('[worker] Sucessfully wrote preset to file.');
 		}
@@ -23,7 +32,7 @@ export default function Transcode(queueEntry: QueueEntry, socket: Socket) {
 
 	const handbrake = spawn('HandBrakeCLI', [
 		'--preset-import-file',
-		'./presets/preset.json',
+		'./temp/preset.json',
 		'--preset',
 		presetName,
 		'-i',

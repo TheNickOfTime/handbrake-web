@@ -5,20 +5,21 @@ import { UpdateJob } from '../scripts/queue';
 
 export default function WorkerSocket(io: Server) {
 	io.of('/worker').on('connection', (socket) => {
-		console.log(`[server] Worker '${socket.id}' has connected.`);
+		const workerID = socket.handshake.query['workerID'];
+
+		console.log(`[server] Worker '${workerID}' has connected with ID '${socket.id}'.`);
 		AddWorker(socket);
 
 		socket.on('disconnect', () => {
-			console.log(`[server] Worker '${socket.id}' has disconnected.`);
+			console.log(`[server] Worker '${workerID}' with ID '${socket.id}' has disconnected.`);
 			RemoveWorker(socket);
 		});
 
 		socket.on('transcoding', (data: TranscodeStatusUpdate) => {
-			// console.log(data);
 			console.log(
-				`[server] Worker '${socket.id}' is ${TranscodeStage[data.status.stage]} at ${
-					data.status.info.percentage
-				}`
+				`[server] Worker '${workerID}' with ID '${socket.id}' is ${
+					TranscodeStage[data.status.stage]
+				}:\n percentage: ${data.status.info.percentage}`
 			);
 
 			UpdateJob(data);

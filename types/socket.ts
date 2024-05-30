@@ -11,5 +11,8 @@ export type Connections = {
 
 export type ConnectionIDs = {
 	clients: string[];
-	workers: string[];
+	workers: {
+		workerID: string;
+		connectionID: string;
+	}[];
 };

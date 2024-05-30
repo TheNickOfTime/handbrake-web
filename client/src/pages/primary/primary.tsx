@@ -15,7 +15,7 @@ import SideBar from '../../components/side-bar/side-bar';
 import './primary.scss';
 
 export default function Primary() {
-	const serverURL = import.meta.env.PROD ? window.location.href : 'http://localhost:9999';
+	const serverURL = import.meta.env.PROD ? window.location.href : 'http://localhost:9999/';
 	const serverSocketPath = 'client';
 	const server = `${serverURL}${serverSocketPath}`;
 
@@ -23,7 +23,10 @@ export default function Primary() {
 	const [queue, setQueue] = useState<Queue>({});
 	const [queueStatus, setQueueStatus] = useState<QueueStatus>(QueueStatus.Idle);
 	const [presets, setPresets] = useState<HandbrakePresetList>({});
-	const [connections, setConnections] = useState<ConnectionIDs>({ clients: [], workers: [] });
+	const [connections, setConnections] = useState<ConnectionIDs>({
+		clients: [],
+		workers: [],
+	});
 	const [showSidebar, setShowSidebar] = useState(false);
 
 	// Connect to server -------------------------------------------------------

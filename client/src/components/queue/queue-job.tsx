@@ -26,6 +26,9 @@ export default function QueueJob({ data, index }: Params) {
 				<QueueJobSection label='Preset'>
 					<div>{data.preset.PresetList[0].PresetName}</div>
 				</QueueJobSection>
+				<QueueJobSection label='Worker'>
+					<div>{data.worker ? data.worker : 'N/A'}</div>
+				</QueueJobSection>
 				<QueueJobSection label='Status'>
 					<div>{TranscodeStage[data.status.stage]}</div>
 				</QueueJobSection>

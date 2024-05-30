@@ -31,9 +31,10 @@ export async function SearchForWorker() {
 		const busyWorkers = Object.values(queue)
 			.filter((job) => job.worker != null)
 			.map((job) => job.worker);
-		const availableWorkers = connections.workers.filter(
-			(worker) => !busyWorkers.includes(worker.id)
-		);
+		const availableWorkers = connections.workers.filter((worker) => {
+			const id = worker.handshake.query['workerID'] as string;
+			return !busyWorkers.includes(id);
+		});
 
 		if (availableWorkers.length > 0) {
 			const validJobs = Object.keys(queue).filter(
@@ -41,10 +42,12 @@ export async function SearchForWorker() {
 			);
 			const selectedJobID = validJobs[0];
 			const selectedWorker = availableWorkers[0];
-			console.log(`[server] Found free worker '${selectedWorker}'.`);
+			console.log(
+				`[server] Found free worker '${selectedWorker.handshake.query['workerID']}'.`
+			);
 
 			const selectedJob = queue[selectedJobID];
-			selectedJob.worker = selectedWorker.id;
+			selectedJob.worker = selectedWorker.handshake.query['workerID'] as string;
 			UpdateJobInDatabase(selectedJobID, selectedJob);
 
 			// EmitToAllClients('queue-update', queue);

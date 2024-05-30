@@ -1,12 +1,15 @@
 {
-  "tabWidth": 4,
-  "useTabs": true,
-  "overrides": [
-    {
-      "files": "*.yaml",
-      "options": {
-        "tabWidth": 2
-      }
-    }
-  ]
+	"tabWidth": 4,
+	"useTabs": true,
+	"singleQuote": true,
+	"jsxSingleQuote": true,
+	"printWidth": 100,
+	"overrides": [
+		{
+			"files": "*.yaml",
+			"options": {
+				"tabWidth": 2
+			}
+		}
+	]
 }
