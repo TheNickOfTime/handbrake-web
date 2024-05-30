@@ -1,0 +1,38 @@
+@import '../../../style/modules/colors';
+
+.section#workers {
+	.sub-section#summary {
+		.summary-info {
+			display: flex;
+			flex-flow: row wrap;
+			justify-content: space-between;
+			gap: 1rem;
+
+			font-size: 2rem;
+		}
+
+		.info {
+			padding: 1rem 2rem;
+			flex-grow: 1;
+			border-radius: 1rem;
+			background-color: hsla(0, 0%, 100%, 0.1);
+			text-align: center;
+		}
+
+		.info.total {
+			color: $handbrake-blue;
+		}
+
+		.info.idle {
+			color: $handbrake-yellow;
+		}
+
+		.info.active {
+			color: $handbrake-green;
+		}
+
+		.info.jobs {
+			color: $text-color-tertiary;
+		}
+	}
+}

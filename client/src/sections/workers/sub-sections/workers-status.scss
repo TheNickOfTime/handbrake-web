@@ -1,0 +1,50 @@
+@import '../../../style/modules/colors';
+
+.section#workers {
+	.sub-section#status {
+		.table-scroll {
+			overflow-x: auto !important;
+			padding-bottom: 1rem;
+		}
+
+		.workers-table {
+			width: 100%;
+			font-size: 1.75rem;
+
+			thead {
+				th {
+					border-bottom: 0.1rem solid $text-color-tertiary;
+				}
+			}
+
+			tbody {
+				tr:hover {
+					background-color: hsla(0, 0%, 100%, 0.1);
+				}
+				td {
+					padding: 0.5rem 2rem 0.5rem 0.5rem;
+					vertical-align: middle;
+					white-space: nowrap;
+				}
+
+				.status {
+					.bi {
+						vertical-align: middle;
+						font-size: 0.5rem;
+						margin-right: 0.5rem;
+					}
+				}
+
+				.status.idle {
+					color: $handbrake-yellow;
+				}
+
+				.status,
+				.job,
+				.progress {
+					text-align: right;
+				}
+			}
+		}
+	}
+}
