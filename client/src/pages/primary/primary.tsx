@@ -10,7 +10,7 @@ import { ConnectionIDs } from '../../../../types/socket';
 import { HandbrakePresetList } from '../../../../types/preset';
 import { PrimaryOutletContextType } from './primary-context';
 
-import SideBar from '../../components/side-bar/side-bar';
+import SideBar from '../../components/modules/side-bar/side-bar';
 
 import './primary.scss';
 

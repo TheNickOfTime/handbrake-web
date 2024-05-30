@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { PrimaryOutletContextType } from '../../pages/primary/primary-context';
 import Section from '../../components/section/section';
-import UploadPreset from '../../components/upload-preset/upload-preset';
+import UploadPreset from '../../components/overlays/upload-preset/upload-preset';
 import PresetsButtons from './sub-sections/presets-buttons';
 import PresetsList from './sub-sections/presets-list';
 import './presets.scss';

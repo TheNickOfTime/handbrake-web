@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import OverlayWindow from '../base/overlay-window/overlay-window';
-import './upload-preset.scss';
-import { HandbrakePreset } from '../../../../types/preset';
 import { Socket } from 'socket.io-client';
-import ButtonInput from '../base/inputs/button/button-input';
+import OverlayWindow from '../../base/overlay-window/overlay-window';
+import { HandbrakePreset } from '../../../../../types/preset';
+import ButtonInput from '../../base/inputs/button/button-input';
+import './upload-preset.scss';
 
 type Params = {
 	socket: Socket;

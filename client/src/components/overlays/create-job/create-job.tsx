@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
 
-import { PrimaryOutletContextType } from '../../pages/primary/primary-context';
-import PathInput from '../base/inputs/path/path-input';
-import ButtonInput from '../base/inputs/button/button-input';
+import { PrimaryOutletContextType } from '../../../pages/primary/primary-context';
+import PathInput from '../../base/inputs/path/path-input';
+import ButtonInput from '../../base/inputs/button/button-input';
+import { QueueRequest } from '../../../../../types/queue';
 import './create-job.scss';
-import { QueueRequest } from '../../../../types/queue';
 
 type Params = {
 	socket: Socket;

@@ -1,4 +1,4 @@
-import ButtonInput from '../../base/inputs/button/button-input';
+import ButtonInput from '../../../base/inputs/button/button-input';
 
 type Params = {
 	selectedFile: string;

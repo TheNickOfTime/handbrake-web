@@ -1,6 +1,6 @@
 import { Queue } from '../../../../../types/queue';
 import ButtonInput from '../../../components/base/inputs/button/button-input';
-import QueueJob from '../../../components/queue/queue-job';
+import QueueJob from '../components/queue-job';
 import SubSection from '../../../components/section/sub-section';
 import './queue-jobs.scss';
 

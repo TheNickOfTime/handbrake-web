@@ -1,5 +1,5 @@
 import { DirectoryTree } from 'directory-tree';
-import FileBrowser from '../../../file-browser/file-browser';
+import FileBrowser from '../../../modules/file-browser/file-browser';
 import ButtonInput from '../button/button-input';
 import './path-input.scss';
 import { useState } from 'react';

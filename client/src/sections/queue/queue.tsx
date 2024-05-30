@@ -4,7 +4,7 @@ import { PrimaryOutletContextType } from '../../pages/primary/primary-context';
 import Section from '../../components/section/section';
 import QueueStatus from './sub-sections/queue-status';
 import QueueJobs from './sub-sections/queue-jobs';
-import CreateJob from '../../components/create-job/create-job';
+import CreateJob from '../../components/overlays/create-job/create-job';
 import './queue.scss';
 
 export default function QueueSection() {

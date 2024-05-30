@@ -1,6 +1,6 @@
-import { Job } from '../../../../types/queue';
-import { TranscodeStage } from '../../../../types/transcode';
-import ProgressBar from '../base/progress/progress-bar';
+import { Job } from '../../../../../types/queue';
+import { TranscodeStage } from '../../../../../types/transcode';
+import ProgressBar from '../../../components/base/progress/progress-bar';
 import QueueJobSection from './queue-job-section';
 import './queue-job.scss';
 
