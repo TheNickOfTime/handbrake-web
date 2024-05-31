@@ -1,0 +1,35 @@
+@import '../../../../style/modules/colors';
+@import '../../../../style/modules/font';
+
+.button-group {
+	width: 100%;
+	margin-bottom: 3rem;
+	overflow: hidden;
+	display: flex;
+
+	border-radius: 1rem;
+	border: 0.1rem solid $text-color-primary;
+
+	button {
+		width: 100%;
+		padding: 1rem;
+
+		font-size: 1.75rem;
+		font-family: $font-family-primary;
+		color: $text-color-primary;
+
+		// border: 0.1rem solid $text-color-primary;
+		border: none;
+		background-color: transparent;
+
+		&.selected {
+			background-color: $transparent-light-secondary;
+			text-decoration: underline;
+		}
+
+		&:hover {
+			cursor: pointer;
+			background-color: $transparent-light-primary;
+		}
+	}
+}
