@@ -33,7 +33,13 @@ export default function PathInput({ id, label, tree, mode, value, onConfirm }: P
 						{label}
 					</label>
 				)}
-				<input className='input-path-text' id={id} type='text' value={value} disabled />
+				<input
+					className='input-path-text form-item'
+					id={id}
+					type='text'
+					value={value}
+					disabled
+				/>
 				<ButtonInput
 					label={showTree ? 'Cancel' : 'Browse'}
 					color='blue'

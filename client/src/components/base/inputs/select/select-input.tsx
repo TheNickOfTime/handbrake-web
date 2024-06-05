@@ -20,7 +20,12 @@ export default function SelectInput({ id, label, value, setValue, onChange, chil
 	return (
 		<div className='select-input'>
 			{label && <label htmlFor={id}>{label.trimEnd()}</label>}
-			<select id={id} value={value ? value : 'N/A'} onChange={handleChange}>
+			<select
+				className='form-item'
+				id={id}
+				value={value ? value : 'N/A'}
+				onChange={handleChange}
+			>
 				{children}
 			</select>
 		</div>

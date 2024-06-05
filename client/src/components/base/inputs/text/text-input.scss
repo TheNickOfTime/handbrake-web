@@ -13,15 +13,5 @@
 
 	input[type='text'] {
 		flex-grow: 1;
-		padding: 0.5rem 1rem;
-
-		font-family: $font-family-primary;
-		font-size: 1.5rem;
-
-		border: 0.1rem solid $text-color-primary;
-		border-radius: 0.75rem;
-
-		background-color: transparent;
-		color: $text-color-primary;
 	}
 }

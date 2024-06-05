@@ -5,11 +5,17 @@
 	padding: 0.5rem 1rem;
 
 	font-family: $font-family-primary;
+	font-size: 1.5rem;
 
 	border-radius: 0.75rem;
 	border: 0.1rem solid $text-color-primary;
 
-	// background-color: red;
+	background-color: transparent;
+	color: $text-color-primary;
+
+	&:disabled {
+		color: $text-color-disabled;
+	}
 
 	&:empty::after {
 		content: '\200b';

@@ -12,25 +12,8 @@
 		align-items: center;
 		gap: 1rem;
 
-		// .input-label {
-		// 	font-size: 1.75rem;
-		// }
-
 		.input-path-text {
-			padding: 0.5rem 1rem;
-			// height: 3rem;
 			flex-grow: 1;
-
-			font-family: $font-family-primary;
-			font-size: 1.5rem;
-
-			border-radius: 0.75rem;
-			border: 0.1rem solid $text-color-primary;
-		}
-
-		.input-path-text:disabled {
-			background-color: transparent;
-			color: $text-color-tertiary;
 		}
 	}
 

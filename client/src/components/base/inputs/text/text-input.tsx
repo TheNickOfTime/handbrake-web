@@ -27,7 +27,14 @@ export default function TextInput({
 	return (
 		<div className='text-input'>
 			{label && <label htmlFor={id}>{label.trimEnd()}</label>}
-			<input id={id} type='text' value={value} onChange={handleChange} disabled={disabled} />
+			<input
+				className='form-item'
+				id={id}
+				type='text'
+				value={value}
+				onChange={handleChange}
+				disabled={disabled}
+			/>
 		</div>
 	);
 }
