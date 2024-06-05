@@ -3,40 +3,76 @@ import { useState } from 'react';
 import { DirectoryTree } from 'directory-tree';
 
 import { FileBrowserContext } from './file-browser-context';
-import FileBrowserToolbar from './components/file-browser-toolbar';
-import FileBrowserBody from './components/file-browser-body';
+import { getCurrentPathTree } from './file-browser-utils';
+import { FileBrowserMode } from '../../../../../types/file-browser';
 import './file-browser.scss';
-import FileBrowserSelection from './components/file-browser-selection';
+import ButtonInput from '../../base/inputs/button/button-input';
+import FileBrowserBody from './components/file-browser-body';
 
 type Params = {
 	tree: DirectoryTree;
-	onConfirm: (file: string) => void;
+	mode: FileBrowserMode;
+	onConfirm: (path: string) => void;
 };
 
-export default function FileBrowser({ tree, onConfirm }: Params) {
-	// const [directoryTree, setDirectoryTree] = useState<null | DirectoryTree>(null);
+export default function FileBrowser({ tree, mode, onConfirm }: Params) {
 	const [basePath] = useState(tree.path);
 	const [basePathName] = useState(tree.name);
 	const [currentPath, setCurrentPath] = useState(tree.path);
-	const [selectedFile, setSelectedFile] = useState('N/A');
+	const [selectedPath, setSelectedPath] = useState<string | undefined>();
 
 	const context = {
 		basePath: basePath,
 		basePathName: basePathName,
 	};
 
+	const currentTree = getCurrentPathTree(currentPath, basePath, tree);
+	const parentPath = currentPath.replace(new RegExp(`/${currentTree.name}$`), '');
+
+	const selectedFileLabel =
+		mode == FileBrowserMode.SingleFile
+			? 'Selected File:'
+			: mode == FileBrowserMode.Directory
+			? 'Selected Directory:'
+			: '';
+
+	const handleConfirmButton = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		event.preventDefault();
+		onConfirm(selectedPath!);
+	};
+
+	// const handleFileDoubleClick = () => {
+	// 	onConfirm(selectedPaths);
+	// }
+
 	return (
-		<div className='file-browser bg'>
+		<div className='file-browser'>
 			<FileBrowserContext.Provider value={context}>
-				<div>
-					<FileBrowserToolbar path={currentPath} />
+				<div className='file-browser-header'>{currentPath}</div>
+				<div className='file-browser-body'>
 					<FileBrowserBody
-						tree={tree}
-						currentPath={currentPath}
+						tree={currentTree}
+						mode={mode}
+						parentPath={parentPath}
+						isSubdirectory={currentPath != basePath}
 						setCurrentPath={setCurrentPath}
-						setSelectedFile={setSelectedFile}
+						selectedPath={selectedPath}
+						setSelectedPath={setSelectedPath}
 					/>
-					<FileBrowserSelection selectedFile={selectedFile} onConfirm={onConfirm} />
+				</div>
+				<div className='file-browser-footer'>
+					<div className='selected-file'>
+						<span className='selected-file-label'>{selectedFileLabel}</span>
+						<span className='selected-file-path'>
+							{selectedPath ? selectedPath : 'N/A'}
+						</span>
+						<ButtonInput
+							label='Confirm'
+							color='green'
+							onClick={handleConfirmButton}
+							disabled={selectedPath == undefined}
+						/>
+					</div>
 				</div>
 			</FileBrowserContext.Provider>
 		</div>

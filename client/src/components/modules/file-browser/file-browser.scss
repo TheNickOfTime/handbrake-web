@@ -8,7 +8,7 @@
 	border: 0.2rem solid $background-primary;
 }
 
-.file-browser-toolbar {
+.file-browser-header {
 	padding: 0.5rem 1rem;
 
 	background-color: $background-primary;
@@ -16,52 +16,63 @@
 
 .file-browser-body {
 	padding: 1rem;
+
+	.directory-item {
+		width: 100%;
+		padding: 0.5rem 0.75rem;
+		display: block;
+
+		border: none;
+		border-bottom: 0.1rem solid $background-primary;
+		background-color: transparent;
+		color: $text-color-primary;
+
+		font-size: 1.5rem;
+		text-align: left;
+		// outline: none;
+
+		.icon {
+			margin-right: 1rem;
+			display: inline;
+			vertical-align: middle;
+			font-size: 1.75rem;
+		}
+
+		.label {
+			display: inline;
+			vertical-align: middle;
+		}
+
+		&:hover {
+			background-color: $transparent-light-primary;
+			cursor: pointer;
+		}
+
+		&:active,
+		&.selected {
+			background-color: $transparent-light-secondary;
+		}
+	}
 }
 
-.file-browser-selection {
+.file-browser-footer {
 	padding: 0.5rem 1rem;
-	margin-top: 0.5rem;
-	margin-bottom: 1rem;
-
-	display: flex;
-	align-items: center;
-	gap: 1rem;
 
 	.selected-file {
-		// min-height: 1rem;
-		flex-grow: 1;
-		border-radius: 0.5rem;
-		background-color: hsla(0, 0%, 100%, 0.1);
-		padding: 0.5rem 1rem;
-		font-family: $font-family-primary;
-		// font-size: 2rem;
+		display: flex;
+		flex-flow: row nowrap;
+		align-items: center;
+		gap: 1rem;
+
+		.selected-file-label {
+			white-space: nowrap;
+		}
+
+		.selected-file-path {
+			flex-grow: 1;
+			padding: 0.5rem 1rem;
+			border-radius: 0.75rem;
+			background-color: $transparent-light-primary;
+		}
 	}
-}
-
-.directory-item {
-	width: 100%;
-	padding: 0.5rem 0.75rem;
-	display: block;
-
-	border: none;
-	border-bottom: 0.1rem solid $background-primary;
-	background-color: transparent;
-	color: $text-color-primary;
-
-	font-size: 1.5rem;
-	text-align: left;
-	// outline: none;
-
-	.icon {
-		margin-right: 1rem;
-	}
-}
-
-.directory-item:hover {
-	background-color: hsla(0, 0%, 100%, 0.1);
-	cursor: pointer;
-}
-
-.directory-item:active {
-	background-color: hsla(0, 0%, 100%, 0.05);
 }

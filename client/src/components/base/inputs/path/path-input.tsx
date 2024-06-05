@@ -3,20 +3,25 @@ import FileBrowser from '../../../modules/file-browser/file-browser';
 import ButtonInput from '../button/button-input';
 import './path-input.scss';
 import { useState } from 'react';
+import { FileBrowserMode } from '../../../../../../types/file-browser';
 
 type Params = {
 	id: string;
 	label: string;
 	tree: DirectoryTree | null;
-	value: string;
-	setValue: (value: string) => void;
+	mode: FileBrowserMode;
+	value: string | undefined;
+	// setValue: React.Dispatch<React.SetStateAction<string | undefined>>;
+	onConfirm?: (file: string) => void;
 };
 
-export default function PathInput({ id, label, tree, value, setValue }: Params) {
+export default function PathInput({ id, label, tree, mode, value, onConfirm }: Params) {
 	const [showTree, setShowTree] = useState(false);
 
-	const onConfirm = (file: string) => {
-		setValue(file);
+	const handleConfirm = (file: string) => {
+		if (onConfirm) {
+			onConfirm(file);
+		}
 		setShowTree(false);
 	};
 
@@ -40,7 +45,7 @@ export default function PathInput({ id, label, tree, value, setValue }: Params) 
 			</div>
 			{tree && showTree && (
 				<div className='browser-section'>
-					<FileBrowser tree={tree} onConfirm={onConfirm} />
+					<FileBrowser tree={tree} mode={mode} onConfirm={handleConfirm} />
 				</div>
 			)}
 		</div>

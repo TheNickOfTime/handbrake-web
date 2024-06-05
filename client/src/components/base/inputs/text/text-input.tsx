@@ -5,11 +5,22 @@ type Params = {
 	label?: string;
 	value: string;
 	setValue: React.Dispatch<React.SetStateAction<string>>;
+	onChange?: (value: string) => void;
 	disabled?: boolean;
 };
 
-export default function TextInput({ id, label, value, setValue, disabled = false }: Params) {
+export default function TextInput({
+	id,
+	label,
+	value,
+	setValue,
+	onChange,
+	disabled = false,
+}: Params) {
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (onChange) {
+			onChange(event.target.value);
+		}
 		setValue(event.target.value);
 	};
 

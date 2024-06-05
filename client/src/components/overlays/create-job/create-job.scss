@@ -1,70 +1,49 @@
 @import '../../../style/modules/colors';
 @import '../../../style/modules/font';
 
-.create-job {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
+.section-overlay#create-new-job {
+	.button-group {
+		button {
+			.bi {
+				margin-right: 0.5rem;
+			}
+		}
+	}
 
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	form {
+		display: flex;
+		flex-flow: column nowrap;
+		gap: 2rem;
 
-	background-color: hsla(0, 0%, 0%, 0.75);
-
-	.create-job-window {
-		width: 90%;
-		padding: 2rem;
-
-		border-radius: 1rem;
-		background-color: $background-tertiary;
-		box-shadow: 0 0 2rem 0 black;
-
-		form {
+		fieldset {
+			padding: 1.5rem 1rem;
 			display: flex;
 			flex-flow: column nowrap;
-			gap: 2rem;
+			gap: 1rem;
+
+			border: 0.1rem solid $text-color-primary;
+			border-radius: 1rem;
+
+			legend {
+				font-family: $font-family-secondary;
+				font-size: 2rem;
+			}
 		}
 	}
 
-	.output-path-section {
+	#output-full {
 		display: flex;
 		flex-flow: row nowrap;
 		align-items: center;
 		gap: 1rem;
 
-		#output-path {
-			padding: 0.5rem 1rem;
-			flex-grow: 1;
-
-			border: 0.1rem solid $text-color-primary;
-			border-radius: 0.75rem;
-			background-color: transparent;
-			color: $text-color-tertiary;
-
-			font-family: $font-family-primary;
-			font-size: 1.5rem;
+		.label {
+			white-space: nowrap;
 		}
-	}
 
-	.preset-section {
-		display: flex;
-		flex-flow: row nowrap;
-		align-items: center;
-		gap: 1rem;
-
-		select {
-			padding: 0.5rem 1rem;
+		.text {
 			flex-grow: 1;
-			// appearance: none;
-			border: 0.1rem solid $text-color-primary;
-			border-radius: 0.75rem;
-			background-color: $background-tertiary;
-			color: $text-color-primary;
-			font-size: 1.5rem;
-			font-family: $font-family-primary;
+			// background-color: white;
 		}
 	}
 

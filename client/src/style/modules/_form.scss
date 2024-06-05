@@ -1,0 +1,17 @@
+@import './colors';
+@import './font';
+
+.form-item {
+	padding: 0.5rem 1rem;
+
+	font-family: $font-family-primary;
+
+	border-radius: 0.75rem;
+	border: 0.1rem solid $text-color-primary;
+
+	// background-color: red;
+
+	&:empty::after {
+		content: '\200b';
+	}
+}
