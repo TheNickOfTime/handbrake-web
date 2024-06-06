@@ -19,7 +19,9 @@ export default function FileBrowser({ tree, mode, onConfirm }: Params) {
 	const [basePath] = useState(tree.path);
 	const [basePathName] = useState(tree.name);
 	const [currentPath, setCurrentPath] = useState(tree.path);
-	const [selectedPath, setSelectedPath] = useState<string | undefined>();
+	const [selectedPath, setSelectedPath] = useState<string | undefined>(
+		mode == FileBrowserMode.Directory ? tree.path : undefined
+	);
 
 	const context = {
 		basePath: basePath,

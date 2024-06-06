@@ -29,6 +29,22 @@
 				font-size: 2rem;
 			}
 		}
+
+		label {
+			color: $text-color-secondary;
+		}
+	}
+
+	table {
+		width: 100%;
+
+		th {
+			border-bottom: 0.1rem solid $text-color-secondary;
+		}
+
+		td {
+			padding: 0.25rem 0.5rem;
+		}
 	}
 
 	#output-full {

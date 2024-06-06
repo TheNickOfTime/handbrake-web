@@ -43,9 +43,17 @@
 			vertical-align: middle;
 		}
 
+		&:disabled {
+			color: $text-color-disabled;
+		}
+
 		&:hover {
 			background-color: $transparent-light-primary;
 			cursor: pointer;
+
+			&:disabled {
+				cursor: not-allowed;
+			}
 		}
 
 		&:active,

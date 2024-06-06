@@ -1,3 +1,4 @@
+import mime from 'mime';
 import { DirectoryTree } from 'directory-tree';
 import { FileBrowserMode } from '../../../../../../types/file-browser';
 
@@ -81,6 +82,8 @@ export default function FileBrowserBody({
 				const isSelected = selectedPath == child.path;
 				const isFile = child.children == undefined;
 				const icon = isFile ? 'bi-file-earmark-fill' : 'bi-folder-fill';
+				const mimeType = mime.getType(child.path);
+				// console.log(mimeType);
 
 				const onClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 					event.preventDefault();
@@ -92,7 +95,9 @@ export default function FileBrowserBody({
 					isFile ? onDoubleClickFile(child.path) : onDoubleClickFolder(child.path);
 				};
 
-				if (isFile && mode == FileBrowserMode.Directory) return null;
+				const disabled =
+					(isFile && mode == FileBrowserMode.Directory) ||
+					(isFile && !mimeType?.includes('video'));
 
 				return (
 					<button
@@ -100,6 +105,7 @@ export default function FileBrowserBody({
 						key={child.path}
 						onClick={onClick}
 						onDoubleClick={onDoubleClick}
+						disabled={disabled}
 					>
 						<i className={`icon bi ${icon}`} />
 						<span className='label'>{child.name}</span>

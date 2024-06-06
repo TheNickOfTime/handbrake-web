@@ -5,12 +5,18 @@ import { useOutletContext } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
 import { DirectoryTree } from 'directory-tree';
 import { PrimaryOutletContextType } from '../../../pages/primary/primary-context';
+import mime from 'mime';
 
 import { QueueRequest } from '../../../../../types/queue';
 import SectionOverlay from '../../section/section-overlay';
 import ButtonGroup from '../../base/inputs/button-group/button-group';
-import CreateJobFile from './forms/create-job-file';
-import CreateJobFolder from './forms/create-job-folder';
+import { HandbrakeOutputExtensions } from '../../../../../types/file-extensions';
+import ButtonInput from '../../base/inputs/button/button-input';
+import PathInput from '../../base/inputs/path/path-input';
+import { FileBrowserMode } from '../../../../../types/file-browser';
+import SelectInput from '../../base/inputs/select/select-input';
+import TextInput from '../../base/inputs/text/text-input';
+import { getCurrentPathTree } from '../../modules/file-browser/file-browser-utils';
 import './create-job.scss';
 
 type Params = {
@@ -18,20 +24,32 @@ type Params = {
 	onClose: () => void;
 };
 
+type SplitFileName = {
+	name: string;
+	extension: string;
+};
+
+type SplitFilePath = {
+	path: string;
+} & SplitFileName;
+
 enum JobFrom {
 	FromFile,
 	FromDirectory,
 }
 
 export default function CreateJob({ socket, onClose }: Params) {
+	const { presets } = useOutletContext<PrimaryOutletContextType>();
+	const [extensions] = useState<string[]>(Object.values(HandbrakeOutputExtensions));
+
 	const [tree, setTree] = useState<null | DirectoryTree>(null);
 	const [jobFrom, setJobFrom] = useState(JobFrom.FromFile);
 	const [inputPath, setInputPath] = useState('');
+	const [inputFiles, setInputFiles] = useState<SplitFileName[]>([]);
 	const [outputPath, setOutputPath] = useState('');
-	// const [requests, setRequests] = useState<QueueRequest[]>([]);
-	const { presets } = useOutletContext<PrimaryOutletContextType>();
+	const [outputExtension, setOutputExtension] = useState(HandbrakeOutputExtensions.mkv);
+	const [outputFiles, setOutputFiles] = useState<SplitFileName[]>([]);
 	const [preset, setPreset] = useState('');
-	const [fileExtension, setFileExtension] = useState('.mkv');
 
 	const onGetDirectoryTree = (tree: DirectoryTree) => {
 		setTree(tree);
@@ -49,6 +67,45 @@ export default function CreateJob({ socket, onClose }: Params) {
 		socket.emit('get-directory-tree');
 	}, []);
 
+	const splitName = (name: string) => {
+		const splitRegex = /^([\w\d]+)(\.[\w\d]+)$/;
+		const splitResult = name.match(splitRegex);
+		if (splitResult) {
+			const result: SplitFileName = {
+				name: splitResult[1],
+				extension: splitResult[2],
+			};
+			return result;
+		} else {
+			console.error(`[client] [error] Could not split the name '${name}'.`);
+		}
+	};
+
+	const splitPath = (path: string) => {
+		const splitRegex = /\/([\w\d]+)(\.[\w\d]+)$/;
+		const splitResult = path.match(splitRegex);
+		if (splitResult) {
+			const result: SplitFilePath = {
+				path: path.replace(splitRegex, ''),
+				name: splitResult[1],
+				extension: splitResult[2],
+			};
+			return result;
+		} else {
+			console.error(`[client] [error] Could not split the path '${path}'.`);
+		}
+	};
+
+	const handleJobFromChange = (newJobFrom: JobFrom) => {
+		if (jobFrom != newJobFrom) {
+			setJobFrom(newJobFrom);
+			setInputPath('');
+			setInputFiles([]);
+			setOutputPath('');
+			setOutputFiles([]);
+		}
+	};
+
 	const handleCancel = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		event.preventDefault();
 		onClose();
@@ -57,16 +114,107 @@ export default function CreateJob({ socket, onClose }: Params) {
 	const handleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		event.preventDefault();
 
-		const request: QueueRequest = {
-			input: inputPath,
-			output: outputPath,
-			preset: preset,
-		};
-		socket.emit('add-to-queue', request);
-		console.log(`[client] New job sent to the server.`);
-		console.log(request);
+		inputFiles.forEach((file, index) => {
+			const outputFile = outputFiles[index];
+			const newJob: QueueRequest = {
+				input: inputPath + '/' + file.name + file.extension,
+				output: outputPath + '/' + outputFile.name + outputFile.extension,
+				preset: preset,
+			};
+			socket.emit('add-to-queue', newJob);
+			console.log(`[client] New job sent to the server.\n${newJob}`);
+		});
+
 		onClose();
 	};
+
+	const handleFileInputConfirm = (path: string) => {
+		const splitInputPath = splitPath(path);
+		if (splitInputPath) {
+			setInputPath(splitInputPath.path);
+			setInputFiles([
+				{
+					name: splitInputPath.name,
+					extension: splitInputPath.extension,
+				},
+			]);
+
+			if (outputPath == '' || outputFiles.length == 0) {
+				setOutputPath(splitInputPath.path);
+				setOutputFiles([
+					{
+						name: splitInputPath.name,
+						extension: outputExtension,
+					},
+				]);
+			}
+		}
+	};
+
+	const handleDirectoryInputConfirm = (path: string) => {
+		// Set Paths
+		setInputPath(path);
+		if (outputPath == '') {
+			setOutputPath(path);
+		}
+
+		// Set Files
+		const inputChildren = getCurrentPathTree(path, tree!.path, tree!).children;
+		if (inputChildren) {
+			const filteredChildren = inputChildren
+				.filter((child) => !child.children)
+				.filter((child) => mime.getType(child.name)?.includes('video'));
+
+			const newInputFiles: SplitFileName[] = filteredChildren.map((child) => {
+				const childNameSplit = splitName(child.name)!;
+				return childNameSplit;
+			});
+			setInputFiles(newInputFiles);
+
+			const newOutputFiles: SplitFileName[] = filteredChildren.map((child) => {
+				const childNameSplit = splitName(child.name)!;
+				childNameSplit.extension = outputExtension;
+				return childNameSplit;
+			});
+			setOutputFiles(newOutputFiles);
+		}
+	};
+
+	const handleInputConfirm = (path: string) => {
+		switch (jobFrom) {
+			case JobFrom.FromFile:
+				handleFileInputConfirm(path);
+				break;
+			case JobFrom.FromDirectory:
+				handleDirectoryInputConfirm(path);
+				break;
+		}
+	};
+
+	const handleOutputConfirm = (path: string) => {
+		setOutputPath(path);
+	};
+
+	const handleOutputNameChange = (name: string) => {
+		// setOutputName(name);
+		if (outputFiles.length > 0) {
+			const newOutputFiles = [...outputFiles];
+			newOutputFiles[0].name = name;
+			setOutputFiles(newOutputFiles);
+		}
+	};
+
+	const handleExtensionChange = (extension: string) => {
+		setOutputExtension(extension as HandbrakeOutputExtensions);
+		const newOutputFiles = [...outputFiles];
+		newOutputFiles.map((file) => {
+			file.extension = extension;
+			return file;
+		});
+		setOutputFiles(newOutputFiles);
+	};
+
+	// const handlePresetChange = (preset: string) => {};
 
 	return (
 		<SectionOverlay id='create-new-job'>
@@ -74,48 +222,124 @@ export default function CreateJob({ socket, onClose }: Params) {
 			<ButtonGroup>
 				<button
 					className={jobFrom == JobFrom.FromFile ? 'selected' : ''}
-					onClick={() => setJobFrom(JobFrom.FromFile)}
+					onClick={() => handleJobFromChange(JobFrom.FromFile)}
 				>
 					<i className='bi bi-file-earmark-fill' />
 					<span>From File (Single)</span>
 				</button>
 				<button
 					className={jobFrom == JobFrom.FromDirectory ? 'selected' : ''}
-					onClick={() => setJobFrom(JobFrom.FromDirectory)}
+					onClick={() => handleJobFromChange(JobFrom.FromDirectory)}
 				>
 					<i className='bi bi-folder-fill' />
 					<span>From Folder (Bulk)</span>
 				</button>
 			</ButtonGroup>
-			{jobFrom == JobFrom.FromFile && (
-				<CreateJobFile
-					tree={tree!}
-					input={inputPath}
-					setInput={setInputPath}
-					output={outputPath}
-					setOutput={setOutputPath}
-					presets={presets}
-					preset={preset}
-					setPreset={setPreset}
-					fileExtension={fileExtension}
-					setFileExtension={setFileExtension}
-					handleCancel={handleCancel}
-					handleSubmit={handleSubmit}
-				/>
-			)}
-			{/* {jobFrom == JobFrom.FromDirectory && (
-				<CreateJobFolder
-					tree={tree!}
-					presets={presets}
-					input={input}
-					output={output}
-					preset={preset}
-					handleFileSelect={handleFileSelect}
-					handlePresetChange={handlePresetChange}
-					handleCancel={handleCancel}
-					handleSubmit={handleSubmit}
-				/>
-			)} */}
+			<form action=''>
+				<fieldset className='input-section'>
+					<legend>Input</legend>
+					<PathInput
+						id='input-path'
+						label={jobFrom == JobFrom.FromFile ? 'File: ' : 'Directory: '}
+						tree={tree}
+						mode={
+							jobFrom == JobFrom.FromFile
+								? FileBrowserMode.SingleFile
+								: FileBrowserMode.Directory
+						}
+						value={inputPath}
+						onConfirm={handleInputConfirm}
+					/>
+				</fieldset>
+				<fieldset className='output-section'>
+					<legend>Output</legend>
+					<PathInput
+						id='output-path'
+						label='Directory: '
+						tree={tree}
+						mode={FileBrowserMode.Directory}
+						value={outputPath}
+						onConfirm={handleOutputConfirm}
+					/>
+					{jobFrom == JobFrom.FromFile && (
+						<TextInput
+							id='output-name'
+							label='File Name: '
+							value={outputFiles[0] ? outputFiles[0].name : 'N/A'}
+							onChange={handleOutputNameChange}
+							disabled={!outputPath}
+						/>
+					)}
+					<SelectInput
+						id='output-extension'
+						label='File Extension: '
+						value={outputExtension}
+						onChange={handleExtensionChange}
+					>
+						{extensions.map((extension) => (
+							<option value={extension} key={extension}>
+								{extension}
+							</option>
+						))}
+					</SelectInput>
+				</fieldset>
+				<fieldset>
+					<legend>Preset</legend>
+					<SelectInput
+						id='preset-select'
+						label='Selected Preset'
+						value={preset}
+						setValue={setPreset}
+					>
+						<option value=''>N/A</option>
+						{Object.keys(presets).map((preset) => (
+							<option value={preset} key={preset}>
+								{preset}
+							</option>
+						))}
+					</SelectInput>
+				</fieldset>
+				{inputFiles.length > 0 && outputFiles.length > 0 && (
+					<div className='result-section'>
+						<h3>Result</h3>
+						<table>
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Input</th>
+									<th>Output</th>
+								</tr>
+							</thead>
+							<tbody>
+								{inputFiles.map((file, index) => {
+									const outputFile = outputFiles[index];
+
+									const inputText = inputPath + '/' + file.name + file.extension;
+									const outputText =
+										outputPath + '/' + outputFile.name + outputFile.extension;
+
+									return (
+										<tr key={index}>
+											<td>{index + 1}</td>
+											<td>...{inputText.slice(-37)}</td>
+											<td>...{outputText.slice(-37)}</td>
+										</tr>
+									);
+								})}
+							</tbody>
+						</table>
+					</div>
+				)}
+				<div className='buttons-section'>
+					<ButtonInput label='Cancel' color='red' onClick={handleCancel} />
+					<ButtonInput
+						label='Submit'
+						color='green'
+						disabled={inputFiles.length == 0 && outputFiles.length == 0 && preset == ''}
+						onClick={handleSubmit}
+					/>
+				</div>
+			</form>
 		</SectionOverlay>
 	);
 }

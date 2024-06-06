@@ -37,7 +37,7 @@ export default function PathInput({ id, label, tree, mode, value, onConfirm }: P
 					className='input-path-text form-item'
 					id={id}
 					type='text'
-					value={value}
+					value={value ? value : 'N/A'}
 					disabled
 				/>
 				<ButtonInput

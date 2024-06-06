@@ -5,13 +5,15 @@ type Params = PropsWithChildren & {
 	id: string;
 	label?: string;
 	value: string | undefined;
-	setValue: React.Dispatch<React.SetStateAction<string>>;
+	setValue?: React.Dispatch<React.SetStateAction<string>>;
 	onChange?: (value: string) => void;
 };
 
 export default function SelectInput({ id, label, value, setValue, onChange, children }: Params) {
 	const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		setValue(event.target.value);
+		if (setValue) {
+			setValue(event.target.value);
+		}
 		if (onChange) {
 			onChange(event.target.value);
 		}
