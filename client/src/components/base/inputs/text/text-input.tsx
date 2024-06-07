@@ -21,7 +21,9 @@ export default function TextInput({
 		if (onChange) {
 			onChange(event.target.value);
 		}
-		setValue(event.target.value);
+		if (setValue) {
+			setValue(event.target.value);
+		}
 	};
 
 	return (
