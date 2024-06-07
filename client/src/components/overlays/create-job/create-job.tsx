@@ -50,6 +50,7 @@ export default function CreateJob({ socket, onClose }: Params) {
 	const [outputExtension, setOutputExtension] = useState(HandbrakeOutputExtensions.mkv);
 	const [outputFiles, setOutputFiles] = useState<SplitFileName[]>([]);
 	const [preset, setPreset] = useState('');
+	// const [canSubmit, setCanSubmit] = useState(false);
 
 	const onGetDirectoryTree = (tree: DirectoryTree) => {
 		setTree(tree);
@@ -66,6 +67,24 @@ export default function CreateJob({ socket, onClose }: Params) {
 	useEffect(() => {
 		socket.emit('get-directory-tree');
 	}, []);
+
+	const noExistingCollision =
+		tree &&
+		getCurrentPathTree(outputPath, tree.path, tree)
+			.children?.map((child) => child.name)
+			.every((existingPath) =>
+				outputFiles
+					.map((output) => output.name + output.extension)
+					.every((outputPath) => outputPath != existingPath)
+			);
+
+	const canSubmit =
+		inputPath != '' &&
+		inputFiles.length > 0 &&
+		outputPath != '' &&
+		outputFiles.length > 0 &&
+		preset != '' &&
+		noExistingCollision;
 
 	const splitName = (name: string) => {
 		const splitRegex = /^([\w\d]+)(\.[\w\d]+)$/;
@@ -94,6 +113,68 @@ export default function CreateJob({ socket, onClose }: Params) {
 		} else {
 			console.error(`[client] [error] Could not split the path '${path}'.`);
 		}
+	};
+
+	const generateOutputFilesFromInputFiles = (inputFiles: SplitFileName[]) => {
+		const deepCopyInputFiles: SplitFileName[] = JSON.parse(JSON.stringify(inputFiles));
+		const newOutputFiles: SplitFileName[] = deepCopyInputFiles.map((child) => {
+			const result: SplitFileName = {
+				name: child.name,
+				extension: outputExtension,
+			};
+			return result;
+		});
+
+		return newOutputFiles;
+	};
+
+	const handleNameCollision = (outputPath: string, outputs: SplitFileName[]) => {
+		const fileCollisions: { [index: string]: number[] } = {};
+		const existingOutputFiles = getCurrentPathTree(outputPath, tree!.path, tree!).children!.map(
+			(child) => child.name
+		);
+
+		// Loop through each output
+		outputs.forEach((output, index) => {
+			const originalOutputName = output.name + output.extension;
+			if (!fileCollisions[originalOutputName]) {
+				fileCollisions[originalOutputName] = [];
+			}
+
+			// Check if there are collisions with existing files at the output path
+			existingOutputFiles.forEach((existingFile) => {
+				if (originalOutputName == existingFile) {
+					fileCollisions[originalOutputName].push(index);
+					console.log(
+						`${originalOutputName} collides with existing file ${existingFile} at the output path.`
+					);
+					return;
+				}
+			});
+
+			// Check if there are collisions with the other output files
+			outputs.slice(index).forEach((otherOutput) => {
+				if (
+					output.name == otherOutput.name &&
+					!fileCollisions[originalOutputName].includes(index)
+				) {
+					fileCollisions[originalOutputName].push(index);
+					console.log(
+						`${originalOutputName} collides with another output ${otherOutput.name}${otherOutput.extension}`
+					);
+					return;
+				}
+			});
+		});
+
+		const newOutputs = JSON.parse(JSON.stringify(outputs));
+		Object.values(fileCollisions).forEach((collisionArray) => {
+			collisionArray.forEach((value, index) => {
+				newOutputs[value].name += `_${index + 1}`;
+			});
+		});
+
+		return newOutputs;
 	};
 
 	const handleJobFromChange = (newJobFrom: JobFrom) => {
@@ -131,30 +212,38 @@ export default function CreateJob({ socket, onClose }: Params) {
 	const handleFileInputConfirm = (path: string) => {
 		const splitInputPath = splitPath(path);
 		if (splitInputPath) {
-			setInputPath(splitInputPath.path);
-			setInputFiles([
+			const newInputPath = splitInputPath.path;
+			setInputPath(newInputPath);
+
+			const newInputFiles: SplitFileName[] = [
 				{
 					name: splitInputPath.name,
 					extension: splitInputPath.extension,
 				},
-			]);
+			];
+			setInputFiles(newInputFiles);
 
-			if (outputPath == '' || outputFiles.length == 0) {
-				setOutputPath(splitInputPath.path);
-				setOutputFiles([
-					{
-						name: splitInputPath.name,
-						extension: outputExtension,
-					},
-				]);
+			const newOutputPath =
+				outputPath == '' || outputFiles.length == 0 ? splitInputPath.path : outputPath;
+			if (outputPath != newOutputPath) {
+				setOutputPath(newOutputPath);
+
+				const newOutputFiles: SplitFileName[] =
+					generateOutputFilesFromInputFiles(newInputFiles);
+
+				const dedupedOutputFiles = handleNameCollision(newOutputPath, newOutputFiles);
+				setOutputFiles(dedupedOutputFiles);
 			}
 		}
 	};
 
 	const handleDirectoryInputConfirm = (path: string) => {
 		// Set Paths
-		setInputPath(path);
-		if (outputPath == '') {
+		const newInputPath = path;
+		setInputPath(newInputPath);
+
+		const newOutputPath = outputPath == '' ? path : outputPath;
+		if (newOutputPath != outputPath) {
 			setOutputPath(path);
 		}
 
@@ -171,12 +260,13 @@ export default function CreateJob({ socket, onClose }: Params) {
 			});
 			setInputFiles(newInputFiles);
 
-			const newOutputFiles: SplitFileName[] = filteredChildren.map((child) => {
-				const childNameSplit = splitName(child.name)!;
-				childNameSplit.extension = outputExtension;
-				return childNameSplit;
-			});
-			setOutputFiles(newOutputFiles);
+			const newOutputFiles: SplitFileName[] =
+				generateOutputFilesFromInputFiles(newInputFiles);
+
+			// console.log(newOutputFiles);
+			const dedupedOutputFiles = handleNameCollision(newOutputPath, newOutputFiles);
+
+			setOutputFiles(dedupedOutputFiles);
 		}
 	};
 
@@ -192,7 +282,11 @@ export default function CreateJob({ socket, onClose }: Params) {
 	};
 
 	const handleOutputConfirm = (path: string) => {
-		setOutputPath(path);
+		const newOutputPath = path;
+		const newOutputFiles = generateOutputFilesFromInputFiles(inputFiles);
+		const dedupedOutputFiles = handleNameCollision(newOutputPath, newOutputFiles);
+		setOutputFiles(dedupedOutputFiles);
+		setOutputPath(newOutputPath);
 	};
 
 	const handleOutputNameChange = (name: string) => {
@@ -261,6 +355,14 @@ export default function CreateJob({ socket, onClose }: Params) {
 						value={outputPath}
 						onConfirm={handleOutputConfirm}
 					/>
+					{jobFrom == JobFrom.FromFile && !noExistingCollision && (
+						<span className='filename-conflict'>
+							<i className='bi bi-exclamation-circle-fill' />{' '}
+							<span>
+								This filename conflicts with an existing file in the directory.
+							</span>
+						</span>
+					)}
 					{jobFrom == JobFrom.FromFile && (
 						<TextInput
 							id='output-name'
@@ -335,7 +437,7 @@ export default function CreateJob({ socket, onClose }: Params) {
 					<ButtonInput
 						label='Submit'
 						color='green'
-						disabled={inputFiles.length == 0 && outputFiles.length == 0 && preset == ''}
+						disabled={!canSubmit}
 						onClick={handleSubmit}
 					/>
 				</div>

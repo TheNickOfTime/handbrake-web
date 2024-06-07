@@ -63,6 +63,11 @@
 		}
 	}
 
+	.filename-conflict {
+		text-align: center;
+		color: red;
+	}
+
 	.buttons-section {
 		display: flex;
 		flex-direction: row wrap;
