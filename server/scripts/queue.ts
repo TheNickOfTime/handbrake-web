@@ -10,6 +10,7 @@ import {
 } from './database';
 import { GetPresets } from './presets';
 import { SearchForWorker } from './worker';
+import hash from 'object-hash';
 
 export const queuePath: string = './data/queue.json';
 
@@ -32,7 +33,10 @@ export async function UpdateQueue() {
 }
 
 export async function AddJob(data: QueueRequest) {
-	const jobID = new Date().getTime();
+	const jobID =
+		new Date().getTime().toString() +
+		hash(data) +
+		(Math.random() * 9999).toString().padStart(4);
 	const newJob: Job = {
 		input: data.input,
 		output: data.output,
