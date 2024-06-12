@@ -7,4 +7,5 @@ build/
 node_modules/
 
 .env
+core
 handbrake.db
