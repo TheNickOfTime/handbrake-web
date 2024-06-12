@@ -66,7 +66,7 @@ export async function GetQueueFromDatabase(): Promise<Queue | null> {
 export async function GetJobFromDatabase(id: string): Promise<Job | null> {
 	try {
 		const result: Job = await database!
-			.get(`SELECT job FROM queue WHERE id = ${id}`)
+			.get(`SELECT job FROM queue WHERE id = '${id}'`)
 			.then((data) => {
 				// console.log(data);
 				return JSON.parse(data.job);
@@ -110,7 +110,7 @@ export async function UpdateJobInDatabase(id: string, job: Job) {
 
 export async function RemoveJobFromDatabase(id: string) {
 	try {
-		const result = await database?.run(`DELETE FROM queue WHERE id = ${id}`);
+		const result = await database?.run(`DELETE FROM queue WHERE id = '${id}'`);
 		console.log(`[server] [database] Successfully removed job '${id}' from the database.`);
 		return result;
 	} catch (err) {
