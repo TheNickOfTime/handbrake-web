@@ -167,10 +167,22 @@ export default function CreateJob({ socket, onClose }: Params) {
 			});
 		});
 
-		const newOutputs = JSON.parse(JSON.stringify(outputs));
+		const newOutputs: SplitFileName[] = JSON.parse(JSON.stringify(outputs));
 		Object.values(fileCollisions).forEach((collisionArray) => {
-			collisionArray.forEach((value, index) => {
-				newOutputs[value].name += `_${index + 1}`;
+			let fileIndex = 1;
+			collisionArray.forEach((value) => {
+				while (
+					existingOutputFiles.includes(
+						newOutputs[value].name + `_${fileIndex}` + newOutputs[value].extension
+					) ||
+					Object.values(newOutputs)
+						.map((output) => output.name)
+						.includes(newOutputs[value].name + `_${fileIndex}`)
+				) {
+					fileIndex += 1;
+				}
+
+				newOutputs[value].name += `_${fileIndex}`;
 			});
 		});
 
