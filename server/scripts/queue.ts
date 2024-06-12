@@ -20,19 +20,19 @@ export let state: QueueStatus = QueueStatus.Stopped;
 
 let workerSearchInterval: null | NodeJS.Timeout = null;
 
-export async function GetQueue() {
-	return await GetQueueFromDatabase();
+export function GetQueue() {
+	return GetQueueFromDatabase();
 }
 
-export async function UpdateQueue() {
-	const updatedQueue = await GetQueueFromDatabase();
+export function UpdateQueue() {
+	const updatedQueue = GetQueueFromDatabase();
 	if (updatedQueue) {
 		// queue = updatedQueue;
 		EmitToAllClients('queue-update', updatedQueue);
 	}
 }
 
-export async function AddJob(data: QueueRequest) {
+export function AddJob(data: QueueRequest) {
 	const jobID =
 		new Date().getTime().toString() +
 		hash(data) +
@@ -50,19 +50,19 @@ export async function AddJob(data: QueueRequest) {
 		},
 	};
 
-	await InsertJobToDatabase(jobID.toString(), newJob);
-	await UpdateQueue();
+	InsertJobToDatabase(jobID.toString(), newJob);
+	UpdateQueue();
 }
 
-export async function UpdateJob(data: TranscodeStatusUpdate) {
-	const job = await GetJobFromDatabase(data.id);
+export function UpdateJob(data: TranscodeStatusUpdate) {
+	const job = GetJobFromDatabase(data.id);
 	if (job) {
 		job.status = data.status;
 		if (job.status.stage == TranscodeStage.Finished) {
 			job.worker = null;
 		}
-		await UpdateJobInDatabase(data.id.toString(), job);
-		await UpdateQueue();
+		UpdateJobInDatabase(data.id.toString(), job);
+		UpdateQueue();
 	}
 }
 
@@ -100,28 +100,28 @@ export function StopQueue(clientID?: string) {
 	}
 }
 
-export async function ClearQueue(clientID: string, finishedOnly: boolean = false) {
+export function ClearQueue(clientID: string, finishedOnly: boolean = false) {
 	console.log(
 		`[server] [queue] Client '${clientID}' has requested to clear ${
 			finishedOnly ? 'finished' : 'all'
 		} jobs from the queue.`
 	);
-	const queue = await GetQueueFromDatabase();
+	const queue = GetQueueFromDatabase();
 	if (queue) {
-		for await (const key of Object.keys(queue)) {
+		for (const key of Object.keys(queue)) {
 			const job: Job = queue[key];
 
 			switch (job.status.stage) {
 				case TranscodeStage.Waiting:
 					if (!finishedOnly) {
-						await RemoveJobFromDatabase(key);
+						RemoveJobFromDatabase(key);
 						console.log(
 							`[server] Removing job '${key}' from the queue due to being 'Waiting'.`
 						);
 					}
 					break;
 				case TranscodeStage.Finished:
-					await RemoveJobFromDatabase(key);
+					RemoveJobFromDatabase(key);
 					console.log(
 						`[server] Removing job '${key}' from the queue due to being 'Finished'.`
 					);

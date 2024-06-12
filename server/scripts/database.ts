@@ -1,118 +1,119 @@
-import sqlite3 from 'sqlite3';
-import { Database, open } from 'sqlite';
+import Database from 'better-sqlite3';
 import path from 'path';
 
 import { dataPath } from './data';
 import { Job, Queue, QueueEntry } from '../../types/queue';
+import { QueueTable } from '../../types/database';
 
 const databasePath = path.join(dataPath, 'handbrake.db');
 
-export let database: null | Database<sqlite3.Database, sqlite3.Statement> = null;
+export let database: null | Database.Database = null;
 
-async function InitializeDatabase(db: Database<sqlite3.Database, sqlite3.Statement>) {
-	console.log(`[database] Initializing database at '${databasePath}'...`);
-
-	await db.exec('CREATE TABLE queue(id TEXT NOT NULL, job TEXT NOT NULL, PRIMARY KEY (id))');
-	// await db.exec('CREATE TABLE presets(id TEXT NOT NULL, preset TEXT NOT NULL, PRIMARY KEY (id))');
-
-	console.log(`[database] Database initialized!`);
-}
-
-export async function DatabaseConnect() {
-	const db = await open({
-		filename: databasePath,
-		driver: sqlite3.cached.Database,
-	});
-
-	sqlite3.verbose();
-
+export function DatabaseConnect() {
 	try {
-		await db.get('SELECT * FROM queue');
-		console.log(
-			`[server] [database] The database has already been initialized at '${databasePath}'.`
+		const db = new Database(databasePath, {});
+
+		// if (!db) throw new Error('[database] [error] Could not connect to the database...');
+
+		// Create the queue table if it doesn't exist
+		const initQueueStatement = db.prepare(
+			'CREATE TABLE IF NOT EXISTS queue(id TEXT NOT NULL, job TEXT NOT NULL, PRIMARY KEY (id))'
 		);
+		initQueueStatement.run();
+		database = db;
+		console.log('[server] [database] The database connection has been initalized!');
 	} catch (err) {
-		InitializeDatabase(db);
+		console.error(err);
 	}
-
-	database = db;
-	// console.log(await GetQueueJobs());
 }
 
-export async function GetQueueFromDatabase(): Promise<Queue | null> {
+export function GetQueueFromDatabase() {
 	try {
-		const result: Queue = (await database!.all('SELECT * FROM queue'))
+		if (!database) throw new Error('[database] [error] There is no database connection...');
+
+		const queueStatement = database.prepare<[], QueueTable>('SELECT * FROM queue');
+		const queueTable = queueStatement.all();
+		const queueResult = queueTable
 			.map((entry) => {
-				entry.job = JSON.parse(entry.job);
-				return entry;
+				const newEntry: QueueEntry = {
+					id: entry.id,
+					job: JSON.parse(entry.job),
+				};
+				return newEntry;
 			})
-			.reduce((prev, curr) => {
+			.reduce<Queue>((prev, curr) => {
 				prev[curr.id] = curr.job;
 				return prev;
 			}, {});
-		// console.log(
-		// 	`[server] [database] Retrieved ${
-		// 		Object.keys(result!).length
-		// 	} queue jobs from the database.`
-		// );
-		return result;
-	} catch (err) {
-		console.error(`[database] [error] Could not get jobs from the queue table.`);
-		console.error(err);
-		return null;
-	}
-}
-
-export async function GetJobFromDatabase(id: string): Promise<Job | null> {
-	try {
-		const result: Job = await database!
-			.get(`SELECT job FROM queue WHERE id = '${id}'`)
-			.then((data) => {
-				// console.log(data);
-				return JSON.parse(data.job);
-			});
-		// console.log(result);
-		return result;
-	} catch (err) {
-		console.error(`[database] [error] Could not get jobs from the queue table.`);
-		console.error(err);
-		return null;
-	}
-}
-
-export async function InsertJobToDatabase(id: string, job: Job) {
-	try {
-		const jobJSON = JSON.stringify(job);
-		const result = await database?.run(
-			`INSERT INTO queue (id, job) VALUES ('${id}', '${jobJSON}')`
+		console.log(
+			`[server] [database] Retrieved ${
+				Object.keys(queueResult).length
+			} queue jobs from the database.`
 		);
+		return queueResult;
+	} catch (err) {
+		console.error(`[database] [error] Could not get jobs from the queue table.`);
+		console.error(err);
+		return null;
+	}
+}
+
+export function GetJobFromDatabase(id: string): Job | undefined {
+	try {
+		if (!database) throw new Error('[database] [error] There is no database connection...');
+
+		const jobStatement = database.prepare<{ id: string }, QueueTable>(
+			'SELECT job FROM queue WHERE id = $id'
+		);
+		const jobQuery = jobStatement.get({ id: id });
+		const jobResult: Job = jobQuery ? JSON.parse(jobQuery.job) : jobQuery;
+		return jobResult;
+	} catch (err) {
+		console.error(`[database] [error] Could not get jobs from the queue table.`);
+		console.error(err);
+	}
+}
+
+export function InsertJobToDatabase(id: string, job: Job) {
+	try {
+		if (!database) throw new Error('[database] [error] There is no database connection...');
+
+		const jobJSON = JSON.stringify(job);
+		const insertStatement = database.prepare<QueueTable, QueueTable>(
+			'INSERT INTO queue (id, job) VALUES ($id, $job)'
+		);
+		const insertResult = insertStatement.run({ id: id, job: jobJSON });
 		console.log(`[server] [database] Successfully inserted job '${id}' into the database.`);
-		return result;
+		return insertResult;
 	} catch (err) {
 		console.error(`[server] [error] [database] Could not insert job '${id}' into queue table.`);
 		console.error(err);
 	}
 }
 
-export async function UpdateJobInDatabase(id: string, job: Job) {
+export function UpdateJobInDatabase(id: string, job: Job) {
 	try {
+		if (!database) throw new Error('[database] [error] There is no database connection...');
+
 		const jobJSON = JSON.stringify(job);
-		const result = await database?.run(
-			`UPDATE queue SET job = '${jobJSON}' WHERE id = '${id}'`
-		);
+		const updateStatement = database.prepare('UPDATE queue SET job = $job WHERE id = $id');
+		const updateResult = updateStatement.run({ id: id, job: jobJSON });
 		console.log(`[server] [database] Successfully updated job '${id}' in the database.`);
-		return result;
+		return updateResult;
 	} catch (err) {
 		console.error(`[server] [error] [database] Could not update job '${id}'.`);
 		console.error(err);
 	}
 }
 
-export async function RemoveJobFromDatabase(id: string) {
+export function RemoveJobFromDatabase(id: string) {
 	try {
-		const result = await database?.run(`DELETE FROM queue WHERE id = '${id}'`);
+		if (!database) throw new Error('[database] [error] There is no database connection...');
+
+		const removalStatement = database.prepare('DELETE FROM queue WHERE id = $id');
+		const removalResult = removalStatement.run({ id: id });
 		console.log(`[server] [database] Successfully removed job '${id}' from the database.`);
-		return result;
+		return removalResult;
 	} catch (err) {
 		console.error(`[server] [error] [database] Could not remove job '${id}'.`);
 		console.error(err);

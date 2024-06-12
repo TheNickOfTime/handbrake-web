@@ -4,8 +4,8 @@ import { connections } from './connections';
 import { GetQueueFromDatabase, UpdateJobInDatabase } from './database';
 import { GetQueueStatus, SetQueueStatus, StopQueue } from './queue';
 
-export async function SearchForWorker() {
-	const queue = await GetQueueFromDatabase();
+export function SearchForWorker() {
+	const queue = GetQueueFromDatabase();
 	if (queue) {
 		if (
 			Object.keys(queue).length == 0 ||

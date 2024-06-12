@@ -15,8 +15,8 @@ import { HandbrakePreset } from '../../types/preset';
 import { AddPreset, GetPresetNames, GetPresets, RemovePreset } from '../scripts/presets';
 import { videoPath } from '../scripts/video';
 
-const initClient = async (socket: Client) => {
-	const queue = await GetQueue();
+const initClient = (socket: Client) => {
+	const queue = GetQueue();
 	socket.emit('queue-update', queue);
 	socket.emit('presets-update', GetPresets());
 	socket.emit('queue-status-update', GetQueueStatus());

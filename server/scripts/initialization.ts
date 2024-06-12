@@ -13,8 +13,8 @@ export default async function Initialization(server: Server) {
 	}
 
 	// Database ------------------------------------------------------------------------------------
-	await DatabaseConnect();
-	await UpdateQueue();
+	DatabaseConnect();
+	UpdateQueue();
 
 	// Start Server --------------------------------------------------------------------------------
 	const url = process.env.SERVER_URL || 'http://localhost';
