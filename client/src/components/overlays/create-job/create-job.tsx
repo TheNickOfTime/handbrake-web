@@ -401,7 +401,7 @@ export default function CreateJob({ socket, onClose }: Params) {
 					<legend>Preset</legend>
 					<SelectInput
 						id='preset-select'
-						label='Selected Preset'
+						label='Selected Preset: '
 						value={preset}
 						setValue={setPreset}
 					>
