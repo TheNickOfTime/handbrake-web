@@ -355,6 +355,7 @@ export default function CreateJob({ socket, onClose }: Params) {
 						}
 						value={inputPath}
 						onConfirm={handleInputConfirm}
+						key={jobFrom == JobFrom.FromFile ? 'input-file' : 'input-directory'}
 					/>
 				</fieldset>
 				<fieldset className='output-section'>
@@ -366,6 +367,7 @@ export default function CreateJob({ socket, onClose }: Params) {
 						mode={FileBrowserMode.Directory}
 						value={outputPath}
 						onConfirm={handleOutputConfirm}
+						key={jobFrom == JobFrom.FromFile ? 'output-file' : 'output-directory'}
 					/>
 					{jobFrom == JobFrom.FromFile && !noExistingCollision && (
 						<span className='filename-conflict'>
