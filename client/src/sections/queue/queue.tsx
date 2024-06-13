@@ -33,7 +33,7 @@ export default function QueueSection() {
 	};
 
 	return (
-		<Section title='Queue' id='queue'>
+		<Section title='Queue' id='queue' className={showCreateJob ? 'no-scroll-y' : undefined}>
 			<QueueStatus
 				queueStatus={queueStatus}
 				handleStartQueue={handleStartQueue}

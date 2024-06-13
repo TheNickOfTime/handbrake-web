@@ -30,7 +30,11 @@ export default function PresetsSection() {
 	};
 
 	return (
-		<Section title='Presets' id='presets'>
+		<Section
+			title='Presets'
+			id='presets'
+			className={showUploadPreset ? 'no-scroll-y' : undefined}
+		>
 			<PresetsButtons presets={presets} handleOpenUploadPreset={handleOpenUploadPreset} />
 			{showPresetList && (
 				<PresetsList presets={presets} handleRemovePreset={handleRemovePreset} />
