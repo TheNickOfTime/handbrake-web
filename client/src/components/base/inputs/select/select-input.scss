@@ -1,12 +1,35 @@
 @import '../../../../style/modules/colors';
 @import '../../../../style/modules/font';
+@import '../../../../style/modules/sizing';
 
 .select-input {
+	display: flex;
+	align-items: center;
+
 	label {
-		margin-right: 1rem;
+		white-space: nowrap;
 	}
 
 	select {
+		max-width: 100%;
 		background-color: $background-tertiary;
+	}
+}
+
+@media screen and (max-width: $small-max-width) {
+	.select-input {
+		flex-flow: row wrap;
+		gap: 0.5rem;
+
+		label {
+			width: 100%;
+		}
+	}
+}
+
+@media screen and (min-width: $medium-min-width) {
+	.select-input {
+		flex-flow: row nowrap;
+		gap: 1rem;
 	}
 }

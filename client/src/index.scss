@@ -5,6 +5,7 @@
 @import './style/modules/form';
 @import './style/modules/general';
 @import './style/modules/headings';
+@import './style/modules/sizing';
 
 :root {
 	font-size: 10px;
@@ -31,6 +32,7 @@ body {
 	color: $text-color-primary;
 
 	#root {
+		min-width: $small-min-width;
 		height: 100vh;
 	}
 }

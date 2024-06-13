@@ -1,5 +1,6 @@
 @import '../../../../style/modules/colors';
 @import '../../../../style/modules/font';
+@import '../../../../style/modules/sizing';
 
 .path-input {
 	display: flex;
@@ -8,7 +9,6 @@
 
 	.input-section {
 		display: flex;
-		flex-flow: row nowrap;
 		align-items: center;
 		gap: 1rem;
 
@@ -20,6 +20,26 @@
 	.controlled-button {
 		.button-label {
 			font-size: 1.5rem;
+		}
+	}
+}
+
+@media screen and (max-width: $small-max-width) {
+	.path-input {
+		.input-section {
+			flex-flow: row wrap;
+
+			.input-label {
+				width: 100%;
+			}
+		}
+	}
+}
+
+@media screen and (min-width: $medium-min-width) {
+	.path-input {
+		.input-section {
+			flex-flow: row nowrap;
 		}
 	}
 }

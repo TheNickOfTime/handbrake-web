@@ -37,6 +37,7 @@ export default function PathInput({ id, label, tree, mode, value, onConfirm }: P
 					id={id}
 					type='text'
 					value={value ? value : 'N/A'}
+					size={1}
 					disabled
 				/>
 				<button

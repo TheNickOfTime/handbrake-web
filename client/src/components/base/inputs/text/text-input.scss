@@ -1,9 +1,10 @@
 @import '../../../../style/modules/colors';
 @import '../../../../style/modules/font';
+@import '../../../../style/modules/sizing';
 
 .text-input {
 	display: flex;
-	flex-flow: row nowrap;
+
 	align-items: center;
 	gap: 1rem;
 
@@ -13,5 +14,21 @@
 
 	input[type='text'] {
 		flex-grow: 1;
+	}
+}
+
+@media screen and (max-width: $small-max-width) {
+	.text-input {
+		flex-flow: row wrap;
+
+		label {
+			width: 100%;
+		}
+	}
+}
+
+@media screen and (min-width: $medium-min-width) {
+	.text-input {
+		flex-flow: row nowrap;
 	}
 }

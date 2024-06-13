@@ -35,6 +35,7 @@ export default function TextInput({
 				type='text'
 				value={value}
 				onChange={handleChange}
+				size={1}
 				disabled={disabled}
 			/>
 		</div>
