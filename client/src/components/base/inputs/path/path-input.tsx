@@ -1,6 +1,5 @@
 import { DirectoryTree } from 'directory-tree';
 import FileBrowser from '../../../modules/file-browser/file-browser';
-import ButtonInput from '../button/button-input';
 import './path-input.scss';
 import { useState } from 'react';
 import { FileBrowserMode } from '../../../../../../types/file-browser';
@@ -40,14 +39,16 @@ export default function PathInput({ id, label, tree, mode, value, onConfirm }: P
 					value={value ? value : 'N/A'}
 					disabled
 				/>
-				<ButtonInput
-					label={showTree ? 'Cancel' : 'Browse'}
-					color='blue'
+				<button
+					className='controlled-button blue'
 					onClick={(event) => {
 						event?.preventDefault();
 						setShowTree(!showTree);
 					}}
-				/>
+					onBlur={() => setShowTree(false)}
+				>
+					<span className='button-label'>{showTree ? 'Cancel' : 'Browse'}</span>
+				</button>
 			</div>
 			{tree && showTree && (
 				<div className='browser-section'>
