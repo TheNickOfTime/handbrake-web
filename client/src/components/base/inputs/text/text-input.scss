@@ -4,9 +4,7 @@
 
 .text-input {
 	display: flex;
-
 	align-items: center;
-	gap: 1rem;
 
 	label {
 		white-space: nowrap;
@@ -20,6 +18,7 @@
 @media screen and (max-width: $small-max-width) {
 	.text-input {
 		flex-flow: row wrap;
+		gap: 0.5rem;
 
 		label {
 			width: 100%;
@@ -30,5 +29,6 @@
 @media screen and (min-width: $medium-min-width) {
 	.text-input {
 		flex-flow: row nowrap;
+		gap: 1rem;
 	}
 }

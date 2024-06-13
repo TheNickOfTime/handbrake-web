@@ -10,7 +10,6 @@
 	.input-section {
 		display: flex;
 		align-items: center;
-		gap: 1rem;
 
 		.input-path-text {
 			flex-grow: 1;
@@ -28,6 +27,7 @@
 	.path-input {
 		.input-section {
 			flex-flow: row wrap;
+			gap: 0.5rem;
 
 			.input-label {
 				width: 100%;
@@ -40,6 +40,7 @@
 	.path-input {
 		.input-section {
 			flex-flow: row nowrap;
+			gap: 1rem;
 		}
 	}
 }

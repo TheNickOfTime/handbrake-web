@@ -1,86 +1,111 @@
 @import '../../../style/modules/colors';
 @import '../../../style/modules/font';
+@import '../../../style/modules/sizing';
 
 .file-browser {
 	overflow: hidden;
 
 	border-radius: 1rem;
 	border: 0.2rem solid $background-primary;
-}
 
-.file-browser-header {
-	padding: 0.5rem 1rem;
+	.file-browser-header {
+		padding: 0.5rem 1rem;
 
-	background-color: $background-primary;
-}
+		background-color: $background-primary;
+	}
 
-.file-browser-body {
-	padding: 1rem;
+	.file-browser-body {
+		padding: 1rem;
 
-	.directory-item {
-		width: 100%;
-		padding: 0.5rem 0.75rem;
-		display: block;
+		.directory-item {
+			width: 100%;
+			padding: 0.5rem 0.75rem;
+			display: block;
 
-		border: none;
-		border-bottom: 0.1rem solid $background-primary;
-		background-color: transparent;
-		color: $text-color-primary;
+			border: none;
+			border-bottom: 0.1rem solid $background-primary;
+			background-color: transparent;
+			color: $text-color-primary;
 
-		font-size: 1.5rem;
-		text-align: left;
-		// outline: none;
+			font-size: 1.5rem;
+			text-align: left;
+			// outline: none;
 
-		.icon {
-			margin-right: 1rem;
-			display: inline;
-			vertical-align: middle;
-			font-size: 1.75rem;
-		}
+			.icon {
+				margin-right: 1rem;
+				display: inline;
+				vertical-align: middle;
+				font-size: 1.75rem;
+			}
 
-		.label {
-			display: inline;
-			vertical-align: middle;
-		}
-
-		&:disabled {
-			color: $text-color-disabled;
-		}
-
-		&:hover {
-			background-color: $transparent-light-primary;
-			cursor: pointer;
+			.label {
+				display: inline;
+				vertical-align: middle;
+			}
 
 			&:disabled {
-				cursor: not-allowed;
+				color: $text-color-disabled;
+			}
+
+			&:hover {
+				background-color: $transparent-light-primary;
+				cursor: pointer;
+
+				&:disabled {
+					cursor: not-allowed;
+				}
+			}
+
+			&:active,
+			&.selected {
+				background-color: $transparent-light-secondary;
 			}
 		}
+	}
 
-		&:active,
-		&.selected {
-			background-color: $transparent-light-secondary;
+	.file-browser-footer {
+		padding: 0.5rem 1rem;
+
+		.selected-file {
+			display: flex;
+			align-items: center;
+
+			.selected-file-label {
+				white-space: nowrap;
+			}
+
+			.selected-file-path {
+				flex-grow: 1;
+				padding: 0.5rem 1rem;
+				border-radius: 0.75rem;
+				background-color: $transparent-light-primary;
+			}
 		}
 	}
 }
 
-.file-browser-footer {
-	padding: 0.5rem 1rem;
+@media screen and (max-width: $small-max-width) {
+	.file-browser {
+		.file-browser-footer {
+			.selected-file {
+				flex-flow: row wrap;
+				gap: 0.5rem;
 
-	.selected-file {
-		display: flex;
-		flex-flow: row nowrap;
-		align-items: center;
-		gap: 1rem;
-
-		.selected-file-label {
-			white-space: nowrap;
+				.selected-file-label {
+					width: 100%;
+				}
+			}
 		}
+	}
+}
 
-		.selected-file-path {
-			flex-grow: 1;
-			padding: 0.5rem 1rem;
-			border-radius: 0.75rem;
-			background-color: $transparent-light-primary;
+@media screen and (min-width: $medium-min-width) {
+	.file-browser {
+		.file-browser-footer {
+			.selected-file {
+				flex-flow: row nowrap;
+				gap: 1rem;
+			}
 		}
 	}
 }
