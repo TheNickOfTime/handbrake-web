@@ -46,7 +46,7 @@ export default function PathInput({ id, label, tree, mode, value, onConfirm }: P
 						event?.preventDefault();
 						setShowTree(!showTree);
 					}}
-					onBlur={() => setShowTree(false)}
+					// onBlur={() => setShowTree(false)}
 				>
 					<span className='button-label'>{showTree ? 'Cancel' : 'Browse'}</span>
 				</button>
