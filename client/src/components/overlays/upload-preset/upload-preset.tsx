@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Socket } from 'socket.io-client';
-import OverlayWindow from '../../base/overlay-window/overlay-window';
 import { HandbrakePreset } from '../../../../../types/preset';
 import ButtonInput from '../../base/inputs/button/button-input';
 import './upload-preset.scss';
+import SectionOverlay from '../../section/section-overlay';
 
 type Params = {
 	socket: Socket;
@@ -50,9 +50,8 @@ export default function UploadPreset({ socket, handleClose }: Params) {
 	};
 
 	return (
-		<OverlayWindow className='upload-preset'>
+		<SectionOverlay id='upload-preset'>
 			<h1>Upload Preset</h1>
-			{/* <div className='upload-preset'></div> */}
 			<div className='file-section'>
 				<label htmlFor='preset-file'>Preset: </label>
 				<input
@@ -84,6 +83,6 @@ export default function UploadPreset({ socket, handleClose }: Params) {
 					onClick={handleAddPreset}
 				/>
 			</div>
-		</OverlayWindow>
+		</SectionOverlay>
 	);
 }

@@ -2,68 +2,70 @@
 @import '../../../style/modules/colors';
 @import '../../../style/modules/font';
 
-.upload-preset {
-	display: flex;
-	flex-flow: column nowrap;
-	gap: 1rem;
-
-	.file-section {
+.section-overlay#upload-preset {
+	.section-overlay-window {
 		display: flex;
-		flex-flow: row nowrap;
-		align-items: center;
+		flex-flow: column nowrap;
 		gap: 1rem;
 
-		.file-upload {
-			flex-grow: 1;
+		.file-section {
+			display: flex;
+			flex-flow: row nowrap;
+			align-items: center;
+			gap: 1rem;
 
-			font-size: 1.75rem;
-			font-family: $font-family-primary;
+			.file-upload {
+				flex-grow: 1;
 
-			border: 0.2rem solid hsla(0, 0%, 100%, 0.1);
-			border-radius: 0.75rem;
-			// background-color: white;
-
-			&::file-selector-button {
-				padding: 0.5rem 1rem;
-				background-color: hsla(0, 0%, 100%, 0.1);
-				color: $text-color-primary;
+				font-size: 1.75rem;
 				font-family: $font-family-primary;
+
+				border: 0.2rem solid hsla(0, 0%, 100%, 0.1);
+				border-radius: 0.75rem;
+				// background-color: white;
+
+				&::file-selector-button {
+					padding: 0.5rem 1rem;
+					background-color: hsla(0, 0%, 100%, 0.1);
+					color: $text-color-primary;
+					font-family: $font-family-primary;
+					border: none;
+				}
+
+				&::file-selector-button:hover {
+					background-color: hsla(0, 0%, 100%, 0.05);
+				}
+			}
+		}
+
+		.preset-name-section {
+			display: flex;
+			flex-flow: row nowrap;
+			align-items: center;
+			gap: 1rem;
+
+			#preset-name {
+				padding: 0.5rem 1rem;
+				flex-grow: 1;
+				font-size: 1.75rem;
+				font-family: $font-family-primary;
+				color: $text-color-primary;
+				// border: 0.2rem solid hsla(0, 0%, 100%, 0.1);
 				border: none;
-			}
-
-			&::file-selector-button:hover {
-				background-color: hsla(0, 0%, 100%, 0.05);
+				border-radius: 0.75rem;
+				background-color: hsla(0, 0%, 100%, 0.1);
 			}
 		}
-	}
 
-	.preset-name-section {
-		display: flex;
-		flex-flow: row nowrap;
-		align-items: center;
-		gap: 1rem;
+		.buttons-section {
+			display: flex;
+			flex-flow: row wrap;
+			justify-content: flex-end;
+			gap: 1rem;
 
-		#preset-name {
-			padding: 0.5rem 1rem;
-			flex-grow: 1;
-			font-size: 1.75rem;
-			font-family: $font-family-primary;
-			color: $text-color-primary;
-			// border: 0.2rem solid hsla(0, 0%, 100%, 0.1);
-			border: none;
-			border-radius: 0.75rem;
-			background-color: hsla(0, 0%, 100%, 0.1);
-		}
-	}
-
-	.buttons-section {
-		display: flex;
-		flex-flow: row wrap;
-		justify-content: flex-end;
-		gap: 1rem;
-
-		* {
-			font-size: 1.75rem;
+			* {
+				font-size: 1.75rem;
+			}
 		}
 	}
 }
