@@ -37,7 +37,7 @@
 
 	.dark-overlay {
 		position: absolute;
-		z-index: 9;
+		z-index: 998;
 		height: 100%;
 		width: 100%;
 		display: none;
@@ -89,7 +89,7 @@
 
 			button {
 				position: absolute;
-				z-index: 100;
+				z-index: 1000;
 				height: 100%;
 				aspect-ratio: 1;
 				background-color: transparent;
