@@ -16,6 +16,8 @@
 
 	.file-browser-body {
 		padding: 1rem;
+		max-height: 25rem;
+		overflow-y: scroll;
 
 		.directory-item {
 			width: 100%;
