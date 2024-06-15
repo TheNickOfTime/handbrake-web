@@ -1,8 +1,8 @@
-import { io } from "socket.io-client";
-import { Job, QueueEntry } from "../types/queue";
-import Transcode from "./scripts/transcode";
-import "dotenv/config";
-import { Socket } from "socket.io";
+import { io } from 'socket.io-client';
+import { Job, QueueEntry } from '../types/queue';
+import Transcode from './scripts/transcode';
+import 'dotenv/config';
+import { Socket } from 'socket.io';
 
 const workerID = process.env.WORKER_ID;
 
@@ -23,13 +23,13 @@ const server = io(serverAddress, {
 	query: { workerID: workerID },
 });
 
-server.on("connect", () => {
+server.on('connect', () => {
 	console.log(
 		`[worker] [${workerID}] Connected to the server '${serverAddress}' with id '${server.id}'.`
 	);
 });
 
-server.on("connect_error", (error) => {
+server.on('connect_error', (error) => {
 	if (server.active) {
 		console.log(
 			`[worker] [${workerID}] Connection to server lost, will attempt reconnection...`
@@ -42,23 +42,31 @@ server.on("connect_error", (error) => {
 	}
 });
 
-server.on("disconnect", (reason, details) => {
-	console.log(
-		`[worker] Disconnected from the server with reason '${reason}'.`
-	);
+server.on('disconnect', (reason, details) => {
+	console.log(`[worker] Disconnected from the server with reason '${reason}'.`);
 	console.log(details);
 });
 
-server.on("transcode", (data: QueueEntry) => {
+server.on('transcode', (data: QueueEntry) => {
 	console.log(`[worker] Request to transcode queue entry '${data.id}'.`);
 	Transcode(data, server);
 });
 
+process.on('SIGINT', (signal) => {
+	console.log('[worker] The process has been interrupted, HandBrake Web will now shutdown...');
+	process.exit(0);
+});
+
+process.on('SIGTERM', (signal) => {
+	console.log('[worker] The process has been terminated, HandBrake Web will now shutdown...');
+	process.exit(0);
+});
+
 if (canConnect) {
 	server.connect();
-	console.log("[worker] The worker process has started.");
+	console.log('[worker] The worker process has started.');
 } else {
 	console.error(
-		"[worker] The SERVER_URL or SERVER_PORT environment variables are not set, no valid server to connect to."
+		'[worker] The SERVER_URL or SERVER_PORT environment variables are not set, no valid server to connect to.'
 	);
 }

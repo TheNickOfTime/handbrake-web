@@ -8,6 +8,7 @@ import ClientSocket from './socket/client-socket';
 import WorkerSocket from './socket/worker-socket';
 import Initialization from './scripts/initialization';
 import ClientRoutes from './routes/client';
+import Shutdown from './scripts/shutdown';
 
 // Server ------------------------------------------------------------------------------------------
 const app = express();
@@ -32,5 +33,6 @@ ClientRoutes(app);
 ClientSocket(io);
 WorkerSocket(io);
 
-// Initialization ----------------------------------------------------------------------------------
+// Initialization & Shutdown -----------------------------------------------------------------------
 Initialization(server);
+Shutdown();
