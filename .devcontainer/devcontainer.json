@@ -2,6 +2,15 @@
 	"name": "handbrake-web",
 	"build": { "dockerfile": "Dockerfile" },
 	"runArgs": ["--name", "handbrake-web-dev"],
+	"remoteUser": "root", //set to root by default to avoid general permissions issues
+	"mounts": [
+		// Uncomment to map an external media directory
+		// {
+		// 	"source": "/your/media/location", //change this to wherever you store your desired media
+		// 	"target": "/video",
+		// 	"type": "bind"
+		// }
+	],
 	"customizations": {
 		"vscode": {
 			"extensions": [
