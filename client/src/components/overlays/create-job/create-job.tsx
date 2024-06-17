@@ -87,7 +87,7 @@ export default function CreateJob({ socket, onClose }: Params) {
 		noExistingCollision;
 
 	const splitName = (name: string) => {
-		const splitRegex = /^([\w\d]+)(\.[\w\d]+)$/;
+		const splitRegex = /^(.+)(\.[\w\d]+)$/;
 		const splitResult = name.match(splitRegex);
 		if (splitResult) {
 			const result: SplitFileName = {
@@ -101,11 +101,11 @@ export default function CreateJob({ socket, onClose }: Params) {
 	};
 
 	const splitPath = (path: string) => {
-		const splitRegex = /\/([\w\d]+)(\.[\w\d]+)$/;
+		const splitRegex = /^\/.+\/(.+)(\.[\w\d]+)$/;
 		const splitResult = path.match(splitRegex);
 		if (splitResult) {
 			const result: SplitFilePath = {
-				path: path.replace(splitRegex, ''),
+				path: path.replace('/' + splitResult[1] + splitResult[2], ''),
 				name: splitResult[1],
 				extension: splitResult[2],
 			};
@@ -369,7 +369,7 @@ export default function CreateJob({ socket, onClose }: Params) {
 						onConfirm={handleOutputConfirm}
 						key={jobFrom == JobFrom.FromFile ? 'output-file' : 'output-directory'}
 					/>
-					{jobFrom == JobFrom.FromFile && !noExistingCollision && (
+					{tree && jobFrom == JobFrom.FromFile && !noExistingCollision && (
 						<span className='filename-conflict'>
 							<i className='bi bi-exclamation-circle-fill' />{' '}
 							<span>
