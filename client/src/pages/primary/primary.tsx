@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 import { io } from 'socket.io-client';
 // import 'dotenv/config';
 
@@ -107,10 +107,10 @@ export default function Primary() {
 			<div className={`dark-overlay ${showSidebar ? 'visible' : 'hidden'}`} />
 			<div className='primary-section'>
 				<div className='mobile-toolbar'>
-					<div className='title'>
+					<NavLink className='title' to='/'>
 						<img src='/handbrake-icon.png' alt='Handbrake Icon' />
 						<h1>HandBrake Web</h1>
-					</div>
+					</NavLink>
 					<button onClick={() => setShowSidebar(!showSidebar)}>
 						<i className='bi-list' />
 					</button>
