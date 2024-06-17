@@ -15,7 +15,11 @@ import SideBar from '../../components/modules/side-bar/side-bar';
 import './primary.scss';
 
 export default function Primary() {
-	const serverURL = import.meta.env.PROD ? window.location.href : 'http://localhost:9999/';
+	const baseURLRegex = /(^https?:\/\/.+\/)(.+$)/;
+	const serverURL = (
+		import.meta.env.PROD ? window.location.href : 'http://localhost:9999/'
+	).replace(baseURLRegex, '$1');
+
 	const serverSocketPath = 'client';
 	const server = `${serverURL}${serverSocketPath}`;
 
