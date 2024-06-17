@@ -9,7 +9,7 @@ export default function ClientRoutes(app: Express) {
 		app.use(express.static(clientBuildPath));
 	}
 
-	app.get('/', (req, res) => {
+	app.get('*', (req, res) => {
 		const htmlPath = isProduction
 			? path.join(clientBuildPath, '/index.html')
 			: path.join(__dirname, '../html/development/index.html');
