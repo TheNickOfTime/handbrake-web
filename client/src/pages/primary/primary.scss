@@ -99,6 +99,11 @@
 					color: $text-color-primary;
 					font-size: 3.5rem;
 				}
+
+				&:hover {
+					cursor: pointer;
+					background-color: $transparent-light-secondary;
+				}
 			}
 		}
 
