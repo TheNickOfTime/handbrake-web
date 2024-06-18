@@ -38,7 +38,7 @@ export function GetWorkerWithID(id: string) {
 }
 
 export function GetWorkerID(worker: Worker) {
-	return worker.handshake.query['workerID'];
+	return worker.handshake.query['workerID'] as string;
 }
 
 export function EmitToAllClients(event: string, data: any) {
