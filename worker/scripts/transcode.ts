@@ -144,21 +144,27 @@ export default function Transcode(queueEntry: QueueEntry, socket: Socket) {
 export function StopTranscode(socket: Socket) {
 	if (handbrake) {
 		if (job) {
-			const newStatus: TranscodeStatus = {
-				stage: TranscodeStage.Stopped,
-				info: {
-					percentage: `${(0).toFixed(2)} %`,
-				},
-			};
-			const statusUpdate: TranscodeStatusUpdate = {
-				id: job.id,
-				status: newStatus,
-			};
-			socket.emit('transcode-stopped', statusUpdate);
-			console.log(`[worker] Informing the server that job '${job.id}' has been stopped.`);
+			if (socket.connected) {
+				const newStatus: TranscodeStatus = {
+					stage: TranscodeStage.Stopped,
+					info: {
+						percentage: `${(0).toFixed(2)} %`,
+					},
+				};
+				const statusUpdate: TranscodeStatusUpdate = {
+					id: job.id,
+					status: newStatus,
+				};
+				socket.emit('transcode-stopped', statusUpdate);
+				console.log(`[worker] Informing the server that job '${job.id}' has been stopped.`);
+			} else {
+				console.error(
+					"[worker] [error] Cannot send the event 'transcode-stopped' because the server socket is not connected."
+				);
+			}
 		} else {
 			console.error(
-				"[worker] [error] Cannot send the event 'stop-transode' because the current job is null."
+				"[worker] [error] Cannot send the event 'transcode-stopped' because the current job is null."
 			);
 		}
 		handbrake.kill();
