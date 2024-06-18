@@ -57,10 +57,20 @@ export function AddJob(data: QueueRequest) {
 export function UpdateJob(data: TranscodeStatusUpdate) {
 	const job = GetJobFromDatabase(data.id);
 	if (job) {
-		job.status = data.status;
-		if (job.status.stage == TranscodeStage.Finished) {
-			job.worker = null;
+		switch (data.status.stage) {
+			case TranscodeStage.Waiting:
+				if (job.status.stage != TranscodeStage.Waiting) {
+					job.worker = null;
+				}
+				break;
+			case TranscodeStage.Finished:
+				job.worker = null;
+				break;
+			case TranscodeStage.Stopped:
+				job.worker = null;
+				break;
 		}
+		job.status = data.status;
 		UpdateJobInDatabase(data.id.toString(), job);
 		UpdateQueue();
 	}

@@ -2,6 +2,7 @@ import { Server } from 'socket.io';
 import { AddWorker, RemoveWorker } from '../scripts/connections';
 import { TranscodeStage, TranscodeStatusUpdate } from '../../types/transcode';
 import { UpdateJob } from '../scripts/queue';
+import { UpdateJobInDatabase } from '../scripts/database/database-queue';
 
 export default function WorkerSocket(io: Server) {
 	io.of('/worker').on('connection', (socket) => {
@@ -13,6 +14,14 @@ export default function WorkerSocket(io: Server) {
 		socket.on('disconnect', () => {
 			console.log(`[server] Worker '${workerID}' with ID '${socket.id}' has disconnected.`);
 			RemoveWorker(socket);
+		});
+
+		socket.on('transcode-stopped', (status: TranscodeStatusUpdate) => {
+			console.log(
+				`[server] Worker '${workerID}' with ID '${socket.id}' has stopped transcoding. The job will be reset.`
+			);
+
+			UpdateJob(status);
 		});
 
 		socket.on('transcoding', (data: TranscodeStatusUpdate) => {

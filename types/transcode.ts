@@ -3,6 +3,7 @@ export enum TranscodeStage {
 	Scanning,
 	Transcoding,
 	Finished,
+	Stopped,
 }
 
 export type TranscodeInfo = {
