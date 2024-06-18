@@ -31,6 +31,7 @@
 	.job-actions {
 		display: grid;
 		grid-template-columns: 1;
+		gap: 0.2rem;
 
 		button {
 			padding: 0 0.75rem;
