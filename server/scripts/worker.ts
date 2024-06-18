@@ -1,6 +1,6 @@
 import { Job, QueueEntry, QueueStatus } from '../../types/queue';
 import { TranscodeStage } from '../../types/transcode';
-import { GetWorkers } from './connections';
+import { GetWorkerID, GetWorkers } from './connections';
 import { GetQueueFromDatabase, UpdateJobInDatabase } from './database/database-queue';
 import { GetQueueStatus, SetQueueStatus, StopQueue } from './queue';
 
@@ -36,7 +36,7 @@ export function SearchForWorker() {
 			.filter((job) => job.worker != null)
 			.map((job) => job.worker);
 		const availableWorkers = GetWorkers().filter((worker) => {
-			const id = worker.handshake.query['workerID'] as string;
+			const id = GetWorkerID(worker);
 			return !busyWorkers.includes(id);
 		});
 
@@ -47,12 +47,10 @@ export function SearchForWorker() {
 			if (validJobs.length > 0) {
 				const selectedJobID = validJobs[0];
 				const selectedWorker = availableWorkers[0];
-				console.log(
-					`[server] Found free worker '${selectedWorker.handshake.query['workerID']}'.`
-				);
+				console.log(`[server] Found free worker '${GetWorkerID(selectedWorker)}'.`);
 
 				const selectedJob: Job = queue[selectedJobID];
-				selectedJob.worker = selectedWorker.handshake.query['workerID'] as string;
+				selectedJob.worker = GetWorkerID(selectedWorker);
 				UpdateJobInDatabase(selectedJobID, selectedJob);
 
 				// EmitToAllClients('queue-update', queue);
