@@ -1,6 +1,6 @@
 import { Job, Queue, QueueEntry, QueueRequest, QueueStatus } from '../../types/queue';
 import { TranscodeStage, TranscodeStatusUpdate } from '../../types/transcode';
-import { EmitToAllClients, EmitToAllConnections, connections } from './connections';
+import { EmitToAllClients, EmitToAllConnections, EmitToWorkerWithID } from './connections';
 import {
 	GetJobFromDatabase,
 	GetQueueFromDatabase,
@@ -22,6 +22,32 @@ let workerSearchInterval: null | NodeJS.Timeout = null;
 
 export function GetQueue() {
 	return GetQueueFromDatabase();
+}
+
+export function InitializeQueue() {
+	const queue = GetQueueFromDatabase();
+	if (queue) {
+		Object.keys(queue).forEach((jobID) => {
+			const job = queue[jobID];
+			if (
+				job.worker != null ||
+				job.status.stage == TranscodeStage.Scanning ||
+				job.status.stage == TranscodeStage.Transcoding
+			) {
+				job.worker = null;
+				job.status.stage = TranscodeStage.Stopped;
+				job.status.info = {
+					percentage: '0.00%',
+				};
+
+				UpdateJobInDatabase(jobID, job);
+				console.log(
+					`[server] [queue] Job '${jobID}' was loaded from the database in an unfinished state. The job will be updated to 'Stopped'.`
+				);
+			}
+		});
+		EmitToAllClients('queue-update', queue);
+	}
 }
 
 export function UpdateQueue() {
@@ -73,6 +99,56 @@ export function UpdateJob(data: TranscodeStatusUpdate) {
 		job.status = data.status;
 		UpdateJobInDatabase(data.id.toString(), job);
 		UpdateQueue();
+	}
+}
+
+export function StopJob(id: string) {
+	const job = GetJobFromDatabase(id);
+	if (job) {
+		// Tell the worker to stop transcoding
+		const worker = job.worker;
+		if (worker) {
+			EmitToWorkerWithID(worker, 'stop-transcode', id);
+		}
+
+		// Update Job in database
+		job.worker = null;
+		job.status.stage = TranscodeStage.Stopped;
+		job.status.info = {
+			percentage: '0.00 %',
+		};
+
+		UpdateJobInDatabase(id, job);
+		UpdateQueue();
+	} else {
+		console.error(
+			`[server] Job with id '${id}' does not exist, unable to stop the requested job.`
+		);
+	}
+}
+
+export function ResetJob(id: string) {
+	const job = GetJobFromDatabase(id);
+	if (job) {
+		if (job.status.stage == TranscodeStage.Stopped) {
+			// Update Job in database
+			job.worker = null;
+			job.status.stage = TranscodeStage.Waiting;
+			job.status.info = {
+				percentage: '0.00 %',
+			};
+
+			UpdateJobInDatabase(id, job);
+			UpdateQueue();
+		} else {
+			console.error(
+				`[server] [error] Job with id '${id}' cannot be reset because it is not in a stopped state.`
+			);
+		}
+	} else {
+		console.error(
+			`[server] Job with id '${id}' does not exist, unable to reset the requested job.`
+		);
 	}
 }
 
@@ -136,6 +212,13 @@ export function ClearQueue(clientID: string, finishedOnly: boolean = false) {
 						`[server] Removing job '${key}' from the queue due to being 'Finished'.`
 					);
 					break;
+				case TranscodeStage.Stopped:
+					if (!finishedOnly) {
+						RemoveJobFromDatabase(key);
+						console.log(
+							`[server] Removing job '${key}' from the queue due to being 'Stopped'.`
+						);
+					}
 			}
 		}
 

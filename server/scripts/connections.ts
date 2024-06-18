@@ -1,4 +1,4 @@
-import { Client, Connections, Worker } from "../../types/socket";
+import { Client, Connections, Worker } from '../../types/socket';
 
 export const connections: Connections = {
 	clients: [],
@@ -37,6 +37,19 @@ export function EmitToAllWorkers(event: string, data: any) {
 	});
 }
 
+export function EmitToWorkerWithID(workerID: string, event: string, data: any) {
+	const worker = connections.workers.find(
+		(worker) => worker.handshake.query['workerID'] == workerID
+	);
+	if (worker) {
+		worker.emit(event, data);
+	} else {
+		console.error(
+			`[server] [error] Could not find a worker with id '${workerID}'. Could not emit event '${event}'.`
+		);
+	}
+}
+
 export function EmitToAllConnections(event: string, data: any) {
 	EmitToAllClients(event, data);
 	EmitToAllWorkers(event, data);
@@ -46,12 +59,12 @@ const updateConnections = () => {
 	// console.log(connections);
 	const clients = connections.clients.map((client) => client.id);
 	const workers = connections.workers.map((worker) => ({
-		workerID: worker.handshake.query["workerID"],
+		workerID: worker.handshake.query['workerID'],
 		connectionID: worker.id,
 	}));
 	const data = {
 		clients: clients,
 		workers: workers,
 	};
-	EmitToAllClients("connections-update", data);
+	EmitToAllClients('connections-update', data);
 };

@@ -4,7 +4,9 @@ import {
 	ClearQueue,
 	GetQueue,
 	GetQueueStatus,
+	ResetJob,
 	StartQueue,
+	StopJob,
 	StopQueue,
 } from '../scripts/queue';
 import { QueueRequest } from '../../types/queue';
@@ -52,6 +54,15 @@ export default function ClientSocket(io: Server) {
 
 		socket.on('clear-queue', (finishedOnly: boolean) => {
 			ClearQueue(socket.id, finishedOnly);
+		});
+
+		// Jobs ------------------------------------------------------------------------------------
+		socket.on('stop-job', (id: string) => {
+			StopJob(id);
+		});
+
+		socket.on('reset-job', (id: string) => {
+			ResetJob(id);
 		});
 
 		// Directory -------------------------------------------------------------------------------

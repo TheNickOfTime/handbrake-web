@@ -1,7 +1,7 @@
 // import { Server } from 'socket.io';
 import { ReadDataFromFile } from './data';
 import { SetPresets, presetsPath } from './presets';
-import { UpdateQueue } from './queue';
+import { InitializeQueue } from './queue';
 import { DatabaseConnect } from './database/database';
 import { Server } from 'http';
 
@@ -14,7 +14,7 @@ export default async function Initialization(server: Server) {
 
 	// Database ------------------------------------------------------------------------------------
 	DatabaseConnect();
-	UpdateQueue();
+	InitializeQueue();
 
 	// Start Server --------------------------------------------------------------------------------
 	const url = process.env.SERVER_URL || 'http://localhost';
