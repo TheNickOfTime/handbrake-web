@@ -7,7 +7,7 @@ import {
 	InsertJobToDatabase,
 	RemoveJobFromDatabase,
 	UpdateJobInDatabase,
-} from './database';
+} from './database/database-queue';
 import { GetPresets } from './presets';
 import { SearchForWorker } from './worker';
 import hash from 'object-hash';

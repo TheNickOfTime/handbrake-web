@@ -1,7 +1,7 @@
 import { QueueEntry, QueueStatus } from '../../types/queue';
 import { TranscodeStage } from '../../types/transcode';
 import { connections } from './connections';
-import { GetQueueFromDatabase, UpdateJobInDatabase } from './database';
+import { GetQueueFromDatabase, UpdateJobInDatabase } from './database/database-queue';
 import { GetQueueStatus, SetQueueStatus, StopQueue } from './queue';
 
 export function SearchForWorker() {

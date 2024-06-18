@@ -2,7 +2,7 @@
 import { ReadDataFromFile } from './data';
 import { SetPresets, presetsPath } from './presets';
 import { UpdateQueue } from './queue';
-import { DatabaseConnect } from './database';
+import { DatabaseConnect } from './database/database';
 import { Server } from 'http';
 
 export default async function Initialization(server: Server) {
