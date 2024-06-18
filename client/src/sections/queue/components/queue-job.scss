@@ -16,7 +16,7 @@
 		padding: 0 1rem;
 		display: flex;
 		align-items: center;
-		background-color: hsla(0, 0%, 100%, 0.1);
+		background-color: $transparent-light-primary;
 	}
 
 	.job-info {
@@ -26,5 +26,45 @@
 		display: flex;
 		flex-flow: row wrap;
 		gap: 2rem;
+	}
+
+	.job-actions {
+		display: grid;
+		grid-template-columns: 1;
+		gap: 0.2rem;
+
+		button {
+			padding: 0 0.75rem;
+
+			border: none;
+			border-radius: 0;
+			background-color: $transparent-light-secondary;
+
+			.bi {
+				color: $text-color-secondary;
+				font-size: 1.5rem;
+			}
+
+			&:hover:not(:disabled) {
+				background-color: $transparent-light-primary;
+				cursor: pointer;
+			}
+
+			&:hover:disabled {
+				// background-color: $transparent-light-primary;
+				cursor: not-allowed;
+			}
+
+			&:active {
+				background-color: $transparent-light-tertiary;
+			}
+
+			&:disabled {
+				background-color: $transparent-light-tertiary;
+				.bi {
+					color: $text-color-disabled;
+				}
+			}
+		}
 	}
 }

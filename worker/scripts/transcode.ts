@@ -1,10 +1,17 @@
-import { spawn } from 'child_process';
+import { spawn, ChildProcessWithoutNullStreams as ChildProcess } from 'child_process';
 import { Socket } from 'socket.io-client';
 import { Job, QueueEntry } from '../../types/queue';
-import { TranscodeStage, TranscodeStatus, TranscodeStatusUpdate } from '../../types/transcode';
 import fs from 'fs';
 import path from 'path';
+import { TranscodeStage, TranscodeStatus, TranscodeStatusUpdate } from '../../types/transcode';
 import { HandbrakeJSONOutput, Muxing, Scanning, WorkDone, Working } from '../../types/handbrake';
+
+let handbrake: ChildProcess | null = null;
+export const isTranscoding = () => handbrake != null;
+
+let job: QueueEntry | null = null;
+export const getJobID = () => job?.id;
+export const getJobData = () => job?.job;
 
 const writePresetToFile = (preset: object) => {
 	const presetString = JSON.stringify(preset);
@@ -15,7 +22,7 @@ const writePresetToFile = (preset: object) => {
 		fs.mkdirSync(presetDir);
 	}
 
-	const presetFile = fs.writeFile(path.join(presetDir, presetName), presetString, (err) => {
+	fs.writeFile(path.join(presetDir, presetName), presetString, (err) => {
 		if (err) {
 			console.error('[worker] Preset failed to write to file.');
 			console.error(err);
@@ -25,12 +32,13 @@ const writePresetToFile = (preset: object) => {
 	});
 };
 
-export default function Transcode(queueEntry: QueueEntry, socket: Socket) {
+export function StartTranscode(queueEntry: QueueEntry, socket: Socket) {
+	job = queueEntry;
 	writePresetToFile(queueEntry.job.preset);
 
 	const presetName = queueEntry.job.preset.PresetList[0].PresetName;
 
-	const handbrake = spawn('HandBrakeCLI', [
+	handbrake = spawn('HandBrakeCLI', [
 		'--preset-import-file',
 		'./temp/preset.json',
 		'--preset',
@@ -108,6 +116,10 @@ export default function Transcode(queueEntry: QueueEntry, socket: Socket) {
 									id: queueEntry.id,
 									status: transcodeStatus,
 								};
+
+								// isTranscoding = false;
+								job = null;
+
 								socket.emit('transcoding', finishedUpdate);
 								console.log(`Finished: 100.00%`);
 							} else {
@@ -127,4 +139,38 @@ export default function Transcode(queueEntry: QueueEntry, socket: Socket) {
 
 		console.error('[error] ', output);
 	});
+}
+
+export function StopTranscode(socket: Socket) {
+	if (handbrake) {
+		if (job) {
+			if (socket.connected) {
+				const newStatus: TranscodeStatus = {
+					stage: TranscodeStage.Stopped,
+					info: {
+						percentage: `${(0).toFixed(2)} %`,
+					},
+				};
+				const statusUpdate: TranscodeStatusUpdate = {
+					id: job.id,
+					status: newStatus,
+				};
+				socket.emit('transcode-stopped', statusUpdate);
+				console.log(`[worker] Informing the server that job '${job.id}' has been stopped.`);
+			} else {
+				console.error(
+					"[worker] [error] Cannot send the event 'transcode-stopped' because the server socket is not connected."
+				);
+			}
+		} else {
+			console.error(
+				"[worker] [error] Cannot send the event 'transcode-stopped' because the current job is null."
+			);
+		}
+		handbrake.kill();
+	} else {
+		console.log(
+			`[worker] The worker is not transcoding anything, there is no transcode to stop.`
+		);
+	}
 }

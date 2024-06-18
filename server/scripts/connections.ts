@@ -1,6 +1,6 @@
-import { Client, Connections, Worker } from "../../types/socket";
+import { Client, Connections, Worker } from '../../types/socket';
 
-export const connections: Connections = {
+const connections: Connections = {
 	clients: [],
 	workers: [],
 };
@@ -25,6 +25,22 @@ export function RemoveWorker(worker: Worker) {
 	updateConnections();
 }
 
+export function GetWorkers() {
+	return connections.workers;
+}
+
+export function GetWorkerIDs() {
+	return connections.workers.map((worker) => worker.id);
+}
+
+export function GetWorkerWithID(id: string) {
+	return connections.workers.find((worker) => GetWorkerID(worker) == id);
+}
+
+export function GetWorkerID(worker: Worker) {
+	return worker.handshake.query['workerID'] as string;
+}
+
 export function EmitToAllClients(event: string, data: any) {
 	connections.clients.forEach((client) => {
 		client.emit(event, data);
@@ -37,6 +53,17 @@ export function EmitToAllWorkers(event: string, data: any) {
 	});
 }
 
+export function EmitToWorkerWithID(workerID: string, event: string, data: any) {
+	const worker = GetWorkerWithID(workerID);
+	if (worker) {
+		worker.emit(event, data);
+	} else {
+		console.error(
+			`[server] [error] Could not find a worker with id '${workerID}'. Could not emit event '${event}'.`
+		);
+	}
+}
+
 export function EmitToAllConnections(event: string, data: any) {
 	EmitToAllClients(event, data);
 	EmitToAllWorkers(event, data);
@@ -46,12 +73,12 @@ const updateConnections = () => {
 	// console.log(connections);
 	const clients = connections.clients.map((client) => client.id);
 	const workers = connections.workers.map((worker) => ({
-		workerID: worker.handshake.query["workerID"],
+		workerID: GetWorkerID(worker),
 		connectionID: worker.id,
 	}));
 	const data = {
 		clients: clients,
 		workers: workers,
 	};
-	EmitToAllClients("connections-update", data);
+	EmitToAllClients('connections-update', data);
 };
