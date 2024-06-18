@@ -22,39 +22,6 @@ HandBrake Web is deployed via docker, and most easily via `docker compose`. The 
 
 1. Copy the example docker compose
 
-   ```yaml
-   services:
-     handbrake-server:
-       image: ghcr.io/thenickoftime/handbrake-web:latest
-       container_name: handbrake-web-server
-       environment:
-         - HANDBRAKE_MODE=server
-       ports:
-         - 9999:9999# HandBrake Web
-   ```
-
-<p align='center'>
-    <img src='./images/readme/readme-thumb.png' width=540>
-</p>
-
-HandBrake Web is a program for interfacing with handbrake across multiple machines via a web browser. It consists of two components: the **server** and one or more **worker**(s). **_Warning_** - This application is still under heavy development, use at your own risk, to learn more please see the [Known Issues & Limitations](#planned-features-not-yet-implemented) section.
-
-### Server
-
-The server component primarily acts as a coordinator for the workers. Additionally it serves the client interface. **The work done by the server is not computationally expensive** - it can be run on low-end/low-power devices with no issue.
-
-### Worker(s)
-
-The worker component does the heavy lifting via HandBrakeCLI. Jobs are sent to workers by the server, and the workers will process the provided media based on a provided HandBrake preset configuration. **The work done by the worker is very computationally expensive** - it is recommended that you **run a single worker instance per machine**, and that machine either have a high core-count CPU _or_ have GPU hardware transcoding features available to the worker.
-
-## Setup
-
-HandBrake Web is deployed via docker, and most easily via `docker compose`. The below setup will guide you to have the server and a single worker instance running on the same machine.
-
-### Docker Compose
-
-1. Copy the example docker compose
-
 ```yaml
 services:
   handbrake-server:
