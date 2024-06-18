@@ -1,6 +1,6 @@
 import { Job, QueueEntry, QueueStatus } from '../../types/queue';
 import { TranscodeStage } from '../../types/transcode';
-import { connections } from './connections';
+import { GetWorkers } from './connections';
 import { GetQueueFromDatabase, UpdateJobInDatabase } from './database/database-queue';
 import { GetQueueStatus, SetQueueStatus, StopQueue } from './queue';
 
@@ -35,7 +35,7 @@ export function SearchForWorker() {
 		const busyWorkers = Object.values(queue)
 			.filter((job) => job.worker != null)
 			.map((job) => job.worker);
-		const availableWorkers = connections.workers.filter((worker) => {
+		const availableWorkers = GetWorkers().filter((worker) => {
 			const id = worker.handshake.query['workerID'] as string;
 			return !busyWorkers.includes(id);
 		});

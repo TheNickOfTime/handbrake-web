@@ -1,6 +1,6 @@
 import { Client, Connections, Worker } from '../../types/socket';
 
-export const connections: Connections = {
+const connections: Connections = {
 	clients: [],
 	workers: [],
 };
@@ -23,6 +23,18 @@ export function AddWorker(worker: Worker) {
 export function RemoveWorker(worker: Worker) {
 	connections.workers.splice(connections.workers.indexOf(worker));
 	updateConnections();
+}
+
+export function GetWorkers() {
+	return connections.workers;
+}
+
+export function GetWorkerIDs() {
+	return connections.workers.map((worker) => worker.id);
+}
+
+export function GetWorkerWithID(id: string) {
+	return connections.workers.find((worker) => worker.id == id);
 }
 
 export function EmitToAllClients(event: string, data: any) {
