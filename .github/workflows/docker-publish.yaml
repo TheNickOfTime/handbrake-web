@@ -2,6 +2,7 @@ name: Create and publish a Docker image
 
 on:
   push:
+    branches: [main]
     tags:
       - 'v*.*.*'
   pull_request:
@@ -38,7 +39,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=ref,event=branch
+            type=ref,event=branch,value=unstable
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
