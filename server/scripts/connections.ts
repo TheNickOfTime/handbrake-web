@@ -34,7 +34,11 @@ export function GetWorkerIDs() {
 }
 
 export function GetWorkerWithID(id: string) {
-	return connections.workers.find((worker) => worker.id == id);
+	return connections.workers.find((worker) => GetWorkerID(worker) == id);
+}
+
+export function GetWorkerID(worker: Worker) {
+	return worker.handshake.query['workerID'];
 }
 
 export function EmitToAllClients(event: string, data: any) {
@@ -50,9 +54,7 @@ export function EmitToAllWorkers(event: string, data: any) {
 }
 
 export function EmitToWorkerWithID(workerID: string, event: string, data: any) {
-	const worker = connections.workers.find(
-		(worker) => worker.handshake.query['workerID'] == workerID
-	);
+	const worker = GetWorkerWithID(workerID);
 	if (worker) {
 		worker.emit(event, data);
 	} else {
@@ -71,7 +73,7 @@ const updateConnections = () => {
 	// console.log(connections);
 	const clients = connections.clients.map((client) => client.id);
 	const workers = connections.workers.map((worker) => ({
-		workerID: worker.handshake.query['workerID'],
+		workerID: GetWorkerID(worker),
 		connectionID: worker.id,
 	}));
 	const data = {

@@ -115,6 +115,8 @@ export function StopJob(id: string) {
 		if (worker) {
 			if (GetWorkerWithID(worker)) {
 				EmitToWorkerWithID(worker, 'stop-transcode', id);
+			} else {
+				console.log('poop');
 			}
 		}
 
