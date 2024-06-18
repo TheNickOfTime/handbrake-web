@@ -1,6 +1,11 @@
 import { Job, Queue, QueueEntry, QueueRequest, QueueStatus } from '../../types/queue';
 import { TranscodeStage, TranscodeStatusUpdate } from '../../types/transcode';
-import { EmitToAllClients, EmitToAllConnections, EmitToWorkerWithID } from './connections';
+import {
+	EmitToAllClients,
+	EmitToAllConnections,
+	EmitToWorkerWithID,
+	GetWorkerWithID,
+} from './connections';
 import {
 	GetJobFromDatabase,
 	GetQueueFromDatabase,
@@ -108,7 +113,9 @@ export function StopJob(id: string) {
 		// Tell the worker to stop transcoding
 		const worker = job.worker;
 		if (worker) {
-			EmitToWorkerWithID(worker, 'stop-transcode', id);
+			if (GetWorkerWithID(worker)) {
+				EmitToWorkerWithID(worker, 'stop-transcode', id);
+			}
 		}
 
 		// Update Job in database

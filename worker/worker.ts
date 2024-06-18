@@ -38,11 +38,3 @@ if (canConnect) {
 		'[worker] The SERVER_URL or SERVER_PORT environment variables are not set, no valid server to connect to.'
 	);
 }
-
-// Resume/Recover
-////// Server starts up with unfinished jobs in the queue
-////////// Check if any workers are working on that job
-////// Worker disconnects mid job
-////////// Reset job to waiting?
-////////// Set job to failed/error?
-//
