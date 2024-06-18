@@ -5,12 +5,21 @@ import QueueJobSection from './queue-job-section';
 import './queue-job.scss';
 
 type Params = {
+	// id: string;
 	data: Job;
 	index: number;
+	handleStopJob: () => void;
+	handleResetJob: () => void;
 };
 
-export default function QueueJob({ data, index }: Params) {
+export default function QueueJob({ data, index, handleStopJob, handleResetJob }: Params) {
 	const percentage = parseFloat(data.status.info.percentage.replace(' %', ''));
+
+	const canStop =
+		data.status.stage == TranscodeStage.Scanning ||
+		data.status.stage == TranscodeStage.Transcoding;
+	const canReset =
+		data.status.stage == TranscodeStage.Stopped || data.status.stage == TranscodeStage.Finished;
 
 	return (
 		<div className='queue-job'>
@@ -35,6 +44,24 @@ export default function QueueJob({ data, index }: Params) {
 				<QueueJobSection label='Progress'>
 					<ProgressBar percentage={percentage} />
 				</QueueJobSection>
+			</div>
+			<div className='job-actions'>
+				<button
+					className='job-action-stop'
+					title='Stop Job'
+					onClick={() => handleStopJob()}
+					disabled={!canStop}
+				>
+					<i className='bi bi-stop-fill' />
+				</button>
+				<button
+					className='job-action-reset'
+					title='Reset Job'
+					onClick={() => handleResetJob()}
+					disabled={!canReset}
+				>
+					<i className='bi bi-arrow-counterclockwise' />
+				</button>
 			</div>
 		</div>
 	);
