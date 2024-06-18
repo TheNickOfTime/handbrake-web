@@ -6,12 +6,12 @@ import path from 'path';
 import { TranscodeStage, TranscodeStatus, TranscodeStatusUpdate } from '../../types/transcode';
 import { HandbrakeJSONOutput, Muxing, Scanning, WorkDone, Working } from '../../types/handbrake';
 
-// export let isTranscoding: boolean = false;
-let jobID: string | undefined = undefined;
-let jobData: Job | undefined = undefined;
-let job: QueueEntry | null = null;
-
 let handbrake: ChildProcess | null = null;
+export const isTranscoding = () => handbrake != null;
+
+let job: QueueEntry | null = null;
+export const getJobID = () => job?.id;
+export const getJobData = () => job?.job;
 
 const writePresetToFile = (preset: object) => {
 	const presetString = JSON.stringify(preset);
@@ -32,7 +32,7 @@ const writePresetToFile = (preset: object) => {
 	});
 };
 
-export default function Transcode(queueEntry: QueueEntry, socket: Socket) {
+export function StartTranscode(queueEntry: QueueEntry, socket: Socket) {
 	job = queueEntry;
 	writePresetToFile(queueEntry.job.preset);
 
