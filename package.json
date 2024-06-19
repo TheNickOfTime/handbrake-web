@@ -47,7 +47,7 @@
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-react-refresh": "^0.4.6",
 		"nodemon": "^3.1.0",
-		"sass": "^1.77.2",
+		"sass": "^1.77.6",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.4.5",
 		"vite": "^5.2.11"
