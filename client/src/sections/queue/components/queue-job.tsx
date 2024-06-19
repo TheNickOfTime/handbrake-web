@@ -30,7 +30,8 @@ export default function QueueJob({
 	const canRemove =
 		data.status.stage == TranscodeStage.Waiting ||
 		data.status.stage == TranscodeStage.Finished ||
-		data.status.stage == TranscodeStage.Stopped;
+		data.status.stage == TranscodeStage.Stopped ||
+		data.worker == null;
 
 	return (
 		<div className='queue-job'>
