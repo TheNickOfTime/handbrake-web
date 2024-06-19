@@ -10,9 +10,16 @@ type Params = {
 	index: number;
 	handleStopJob: () => void;
 	handleResetJob: () => void;
+	handleRemoveJob: () => void;
 };
 
-export default function QueueJob({ data, index, handleStopJob, handleResetJob }: Params) {
+export default function QueueJob({
+	data,
+	index,
+	handleStopJob,
+	handleResetJob,
+	handleRemoveJob,
+}: Params) {
 	const percentage = parseFloat(data.status.info.percentage.replace(' %', ''));
 
 	const canStop =
@@ -20,6 +27,11 @@ export default function QueueJob({ data, index, handleStopJob, handleResetJob }:
 		data.status.stage == TranscodeStage.Transcoding;
 	const canReset =
 		data.status.stage == TranscodeStage.Stopped || data.status.stage == TranscodeStage.Finished;
+	const canRemove =
+		data.status.stage == TranscodeStage.Waiting ||
+		data.status.stage == TranscodeStage.Finished ||
+		data.status.stage == TranscodeStage.Stopped ||
+		data.worker == null;
 
 	return (
 		<div className='queue-job'>
@@ -61,6 +73,14 @@ export default function QueueJob({ data, index, handleStopJob, handleResetJob }:
 					disabled={!canReset}
 				>
 					<i className='bi bi-arrow-counterclockwise' />
+				</button>
+				<button
+					className='job-action-reset'
+					title='Remove Job'
+					onClick={() => handleRemoveJob()}
+					disabled={!canRemove}
+				>
+					<i className='bi bi-x-lg' />
 				</button>
 			</div>
 		</div>

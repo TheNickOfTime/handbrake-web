@@ -4,6 +4,7 @@ import {
 	ClearQueue,
 	GetQueue,
 	GetQueueStatus,
+	RemoveJob,
 	ResetJob,
 	StartQueue,
 	StopJob,
@@ -63,6 +64,10 @@ export default function ClientSocket(io: Server) {
 
 		socket.on('reset-job', (id: string) => {
 			ResetJob(id);
+		});
+
+		socket.on('remove-job', (id: string) => {
+			RemoveJob(id);
 		});
 
 		// Directory -------------------------------------------------------------------------------
