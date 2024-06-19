@@ -6,7 +6,7 @@
 	"printWidth": 100,
 	"overrides": [
 		{
-			"files": "*.yaml",
+			"files": ["*.yaml", "*.yml"],
 			"options": {
 				"tabWidth": 2,
 				"useTabs": true
