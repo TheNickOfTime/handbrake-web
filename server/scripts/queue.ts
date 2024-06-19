@@ -161,6 +161,18 @@ export function ResetJob(id: string) {
 	}
 }
 
+export function RemoveJob(id: string) {
+	const job = GetJobFromDatabase(id);
+	if (job) {
+		RemoveJobFromDatabase(id);
+		UpdateQueue();
+	} else {
+		console.error(
+			`[server] Job with id '${id}' does not exist, unable to remove the requested job.`
+		);
+	}
+}
+
 export function GetQueueStatus() {
 	return state;
 }
