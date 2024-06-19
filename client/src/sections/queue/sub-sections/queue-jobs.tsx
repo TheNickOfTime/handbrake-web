@@ -11,6 +11,7 @@ type Params = {
 	handleClearFinishedJobs: () => void;
 	handleStopJob: (id: string) => void;
 	handleResetJob: (id: string) => void;
+	handleRemoveJob: (id: string) => void;
 };
 
 export default function QueueJobs({
@@ -20,6 +21,7 @@ export default function QueueJobs({
 	handleClearFinishedJobs,
 	handleStopJob,
 	handleResetJob,
+	handleRemoveJob,
 }: Params) {
 	return (
 		<SubSection title='Jobs' id='jobs'>
@@ -49,6 +51,7 @@ export default function QueueJobs({
 						index={index}
 						handleStopJob={() => handleStopJob(key)}
 						handleResetJob={() => handleResetJob(key)}
+						handleRemoveJob={() => handleRemoveJob(key)}
 					/>
 				);
 			})}

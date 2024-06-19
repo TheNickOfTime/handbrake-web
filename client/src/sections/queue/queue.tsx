@@ -40,6 +40,10 @@ export default function QueueSection() {
 		socket.emit('reset-job', id);
 	};
 
+	const handleRemoveJob = (id: string) => {
+		socket.emit('remove-job', id);
+	};
+
 	return (
 		<Section title='Queue' id='queue' className={showCreateJob ? 'no-scroll-y' : undefined}>
 			<QueueStatus
@@ -54,6 +58,7 @@ export default function QueueSection() {
 				handleClearFinishedJobs={handleClearFinishedJobs}
 				handleStopJob={handleStopJob}
 				handleResetJob={handleResetJob}
+				handleRemoveJob={handleRemoveJob}
 			/>
 			{showCreateJob && (
 				<CreateJob
