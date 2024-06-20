@@ -85,6 +85,10 @@
 					display: block;
 					color: $text-color-secondary;
 					text-decoration: none;
+
+					.bi {
+						margin-right: 1.5rem;
+					}
 				}
 
 				a.active {
