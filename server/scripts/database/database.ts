@@ -13,13 +13,16 @@ export function DatabaseConnect() {
 	try {
 		const db = new Database(databasePath, {});
 
-		// if (!db) throw new Error('[database] [error] Could not connect to the database...');
-
 		// Create the queue table if it doesn't exist
-		const initQueueStatement = db.prepare(
-			'CREATE TABLE IF NOT EXISTS queue(id TEXT NOT NULL, job TEXT NOT NULL, PRIMARY KEY (id))'
-		);
-		initQueueStatement.run();
+		const initQueueStatement = [
+			db.prepare(
+				'CREATE TABLE IF NOT EXISTS queue(id TEXT NOT NULL, job TEXT NOT NULL, PRIMARY KEY (id))'
+			),
+			db.prepare(
+				'CREATE TABLE IF NOT EXISTS status(id TEXT NOT NULL, state INTEGER NOT NULL, PRIMARY KEY (id))'
+			),
+		];
+		initQueueStatement.forEach((statement) => statement.run());
 		database = db;
 		console.log('[server] [database] The database connection has been initalized!');
 	} catch (err) {
