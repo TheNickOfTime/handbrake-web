@@ -13,23 +13,30 @@ import {
 	RemoveJobFromDatabase,
 	UpdateJobInDatabase,
 } from './database/database-queue';
+import { GetStatusFromDatabase, UpdateStatusInDatabase } from './database/database-status';
 import { GetPresets } from './presets';
 import { SearchForWorker } from './worker';
 import hash from 'object-hash';
 
-export const queuePath: string = './data/queue.json';
-
-// export let queue: Queue = {};
-
-export let state: QueueStatus = QueueStatus.Stopped;
-
 let workerSearchInterval: null | NodeJS.Timeout = null;
 
-export function GetQueue() {
-	return GetQueueFromDatabase();
-}
-
+// Init --------------------------------------------------------------------------------------------
 export function InitializeQueue() {
+	// Queue Status
+	const status = GetQueueStatus();
+	if (status) {
+		console.log(
+			`[server] [queue] Existing queue status '${QueueStatus[status]}' retreived from the database.`
+		);
+		EmitToAllClients('queue-status-update', status);
+	} else {
+		SetQueueStatus(QueueStatus.Stopped);
+		console.error(
+			`[server] [queue] The queue status does not exist in the database, initializing to the state 'stopped'.`
+		);
+	}
+
+	// Queue Data
 	const queue = GetQueueFromDatabase();
 	if (queue) {
 		Object.keys(queue).forEach((jobID) => {
@@ -55,14 +62,57 @@ export function InitializeQueue() {
 	}
 }
 
+// Status ------------------------------------------------------------------------------------------
+export function GetQueueStatus() {
+	const status = GetStatusFromDatabase('queue')?.state as QueueStatus;
+	return status;
+}
+
+export function SetQueueStatus(newState: QueueStatus) {
+	UpdateStatusInDatabase('queue', newState);
+	EmitToAllClients('queue-status-update', newState);
+}
+
+export function StartQueue(clientID: string) {
+	if (GetQueueStatus() == QueueStatus.Stopped) {
+		const newStatus = QueueStatus.Active;
+		SetQueueStatus(newStatus);
+
+		console.log(`[server] The queue has been started by client '${clientID}'`);
+
+		workerSearchInterval = setInterval(SearchForWorker, 1000);
+	}
+}
+
+export function StopQueue(clientID?: string) {
+	if (GetQueueStatus() != QueueStatus.Stopped) {
+		const newStatus = QueueStatus.Stopped;
+		SetQueueStatus(newStatus);
+
+		const stoppedBy = clientID ? `client '${clientID}'` : 'the server.';
+
+		console.log(`[server] The queue has been stopped by ${stoppedBy}.`);
+
+		if (workerSearchInterval) {
+			clearInterval(workerSearchInterval);
+		}
+		EmitToAllConnections('queue-status-changed', newStatus);
+	}
+}
+
+// Queue -------------------------------------------------------------------------------------------
+export function GetQueue() {
+	return GetQueueFromDatabase();
+}
+
 export function UpdateQueue() {
 	const updatedQueue = GetQueueFromDatabase();
 	if (updatedQueue) {
-		// queue = updatedQueue;
 		EmitToAllClients('queue-update', updatedQueue);
 	}
 }
 
+// Job Actions -------------------------------------------------------------------------------------
 export function AddJob(data: QueueRequest) {
 	const jobID =
 		new Date().getTime().toString() +
@@ -170,40 +220,6 @@ export function RemoveJob(id: string) {
 		console.error(
 			`[server] Job with id '${id}' does not exist, unable to remove the requested job.`
 		);
-	}
-}
-
-export function GetQueueStatus() {
-	return state;
-}
-
-export function SetQueueStatus(newState: QueueStatus) {
-	state = newState;
-	EmitToAllClients('queue-status-update', state);
-}
-
-export function StartQueue(clientID: string) {
-	if (state == QueueStatus.Stopped) {
-		SetQueueStatus(QueueStatus.Active);
-
-		console.log(`[server] The queue has been started by client '${clientID}'`);
-
-		workerSearchInterval = setInterval(SearchForWorker, 1000);
-	}
-}
-
-export function StopQueue(clientID?: string) {
-	if (state != QueueStatus.Stopped) {
-		SetQueueStatus(QueueStatus.Stopped);
-
-		const stoppedBy = clientID ? `client '${clientID}'` : 'the server.';
-
-		console.log(`[server] The queue has been stopped by ${stoppedBy}.`);
-
-		if (workerSearchInterval) {
-			clearInterval(workerSearchInterval);
-		}
-		EmitToAllConnections('queue-status-changed', state);
 	}
 }
 
