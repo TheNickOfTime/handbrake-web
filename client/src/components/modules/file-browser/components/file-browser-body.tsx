@@ -106,13 +106,13 @@ export default function FileBrowserBody({
 					return (
 						<button
 							className={`directory-item ${isSelected ? 'selected' : ''}`}
-							key={child.path}
+							key={child.path + child.name + child.extension}
 							onClick={onClick}
 							onDoubleClick={onDoubleClick}
 							disabled={disabled}
 						>
 							<i className={`icon bi ${icon}`} />
-							<span className='label'>{child.name}</span>
+							<span className='label'>{child.name + child.extension}</span>
 						</button>
 					);
 				})}

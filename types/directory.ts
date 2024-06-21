@@ -1,6 +1,7 @@
 export type DirectoryItem = {
-	name: string;
 	path: string;
+	name: string;
+	extension: string;
 	isDirectory: boolean;
 };
 

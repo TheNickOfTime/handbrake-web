@@ -17,9 +17,11 @@ export async function GetDirectoryItems(absolutePath: string, recursive: boolean
 		});
 		const parent = path.resolve(absolutePath, '..');
 		const items: DirectoryItems = dir.map((item) => {
+			const parsedName = path.parse(item.name);
 			return {
-				name: item.name,
 				path: path.join(item.path, item.name),
+				name: parsedName.name,
+				extension: parsedName.ext,
 				isDirectory: item.isDirectory(),
 			};
 		});
