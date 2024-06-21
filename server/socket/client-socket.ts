@@ -13,7 +13,7 @@ import {
 import { QueueRequest } from '../../types/queue';
 import { AddClient, RemoveClient } from '../scripts/connections';
 import { Client } from '../../types/socket';
-import { GetDirectoryTree } from '../scripts/files';
+import { GetDirectoryItems, GetDirectoryTree } from '../scripts/files';
 import { HandbrakePreset } from '../../types/preset';
 import { AddPreset, GetPresetNames, GetPresets, RemovePreset } from '../scripts/presets';
 import { videoPath } from '../scripts/video';
@@ -74,6 +74,11 @@ export default function ClientSocket(io: Server) {
 		socket.on('get-directory-tree', () => {
 			const tree = GetDirectoryTree(videoPath);
 			socket.emit('get-directory-tree', tree);
+		});
+
+		socket.on('get-directory', async (path: string) => {
+			const items = await GetDirectoryItems(path);
+			socket.emit('get-directory', items);
 		});
 
 		// Preset ----------------------------------------------------------------------------------
