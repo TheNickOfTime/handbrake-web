@@ -18,20 +18,17 @@ import SelectInput from '../../base/inputs/select/select-input';
 import TextInput from '../../base/inputs/text/text-input';
 import { getCurrentPathTree } from '../../modules/file-browser/file-browser-utils';
 import './create-job.scss';
+import {
+	GenerateOutputFilesFromInputFiles,
+	SplitFileNames,
+	SplitName,
+	SplitPath,
+} from './create-job-funcs';
 
 type Params = {
 	socket: Socket;
 	onClose: () => void;
 };
-
-type SplitFileName = {
-	name: string;
-	extension: string;
-};
-
-type SplitFilePath = {
-	path: string;
-} & SplitFileName;
 
 enum JobFrom {
 	FromFile,
@@ -45,10 +42,10 @@ export default function CreateJob({ socket, onClose }: Params) {
 	const [tree, setTree] = useState<null | DirectoryTree>(null);
 	const [jobFrom, setJobFrom] = useState(JobFrom.FromFile);
 	const [inputPath, setInputPath] = useState('');
-	const [inputFiles, setInputFiles] = useState<SplitFileName[]>([]);
+	const [inputFiles, setInputFiles] = useState<SplitFileNames>([]);
 	const [outputPath, setOutputPath] = useState('');
 	const [outputExtension, setOutputExtension] = useState(HandbrakeOutputExtensions.mkv);
-	const [outputFiles, setOutputFiles] = useState<SplitFileName[]>([]);
+	const [outputFiles, setOutputFiles] = useState<SplitFileNames>([]);
 	const [preset, setPreset] = useState('');
 	// const [canSubmit, setCanSubmit] = useState(false);
 
@@ -86,49 +83,7 @@ export default function CreateJob({ socket, onClose }: Params) {
 		preset != '' &&
 		noExistingCollision;
 
-	const splitName = (name: string) => {
-		const splitRegex = /^(.+)(\.[\w\d]+)$/;
-		const splitResult = name.match(splitRegex);
-		if (splitResult) {
-			const result: SplitFileName = {
-				name: splitResult[1],
-				extension: splitResult[2],
-			};
-			return result;
-		} else {
-			console.error(`[client] [error] Could not split the name '${name}'.`);
-		}
-	};
-
-	const splitPath = (path: string) => {
-		const splitRegex = /^\/.+\/(.+)(\.[\w\d]+)$/;
-		const splitResult = path.match(splitRegex);
-		if (splitResult) {
-			const result: SplitFilePath = {
-				path: path.replace('/' + splitResult[1] + splitResult[2], ''),
-				name: splitResult[1],
-				extension: splitResult[2],
-			};
-			return result;
-		} else {
-			console.error(`[client] [error] Could not split the path '${path}'.`);
-		}
-	};
-
-	const generateOutputFilesFromInputFiles = (inputFiles: SplitFileName[]) => {
-		const deepCopyInputFiles: SplitFileName[] = JSON.parse(JSON.stringify(inputFiles));
-		const newOutputFiles: SplitFileName[] = deepCopyInputFiles.map((child) => {
-			const result: SplitFileName = {
-				name: child.name,
-				extension: outputExtension,
-			};
-			return result;
-		});
-
-		return newOutputFiles;
-	};
-
-	const handleNameCollision = (outputPath: string, outputs: SplitFileName[]) => {
+	const handleNameCollision = (outputPath: string, outputs: SplitFileNames) => {
 		const fileCollisions: { [index: string]: number[] } = {};
 		const existingOutputFiles = getCurrentPathTree(outputPath, tree!.path, tree!).children!.map(
 			(child) => child.name
@@ -167,7 +122,7 @@ export default function CreateJob({ socket, onClose }: Params) {
 			});
 		});
 
-		const newOutputs: SplitFileName[] = JSON.parse(JSON.stringify(outputs));
+		const newOutputs: SplitFileNames = JSON.parse(JSON.stringify(outputs));
 		Object.values(fileCollisions).forEach((collisionArray) => {
 			let fileIndex = 1;
 			collisionArray.forEach((value) => {
@@ -222,12 +177,12 @@ export default function CreateJob({ socket, onClose }: Params) {
 	};
 
 	const handleFileInputConfirm = (path: string) => {
-		const splitInputPath = splitPath(path);
+		const splitInputPath = SplitPath(path);
 		if (splitInputPath) {
 			const newInputPath = splitInputPath.path;
 			setInputPath(newInputPath);
 
-			const newInputFiles: SplitFileName[] = [
+			const newInputFiles: SplitFileNames = [
 				{
 					name: splitInputPath.name,
 					extension: splitInputPath.extension,
@@ -240,8 +195,10 @@ export default function CreateJob({ socket, onClose }: Params) {
 			if (outputPath != newOutputPath) {
 				setOutputPath(newOutputPath);
 
-				const newOutputFiles: SplitFileName[] =
-					generateOutputFilesFromInputFiles(newInputFiles);
+				const newOutputFiles: SplitFileNames = GenerateOutputFilesFromInputFiles(
+					newInputFiles,
+					outputExtension
+				);
 
 				const dedupedOutputFiles = handleNameCollision(newOutputPath, newOutputFiles);
 				setOutputFiles(dedupedOutputFiles);
@@ -266,14 +223,16 @@ export default function CreateJob({ socket, onClose }: Params) {
 				.filter((child) => !child.children)
 				.filter((child) => mime.getType(child.name)?.includes('video'));
 
-			const newInputFiles: SplitFileName[] = filteredChildren.map((child) => {
-				const childNameSplit = splitName(child.name)!;
+			const newInputFiles: SplitFileNames = filteredChildren.map((child) => {
+				const childNameSplit = SplitName(child.name)!;
 				return childNameSplit;
 			});
 			setInputFiles(newInputFiles);
 
-			const newOutputFiles: SplitFileName[] =
-				generateOutputFilesFromInputFiles(newInputFiles);
+			const newOutputFiles: SplitFileNames = GenerateOutputFilesFromInputFiles(
+				newInputFiles,
+				outputExtension
+			);
 
 			// console.log(newOutputFiles);
 			const dedupedOutputFiles = handleNameCollision(newOutputPath, newOutputFiles);
@@ -295,7 +254,7 @@ export default function CreateJob({ socket, onClose }: Params) {
 
 	const handleOutputConfirm = (path: string) => {
 		const newOutputPath = path;
-		const newOutputFiles = generateOutputFilesFromInputFiles(inputFiles);
+		const newOutputFiles = GenerateOutputFilesFromInputFiles(inputFiles, outputExtension);
 		const dedupedOutputFiles = handleNameCollision(newOutputPath, newOutputFiles);
 		setOutputFiles(dedupedOutputFiles);
 		setOutputPath(newOutputPath);
