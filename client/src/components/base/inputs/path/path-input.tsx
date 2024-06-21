@@ -1,4 +1,3 @@
-import { DirectoryTree } from 'directory-tree';
 import FileBrowser from '../../../modules/file-browser/file-browser';
 import './path-input.scss';
 import { useState } from 'react';
@@ -7,21 +6,21 @@ import { FileBrowserMode } from '../../../../../../types/file-browser';
 type Params = {
 	id: string;
 	label: string;
-	tree: DirectoryTree | null;
+	path: string;
 	mode: FileBrowserMode;
 	value: string | undefined;
 	// setValue: React.Dispatch<React.SetStateAction<string | undefined>>;
 	onConfirm?: (file: string) => void;
 };
 
-export default function PathInput({ id, label, tree, mode, value, onConfirm }: Params) {
-	const [showTree, setShowTree] = useState(false);
+export default function PathInput({ id, label, path, mode, value, onConfirm }: Params) {
+	const [showFileBrowser, setShowFileBrowser] = useState(false);
 
 	const handleConfirm = (file: string) => {
 		if (onConfirm) {
 			onConfirm(file);
 		}
-		setShowTree(false);
+		setShowFileBrowser(false);
 	};
 
 	return (
@@ -44,16 +43,16 @@ export default function PathInput({ id, label, tree, mode, value, onConfirm }: P
 					className='controlled-button blue'
 					onClick={(event) => {
 						event?.preventDefault();
-						setShowTree(!showTree);
+						setShowFileBrowser(!showFileBrowser);
 					}}
 					// onBlur={() => setShowTree(false)}
 				>
-					<span className='button-label'>{showTree ? 'Cancel' : 'Browse'}</span>
+					<span className='button-label'>{showFileBrowser ? 'Cancel' : 'Browse'}</span>
 				</button>
 			</div>
-			{tree && showTree && (
+			{showFileBrowser && (
 				<div className='browser-section'>
-					<FileBrowser tree={tree} mode={mode} onConfirm={handleConfirm} />
+					<FileBrowser basePath={path} mode={mode} onConfirm={handleConfirm} />
 				</div>
 			)}
 		</div>
