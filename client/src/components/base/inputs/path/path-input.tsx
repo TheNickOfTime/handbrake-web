@@ -2,6 +2,7 @@ import FileBrowser from '../../../modules/file-browser/file-browser';
 import './path-input.scss';
 import { useState } from 'react';
 import { FileBrowserMode } from '../../../../../../types/file-browser';
+import { Directory } from '../../../../../../types/directory';
 
 type Params = {
 	id: string;
@@ -10,10 +11,19 @@ type Params = {
 	mode: FileBrowserMode;
 	value: string | undefined;
 	// setValue: React.Dispatch<React.SetStateAction<string | undefined>>;
+	onDirectoryChange: (directory: Directory) => void;
 	onConfirm?: (file: string) => void;
 };
 
-export default function PathInput({ id, label, path, mode, value, onConfirm }: Params) {
+export default function PathInput({
+	id,
+	label,
+	path,
+	mode,
+	value,
+	onDirectoryChange,
+	onConfirm,
+}: Params) {
 	const [showFileBrowser, setShowFileBrowser] = useState(false);
 
 	const handleConfirm = (file: string) => {
@@ -52,7 +62,12 @@ export default function PathInput({ id, label, path, mode, value, onConfirm }: P
 			</div>
 			{showFileBrowser && (
 				<div className='browser-section'>
-					<FileBrowser basePath={path} mode={mode} onConfirm={handleConfirm} />
+					<FileBrowser
+						basePath={path}
+						mode={mode}
+						onDirectoryChange={onDirectoryChange}
+						onConfirm={handleConfirm}
+					/>
 				</div>
 			)}
 		</div>

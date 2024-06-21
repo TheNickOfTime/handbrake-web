@@ -11,10 +11,11 @@ import './file-browser.scss';
 type Params = {
 	basePath: string;
 	mode: FileBrowserMode;
+	onDirectoryChange: (directory: Directory) => void;
 	onConfirm: (path: string) => void;
 };
 
-export default function FileBrowser({ basePath, mode, onConfirm }: Params) {
+export default function FileBrowser({ basePath, mode, onDirectoryChange, onConfirm }: Params) {
 	const { socket } = useOutletContext<PrimaryOutletContextType>();
 
 	const [currentPath, setCurrentPath] = useState(basePath);
@@ -33,6 +34,7 @@ export default function FileBrowser({ basePath, mode, onConfirm }: Params) {
 
 	const onGetDirectory = (newDirectory: Directory) => {
 		console.log(`[client] Received directory ${newDirectory.current}.`);
+		onDirectoryChange(newDirectory);
 		setDirectory(newDirectory);
 		setIsLoading(false);
 	};
