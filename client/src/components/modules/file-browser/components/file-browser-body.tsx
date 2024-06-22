@@ -1,14 +1,14 @@
 import mime from 'mime';
 import { FileBrowserMode } from '../../../../../../types/file-browser';
-import { Directory } from '../../../../../../types/directory';
+import { Directory, DirectoryItem } from '../../../../../../types/directory';
 
 type Params = {
 	mode: FileBrowserMode;
 	basePath: string;
 	directory: Directory | null;
 	updateDirectory: (newPath: string) => void;
-	selectedPath: string | undefined;
-	setSelectedPath: React.Dispatch<React.SetStateAction<string | undefined>>;
+	selectedItem: DirectoryItem | undefined;
+	setSelectedItem: React.Dispatch<React.SetStateAction<DirectoryItem | undefined>>;
 };
 
 export default function FileBrowserBody({
@@ -16,14 +16,14 @@ export default function FileBrowserBody({
 	basePath,
 	directory,
 	updateDirectory,
-	selectedPath,
-	setSelectedPath,
+	selectedItem,
+	setSelectedItem,
 }: Params) {
-	const onClickFile = (path: string) => {
+	const onClickFile = (item: DirectoryItem) => {
 		switch (mode) {
 			case FileBrowserMode.SingleFile:
-				setSelectedPath(path);
-				console.log(`[client] [file-browser] Selected path set to ${path}`);
+				setSelectedItem(item);
+				console.log(`[client] [file-browser] Selected item set to ${item.path}`);
 				break;
 			case FileBrowserMode.Directory:
 				console.error(
@@ -34,7 +34,7 @@ export default function FileBrowserBody({
 	};
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const onDoubleClickFile = (path: string) => {
+	const onDoubleClickFile = (item: DirectoryItem) => {
 		switch (mode) {
 			case FileBrowserMode.SingleFile:
 				break;
@@ -46,25 +46,25 @@ export default function FileBrowserBody({
 		}
 	};
 
-	const onClickFolder = (path: string) => {
+	const onClickFolder = (item: DirectoryItem) => {
 		switch (mode) {
 			case FileBrowserMode.SingleFile:
 				break;
 			case FileBrowserMode.Directory:
-				setSelectedPath(path);
+				setSelectedItem(item);
 				break;
 		}
 	};
 
-	const onDoubleClickFolder = (path: string) => {
-		updateDirectory(path);
-		console.log(`[client] [file-browser] Current path set to '${path}'.`);
+	const onDoubleClickFolder = (item: DirectoryItem) => {
+		updateDirectory(item.path);
+		console.log(`[client] [file-browser] Current path set to '${item.path}'.`);
 	};
 
 	return (
 		<>
 			{/* Show directory up button if  */}
-			{directory && basePath != directory.current && directory.parent && (
+			{directory && basePath != directory.current.path && directory.parent && (
 				<button
 					className='directory-item'
 					onClick={(event) => event.preventDefault()}
@@ -79,7 +79,7 @@ export default function FileBrowserBody({
 			)}
 			{directory != null &&
 				directory.items.map((child) => {
-					const isSelected = selectedPath == child.path;
+					const isSelected = selectedItem?.path == child.path;
 					// const isFile = child.children == undefined;
 					const icon = child.isDirectory ? 'bi-folder-fill' : 'bi-file-earmark-fill';
 					const mimeType = mime.getType(child.path);
@@ -87,16 +87,14 @@ export default function FileBrowserBody({
 
 					const onClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 						event.preventDefault();
-						child.isDirectory ? onClickFolder(child.path) : onClickFile(child.path);
+						child.isDirectory ? onClickFolder(child) : onClickFile(child);
 					};
 
 					const onDoubleClick = (
 						event: React.MouseEvent<HTMLButtonElement, MouseEvent>
 					) => {
 						event.preventDefault();
-						child.isDirectory
-							? onDoubleClickFolder(child.path)
-							: onDoubleClickFile(child.path);
+						child.isDirectory ? onDoubleClickFolder(child) : onDoubleClickFile(child);
 					};
 
 					const disabled =

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import { FileBrowserMode } from '../../../../../types/file-browser';
-import { Directory } from '../../../../../types/directory';
+import { Directory, DirectoryItem } from '../../../../../types/directory';
 import ButtonInput from '../../base/inputs/button/button-input';
 import FileBrowserBody from './components/file-browser-body';
 import { useOutletContext } from 'react-router-dom';
@@ -11,47 +11,37 @@ import './file-browser.scss';
 type Params = {
 	basePath: string;
 	mode: FileBrowserMode;
-	onDirectoryChange: (directory: Directory) => void;
-	onConfirm: (path: string) => void;
+	onConfirm: (item: DirectoryItem) => void;
 };
 
-export default function FileBrowser({ basePath, mode, onDirectoryChange, onConfirm }: Params) {
+export default function FileBrowser({ basePath, mode, onConfirm }: Params) {
 	const { socket } = useOutletContext<PrimaryOutletContextType>();
 
 	const [currentPath, setCurrentPath] = useState(basePath);
-	const [selectedPath, setSelectedPath] = useState<string | undefined>(
-		mode == FileBrowserMode.Directory ? basePath : undefined
-	);
-
+	const [selectedItem, setSelectedItem] = useState<DirectoryItem>();
 	const [directory, setDirectory] = useState<Directory | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 
-	const requestDirectory = (path: string) => {
-		console.log(`[client] Requesting directory ${path}...`);
-		socket.emit('get-directory', path);
+	const requestDirectory = async (path: string) => {
 		setIsLoading(true);
-	};
-
-	const onGetDirectory = (newDirectory: Directory) => {
-		console.log(`[client] Received directory ${newDirectory.current}.`);
-		onDirectoryChange(newDirectory);
-		setDirectory(newDirectory);
+		console.log(`[client] Requesting directory ${path}...`);
+		const response: Directory = await socket.emitWithAck('get-directory', path);
+		console.log(
+			`[client] Received directory ${response.current.path} with ${response.items.length} items.`
+		);
+		// console.log(response);
 		setIsLoading(false);
+		setDirectory(response);
+		return response;
 	};
-
-	useEffect(() => {
-		socket.on('get-directory', onGetDirectory);
-
-		return () => {
-			socket.off('get-directory', onGetDirectory);
-		};
-	}, []);
 
 	useEffect(() => {
 		requestDirectory(currentPath);
 	}, []);
 
 	const handleUpdateDirectory = (newPath: string) => {
+		const newSelectedItem = directory?.items.find((item) => newPath == item.path);
+		console.log(newSelectedItem);
 		requestDirectory(newPath);
 		setCurrentPath(newPath);
 	};
@@ -63,9 +53,13 @@ export default function FileBrowser({ basePath, mode, onDirectoryChange, onConfi
 			? 'Selected Directory:'
 			: '';
 
-	const handleConfirmButton = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+	const handleConfirmButton = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		event.preventDefault();
-		onConfirm(selectedPath!);
+		if (selectedItem) {
+			onConfirm(selectedItem);
+		} else {
+			console.error('[client] [error] Cannot confirm, there is no selected path.');
+		}
 	};
 
 	return (
@@ -80,21 +74,21 @@ export default function FileBrowser({ basePath, mode, onDirectoryChange, onConfi
 					basePath={basePath}
 					directory={directory}
 					updateDirectory={handleUpdateDirectory}
-					selectedPath={selectedPath}
-					setSelectedPath={setSelectedPath}
+					selectedItem={selectedItem}
+					setSelectedItem={setSelectedItem}
 				/>
 			</div>
 			<div className='file-browser-footer'>
 				<div className='selected-file'>
 					<span className='selected-file-label'>{selectedFileLabel}</span>
 					<span className='selected-file-path'>
-						{selectedPath ? selectedPath : 'N/A'}
+						{selectedItem ? selectedItem.path : 'N/A'}
 					</span>
 					<ButtonInput
 						label='Confirm'
 						color='green'
 						onClick={handleConfirmButton}
-						disabled={selectedPath == undefined}
+						disabled={selectedItem == undefined}
 					/>
 				</div>
 			</div>
