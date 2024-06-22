@@ -17,6 +17,7 @@ import { GetDirectoryItems, GetDirectoryTree } from '../scripts/files';
 import { HandbrakePreset } from '../../types/preset';
 import { AddPreset, GetPresetNames, GetPresets, RemovePreset } from '../scripts/presets';
 import { videoPath } from '../scripts/video';
+import { Directory } from '../../types/directory';
 
 const initClient = (socket: Client) => {
 	const queue = GetQueue();
@@ -76,10 +77,15 @@ export default function ClientSocket(io: Server) {
 			socket.emit('get-directory-tree', tree);
 		});
 
-		socket.on('get-directory', async (path: string) => {
-			const items = await GetDirectoryItems(path);
-			socket.emit('get-directory', items);
-		});
+		socket.on(
+			'get-directory',
+			async (path: string, callback: (directory: Directory) => void) => {
+				const items = await GetDirectoryItems(path);
+				if (items) {
+					callback(items);
+				}
+			}
+		);
 
 		// Preset ----------------------------------------------------------------------------------
 		socket.on('add-preset', (preset: HandbrakePreset) => {
