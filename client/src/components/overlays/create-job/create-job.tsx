@@ -1,9 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { Socket } from 'socket.io-client';
-import { DirectoryTree } from 'directory-tree';
 import { PrimaryOutletContextType } from '../../../pages/primary/primary-context';
 import mime from 'mime';
 
@@ -16,17 +14,11 @@ import PathInput from '../../base/inputs/path/path-input';
 import { FileBrowserMode } from '../../../../../types/file-browser';
 import SelectInput from '../../base/inputs/select/select-input';
 import TextInput from '../../base/inputs/text/text-input';
-import { getCurrentPathTree } from '../../modules/file-browser/file-browser-utils';
+import { Directory, DirectoryItem, DirectoryItems } from '../../../../../types/directory';
 import './create-job.scss';
-import {
-	GenerateOutputFilesFromInputFiles,
-	SplitFileNames,
-	SplitName,
-	SplitPath,
-} from './create-job-funcs';
+import { HandleNameCollision } from './create-job-funcs';
 
 type Params = {
-	socket: Socket;
 	onClose: () => void;
 };
 
@@ -35,114 +27,36 @@ enum JobFrom {
 	FromDirectory,
 }
 
-export default function CreateJob({ socket, onClose }: Params) {
-	const { presets } = useOutletContext<PrimaryOutletContextType>();
+export default function CreateJob({ onClose }: Params) {
+	const { presets, socket } = useOutletContext<PrimaryOutletContextType>();
 	const [extensions] = useState<string[]>(Object.values(HandbrakeOutputExtensions));
-
-	const [tree, setTree] = useState<null | DirectoryTree>(null);
 	const [jobFrom, setJobFrom] = useState(JobFrom.FromFile);
+
+	// Input -------------------------------------------------------------------
 	const [inputPath, setInputPath] = useState('');
-	const [inputFiles, setInputFiles] = useState<SplitFileNames>([]);
+	const [inputFiles, setInputFiles] = useState<DirectoryItems>([]);
+
+	// Output ------------------------------------------------------------------
 	const [outputPath, setOutputPath] = useState('');
+	const [outputFiles, setOutputFiles] = useState<DirectoryItems>([]);
 	const [outputExtension, setOutputExtension] = useState(HandbrakeOutputExtensions.mkv);
-	const [outputFiles, setOutputFiles] = useState<SplitFileNames>([]);
+	const [nameCollision, setNameCollision] = useState(false);
+
+	// Preset ------------------------------------------------------------------
 	const [preset, setPreset] = useState('');
-	// const [canSubmit, setCanSubmit] = useState(false);
 
-	const onGetDirectoryTree = (tree: DirectoryTree) => {
-		setTree(tree);
+	const requestDirectory = async (path: string) => {
+		const response: Directory = await socket.emitWithAck('get-directory', path);
+		return response;
 	};
-
-	useEffect(() => {
-		socket.on('get-directory-tree', onGetDirectoryTree);
-
-		return () => {
-			socket.off('get-directory-tree', onGetDirectoryTree);
-		};
-	}, []);
-
-	useEffect(() => {
-		socket.emit('get-directory-tree');
-	}, []);
-
-	const noExistingCollision =
-		tree &&
-		getCurrentPathTree(outputPath, tree.path, tree)
-			.children?.map((child) => child.name)
-			.every((existingPath) =>
-				outputFiles
-					.map((output) => output.name + output.extension)
-					.every((outputPath) => outputPath != existingPath)
-			);
 
 	const canSubmit =
 		inputPath != '' &&
 		inputFiles.length > 0 &&
 		outputPath != '' &&
 		outputFiles.length > 0 &&
-		preset != '' &&
-		noExistingCollision;
-
-	const handleNameCollision = (outputPath: string, outputs: SplitFileNames) => {
-		const fileCollisions: { [index: string]: number[] } = {};
-		const existingOutputFiles = getCurrentPathTree(outputPath, tree!.path, tree!).children!.map(
-			(child) => child.name
-		);
-
-		// Loop through each output
-		outputs.forEach((output, index) => {
-			const originalOutputName = output.name + output.extension;
-			if (!fileCollisions[originalOutputName]) {
-				fileCollisions[originalOutputName] = [];
-			}
-
-			// Check if there are collisions with existing files at the output path
-			existingOutputFiles.forEach((existingFile) => {
-				if (originalOutputName == existingFile) {
-					fileCollisions[originalOutputName].push(index);
-					console.log(
-						`${originalOutputName} collides with existing file ${existingFile} at the output path.`
-					);
-					return;
-				}
-			});
-
-			// Check if there are collisions with the other output files
-			outputs.slice(index).forEach((otherOutput) => {
-				if (
-					output.name == otherOutput.name &&
-					!fileCollisions[originalOutputName].includes(index)
-				) {
-					fileCollisions[originalOutputName].push(index);
-					console.log(
-						`${originalOutputName} collides with another output ${otherOutput.name}${otherOutput.extension}`
-					);
-					return;
-				}
-			});
-		});
-
-		const newOutputs: SplitFileNames = JSON.parse(JSON.stringify(outputs));
-		Object.values(fileCollisions).forEach((collisionArray) => {
-			let fileIndex = 1;
-			collisionArray.forEach((value) => {
-				while (
-					existingOutputFiles.includes(
-						newOutputs[value].name + `_${fileIndex}` + newOutputs[value].extension
-					) ||
-					Object.values(newOutputs)
-						.map((output) => output.name)
-						.includes(newOutputs[value].name + `_${fileIndex}`)
-				) {
-					fileIndex += 1;
-				}
-
-				newOutputs[value].name += `_${fileIndex}`;
-			});
-		});
-
-		return newOutputs;
-	};
+		preset != '';
+	// noExistingCollision;
 
 	const handleJobFromChange = (newJobFrom: JobFrom) => {
 		if (jobFrom != newJobFrom) {
@@ -151,6 +65,7 @@ export default function CreateJob({ socket, onClose }: Params) {
 			setInputFiles([]);
 			setOutputPath('');
 			setOutputFiles([]);
+			setNameCollision(false);
 		}
 	};
 
@@ -176,107 +91,127 @@ export default function CreateJob({ socket, onClose }: Params) {
 		onClose();
 	};
 
-	const handleFileInputConfirm = (path: string) => {
-		const splitInputPath = SplitPath(path);
-		if (splitInputPath) {
-			const newInputPath = splitInputPath.path;
-			setInputPath(newInputPath);
+	const handleFileInputConfirm = async (item: DirectoryItem) => {
+		// Set input variables
+		setInputPath(item.path);
+		setInputFiles([item]);
 
-			const newInputFiles: SplitFileNames = [
+		// Set the output variables if the path is not set
+		if (!outputPath) {
+			const parentPath = item.path.replace(item.name + item.extension, '');
+			setOutputPath(parentPath);
+
+			const existingFiles: DirectoryItems = (await requestDirectory(parentPath)).items;
+			const newOutputFiles: DirectoryItems = [
 				{
-					name: splitInputPath.name,
-					extension: splitInputPath.extension,
+					path: parentPath + item.name + item.extension,
+					name: item.name,
+					extension: outputExtension,
+					isDirectory: false,
 				},
 			];
-			setInputFiles(newInputFiles);
-
-			const newOutputPath =
-				outputPath == '' || outputFiles.length == 0 ? splitInputPath.path : outputPath;
-			if (outputPath != newOutputPath) {
-				setOutputPath(newOutputPath);
-
-				const newOutputFiles: SplitFileNames = GenerateOutputFilesFromInputFiles(
-					newInputFiles,
-					outputExtension
-				);
-
-				const dedupedOutputFiles = handleNameCollision(newOutputPath, newOutputFiles);
-				setOutputFiles(dedupedOutputFiles);
-			}
-		}
-	};
-
-	const handleDirectoryInputConfirm = (path: string) => {
-		// Set Paths
-		const newInputPath = path;
-		setInputPath(newInputPath);
-
-		const newOutputPath = outputPath == '' ? path : outputPath;
-		if (newOutputPath != outputPath) {
-			setOutputPath(path);
-		}
-
-		// Set Files
-		const inputChildren = getCurrentPathTree(path, tree!.path, tree!).children;
-		if (inputChildren) {
-			const filteredChildren = inputChildren
-				.filter((child) => !child.children)
-				.filter((child) => mime.getType(child.name)?.includes('video'));
-
-			const newInputFiles: SplitFileNames = filteredChildren.map((child) => {
-				const childNameSplit = SplitName(child.name)!;
-				return childNameSplit;
-			});
-			setInputFiles(newInputFiles);
-
-			const newOutputFiles: SplitFileNames = GenerateOutputFilesFromInputFiles(
-				newInputFiles,
-				outputExtension
-			);
-
-			// console.log(newOutputFiles);
-			const dedupedOutputFiles = handleNameCollision(newOutputPath, newOutputFiles);
-
+			const dedupedOutputFiles = HandleNameCollision(newOutputFiles, existingFiles);
 			setOutputFiles(dedupedOutputFiles);
 		}
 	};
 
-	const handleInputConfirm = (path: string) => {
+	const handleDirectoryInputConfirm = async (item: DirectoryItem) => {
+		// Set input variables
+		setInputPath(item.path);
+		const inputPathItems: DirectoryItems = (await requestDirectory(item.path)).items
+			.filter((item) => !item.isDirectory)
+			.filter((item) => mime.getType(item.path)?.includes('video'));
+		setInputFiles(inputPathItems);
+
+		// Set output variables if the path is not set
+		if (!outputPath) {
+			setOutputPath(item.path);
+
+			const existingFiles: DirectoryItems = (await requestDirectory(item.path)).items;
+			const newOutputFiles: DirectoryItems = inputPathItems.map((item) => {
+				return {
+					path: item.path.replace(item.extension!, outputExtension),
+					name: item.name,
+					extension: outputExtension,
+					isDirectory: item.isDirectory,
+				};
+			});
+			const dedupedOutputFiles = HandleNameCollision(newOutputFiles, existingFiles);
+			setOutputFiles(dedupedOutputFiles);
+		}
+	};
+
+	const handleInputConfirm = async (item: DirectoryItem) => {
 		switch (jobFrom) {
 			case JobFrom.FromFile:
-				handleFileInputConfirm(path);
+				handleFileInputConfirm(item);
 				break;
 			case JobFrom.FromDirectory:
-				handleDirectoryInputConfirm(path);
+				handleDirectoryInputConfirm(item);
 				break;
 		}
 	};
 
-	const handleOutputConfirm = (path: string) => {
-		const newOutputPath = path;
-		const newOutputFiles = GenerateOutputFilesFromInputFiles(inputFiles, outputExtension);
-		const dedupedOutputFiles = handleNameCollision(newOutputPath, newOutputFiles);
+	const handleOutputConfirm = async (item: DirectoryItem) => {
+		setOutputPath(item.path);
+		const existingFiles: DirectoryItems = (await requestDirectory(item.path)).items;
+		const newOutputFiles = inputFiles.map((item) => {
+			return {
+				path: item.path.replace(item.extension!, outputExtension),
+				name: item.name,
+				extension: outputExtension,
+				isDirectory: item.isDirectory,
+			};
+		});
+		const dedupedOutputFiles = HandleNameCollision(newOutputFiles, existingFiles);
 		setOutputFiles(dedupedOutputFiles);
-		setOutputPath(newOutputPath);
 	};
 
-	const handleOutputNameChange = (name: string) => {
+	const handleOutputNameChange = async (name: string) => {
 		// setOutputName(name);
 		if (outputFiles.length > 0) {
 			const newOutputFiles = [...outputFiles];
 			newOutputFiles[0].name = name;
+
+			const existingFiles: DirectoryItems = (await requestDirectory(outputPath)).items;
+			if (
+				existingFiles
+					.map((item) => item.name + item.extension)
+					.includes(newOutputFiles[0].name + newOutputFiles[0].extension)
+			) {
+				setNameCollision(true);
+			} else if (nameCollision) {
+				setNameCollision(false);
+			}
+
 			setOutputFiles(newOutputFiles);
 		}
 	};
 
-	const handleExtensionChange = (extension: string) => {
+	const handleExtensionChange = async (extension: string) => {
 		setOutputExtension(extension as HandbrakeOutputExtensions);
 		const newOutputFiles = [...outputFiles];
 		newOutputFiles.map((file) => {
 			file.extension = extension;
 			return file;
 		});
-		setOutputFiles(newOutputFiles);
+
+		const existingFiles: DirectoryItems = (await requestDirectory(outputPath)).items;
+		if (jobFrom == JobFrom.FromFile) {
+			if (
+				existingFiles
+					.map((item) => item.name + item.extension)
+					.includes(newOutputFiles[0].name + newOutputFiles[0].extension)
+			) {
+				setNameCollision(true);
+			} else if (nameCollision) {
+				setNameCollision(false);
+			}
+			setOutputFiles(newOutputFiles);
+		} else {
+			const dedupedOutputFiles = HandleNameCollision(newOutputFiles, existingFiles);
+			setOutputFiles(dedupedOutputFiles);
+		}
 	};
 
 	// const handlePresetChange = (preset: string) => {};
@@ -306,7 +241,7 @@ export default function CreateJob({ socket, onClose }: Params) {
 					<PathInput
 						id='input-path'
 						label={jobFrom == JobFrom.FromFile ? 'File: ' : 'Directory: '}
-						tree={tree}
+						path='/video/input'
 						mode={
 							jobFrom == JobFrom.FromFile
 								? FileBrowserMode.SingleFile
@@ -322,13 +257,13 @@ export default function CreateJob({ socket, onClose }: Params) {
 					<PathInput
 						id='output-path'
 						label='Directory: '
-						tree={tree}
+						path={'/video/output'}
 						mode={FileBrowserMode.Directory}
 						value={outputPath}
 						onConfirm={handleOutputConfirm}
 						key={jobFrom == JobFrom.FromFile ? 'output-file' : 'output-directory'}
 					/>
-					{tree && jobFrom == JobFrom.FromFile && !noExistingCollision && (
+					{jobFrom == JobFrom.FromFile && nameCollision && (
 						<span className='filename-conflict'>
 							<i className='bi bi-exclamation-circle-fill' />{' '}
 							<span>

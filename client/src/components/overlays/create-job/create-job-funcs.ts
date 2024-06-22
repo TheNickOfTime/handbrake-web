@@ -1,60 +1,72 @@
-import { HandbrakeOutputExtensions } from '../../../../../types/file-extensions';
-import '../../';
+import { DirectoryItems } from '../../../../../types/directory';
+// import { HandbrakeOutputExtensions } from '../../../../../types/file-extensions';
 
-export type SplitFileName = {
-	name: string;
-	extension: string;
-};
+export function HandleNameCollision(newItems: DirectoryItems, existingItems: DirectoryItems) {
+	const fileCollisions: { [index: string]: number[] } = {};
 
-export type SplitFileNames = SplitFileName[];
+	newItems.forEach((newItem, newItemIndex) => {
+		// Init fileCollisions object with an empty array
+		fileCollisions[newItem.name] = [];
 
-export type SplitFilePath = {
-	path: string;
-} & SplitFileName;
+		// Check for collisions against existing files
+		existingItems.forEach((existingItem) => {
+			if (newItem.name + newItem.extension == existingItem.name + existingItem.extension) {
+				fileCollisions[newItem.name].push(newItemIndex);
+				console.log(
+					`'${newItem.name + newItem.extension}' collides with existing file '${
+						existingItem.name + existingItem.extension
+					}' at the output path.`
+				);
+				return;
+			}
+		});
 
-export type SplitFilePaths = SplitFilePath[];
-
-export function SplitName(name: string) {
-	const splitRegex = /^(.+)(\.[\w\d]+)$/;
-	const splitResult = name.match(splitRegex);
-	if (splitResult) {
-		const result: SplitFileName = {
-			name: splitResult[1],
-			extension: splitResult[2],
-		};
-		return result;
-	} else {
-		console.error(`[client] [error] Could not split the name '${name}'.`);
-	}
-}
-
-export function SplitPath(path: string) {
-	const splitRegex = /^\/.+\/(.+)(\.[\w\d]+)$/;
-	const splitResult = path.match(splitRegex);
-	if (splitResult) {
-		const result: SplitFilePath = {
-			path: path.replace('/' + splitResult[1] + splitResult[2], ''),
-			name: splitResult[1],
-			extension: splitResult[2],
-		};
-		return result;
-	} else {
-		console.error(`[client] [error] Could not split the path '${path}'.`);
-	}
-}
-
-export function GenerateOutputFilesFromInputFiles(
-	inputFiles: SplitFileName[],
-	extension: HandbrakeOutputExtensions
-) {
-	const deepCopyInputFiles: SplitFileName[] = JSON.parse(JSON.stringify(inputFiles));
-	const newOutputFiles: SplitFileName[] = deepCopyInputFiles.map((child) => {
-		const result: SplitFileName = {
-			name: child.name,
-			extension: extension,
-		};
-		return result;
+		// Check for collisions against other output files that may now have the same name
+		newItems
+			.filter((_, index) => index != newItemIndex)
+			.forEach((otherNewItem) => {
+				if (
+					newItem.name == otherNewItem.name &&
+					!fileCollisions[newItem.name].includes(newItemIndex)
+				) {
+					fileCollisions[newItem.name].push(newItemIndex);
+					console.log(
+						`${newItem.name + newItem.extension} collides with another output ${
+							otherNewItem.name + otherNewItem.extension
+						}`
+					);
+					return;
+				}
+			});
 	});
 
-	return newOutputFiles;
+	const renamedItems: DirectoryItems = JSON.parse(JSON.stringify(newItems));
+	Object.values(fileCollisions).forEach((collisionArray) => {
+		let fileIndex = 1;
+		collisionArray.forEach((value) => {
+			// Increment the file index while a filename with the appended index exists either in the existing or renamed files
+			while (
+				existingItems
+					.map((existingItem) => existingItem.name + existingItem.extension)
+					.includes(
+						renamedItems[value].name + `_${fileIndex}` + renamedItems[value].extension
+					) ||
+				renamedItems
+					.map((item) => item.name)
+					.includes(renamedItems[value].name + `_${fileIndex}`)
+			) {
+				fileIndex += 1;
+			}
+
+			const newName = renamedItems[value].name + `_${fileIndex}`;
+			renamedItems[value].name = newName;
+		});
+	});
+
+	return renamedItems;
 }
+
+// export function GetOutputItemsFromInputItems(
+// 	inputItems: DirectoryItems,
+// 	extension: HandbrakeOutputExtensions
+// ) {}
