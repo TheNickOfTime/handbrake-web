@@ -14,7 +14,12 @@ import PathInput from '../../base/inputs/path/path-input';
 import { FileBrowserMode } from '../../../../../types/file-browser';
 import SelectInput from '../../base/inputs/select/select-input';
 import TextInput from '../../base/inputs/text/text-input';
-import { Directory, DirectoryItem, DirectoryItems } from '../../../../../types/directory';
+import {
+	Directory,
+	DirectoryItem,
+	DirectoryItems,
+	DirectoryRequest,
+} from '../../../../../types/directory';
 import './create-job.scss';
 import { HandleNameCollision } from './create-job-funcs';
 
@@ -45,8 +50,12 @@ export default function CreateJob({ onClose }: Params) {
 	// Preset ------------------------------------------------------------------
 	const [preset, setPreset] = useState('');
 
-	const requestDirectory = async (path: string) => {
-		const response: Directory = await socket.emitWithAck('get-directory', path);
+	const requestDirectory = async (path: string, isRecursive: boolean = false) => {
+		const request: DirectoryRequest = {
+			path: path,
+			isRecursive: isRecursive,
+		};
+		const response: Directory = await socket.emitWithAck('get-directory', request);
 		return response;
 	};
 
