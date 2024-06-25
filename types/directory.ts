@@ -12,3 +12,8 @@ export type Directory = {
 	current: DirectoryItem;
 	items: DirectoryItem[];
 };
+
+export type DirectoryRequest = {
+	path: string;
+	isRecursive: boolean;
+};
