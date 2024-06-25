@@ -383,9 +383,16 @@ export default function CreateJob({ onClose }: Params) {
 
 											return (
 												<tr key={index}>
-													<td>{index + 1}</td>
-													<td title={file.path}>{inputText}</td>
-													<td title={outputFile.path}>{outputText}</td>
+													<td className='index-cell'>{index + 1}</td>
+													<td className='input-cell' title={file.path}>
+														{inputText}
+													</td>
+													<td
+														className='output-cell'
+														title={outputFile.path}
+													>
+														{outputText}
+													</td>
 												</tr>
 											);
 										})}

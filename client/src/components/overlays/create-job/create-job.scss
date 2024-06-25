@@ -43,13 +43,33 @@
 			table {
 				width: 100%;
 
-				th {
-					border-bottom: 0.1rem solid $text-color-secondary;
+				thead {
+					th {
+						border-bottom: 0.1rem solid $text-color-secondary;
+					}
 				}
 
-				td {
-					padding: 0.25rem 0.5rem;
-					font-size: 1.25rem;
+				tbody {
+					tr {
+						&:hover {
+							background-color: $transparent-light-secondary;
+						}
+
+						td {
+							padding: 0.25rem 0.5rem;
+							font-size: 1.25rem;
+							cursor: default;
+						}
+
+						.index-cell {
+							text-align: center;
+						}
+
+						.input-cell:hover,
+						.output-cell:hover {
+							background-color: $transparent-light-secondary;
+						}
+					}
 				}
 			}
 		}
