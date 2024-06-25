@@ -17,7 +17,7 @@ import { GetDirectoryItems, GetDirectoryTree } from '../scripts/files';
 import { HandbrakePreset } from '../../types/preset';
 import { AddPreset, GetPresetNames, GetPresets, RemovePreset } from '../scripts/presets';
 import { videoPath } from '../scripts/video';
-import { Directory } from '../../types/directory';
+import { Directory, DirectoryRequest } from '../../types/directory';
 
 const initClient = (socket: Client) => {
 	const queue = GetQueue();
@@ -79,8 +79,8 @@ export default function ClientSocket(io: Server) {
 
 		socket.on(
 			'get-directory',
-			async (path: string, callback: (directory: Directory) => void) => {
-				const items = await GetDirectoryItems(path);
+			async (request: DirectoryRequest, callback: (directory: Directory) => void) => {
+				const items = await GetDirectoryItems(request.path, request.isRecursive);
 				if (items) {
 					callback(items);
 				}

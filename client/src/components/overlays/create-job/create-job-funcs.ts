@@ -1,5 +1,16 @@
-import { DirectoryItems } from '../../../../../types/directory';
-// import { HandbrakeOutputExtensions } from '../../../../../types/file-extensions';
+import mime from 'mime';
+import { Directory, DirectoryItems, DirectoryRequest } from '../../../../../types/directory';
+import { HandbrakeOutputExtensions } from '../../../../../types/file-extensions';
+import { Socket } from 'socket.io-client';
+
+export async function RequestDirectory(socket: Socket, path: string, isRecursive: boolean = false) {
+	const request: DirectoryRequest = {
+		path: path,
+		isRecursive: isRecursive,
+	};
+	const response: Directory = await socket.emitWithAck('get-directory', request);
+	return response;
+}
 
 export function HandleNameCollision(newItems: DirectoryItems, existingItems: DirectoryItems) {
 	const fileCollisions: { [index: string]: number[] } = {};
@@ -66,7 +77,22 @@ export function HandleNameCollision(newItems: DirectoryItems, existingItems: Dir
 	return renamedItems;
 }
 
-// export function GetOutputItemsFromInputItems(
-// 	inputItems: DirectoryItems,
-// 	extension: HandbrakeOutputExtensions
-// ) {}
+export function FilterVideoFiles(items: DirectoryItems) {
+	return items
+		.filter((item) => !item.isDirectory)
+		.filter((item) => mime.getType(item.path)?.includes('video'));
+}
+
+export function GetOutputItemsFromInputItems(
+	inputItems: DirectoryItems,
+	extension: HandbrakeOutputExtensions
+) {
+	return inputItems.map((item) => {
+		return {
+			path: item.path.replace(item.extension!, extension),
+			name: item.name,
+			extension: extension,
+			isDirectory: item.isDirectory,
+		};
+	});
+}

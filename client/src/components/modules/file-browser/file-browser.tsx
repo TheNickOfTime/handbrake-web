@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import { FileBrowserMode } from '../../../../../types/file-browser';
-import { Directory, DirectoryItem } from '../../../../../types/directory';
+import { Directory, DirectoryItem, DirectoryRequest } from '../../../../../types/directory';
 import ButtonInput from '../../base/inputs/button/button-input';
 import FileBrowserBody from './components/file-browser-body';
 import { useOutletContext } from 'react-router-dom';
@@ -22,26 +22,33 @@ export default function FileBrowser({ basePath, mode, onConfirm }: Params) {
 	const [directory, setDirectory] = useState<Directory | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 
-	const requestDirectory = async (path: string) => {
+	const requestDirectory = async (path: string, isRecursive: boolean = false) => {
 		setIsLoading(true);
 		console.log(`[client] Requesting directory ${path}...`);
-		const response: Directory = await socket.emitWithAck('get-directory', path);
+		const request: DirectoryRequest = {
+			path: path,
+			isRecursive: isRecursive,
+		};
+		const response: Directory = await socket.emitWithAck('get-directory', request);
 		console.log(
 			`[client] Received directory ${response.current.path} with ${response.items.length} items.`
 		);
-		// console.log(response);
 		setIsLoading(false);
 		setDirectory(response);
 		return response;
 	};
 
 	useEffect(() => {
-		requestDirectory(currentPath);
+		async function InitDirectory() {
+			const newDirectory = await requestDirectory(currentPath);
+			if (mode == FileBrowserMode.Directory && !selectedItem) {
+				setSelectedItem(newDirectory.current);
+			}
+		}
+		InitDirectory();
 	}, []);
 
 	const handleUpdateDirectory = (newPath: string) => {
-		const newSelectedItem = directory?.items.find((item) => newPath == item.path);
-		console.log(newSelectedItem);
 		requestDirectory(newPath);
 		setCurrentPath(newPath);
 	};
