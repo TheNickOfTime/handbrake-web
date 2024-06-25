@@ -356,18 +356,24 @@ export default function CreateJob({ onClose }: Params) {
 										const outputFile = outputFiles[index];
 
 										const inputText =
-											inputPath + '/' + file.name + file.extension;
+												file.path.length > 50
+													? `${file.path.slice(0, 10)}...${(
+															file.name + file.extension
+													  ).slice(-37)}`
+													: file.path;
+
 										const outputText =
-											outputPath +
-											'/' +
-											outputFile.name +
-											outputFile.extension;
+												outputFile.path.length > 50
+													? `${outputFile.path.slice(0, 10)}...${(
+															outputFile.name + outputFile.extension
+													  ).slice(-37)}`
+													: outputFile.path;
 
 										return (
 											<tr key={index}>
 												<td>{index + 1}</td>
-												<td>...{inputText.slice(-37)}</td>
-												<td>...{outputText.slice(-37)}</td>
+													<td title={file.path}>{inputText}</td>
+													<td title={outputFile.path}>{outputText}</td>
 											</tr>
 										);
 									})}
