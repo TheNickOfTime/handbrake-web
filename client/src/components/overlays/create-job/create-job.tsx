@@ -50,6 +50,9 @@ export default function CreateJob({ onClose }: Params) {
 	// Preset ------------------------------------------------------------------
 	const [preset, setPreset] = useState('');
 
+	// Results -----------------------------------------------------------------
+	const [seeMore, setSeeMore] = useState(false);
+
 	const canSubmit =
 		inputPath != '' &&
 		inputFiles.length > 0 &&
@@ -235,6 +238,11 @@ export default function CreateJob({ onClose }: Params) {
 		}
 	};
 
+	const handleSeeMore = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		event.preventDefault();
+		setSeeMore(!seeMore);
+	};
+
 	// const handlePresetChange = (preset: string) => {};
 
 	return (
@@ -341,7 +349,9 @@ export default function CreateJob({ onClose }: Params) {
 				</fieldset>
 				{inputFiles.length > 0 && outputFiles.length > 0 && (
 					<div className='result-section'>
-						<h3>Result</h3>
+						<h3>
+							{`${inputFiles.length} ${inputFiles.length > 1 ? 'Results' : 'Result'}`}
+						</h3>
 						<div className='table-scroll'>
 							<table>
 								<thead>
@@ -352,34 +362,46 @@ export default function CreateJob({ onClose }: Params) {
 									</tr>
 								</thead>
 								<tbody>
-									{inputFiles.map((file, index) => {
-										const outputFile = outputFiles[index];
+									{inputFiles
+										.slice(0, seeMore ? inputFiles.length : 5)
+										.map((file, index) => {
+											const outputFile = outputFiles[index];
 
-										const inputText =
+											const inputText =
 												file.path.length > 50
 													? `${file.path.slice(0, 10)}...${(
 															file.name + file.extension
 													  ).slice(-37)}`
 													: file.path;
 
-										const outputText =
+											const outputText =
 												outputFile.path.length > 50
 													? `${outputFile.path.slice(0, 10)}...${(
 															outputFile.name + outputFile.extension
 													  ).slice(-37)}`
 													: outputFile.path;
 
-										return (
-											<tr key={index}>
-												<td>{index + 1}</td>
+											return (
+												<tr key={index}>
+													<td>{index + 1}</td>
 													<td title={file.path}>{inputText}</td>
 													<td title={outputFile.path}>{outputText}</td>
-											</tr>
-										);
-									})}
+												</tr>
+											);
+										})}
 								</tbody>
 							</table>
 						</div>
+						<button onClick={handleSeeMore}>
+							<i
+								className={`bi ${
+									seeMore ? 'bi-caret-up-fill' : 'bi-caret-down-fill'
+								}`}
+							/>
+							<span>
+								{seeMore ? ' See Less' : ` See ${inputFiles.length - 5} More`}
+							</span>
+						</button>
 					</div>
 				)}
 				<div className='buttons-section'>

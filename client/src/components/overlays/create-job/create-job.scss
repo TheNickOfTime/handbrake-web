@@ -35,15 +35,34 @@
 		}
 	}
 
-	table {
-		width: 100%;
+	.result-section {
+		.table-scroll {
+			max-height: 25rem;
+			overflow-y: scroll;
 
-		th {
-			border-bottom: 0.1rem solid $text-color-secondary;
+			table {
+				width: 100%;
+
+				th {
+					border-bottom: 0.1rem solid $text-color-secondary;
+				}
+
+				td {
+					padding: 0.25rem 0.5rem;
+					font-size: 1.25rem;
+				}
+			}
 		}
 
-		td {
-			padding: 0.25rem 0.5rem;
+		button {
+			width: 100%;
+			border: none;
+			background-color: transparent;
+			color: $text-color-secondary;
+
+			&:hover {
+				background-color: $transparent-light-primary;
+			}
 		}
 	}
 
