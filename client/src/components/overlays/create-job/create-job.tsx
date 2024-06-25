@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { PrimaryOutletContextType } from '../../../pages/primary/primary-context';
-import mime from 'mime';
-
 import { QueueRequest } from '../../../../../types/queue';
 import SectionOverlay from '../../section/section-overlay';
 import ButtonGroup from '../../base/inputs/button-group/button-group';
@@ -14,14 +12,15 @@ import PathInput from '../../base/inputs/path/path-input';
 import { FileBrowserMode } from '../../../../../types/file-browser';
 import SelectInput from '../../base/inputs/select/select-input';
 import TextInput from '../../base/inputs/text/text-input';
+import CheckboxInput from '../../base/inputs/checkbox/checkbox-input';
+import { DirectoryItem, DirectoryItems } from '../../../../../types/directory';
 import {
-	Directory,
-	DirectoryItem,
-	DirectoryItems,
-	DirectoryRequest,
-} from '../../../../../types/directory';
+	FilterVideoFiles,
+	GetOutputItemsFromInputItems,
+	HandleNameCollision,
+	RequestDirectory,
+} from './create-job-funcs';
 import './create-job.scss';
-import { HandleNameCollision } from './create-job-funcs';
 
 type Params = {
 	onClose: () => void;
@@ -40,6 +39,7 @@ export default function CreateJob({ onClose }: Params) {
 	// Input -------------------------------------------------------------------
 	const [inputPath, setInputPath] = useState('');
 	const [inputFiles, setInputFiles] = useState<DirectoryItems>([]);
+	const [isRecursive, setIsRecursive] = useState(false);
 
 	// Output ------------------------------------------------------------------
 	const [outputPath, setOutputPath] = useState('');
@@ -49,15 +49,6 @@ export default function CreateJob({ onClose }: Params) {
 
 	// Preset ------------------------------------------------------------------
 	const [preset, setPreset] = useState('');
-
-	const requestDirectory = async (path: string, isRecursive: boolean = false) => {
-		const request: DirectoryRequest = {
-			path: path,
-			isRecursive: isRecursive,
-		};
-		const response: Directory = await socket.emitWithAck('get-directory', request);
-		return response;
-	};
 
 	const canSubmit =
 		inputPath != '' &&
@@ -72,6 +63,7 @@ export default function CreateJob({ onClose }: Params) {
 			setJobFrom(newJobFrom);
 			setInputPath('');
 			setInputFiles([]);
+			setIsRecursive(false);
 			setOutputPath('');
 			setOutputFiles([]);
 			setNameCollision(false);
@@ -110,7 +102,8 @@ export default function CreateJob({ onClose }: Params) {
 			const parentPath = item.path.replace(item.name + item.extension, '');
 			setOutputPath(parentPath);
 
-			const existingFiles: DirectoryItems = (await requestDirectory(parentPath)).items;
+			const existingFiles: DirectoryItems = (await RequestDirectory(socket, parentPath))
+				.items;
 			const newOutputFiles: DirectoryItems = [
 				{
 					path: parentPath + item.name + item.extension,
@@ -125,29 +118,31 @@ export default function CreateJob({ onClose }: Params) {
 	};
 
 	const handleDirectoryInputConfirm = async (item: DirectoryItem) => {
-		// Set input variables
+		// Get input/output variables
+		const inputPathItems: DirectoryItems = FilterVideoFiles(
+			(await RequestDirectory(socket, item.path, isRecursive)).items
+		);
+
+		const newOutputPath = inputPath == outputPath ? item.path : outputPath;
+		const existingFiles: DirectoryItems = (await RequestDirectory(socket, item.path)).items;
+		const newOutputFiles: DirectoryItems = inputPathItems.map((item) => {
+			return {
+				path: item.path.replace(item.extension!, outputExtension),
+				name: item.name,
+				extension: outputExtension,
+				isDirectory: item.isDirectory,
+			};
+		});
+		const dedupedOutputFiles = HandleNameCollision(newOutputFiles, existingFiles);
+
+		// Set input/output states
 		setInputPath(item.path);
-		const inputPathItems: DirectoryItems = (await requestDirectory(item.path)).items
-			.filter((item) => !item.isDirectory)
-			.filter((item) => mime.getType(item.path)?.includes('video'));
-		setInputFiles(inputPathItems);
-
-		// Set output variables if the path is not set
-		if (!outputPath) {
-			setOutputPath(item.path);
-
-			const existingFiles: DirectoryItems = (await requestDirectory(item.path)).items;
-			const newOutputFiles: DirectoryItems = inputPathItems.map((item) => {
-				return {
-					path: item.path.replace(item.extension!, outputExtension),
-					name: item.name,
-					extension: outputExtension,
-					isDirectory: item.isDirectory,
-				};
-			});
-			const dedupedOutputFiles = HandleNameCollision(newOutputFiles, existingFiles);
-			setOutputFiles(dedupedOutputFiles);
+		if (outputPath != newOutputPath) {
+			setOutputPath(newOutputPath);
 		}
+
+		setInputFiles(inputPathItems);
+		setOutputFiles(dedupedOutputFiles);
 	};
 
 	const handleInputConfirm = async (item: DirectoryItem) => {
@@ -161,9 +156,25 @@ export default function CreateJob({ onClose }: Params) {
 		}
 	};
 
+	const handleRecursiveChange = async (value: boolean) => {
+		if (inputPath) {
+			const newInputFiles = FilterVideoFiles(
+				(await RequestDirectory(socket, inputPath, value)).items
+			);
+			const existingFiles: DirectoryItems = (await RequestDirectory(socket, outputPath))
+				.items;
+			const newOutputFiles = HandleNameCollision(
+				GetOutputItemsFromInputItems(newInputFiles, outputExtension),
+				existingFiles
+			);
+			setInputFiles(newInputFiles);
+			setOutputFiles(newOutputFiles);
+		}
+	};
+
 	const handleOutputConfirm = async (item: DirectoryItem) => {
 		setOutputPath(item.path);
-		const existingFiles: DirectoryItems = (await requestDirectory(item.path)).items;
+		const existingFiles: DirectoryItems = (await RequestDirectory(socket, item.path)).items;
 		const newOutputFiles = inputFiles.map((item) => {
 			return {
 				path: item.path.replace(item.extension!, outputExtension),
@@ -182,7 +193,8 @@ export default function CreateJob({ onClose }: Params) {
 			const newOutputFiles = [...outputFiles];
 			newOutputFiles[0].name = name;
 
-			const existingFiles: DirectoryItems = (await requestDirectory(outputPath)).items;
+			const existingFiles: DirectoryItems = (await RequestDirectory(socket, outputPath))
+				.items;
 			if (
 				existingFiles
 					.map((item) => item.name + item.extension)
@@ -205,7 +217,7 @@ export default function CreateJob({ onClose }: Params) {
 			return file;
 		});
 
-		const existingFiles: DirectoryItems = (await requestDirectory(outputPath)).items;
+		const existingFiles: DirectoryItems = (await RequestDirectory(socket, outputPath)).items;
 		if (jobFrom == JobFrom.FromFile) {
 			if (
 				existingFiles
@@ -260,6 +272,15 @@ export default function CreateJob({ onClose }: Params) {
 						onConfirm={handleInputConfirm}
 						key={jobFrom == JobFrom.FromFile ? 'input-file' : 'input-directory'}
 					/>
+					{jobFrom == JobFrom.FromDirectory && (
+						<CheckboxInput
+							id='recursive-input'
+							label='Recursive:'
+							value={isRecursive}
+							setValue={setIsRecursive}
+							onChange={handleRecursiveChange}
+						/>
+					)}
 				</fieldset>
 				<fieldset className='output-section'>
 					<legend>Output</legend>
@@ -321,32 +342,38 @@ export default function CreateJob({ onClose }: Params) {
 				{inputFiles.length > 0 && outputFiles.length > 0 && (
 					<div className='result-section'>
 						<h3>Result</h3>
-						<table>
-							<thead>
-								<tr>
-									<th>#</th>
-									<th>Input</th>
-									<th>Output</th>
-								</tr>
-							</thead>
-							<tbody>
-								{inputFiles.map((file, index) => {
-									const outputFile = outputFiles[index];
+						<div className='table-scroll'>
+							<table>
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Input</th>
+										<th>Output</th>
+									</tr>
+								</thead>
+								<tbody>
+									{inputFiles.map((file, index) => {
+										const outputFile = outputFiles[index];
 
-									const inputText = inputPath + '/' + file.name + file.extension;
-									const outputText =
-										outputPath + '/' + outputFile.name + outputFile.extension;
+										const inputText =
+											inputPath + '/' + file.name + file.extension;
+										const outputText =
+											outputPath +
+											'/' +
+											outputFile.name +
+											outputFile.extension;
 
-									return (
-										<tr key={index}>
-											<td>{index + 1}</td>
-											<td>...{inputText.slice(-37)}</td>
-											<td>...{outputText.slice(-37)}</td>
-										</tr>
-									);
-								})}
-							</tbody>
-						</table>
+										return (
+											<tr key={index}>
+												<td>{index + 1}</td>
+												<td>...{inputText.slice(-37)}</td>
+												<td>...{outputText.slice(-37)}</td>
+											</tr>
+										);
+									})}
+								</tbody>
+							</table>
+						</div>
 					</div>
 				)}
 				<div className='buttons-section'>
