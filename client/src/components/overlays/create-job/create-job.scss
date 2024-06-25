@@ -74,11 +74,12 @@
 			}
 		}
 
-		button {
+		.see-more {
 			width: 100%;
 			border: none;
 			background-color: transparent;
 			color: $text-color-secondary;
+			cursor: pointer;
 
 			&:hover {
 				background-color: $transparent-light-primary;

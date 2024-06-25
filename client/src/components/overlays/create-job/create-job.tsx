@@ -399,7 +399,7 @@ export default function CreateJob({ onClose }: Params) {
 								</tbody>
 							</table>
 						</div>
-						<button onClick={handleSeeMore}>
+						<button className='see-more' onClick={handleSeeMore}>
 							<i
 								className={`bi ${
 									seeMore ? 'bi-caret-up-fill' : 'bi-caret-down-fill'
