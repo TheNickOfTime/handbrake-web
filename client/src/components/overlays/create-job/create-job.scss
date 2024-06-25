@@ -35,15 +35,55 @@
 		}
 	}
 
-	table {
-		width: 100%;
+	.result-section {
+		.table-scroll {
+			max-height: 25rem;
+			overflow-y: scroll;
 
-		th {
-			border-bottom: 0.1rem solid $text-color-secondary;
+			table {
+				width: 100%;
+
+				thead {
+					th {
+						border-bottom: 0.1rem solid $text-color-secondary;
+					}
+				}
+
+				tbody {
+					tr {
+						&:hover {
+							background-color: $transparent-light-secondary;
+						}
+
+						td {
+							padding: 0.25rem 0.5rem;
+							font-size: 1.25rem;
+							cursor: default;
+						}
+
+						.index-cell {
+							text-align: center;
+						}
+
+						.input-cell:hover,
+						.output-cell:hover {
+							background-color: $transparent-light-secondary;
+						}
+					}
+				}
+			}
 		}
 
-		td {
-			padding: 0.25rem 0.5rem;
+		.see-more {
+			width: 100%;
+			border: none;
+			background-color: transparent;
+			color: $text-color-secondary;
+			cursor: pointer;
+
+			&:hover {
+				background-color: $transparent-light-primary;
+			}
 		}
 	}
 
