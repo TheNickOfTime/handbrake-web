@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import directoryTree from 'directory-tree';
-import { Directory, DirectoryItem, DirectoryItems } from '../../types/directory';
+import { Directory, DirectoryItem, DirectoryItems } from 'types/directory';
 
 export function GetDirectoryTree(path: string) {
 	const tree = directoryTree(path);

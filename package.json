@@ -4,8 +4,8 @@
 	"description": "HandBrake Web",
 	"scripts": {
 		"client": "vite ./client",
-		"server": "nodemon ./server/server.ts --watch server",
-		"worker": "nodemon ./worker/worker.ts --watch worker",
+		"server": "nodemon ./server/server.ts --watch server --exec ts-node --project ./server/tsconfig.json",
+		"worker": "nodemon ./worker/worker.ts --watch worker --exec ts-node --project ./worker/tsconfig.json",
 		"build-client": "vite build ./client",
 		"build-server": "tsc --project ./server/tsconfig.json",
 		"build-worker": "tsc --project ./worker/tsconfig.json"
@@ -49,7 +49,9 @@
 		"nodemon": "^3.1.0",
 		"sass": "^1.77.2",
 		"ts-node": "^10.9.2",
+		"tsconfig-paths": "^4.2.0",
 		"typescript": "^5.4.5",
-		"vite": "^5.2.11"
+		"vite": "^5.2.11",
+		"vite-tsconfig-paths": "^4.3.2"
 	}
 }

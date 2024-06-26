@@ -1,7 +1,7 @@
 import mime from 'mime';
-import { Directory, DirectoryItems, DirectoryRequest } from '../../../../../types/directory';
-import { HandbrakeOutputExtensions } from '../../../../../types/file-extensions';
 import { Socket } from 'socket.io-client';
+import { Directory, DirectoryItems, DirectoryRequest } from 'types/directory';
+import { HandbrakeOutputExtensions } from 'types/file-extensions';
 
 export async function RequestDirectory(socket: Socket, path: string, isRecursive: boolean = false) {
 	const request: DirectoryRequest = {

@@ -1,6 +1,6 @@
 import { PropsWithChildren, useContext } from 'react';
-import './section-overlay.scss';
 import { SectionContext } from './section-context';
+import './section-overlay.scss';
 
 type Params = PropsWithChildren & {
 	id: string;

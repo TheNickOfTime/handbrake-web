@@ -1,8 +1,7 @@
-import fs from 'fs/promises';
-import { HandbrakePreset, HandbrakePresetList } from '../../types/preset';
-import { EmitToAllClients } from './connections';
-import { ReadDataFromFile, WriteDataToFile, dataPath } from './data';
 import path from 'path';
+import { HandbrakePreset, HandbrakePresetList } from 'types/preset';
+import { EmitToAllClients } from './connections';
+import { WriteDataToFile, dataPath } from './data';
 
 export const presetsPath = path.join(dataPath, 'presets.json');
 console.log(`[server] [presets] Presets path is '${presetsPath}'`);

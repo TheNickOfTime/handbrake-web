@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client';
-import { QueueEntry } from '../../types/queue';
-import { StartTranscode, StopTranscode, getJobID } from '../scripts/transcode';
+import { QueueEntry } from 'types/queue';
+import { StartTranscode, StopTranscode, getJobID } from 'scripts/transcode';
 import { serverAddress } from '../worker';
 
 const workerID = process.env.WORKER_ID;

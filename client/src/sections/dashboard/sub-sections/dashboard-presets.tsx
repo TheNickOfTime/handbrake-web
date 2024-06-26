@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
-import SubSection from '../../../components/section/sub-section';
-import { HandbrakePresetList } from '../../../../../types/preset';
+import { HandbrakePresetList } from 'types/preset';
+import SubSection from 'components/section/sub-section';
 import './dashboard-presets.scss';
 
 type Params = {

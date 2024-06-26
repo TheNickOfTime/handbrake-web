@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
-import { Queue } from '../../../../../types/queue';
-import SubSection from '../../../components/section/sub-section';
-import { workerID } from '../../../../../types/socket';
+import { Queue } from 'types/queue';
+import { workerID } from 'types/socket';
+import SubSection from 'components/section/sub-section';
 import './dashboard-workers.scss';
 
 type Params = {

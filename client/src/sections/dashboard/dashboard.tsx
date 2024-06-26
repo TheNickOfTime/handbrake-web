@@ -1,6 +1,6 @@
 import { useOutletContext } from 'react-router-dom';
-import { PrimaryOutletContextType } from '../../pages/primary/primary-context';
-import Section from '../../components/section/section';
+import { PrimaryOutletContextType } from 'pages/primary/primary-context';
+import Section from 'components/section/section';
 import DashboardSummary from './sub-sections/dashboard-summary';
 import DashboardQueue from './sub-sections/dashboard-queue';
 import DashboardWorkers from './sub-sections/dashboard-workers';

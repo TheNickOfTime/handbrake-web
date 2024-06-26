@@ -1,4 +1,4 @@
-import { Client, Connections, Worker } from '../../types/socket';
+import { Client, Connections, Worker } from 'types/socket';
 
 const connections: Connections = {
 	clients: [],

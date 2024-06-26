@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { PrimaryOutletContextType } from '../../pages/primary/primary-context';
-import Section from '../../components/section/section';
+import { PrimaryOutletContextType } from 'pages/primary/primary-context';
+import Section from 'components/section/section';
+import CreateJob from 'components/overlays/create-job/create-job';
 import QueueStatus from './sub-sections/queue-status';
 import QueueJobs from './sub-sections/queue-jobs';
-import CreateJob from '../../components/overlays/create-job/create-job';
 import './queue.scss';
 
 export default function QueueSection() {
@@ -62,7 +62,6 @@ export default function QueueSection() {
 			/>
 			{showCreateJob && (
 				<CreateJob
-					socket={socket}
 					onClose={() => {
 						setShowCreateJob(false);
 					}}

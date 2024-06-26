@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { PropsWithChildren, useRef, useState } from 'react';
-import './section.scss';
 import { SectionContext, SectionContextType } from './section-context';
+import './section.scss';
 
 type Params = PropsWithChildren & {
 	title: string;
