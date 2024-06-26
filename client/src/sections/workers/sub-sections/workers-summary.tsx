@@ -1,6 +1,6 @@
-import { Queue } from '../../../../../types/queue';
-import { TranscodeStage } from '../../../../../types/transcode';
-import SubSection from '../../../components/section/sub-section';
+import { Queue } from 'types/queue';
+import { TranscodeStage } from 'types/transcode';
+import SubSection from 'components/section/sub-section';
 import { WorkerInfo } from '../workers';
 
 import './workers-summary.scss';

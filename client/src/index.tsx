@@ -5,12 +5,12 @@ import './index.scss';
 import '@fontsource/noto-sans';
 import '@fontsource/inter';
 
-import Primary from './pages/primary/primary';
-import Error from './sections/error/error';
-import QueueSection from './sections/queue/queue';
-import WorkersSection from './sections/workers/workers';
-import PresetsSection from './sections/presets/presets';
-import DashboardSection from './sections/dashboard/dashboard';
+import Primary from 'pages/primary/primary';
+import Error from 'sections/error/error';
+import QueueSection from 'sections/queue/queue';
+import WorkersSection from 'sections/workers/workers';
+import PresetsSection from 'sections/presets/presets';
+import DashboardSection from 'sections/dashboard/dashboard';
 
 const routes: RouteObject[] = [
 	{

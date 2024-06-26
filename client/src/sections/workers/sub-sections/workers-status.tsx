@@ -1,5 +1,5 @@
-import ProgressBar from '../../../components/base/progress/progress-bar';
-import SubSection from '../../../components/section/sub-section';
+import ProgressBar from 'components/base/progress/progress-bar';
+import SubSection from 'components/section/sub-section';
 import { WorkerInfo } from '../workers';
 import './workers-status.scss';
 
