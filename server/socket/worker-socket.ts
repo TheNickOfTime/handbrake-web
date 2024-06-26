@@ -1,8 +1,7 @@
 import { Server } from 'socket.io';
-import { AddWorker, RemoveWorker } from '../scripts/connections';
-import { TranscodeStage, TranscodeStatusUpdate } from '../../types/transcode';
-import { GetQueue, StopJob, UpdateJob, WorkerForAvailableJobs } from '../scripts/queue';
-import { GetJobFromDatabase, UpdateJobInDatabase } from '../scripts/database/database-queue';
+import { AddWorker, RemoveWorker } from 'scripts/connections';
+import { TranscodeStage, TranscodeStatusUpdate } from 'types/transcode';
+import { GetQueue, StopJob, UpdateJob, WorkerForAvailableJobs } from 'scripts/queue';
 
 export default function WorkerSocket(io: Server) {
 	io.of('/worker').on('connection', (socket) => {

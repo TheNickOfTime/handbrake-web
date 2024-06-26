@@ -4,11 +4,11 @@ import { Server } from 'socket.io';
 import 'dotenv/config';
 import cors from 'cors';
 
-import ClientSocket from './socket/client-socket';
-import WorkerSocket from './socket/worker-socket';
-import Initialization from './scripts/initialization';
-import ClientRoutes from './routes/client';
-import Shutdown from './scripts/shutdown';
+import ClientSocket from 'socket/client-socket';
+import WorkerSocket from 'socket/worker-socket';
+import Initialization from 'scripts/initialization';
+import ClientRoutes from 'routes/client';
+import Shutdown from 'scripts/shutdown';
 
 // Server ------------------------------------------------------------------------------------------
 const app = express();
