@@ -2,18 +2,18 @@
 
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { PrimaryOutletContextType } from '../../../pages/primary/primary-context';
-import { QueueRequest } from '../../../../../types/queue';
-import SectionOverlay from '../../section/section-overlay';
-import ButtonGroup from '../../base/inputs/button-group/button-group';
-import { HandbrakeOutputExtensions } from '../../../../../types/file-extensions';
-import ButtonInput from '../../base/inputs/button/button-input';
-import PathInput from '../../base/inputs/path/path-input';
-import { FileBrowserMode } from '../../../../../types/file-browser';
-import SelectInput from '../../base/inputs/select/select-input';
-import TextInput from '../../base/inputs/text/text-input';
-import CheckboxInput from '../../base/inputs/checkbox/checkbox-input';
-import { DirectoryItem, DirectoryItems } from '../../../../../types/directory';
+import { DirectoryItem, DirectoryItems } from 'types/directory';
+import { FileBrowserMode } from 'types/file-browser';
+import { HandbrakeOutputExtensions } from 'types/file-extensions';
+import { QueueRequest } from 'types/queue';
+import { PrimaryOutletContextType } from 'pages/primary/primary-context';
+import ButtonGroup from 'components/base/inputs/button-group/button-group';
+import ButtonInput from 'components/base/inputs/button/button-input';
+import PathInput from 'components/base/inputs/path/path-input';
+import SelectInput from 'components/base/inputs/select/select-input';
+import TextInput from 'components/base/inputs/text/text-input';
+import SectionOverlay from 'components/section/section-overlay';
+import CheckboxInput from 'components/base/inputs/checkbox/checkbox-input';
 import {
 	FilterVideoFiles,
 	GetOutputItemsFromInputItems,

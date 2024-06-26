@@ -1,4 +1,11 @@
 import { Server } from 'socket.io';
+import { Directory, DirectoryRequest } from 'types/directory';
+import { HandbrakePreset } from 'types/preset';
+import { QueueRequest } from 'types/queue';
+import { Client } from 'types/socket';
+import { AddClient, RemoveClient } from 'scripts/connections';
+import { GetDirectoryItems, GetDirectoryTree } from 'scripts/files';
+import { AddPreset, GetPresetNames, GetPresets, RemovePreset } from 'scripts/presets';
 import {
 	AddJob,
 	ClearQueue,
@@ -9,15 +16,8 @@ import {
 	StartQueue,
 	StopJob,
 	StopQueue,
-} from '../scripts/queue';
-import { QueueRequest } from '../../types/queue';
-import { AddClient, RemoveClient } from '../scripts/connections';
-import { Client } from '../../types/socket';
-import { GetDirectoryItems, GetDirectoryTree } from '../scripts/files';
-import { HandbrakePreset } from '../../types/preset';
-import { AddPreset, GetPresetNames, GetPresets, RemovePreset } from '../scripts/presets';
-import { videoPath } from '../scripts/video';
-import { Directory, DirectoryRequest } from '../../types/directory';
+} from 'scripts/queue';
+import { videoPath } from 'scripts/video';
 
 const initClient = (socket: Client) => {
 	const queue = GetQueue();

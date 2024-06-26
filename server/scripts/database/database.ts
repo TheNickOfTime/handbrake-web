@@ -2,8 +2,6 @@ import Database from 'better-sqlite3';
 import path from 'path';
 
 import { dataPath } from '../data';
-import { Job, Queue, QueueEntry } from '../../../types/queue';
-import { QueueTable } from '../../../types/database';
 
 const databasePath = path.join(dataPath, 'handbrake.db');
 

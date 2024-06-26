@@ -5,13 +5,13 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { io } from 'socket.io-client';
 // import 'dotenv/config';
 
-import { Queue, QueueStatus } from '../../../../types/queue';
-import { ConnectionIDs } from '../../../../types/socket';
-import { HandbrakePresetList } from '../../../../types/preset';
+import { Queue, QueueStatus } from 'types/queue';
+import { ConnectionIDs } from 'types/socket';
+import { HandbrakePresetList } from 'types/preset';
+
+import SideBar from 'components/modules/side-bar/side-bar';
+
 import { PrimaryOutletContextType } from './primary-context';
-
-import SideBar from '../../components/modules/side-bar/side-bar';
-
 import './primary.scss';
 
 export default function Primary() {

@@ -1,7 +1,7 @@
-import SubSection from '../../../components/section/sub-section';
+import { QueueStatus as QueueStatusType } from 'types/queue';
+import SubSection from 'components/section/sub-section';
+import ButtonInput from 'components/base/inputs/button/button-input';
 import './queue-status.scss';
-import ButtonInput from '../../../components/base/inputs/button/button-input';
-import { QueueStatus as QueueStatusType } from '../../../../../types/queue';
 
 type Params = {
 	queueStatus: QueueStatusType;

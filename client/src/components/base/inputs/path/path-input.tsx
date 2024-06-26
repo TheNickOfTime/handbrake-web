@@ -1,8 +1,8 @@
-import FileBrowser from '../../../modules/file-browser/file-browser';
-import './path-input.scss';
 import { useState } from 'react';
-import { FileBrowserMode } from '../../../../../../types/file-browser';
-import { DirectoryItem } from '../../../../../../types/directory';
+import { FileBrowserMode } from 'types/file-browser';
+import { DirectoryItem } from 'types/directory';
+import FileBrowser from 'components/modules/file-browser/file-browser';
+import './path-input.scss';
 
 type Params = {
 	id: string;

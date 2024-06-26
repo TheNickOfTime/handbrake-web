@@ -1,6 +1,7 @@
-import { Job, QueueEntry, QueueRequest, QueueStatus } from '../../types/queue';
-import { Worker } from '../../types/socket';
-import { TranscodeStage, TranscodeStatusUpdate } from '../../types/transcode';
+import hash from 'object-hash';
+import { Job, QueueEntry, QueueRequest, QueueStatus } from 'types/queue';
+import { Worker } from 'types/socket';
+import { TranscodeStage, TranscodeStatusUpdate } from 'types/transcode';
 import {
 	EmitToAllClients,
 	EmitToWorkerWithID,
@@ -17,7 +18,6 @@ import {
 } from './database/database-queue';
 import { GetStatusFromDatabase, UpdateStatusInDatabase } from './database/database-status';
 import { GetPresets } from './presets';
-import hash from 'object-hash';
 
 // Init --------------------------------------------------------------------------------------------
 export function InitializeQueue() {
