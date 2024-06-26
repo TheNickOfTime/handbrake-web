@@ -1,10 +1,12 @@
-import { Job, Queue, QueueEntry, QueueRequest, QueueStatus } from '../../types/queue';
+import { Job, QueueEntry, QueueRequest, QueueStatus } from '../../types/queue';
+import { Worker } from '../../types/socket';
 import { TranscodeStage, TranscodeStatusUpdate } from '../../types/transcode';
 import {
 	EmitToAllClients,
-	EmitToAllConnections,
 	EmitToWorkerWithID,
+	GetWorkerID,
 	GetWorkerWithID,
+	GetWorkers,
 } from './connections';
 import {
 	GetJobFromDatabase,
@@ -15,10 +17,7 @@ import {
 } from './database/database-queue';
 import { GetStatusFromDatabase, UpdateStatusInDatabase } from './database/database-status';
 import { GetPresets } from './presets';
-import { SearchForWorker } from './worker';
 import hash from 'object-hash';
-
-let workerSearchInterval: null | NodeJS.Timeout = null;
 
 // Init --------------------------------------------------------------------------------------------
 export function InitializeQueue() {
@@ -62,6 +61,84 @@ export function InitializeQueue() {
 	}
 }
 
+export function GetAvailableWorkers() {
+	const availableWorkers = GetWorkers().filter((worker) => {
+		return !Object.values(GetQueue())
+			.filter((job) => job.worker != null)
+			.map((job) => job.worker)
+			.includes(GetWorkerID(worker));
+	});
+	return availableWorkers;
+}
+
+export function GetAvailableJobs() {
+	const queue = GetQueue();
+	const availableJobs = Object.keys(queue).filter(
+		(key) => queue[key].status.stage == TranscodeStage.Waiting
+	);
+	return availableJobs;
+}
+
+export function JobForAvailableWorkers(jobID: string) {
+	if (GetQueueStatus() != QueueStatus.Stopped) {
+		console.log(
+			`[server] [queue] Job with ID '${jobID}' is available, checking for available workers...`
+		);
+		const availableWorkers = GetAvailableWorkers();
+		if (availableWorkers.length > 0) {
+			const selectedWorker = availableWorkers[0];
+			const job = GetJobFromDatabase(jobID);
+			if (job) {
+				StartJob(jobID, job, selectedWorker);
+				console.log(
+					`[server] [queue] Found worker with ID '${GetWorkerID(
+						selectedWorker
+					)}' for job with ID '${jobID}`
+				);
+			}
+		} else {
+			console.log(
+				`[server] [queue] There are no workers available for job with ID '${jobID}'.`
+			);
+		}
+	}
+}
+
+export function WorkerForAvailableJobs(workerID: string) {
+	if (GetQueueStatus() != QueueStatus.Stopped) {
+		console.log(
+			`[server] [queue] Worker with ID '${workerID}' is available, checking for available jobs...`
+		);
+		const availableJobs = GetAvailableJobs();
+		if (availableJobs.length > 0) {
+			const worker = GetWorkerWithID(workerID);
+			const selectedJobID = availableJobs[0];
+			const selectedJob = GetJobFromDatabase(selectedJobID);
+			if (selectedJob && worker) {
+				StartJob(selectedJobID, selectedJob, worker);
+				console.log(
+					`[server] [queue] Found job with ID '${selectedJobID}' for worker with ID '${workerID}'.`
+				);
+			}
+		} else {
+			console.log(
+				`[server] [queue] There are no jobs available for worker with ID '${workerID}'.`
+			);
+		}
+	}
+}
+
+export function StartJob(jobID: string, job: Job, worker: Worker) {
+	const workerID = GetWorkerID(worker);
+	job.worker = workerID;
+	UpdateJobInDatabase(jobID, job);
+	const newJob: QueueEntry = {
+		id: jobID,
+		job: job,
+	};
+	worker.emit('transcode', newJob);
+}
+
 // Status ------------------------------------------------------------------------------------------
 export function GetQueueStatus() {
 	const status = GetStatusFromDatabase('queue')?.state as QueueStatus;
@@ -75,12 +152,50 @@ export function SetQueueStatus(newState: QueueStatus) {
 
 export function StartQueue(clientID: string) {
 	if (GetQueueStatus() == QueueStatus.Stopped) {
-		const newStatus = QueueStatus.Active;
-		SetQueueStatus(newStatus);
+		try {
+			const availableWorkers = GetAvailableWorkers();
+			const availableJobs = GetAvailableJobs();
+			const moreJobs = availableWorkers.length < availableJobs.length;
+			const maxConcurrent = moreJobs ? availableWorkers.length : availableJobs.length;
+			console.log(
+				`[server] [queue] There are more ${moreJobs ? 'jobs' : 'workers'} than ${
+					moreJobs ? 'workers' : 'jobs'
+				}, the max amount of concurrent jobs is ${maxConcurrent} job(s).`
+			);
 
-		console.log(`[server] The queue has been started by client '${clientID}'`);
+			if (maxConcurrent > 0) {
+				for (let i = 0; i < maxConcurrent; i++) {
+					const [selectedJobID, selectedJob] = Object.entries(GetQueue())[i];
+					const selectedWorker = availableWorkers[i];
+					const selectedWorkerID = GetWorkerID(selectedWorker);
 
-		workerSearchInterval = setInterval(SearchForWorker, 1000);
+					// Update Job
+					selectedJob.worker = selectedWorkerID;
+					UpdateJobInDatabase(selectedJobID, selectedJob);
+
+					//Send job to worker
+					const data: QueueEntry = {
+						id: selectedJobID,
+						job: selectedJob,
+					};
+					selectedWorker.emit('transcode', data);
+
+					console.log(
+						`[server] [queue] Assigning worker '${selectedWorkerID}' to job '${selectedJobID}'.`
+					);
+				}
+				SetQueueStatus(QueueStatus.Active);
+			} else {
+				console.log(
+					`[server] [queue] Setting the queue to idle because there are no ${
+						moreJobs ? 'workers' : 'jobs'
+					} available for ${moreJobs ? 'jobs' : 'workers'}.`
+				);
+				SetQueueStatus(QueueStatus.Idle);
+			}
+		} catch (err) {
+			console.error(err);
+		}
 	}
 }
 
@@ -92,17 +207,17 @@ export function StopQueue(clientID?: string) {
 		const stoppedBy = clientID ? `client '${clientID}'` : 'the server.';
 
 		console.log(`[server] The queue has been stopped by ${stoppedBy}.`);
-
-		if (workerSearchInterval) {
-			clearInterval(workerSearchInterval);
-		}
-		EmitToAllConnections('queue-status-changed', newStatus);
 	}
 }
 
 // Queue -------------------------------------------------------------------------------------------
 export function GetQueue() {
-	return GetQueueFromDatabase();
+	const queue = GetQueueFromDatabase();
+	if (queue) {
+		return queue;
+	} else {
+		throw new Error('Could not get the queue from the database.');
+	}
 }
 
 export function UpdateQueue() {
@@ -131,8 +246,9 @@ export function AddJob(data: QueueRequest) {
 		},
 	};
 
-	InsertJobToDatabase(jobID.toString(), newJob);
+	InsertJobToDatabase(jobID, newJob);
 	UpdateQueue();
+	JobForAvailableWorkers(jobID);
 }
 
 export function UpdateJob(data: TranscodeStatusUpdate) {
@@ -199,6 +315,7 @@ export function ResetJob(id: string) {
 
 			UpdateJobInDatabase(id, job);
 			UpdateQueue();
+			JobForAvailableWorkers(id);
 		} else {
 			console.error(
 				`[server] [error] Job with id '${id}' cannot be reset because it is not in a stopped state.`
