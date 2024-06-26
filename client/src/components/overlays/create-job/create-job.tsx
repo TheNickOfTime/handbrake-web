@@ -46,6 +46,7 @@ export default function CreateJob({ onClose }: Params) {
 	const [outputFiles, setOutputFiles] = useState<DirectoryItems>([]);
 	const [outputExtension, setOutputExtension] = useState(HandbrakeOutputExtensions.mkv);
 	const [nameCollision, setNameCollision] = useState(false);
+	const [outputChanged, setOutputChanged] = useState(false);
 
 	// Preset ------------------------------------------------------------------
 	const [preset, setPreset] = useState('');
@@ -98,12 +99,18 @@ export default function CreateJob({ onClose }: Params) {
 	};
 
 	const handleFileInputConfirm = async (item: DirectoryItem) => {
+		const prevPath =
+			inputFiles.length > 0
+				? inputFiles[0].path.replace(inputFiles[0].name + inputFiles[0].extension, '')
+				: undefined;
+		console.log(prevPath == outputPath);
+
 		// Set input variables
 		setInputPath(item.path);
 		setInputFiles([item]);
 
 		// Set the output variables if the path is not set
-		if (!outputPath) {
+		if (!outputPath || !outputChanged) {
 			const parentPath = item.path.replace(item.name + item.extension, '');
 			setOutputPath(parentPath);
 
@@ -128,14 +135,14 @@ export default function CreateJob({ onClose }: Params) {
 			(await RequestDirectory(socket, item.path, isRecursive)).items
 		);
 
-		const newOutputPath = inputPath == outputPath ? item.path : outputPath;
+		const newOutputPath = outputChanged ? outputPath : item.path;
 		const existingFiles: DirectoryItems = (await RequestDirectory(socket, item.path)).items;
-		const newOutputFiles: DirectoryItems = inputPathItems.map((item) => {
+		const newOutputFiles: DirectoryItems = inputPathItems.map((inputItem) => {
 			return {
-				path: item.path.replace(item.extension!, outputExtension),
-				name: item.name,
+				path: newOutputPath + '/' + inputItem.name + inputItem.extension,
+				name: inputItem.name,
 				extension: outputExtension,
-				isDirectory: item.isDirectory,
+				isDirectory: inputItem.isDirectory,
 			};
 		});
 		const dedupedOutputFiles = HandleNameCollision(newOutputFiles, existingFiles);
@@ -180,23 +187,27 @@ export default function CreateJob({ onClose }: Params) {
 	const handleOutputConfirm = async (item: DirectoryItem) => {
 		setOutputPath(item.path);
 		const existingFiles: DirectoryItems = (await RequestDirectory(socket, item.path)).items;
-		const newOutputFiles = inputFiles.map((item) => {
+		const newOutputFiles = inputFiles.map((inputItem) => {
 			return {
-				path: item.path.replace(item.extension!, outputExtension),
-				name: item.name,
+				path: item.path + '/' + inputItem.name + outputExtension,
+				name: inputItem.name,
 				extension: outputExtension,
-				isDirectory: item.isDirectory,
+				isDirectory: inputItem.isDirectory,
 			};
 		});
 		const dedupedOutputFiles = HandleNameCollision(newOutputFiles, existingFiles);
 		setOutputFiles(dedupedOutputFiles);
+		setOutputChanged(true);
 	};
 
 	const handleOutputNameChange = async (name: string) => {
 		// setOutputName(name);
 		if (outputFiles.length > 0) {
 			const newOutputFiles = [...outputFiles];
+			newOutputFiles[0].path = outputPath + name + outputExtension;
 			newOutputFiles[0].name = name;
+			setOutputFiles(newOutputFiles);
+			setOutputChanged(true);
 
 			const existingFiles: DirectoryItems = (await RequestDirectory(socket, outputPath))
 				.items;
@@ -209,13 +220,12 @@ export default function CreateJob({ onClose }: Params) {
 			} else if (nameCollision) {
 				setNameCollision(false);
 			}
-
-			setOutputFiles(newOutputFiles);
 		}
 	};
 
 	const handleExtensionChange = async (extension: string) => {
 		setOutputExtension(extension as HandbrakeOutputExtensions);
+		setOutputChanged(true);
 		const newOutputFiles = [...outputFiles];
 		newOutputFiles.map((file) => {
 			file.extension = extension;
@@ -293,7 +303,7 @@ export default function CreateJob({ onClose }: Params) {
 					)}
 				</fieldset>
 				<fieldset className='output-section'>
-					<legend>Output</legend>
+					<legend>{outputChanged ? 'Output' : 'Output (Auto)'}</legend>
 					<PathInput
 						id='output-path'
 						label='Directory: '
