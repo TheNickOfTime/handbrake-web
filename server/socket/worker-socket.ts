@@ -45,6 +45,9 @@ export default function WorkerSocket(io: Server) {
 			);
 
 			UpdateJob(data);
+			if (data.status.stage == TranscodeStage.Finished) {
+				WorkerForAvailableJobs(workerID);
+			}
 		});
 	});
 }
