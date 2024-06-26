@@ -21,7 +21,7 @@ export default function Section({ children, title, className, id }: Params) {
 	const handleScroll = () => {
 		if (scrollRef.current) {
 			setScrollY(scrollRef.current.scrollTop);
-			console.log(scrollRef.current.scrollTop);
+			// console.log(scrollRef.current.scrollTop);
 		}
 	};
 
