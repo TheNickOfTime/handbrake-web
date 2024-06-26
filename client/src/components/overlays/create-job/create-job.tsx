@@ -411,16 +411,18 @@ export default function CreateJob({ onClose }: Params) {
 								</tbody>
 							</table>
 						</div>
-						<button className='see-more' onClick={handleSeeMore}>
-							<i
-								className={`bi ${
-									seeMore ? 'bi-caret-up-fill' : 'bi-caret-down-fill'
-								}`}
-							/>
-							<span>
-								{seeMore ? ' See Less' : ` See ${inputFiles.length - 5} More`}
-							</span>
-						</button>
+						{inputFiles.length > 5 && (
+							<button className='see-more' onClick={handleSeeMore}>
+								<i
+									className={`bi ${
+										seeMore ? 'bi-caret-up-fill' : 'bi-caret-down-fill'
+									}`}
+								/>
+								<span>
+									{seeMore ? ' See Less' : ` See ${inputFiles.length - 5} More`}
+								</span>
+							</button>
+						)}
 					</div>
 				)}
 				<div className='buttons-section'>
