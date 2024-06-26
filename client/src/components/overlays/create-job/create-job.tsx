@@ -81,11 +81,13 @@ export default function CreateJob({ onClose }: Params) {
 	const handleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		event.preventDefault();
 
+		console.log(inputFiles, outputFiles);
+
 		inputFiles.forEach((file, index) => {
 			const outputFile = outputFiles[index];
 			const newJob: QueueRequest = {
-				input: inputPath + '/' + file.name + file.extension,
-				output: outputPath + '/' + outputFile.name + outputFile.extension,
+				input: file.path,
+				output: outputFile.path,
 				preset: preset,
 			};
 			socket.emit('add-to-queue', newJob);
@@ -109,7 +111,7 @@ export default function CreateJob({ onClose }: Params) {
 				.items;
 			const newOutputFiles: DirectoryItems = [
 				{
-					path: parentPath + item.name + item.extension,
+					path: parentPath + item.name + outputExtension,
 					name: item.name,
 					extension: outputExtension,
 					isDirectory: false,
