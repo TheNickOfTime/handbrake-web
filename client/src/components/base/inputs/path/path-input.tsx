@@ -45,7 +45,6 @@ export default function PathInput({ id, label, path, mode, value, onConfirm }: P
 						event?.preventDefault();
 						setShowFileBrowser(!showFileBrowser);
 					}}
-					// onBlur={() => setShowTree(false)}
 				>
 					<span className='button-label'>{showFileBrowser ? 'Cancel' : 'Browse'}</span>
 				</button>
