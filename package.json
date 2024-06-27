@@ -32,7 +32,8 @@
 		"socket.io": "^4.7.5",
 		"socket.io-client": "^4.7.5",
 		"sqlite": "^5.1.1",
-		"sqlite3": "^5.1.7"
+		"sqlite3": "^5.1.7",
+		"yaml": "^2.4.5"
 	},
 	"devDependencies": {
 		"@types/better-sqlite3": "^7.6.10",

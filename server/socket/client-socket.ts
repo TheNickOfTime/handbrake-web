@@ -18,6 +18,8 @@ import {
 	StopQueue,
 } from 'scripts/queue';
 import { videoPath } from 'scripts/video';
+import { Config, ConfigProperty } from 'types/config';
+import { GetConfig, GetPropertyFromConfig } from 'scripts/config';
 
 const initClient = (socket: Client) => {
 	const queue = GetQueue();
@@ -36,6 +38,18 @@ export default function ClientSocket(io: Server) {
 			console.log(`[server] Client '${socket.id}' has disconnected.`);
 			RemoveClient(socket);
 		});
+
+		// Config ----------------------------------------------------------------------------------
+		socket.on('get-config', (callback: (config: Config) => void) => {
+			callback(GetConfig());
+		});
+
+		socket.on(
+			'get-config-property',
+			(property: ConfigProperty, callback: (result: string) => void) => {
+				callback(GetPropertyFromConfig(property));
+			}
+		);
 
 		// Queue -----------------------------------------------------------------------------------
 		socket.on('add-to-queue', (data: QueueRequest) => {
