@@ -32,7 +32,7 @@ enum JobFrom {
 }
 
 export default function CreateJob({ onClose }: Params) {
-	const { presets, socket } = useOutletContext<PrimaryOutletContextType>();
+	const { presets, socket, config } = useOutletContext<PrimaryOutletContextType>();
 	const [extensions] = useState<string[]>(Object.values(HandbrakeOutputExtensions));
 	const [jobFrom, setJobFrom] = useState(JobFrom.FromFile);
 
@@ -255,8 +255,6 @@ export default function CreateJob({ onClose }: Params) {
 		setSeeMore(!seeMore);
 	};
 
-	// const handlePresetChange = (preset: string) => {};
-
 	return (
 		<SectionOverlay id='create-new-job'>
 			<h1>Create New Job</h1>
@@ -282,7 +280,7 @@ export default function CreateJob({ onClose }: Params) {
 					<PathInput
 						id='input-path'
 						label={jobFrom == JobFrom.FromFile ? 'File: ' : 'Directory: '}
-						path='/video/input'
+						path={config['input-path']}
 						mode={
 							jobFrom == JobFrom.FromFile
 								? FileBrowserMode.SingleFile
@@ -307,7 +305,7 @@ export default function CreateJob({ onClose }: Params) {
 					<PathInput
 						id='output-path'
 						label='Directory: '
-						path={'/video/output'}
+						path={config['output-path']}
 						mode={FileBrowserMode.Directory}
 						value={outputPath}
 						onConfirm={handleOutputConfirm}

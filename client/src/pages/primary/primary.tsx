@@ -13,6 +13,8 @@ import SideBar from 'components/modules/side-bar/side-bar';
 
 import { PrimaryOutletContextType } from './primary-context';
 import './primary.scss';
+import { Config } from 'types/config';
+import NoConnection from 'sections/no-connection/no-connection';
 
 export default function Primary() {
 	const baseURLRegex = /(^https?:\/\/.+\/)(.+$)/;
@@ -24,6 +26,7 @@ export default function Primary() {
 	const server = `${serverURL}${serverSocketPath}`;
 
 	const [socket] = useState(io(server, { autoConnect: false }));
+	const [config, setConfig] = useState<Config>();
 	const [queue, setQueue] = useState<Queue>({});
 	const [queueStatus, setQueueStatus] = useState<QueueStatus>(QueueStatus.Idle);
 	const [presets, setPresets] = useState<HandbrakePresetList>({});
@@ -41,6 +44,15 @@ export default function Primary() {
 		return () => {
 			socket.disconnect();
 		};
+	}, []);
+
+	// Get config --------------------------------------------------------------
+	useEffect(() => {
+		const getConfig = async () => {
+			const newConfig = await socket.emitWithAck('get-config');
+			setConfig(newConfig);
+		};
+		getConfig();
 	}, []);
 
 	// Error event listeners ---------------------------------------------------
@@ -120,17 +132,22 @@ export default function Primary() {
 					</button>
 				</div>
 				<div className='content'>
-					<Outlet
-						context={
-							{
-								socket,
-								queue,
-								queueStatus,
-								presets,
-								connections,
-							} satisfies PrimaryOutletContextType
-						}
-					/>
+					{socket.connected && config != undefined ? (
+						<Outlet
+							context={
+								{
+									socket,
+									queue,
+									queueStatus,
+									presets,
+									connections,
+									config,
+								} satisfies PrimaryOutletContextType
+							}
+						/>
+					) : (
+						<NoConnection url={serverURL} />
+					)}
 				</div>
 			</div>
 		</div>
