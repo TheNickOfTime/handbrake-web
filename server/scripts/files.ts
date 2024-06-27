@@ -1,12 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import directoryTree from 'directory-tree';
 import { Directory, DirectoryItem, DirectoryItems } from 'types/directory';
-
-export function GetDirectoryTree(path: string) {
-	const tree = directoryTree(path);
-	return tree;
-}
 
 export async function GetDirectoryItems(absolutePath: string, recursive: boolean = false) {
 	try {
