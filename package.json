@@ -21,7 +21,6 @@
 		"bootstrap": "^5.3.3",
 		"bootstrap-icons": "^1.11.3",
 		"cors": "^2.8.5",
-		"directory-tree": "^3.5.1",
 		"dotenv": "^16.4.5",
 		"express": "^4.19.2",
 		"mime": "^4.0.3",

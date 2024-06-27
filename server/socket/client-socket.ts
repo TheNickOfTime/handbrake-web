@@ -4,7 +4,7 @@ import { HandbrakePreset } from 'types/preset';
 import { QueueRequest } from 'types/queue';
 import { Client } from 'types/socket';
 import { AddClient, RemoveClient } from 'scripts/connections';
-import { GetDirectoryItems, GetDirectoryTree } from 'scripts/files';
+import { GetDirectoryItems } from 'scripts/files';
 import { AddPreset, GetPresetNames, GetPresets, RemovePreset } from 'scripts/presets';
 import {
 	AddJob,
@@ -86,11 +86,6 @@ export default function ClientSocket(io: Server) {
 		});
 
 		// Directory -------------------------------------------------------------------------------
-		socket.on('get-directory-tree', () => {
-			const tree = GetDirectoryTree(videoPath);
-			socket.emit('get-directory-tree', tree);
-		});
-
 		socket.on(
 			'get-directory',
 			async (request: DirectoryRequest, callback: (directory: Directory) => void) => {
