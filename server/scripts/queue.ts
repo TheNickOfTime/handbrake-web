@@ -61,6 +61,16 @@ export function InitializeQueue() {
 	}
 }
 
+export function GetBusyWorkers() {
+	const busyWorkers = GetWorkers().filter((worker) => {
+		return Object.values(GetQueue())
+			.filter((job) => job.worker != null)
+			.map((job) => job.worker)
+			.includes(GetWorkerID(worker));
+	});
+	return busyWorkers;
+}
+
 export function GetAvailableWorkers() {
 	const availableWorkers = GetWorkers().filter((worker) => {
 		return !Object.values(GetQueue())
@@ -90,6 +100,9 @@ export function JobForAvailableWorkers(jobID: string) {
 			const job = GetJobFromDatabase(jobID);
 			if (job) {
 				StartJob(jobID, job, selectedWorker);
+				if (GetQueueStatus() != QueueStatus.Active) {
+					SetQueueStatus(QueueStatus.Active);
+				}
 				console.log(
 					`[server] [queue] Found worker with ID '${GetWorkerID(
 						selectedWorker
@@ -116,6 +129,9 @@ export function WorkerForAvailableJobs(workerID: string) {
 			const selectedJob = GetJobFromDatabase(selectedJobID);
 			if (selectedJob && worker) {
 				StartJob(selectedJobID, selectedJob, worker);
+				if (GetQueueStatus() != QueueStatus.Active) {
+					SetQueueStatus(QueueStatus.Active);
+				}
 				console.log(
 					`[server] [queue] Found job with ID '${selectedJobID}' for worker with ID '${workerID}'.`
 				);
@@ -124,6 +140,11 @@ export function WorkerForAvailableJobs(workerID: string) {
 			console.log(
 				`[server] [queue] There are no jobs available for worker with ID '${workerID}'.`
 			);
+			// Set queue to idle if there are no other busy workers
+			if (GetBusyWorkers().length == 0) {
+				SetQueueStatus(QueueStatus.Idle);
+				console.log("There are no active workers, setting queue to 'Idle'.");
+			}
 		}
 	}
 }
