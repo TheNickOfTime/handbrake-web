@@ -17,3 +17,8 @@ export type DirectoryRequest = {
 	path: string;
 	isRecursive: boolean;
 };
+
+export type CreateDirectoryRequest = {
+	path: string;
+	name: string;
+};
