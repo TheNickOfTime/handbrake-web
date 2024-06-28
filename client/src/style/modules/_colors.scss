@@ -18,6 +18,9 @@ $transparent-light-primary: rgba(255, 255, 255, 0.1);
 $transparent-light-secondary: rgba(255, 255, 255, 0.05);
 $transparent-light-tertiary: rgba(255, 255, 255, 0.025);
 
+$transparent-dark-primary: hsla(0, 0%, 0%, 0.75);
+$transparent-dark-secondary: hsla(0, 0%, 0%, 0.5);
+
 .color-red {
 	color: $handbrake-red;
 }

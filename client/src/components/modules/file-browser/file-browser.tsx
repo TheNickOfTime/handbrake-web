@@ -1,12 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { Directory, DirectoryItem, DirectoryRequest } from 'types/directory';
+import {
+	CreateDirectoryRequest,
+	Directory,
+	DirectoryItem,
+	DirectoryRequest,
+} from 'types/directory';
 import { FileBrowserMode } from 'types/file-browser';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import FileBrowserBody from './components/file-browser-body';
 import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import './file-browser.scss';
+import AddDirectory from './components/file-browser-add-directory';
 
 type Params = {
 	basePath: string;
@@ -21,6 +27,7 @@ export default function FileBrowser({ basePath, mode, onConfirm }: Params) {
 	const [selectedItem, setSelectedItem] = useState<DirectoryItem>();
 	const [directory, setDirectory] = useState<Directory | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
+	const [createNewItem, setCreateNewItem] = useState(false);
 
 	const requestDirectory = async (path: string, isRecursive: boolean = false) => {
 		setIsLoading(true);
@@ -60,6 +67,27 @@ export default function FileBrowser({ basePath, mode, onConfirm }: Params) {
 			? 'Selected Directory:'
 			: '';
 
+	const handleAddDirectoryButton = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		event.preventDefault();
+		setCreateNewItem(true);
+	};
+
+	const handleAddDirectoryCancel = () => {
+		setCreateNewItem(false);
+	};
+
+	const handleAddDirectorySubmit = async (directoryName: string) => {
+		const request: CreateDirectoryRequest = {
+			path: currentPath,
+			name: directoryName,
+		};
+		const result = await socket.emitWithAck('make-directory', request);
+		setCreateNewItem(false);
+		if (result) {
+			requestDirectory(currentPath);
+		}
+	};
+
 	const handleConfirmButton = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		event.preventDefault();
 		if (selectedItem) {
@@ -72,32 +100,55 @@ export default function FileBrowser({ basePath, mode, onConfirm }: Params) {
 	return (
 		<div className='file-browser'>
 			<div className='file-browser-header'>
-				<span>{currentPath}</span>
-				{isLoading && <span> (Loading...)</span>}
+				<div className='current-path'>
+					<span>{currentPath}</span>
+					{isLoading && <span> (Loading...)</span>}
+				</div>
+				{mode == FileBrowserMode.Directory && (
+					<button
+						className='add-directory'
+						title='Add New Directory'
+						onClick={handleAddDirectoryButton}
+						onKeyDown={(event) => {
+							event.preventDefault();
+						}}
+					>
+						<i className='bi bi-folder-plus' />
+					</button>
+				)}
 			</div>
-			<div className='file-browser-body'>
-				<FileBrowserBody
-					mode={mode}
-					basePath={basePath}
-					directory={directory}
-					updateDirectory={handleUpdateDirectory}
-					selectedItem={selectedItem}
-					setSelectedItem={setSelectedItem}
-				/>
-			</div>
-			<div className='file-browser-footer'>
-				<div className='selected-file'>
-					<span className='selected-file-label'>{selectedFileLabel}</span>
-					<span className='selected-file-path'>
-						{selectedItem ? selectedItem.path : 'N/A'}
-					</span>
-					<ButtonInput
-						label='Confirm'
-						color='green'
-						onClick={handleConfirmButton}
-						disabled={selectedItem == undefined}
+			<div className='file-browser-main'>
+				<div className='file-browser-body'>
+					<FileBrowserBody
+						mode={mode}
+						basePath={basePath}
+						directory={directory}
+						updateDirectory={handleUpdateDirectory}
+						selectedItem={selectedItem}
+						setSelectedItem={setSelectedItem}
 					/>
 				</div>
+				<div className='file-browser-footer'>
+					<div className='selected-file'>
+						<span className='selected-file-label'>{selectedFileLabel}</span>
+						<span className='selected-file-path'>
+							{selectedItem ? selectedItem.path : 'N/A'}
+						</span>
+						<ButtonInput
+							label='Confirm'
+							color='green'
+							onClick={handleConfirmButton}
+							disabled={selectedItem == undefined}
+						/>
+					</div>
+				</div>
+				{directory && createNewItem && (
+					<AddDirectory
+						existingItems={directory.items}
+						onCancel={handleAddDirectoryCancel}
+						onSubmit={handleAddDirectorySubmit}
+					/>
+				)}
 			</div>
 		</div>
 	);
