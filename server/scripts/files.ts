@@ -52,3 +52,21 @@ export async function GetDirectoryItems(absolutePath: string, recursive: boolean
 		console.error(err);
 	}
 }
+
+export async function MakeDirectory(directoryPath: string, directoryName: string) {
+	try {
+		// Check if the program has write permissions in the parent dir
+		await fs.access(directoryPath, fs.constants.W_OK);
+
+		// Get parent directory permissions to copy to new directory
+		const parentMode = (await fs.stat(directoryPath)).mode;
+
+		// Make new directory
+		const fullPath = path.join(directoryPath, directoryName);
+		await fs.mkdir(fullPath, { mode: parentMode, recursive: false });
+		return true;
+	} catch (err) {
+		console.error(err);
+		return false;
+	}
+}
