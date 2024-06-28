@@ -17,10 +17,11 @@ import AddDirectory from './components/file-browser-add-directory';
 type Params = {
 	basePath: string;
 	mode: FileBrowserMode;
+	allowCreate: boolean;
 	onConfirm: (item: DirectoryItem) => void;
 };
 
-export default function FileBrowser({ basePath, mode, onConfirm }: Params) {
+export default function FileBrowser({ basePath, mode, allowCreate, onConfirm }: Params) {
 	const { socket } = useOutletContext<PrimaryOutletContextType>();
 
 	const [currentPath, setCurrentPath] = useState(basePath);
@@ -104,7 +105,7 @@ export default function FileBrowser({ basePath, mode, onConfirm }: Params) {
 					<span>{currentPath}</span>
 					{isLoading && <span> (Loading...)</span>}
 				</div>
-				{mode == FileBrowserMode.Directory && (
+				{mode == FileBrowserMode.Directory && allowCreate && (
 					<button
 						className='add-directory'
 						title='Add New Directory'
