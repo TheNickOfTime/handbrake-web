@@ -1,10 +1,15 @@
 import { Server } from 'socket.io';
-import { Directory, DirectoryRequest } from 'types/directory';
+import {
+	CreateDirectoryRequest,
+	Directory,
+	DirectoryItem,
+	DirectoryRequest,
+} from 'types/directory';
 import { HandbrakePreset } from 'types/preset';
 import { QueueRequest } from 'types/queue';
 import { Client } from 'types/socket';
 import { AddClient, RemoveClient } from 'scripts/connections';
-import { GetDirectoryItems } from 'scripts/files';
+import { GetDirectoryItems, MakeDirectory } from 'scripts/files';
 import { AddPreset, GetPresetNames, GetPresets, RemovePreset } from 'scripts/presets';
 import {
 	AddJob,
@@ -93,6 +98,14 @@ export default function ClientSocket(io: Server) {
 				if (items) {
 					callback(items);
 				}
+			}
+		);
+
+		socket.on(
+			'make-directory',
+			async (item: CreateDirectoryRequest, callback: (result: boolean) => void) => {
+				const result = await MakeDirectory(item.path, item.name);
+				callback(result);
 			}
 		);
 

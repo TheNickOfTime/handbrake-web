@@ -307,6 +307,7 @@ export default function CreateJob({ onClose }: Params) {
 						label='Directory: '
 						path={config['output-path']}
 						mode={FileBrowserMode.Directory}
+						allowCreate={true}
 						value={outputPath}
 						onConfirm={handleOutputConfirm}
 						key={jobFrom == JobFrom.FromFile ? 'output-file' : 'output-directory'}

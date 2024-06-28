@@ -9,11 +9,20 @@ type Params = {
 	label: string;
 	path: string;
 	mode: FileBrowserMode;
+	allowCreate?: boolean;
 	value: string | undefined;
 	onConfirm?: (item: DirectoryItem) => void;
 };
 
-export default function PathInput({ id, label, path, mode, value, onConfirm }: Params) {
+export default function PathInput({
+	id,
+	label,
+	path,
+	mode,
+	allowCreate = false,
+	value,
+	onConfirm,
+}: Params) {
 	const [showFileBrowser, setShowFileBrowser] = useState(false);
 
 	const handleConfirm = (item: DirectoryItem) => {
@@ -41,9 +50,13 @@ export default function PathInput({ id, label, path, mode, value, onConfirm }: P
 				/>
 				<button
 					className='controlled-button blue'
+					type='button'
 					onClick={(event) => {
-						event?.preventDefault();
+						event.preventDefault();
 						setShowFileBrowser(!showFileBrowser);
+					}}
+					onKeyDown={(event) => {
+						event.preventDefault();
 					}}
 				>
 					<span className='button-label'>{showFileBrowser ? 'Cancel' : 'Browse'}</span>
@@ -51,7 +64,12 @@ export default function PathInput({ id, label, path, mode, value, onConfirm }: P
 			</div>
 			{showFileBrowser && (
 				<div className='browser-section'>
-					<FileBrowser basePath={path} mode={mode} onConfirm={handleConfirm} />
+					<FileBrowser
+						basePath={path}
+						mode={mode}
+						allowCreate={allowCreate}
+						onConfirm={handleConfirm}
+					/>
 				</div>
 			)}
 		</div>
