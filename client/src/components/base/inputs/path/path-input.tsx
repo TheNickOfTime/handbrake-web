@@ -41,9 +41,13 @@ export default function PathInput({ id, label, path, mode, value, onConfirm }: P
 				/>
 				<button
 					className='controlled-button blue'
+					type='button'
 					onClick={(event) => {
-						event?.preventDefault();
+						event.preventDefault();
 						setShowFileBrowser(!showFileBrowser);
+					}}
+					onKeyDown={(event) => {
+						event.preventDefault();
 					}}
 				>
 					<span className='button-label'>{showFileBrowser ? 'Cancel' : 'Browse'}</span>
