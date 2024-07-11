@@ -101,8 +101,8 @@ export function StartTranscode(queueEntry: QueueEntry, socket: Socket) {
 								status: transcodeStatus,
 							};
 							socket.emit('transcoding', workingUpdate);
-							// console.log(`Transcoding: ${(working.Progress * 100).toFixed(2)} %`);
-							console.log(working);
+							console.log(`Transcoding: ${(working.Progress * 100).toFixed(2)} %`);
+							// console.log(working);
 							break;
 						case 'MUXING':
 							const muxing: Muxing = outputJSON.Muxing!;
