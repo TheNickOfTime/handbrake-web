@@ -13,6 +13,10 @@ export type Job = {
 	preset: HandbrakePreset;
 	worker: string | null;
 	status: TranscodeStatus;
+	time: {
+		started?: number;
+		finished?: number;
+	};
 };
 
 export type QueueEntry = {

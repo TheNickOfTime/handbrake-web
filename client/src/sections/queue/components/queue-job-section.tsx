@@ -8,9 +8,9 @@ type Params = PropsWithChildren & {
 export default function QueueJobSection({ children, label }: Params) {
 	return (
 		<div className={`job-section`} id={label.toLowerCase().replace(/\s/g, '-')}>
-			<h5>{label}</h5>
+			<h5 className='job-section-label'>{label}</h5>
 			<hr />
-			<div>{children}</div>
+			<div className='job-section-children'>{children}</div>
 		</div>
 	);
 }

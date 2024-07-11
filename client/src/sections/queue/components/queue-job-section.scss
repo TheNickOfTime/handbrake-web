@@ -1,3 +1,9 @@
 .job-section {
 	flex-grow: 1;
+	min-width: fit-content;
+
+	.job-section-label {
+		min-width: fit-content;
+		white-space: nowrap;
+	}
 }
