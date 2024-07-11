@@ -30,10 +30,21 @@
 			display: flex;
 			flex-flow: row wrap;
 			gap: 1rem;
-		}
 
-		#progress {
-			min-width: 50%;
+			#current-fps,
+			#average-fps {
+				width: 10%;
+			}
+
+			#time-elapsed,
+			#time-left {
+				width: 15%;
+			}
+
+			#progress {
+				min-width: 50%;
+				width: 50%;
+			}
 		}
 	}
 

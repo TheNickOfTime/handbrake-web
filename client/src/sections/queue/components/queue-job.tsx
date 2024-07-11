@@ -65,14 +65,14 @@ export default function QueueJob({
 				{(data.status.stage == TranscodeStage.Scanning ||
 					data.status.stage == TranscodeStage.Transcoding) && (
 					<div className='job-info-section'>
-						<QueueJobSection label='Current FPS'>
+						<QueueJobSection label='FPS'>
 							{data.status.info.currentFPS
-								? `${data.status.info.currentFPS.toFixed(1)}`
+								? `${data.status.info.currentFPS.toFixed(1)}fps`
 								: 'N/A'}
 						</QueueJobSection>
-						<QueueJobSection label='Average FPS'>
+						<QueueJobSection label='Avg. FPS'>
 							{data.status.info.averageFPS
-								? `${data.status.info.averageFPS.toFixed(1)}`
+								? `${data.status.info.averageFPS.toFixed(1)}fps`
 								: 'N/A'}
 						</QueueJobSection>
 						<QueueJobSection label='Time Elapsed'>
