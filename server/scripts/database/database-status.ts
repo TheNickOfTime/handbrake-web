@@ -7,10 +7,10 @@ import { database } from './database';
 
 export function GetStatusFromDatabase(id: string) {
 	try {
-		const statusStatement = database?.prepare<{ id: string }, StatusTable>(
+		const statusStatement = database.prepare<{ id: string }, StatusTable>(
 			'SELECT state FROM status WHERE id = $id'
 		);
-		const statusQuery = statusStatement?.get({ id: id });
+		const statusQuery = statusStatement.get({ id: id });
 		return statusQuery;
 	} catch (err) {
 		console.error(`[server] [database] [error] Could not get the status of '${id}'.`);
@@ -20,10 +20,10 @@ export function GetStatusFromDatabase(id: string) {
 
 export function UpdateStatusInDatabase(id: string, state: number) {
 	try {
-		const updateStatement = database?.prepare(
+		const updateStatement = database.prepare(
 			'INSERT INTO status (id, state) VALUES ($id, $state) ON CONFLICT (id) DO UPDATE SET state = $state'
 		);
-		updateStatement?.run({ id: id, state: state });
+		updateStatement.run({ id: id, state: state });
 		console.log(`[server] [database] Sucessfully updated the status of '${id}' to '${state}'.`);
 	} catch (err) {
 		console.error(`[server] [database] [error] Could not update the status of '${id}'.`);

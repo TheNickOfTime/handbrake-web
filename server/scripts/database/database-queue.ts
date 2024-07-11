@@ -4,8 +4,6 @@ import { database } from './database';
 
 export function GetQueueFromDatabase() {
 	try {
-		if (!database) throw new Error('[database] [error] There is no database connection...');
-
 		const queueStatement = database.prepare<[], QueueTable>('SELECT * FROM queue');
 		const queueTable = queueStatement.all();
 		const queueResult = queueTable
@@ -29,14 +27,11 @@ export function GetQueueFromDatabase() {
 	} catch (err) {
 		console.error(`[database] [error] Could not get jobs from the queue table.`);
 		console.error(err);
-		return null;
 	}
 }
 
 export function GetJobFromDatabase(id: string): Job | undefined {
 	try {
-		if (!database) throw new Error('[database] [error] There is no database connection...');
-
 		const jobStatement = database.prepare<{ id: string }, QueueTable>(
 			'SELECT job FROM queue WHERE id = $id'
 		);
@@ -51,8 +46,6 @@ export function GetJobFromDatabase(id: string): Job | undefined {
 
 export function InsertJobToDatabase(id: string, job: Job) {
 	try {
-		if (!database) throw new Error('[database] [error] There is no database connection...');
-
 		const jobJSON = JSON.stringify(job);
 		const insertStatement = database.prepare<QueueTable, QueueTable>(
 			'INSERT INTO queue (id, job) VALUES ($id, $job)'
@@ -68,8 +61,6 @@ export function InsertJobToDatabase(id: string, job: Job) {
 
 export function UpdateJobInDatabase(id: string, job: Job) {
 	try {
-		if (!database) throw new Error('[database] [error] There is no database connection...');
-
 		const jobJSON = JSON.stringify(job);
 		const updateStatement = database.prepare('UPDATE queue SET job = $job WHERE id = $id');
 		const updateResult = updateStatement.run({ id: id, job: jobJSON });
@@ -83,8 +74,6 @@ export function UpdateJobInDatabase(id: string, job: Job) {
 
 export function RemoveJobFromDatabase(id: string) {
 	try {
-		if (!database) throw new Error('[database] [error] There is no database connection...');
-
 		const removalStatement = database.prepare('DELETE FROM queue WHERE id = $id');
 		const removalResult = removalStatement.run({ id: id });
 		console.log(`[server] [database] Successfully removed job '${id}' from the database.`);
