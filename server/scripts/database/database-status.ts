@@ -24,7 +24,7 @@ export function UpdateStatusInDatabase(id: string, state: number) {
 			'INSERT INTO status (id, state) VALUES ($id, $state) ON CONFLICT (id) DO UPDATE SET state = $state'
 		);
 		updateStatement.run({ id: id, state: state });
-		console.log(`[server] [database] Sucessfully updated the status of '${id}' to '${state}'.`);
+		// console.log(`[server] [database] Sucessfully updated the status of '${id}' to '${state}'.`);
 	} catch (err) {
 		console.error(`[server] [database] [error] Could not update the status of '${id}'.`);
 		console.error(err);
