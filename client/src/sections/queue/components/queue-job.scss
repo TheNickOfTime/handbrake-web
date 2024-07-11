@@ -24,16 +24,27 @@
 		flex-grow: 1;
 		display: flex;
 		flex-flow: column nowrap;
-		gap: 1.5rem;
+		gap: 2rem;
 
 		.job-info-section {
 			display: flex;
 			flex-flow: row wrap;
 			gap: 1rem;
-		}
 
-		#progress {
-			min-width: 50%;
+			#current-fps,
+			#average-fps {
+				width: 10%;
+			}
+
+			#time-elapsed,
+			#time-left {
+				width: 15%;
+			}
+
+			#progress {
+				min-width: 50%;
+				width: 50%;
+			}
 		}
 	}
 

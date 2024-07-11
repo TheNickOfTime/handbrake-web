@@ -152,6 +152,9 @@ export function WorkerForAvailableJobs(workerID: string) {
 export function StartJob(jobID: string, job: Job, worker: Worker) {
 	const workerID = GetWorkerID(worker);
 	job.worker = workerID;
+	job.time = {
+		started: new Date().getTime(),
+	};
 	UpdateJobInDatabase(jobID, job);
 	const newJob: QueueEntry = {
 		id: jobID,
@@ -265,6 +268,7 @@ export function AddJob(data: QueueRequest) {
 				percentage: '0.00 %',
 			},
 		},
+		time: {},
 	};
 
 	InsertJobToDatabase(jobID, newJob);
@@ -283,9 +287,11 @@ export function UpdateJob(data: TranscodeStatusUpdate) {
 				break;
 			case TranscodeStage.Finished:
 				job.worker = null;
+				job.time.finished = new Date().getTime();
 				break;
 			case TranscodeStage.Stopped:
 				job.worker = null;
+				job.time = {};
 				break;
 		}
 		job.status = data.status;

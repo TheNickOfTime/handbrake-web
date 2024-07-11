@@ -33,6 +33,17 @@ export default function QueueJob({
 		data.status.stage == TranscodeStage.Stopped ||
 		data.worker == null;
 
+	const secondsToTime = (seconds: number) => {
+		const hours = Math.floor(seconds / 3600);
+		const minutes = Math.floor((seconds % 3600) / 60);
+		const newSeconds = Math.floor((seconds % 3600) % 60);
+		return (
+			(hours > 0 ? `${hours}h` : '') +
+			(minutes > 0 ? `${minutes}m` : '') +
+			(newSeconds >= 0 ? `${newSeconds}s` : 'N/A')
+		);
+	};
+
 	return (
 		<div className='queue-job'>
 			<div className='job-number'>
@@ -54,17 +65,21 @@ export default function QueueJob({
 				{(data.status.stage == TranscodeStage.Scanning ||
 					data.status.stage == TranscodeStage.Transcoding) && (
 					<div className='job-info-section'>
-						<QueueJobSection label='Current FPS'>
+						<QueueJobSection label='FPS'>
 							{data.status.info.currentFPS
-								? `${data.status.info.currentFPS.toFixed(1)}`
+								? `${data.status.info.currentFPS.toFixed(1)}fps`
 								: 'N/A'}
 						</QueueJobSection>
-						<QueueJobSection label='Average FPS'>
+						<QueueJobSection label='Avg. FPS'>
 							{data.status.info.averageFPS
-								? `${data.status.info.averageFPS.toFixed(1)}`
+								? `${data.status.info.averageFPS.toFixed(1)}fps`
 								: 'N/A'}
 						</QueueJobSection>
-						{/* <QueueJobSection label='Time Elapsed'></QueueJobSection> */}
+						<QueueJobSection label='Time Elapsed'>
+							{data.time.started
+								? secondsToTime((Date.now() - data.time.started) / 1000)
+								: 'N/A'}
+						</QueueJobSection>
 						<QueueJobSection label='Time Left'>
 							{data.status.info.eta ? data.status.info.eta : 'N/A'}
 						</QueueJobSection>
