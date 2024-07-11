@@ -8,9 +8,9 @@ export enum TranscodeStage {
 
 export type TranscodeInfo = {
 	percentage: string;
-	currentFPS?: string;
-	averageFPS?: string;
 	eta?: string;
+	currentFPS?: number;
+	averageFPS?: number;
 };
 
 export type TranscodeStatus = {

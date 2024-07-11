@@ -90,14 +90,19 @@ export function StartTranscode(queueEntry: QueueEntry, socket: Socket) {
 							transcodeStatus.stage = TranscodeStage.Transcoding;
 							transcodeStatus.info = {
 								percentage: `${(working.Progress * 100).toFixed(2)} %`,
-								eta: `${working.ETASeconds}`,
+								eta: `${working.Hours > 0 ? working.Hours + 'h' : ''}${
+									working.Minutes > 0 ? working.Minutes + 'm' : ''
+								}${working.Seconds > 0 ? working.Seconds + 's' : ''}`,
+								currentFPS: working.Rate,
+								averageFPS: working.RateAvg,
 							};
 							const workingUpdate: TranscodeStatusUpdate = {
 								id: queueEntry.id,
 								status: transcodeStatus,
 							};
 							socket.emit('transcoding', workingUpdate);
-							console.log(`Transcoding: ${(working.Progress * 100).toFixed(2)} %`);
+							// console.log(`Transcoding: ${(working.Progress * 100).toFixed(2)} %`);
+							console.log(working);
 							break;
 						case 'MUXING':
 							const muxing: Muxing = outputJSON.Muxing!;
