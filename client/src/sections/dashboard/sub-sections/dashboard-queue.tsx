@@ -21,7 +21,6 @@ export default function DashboardQueue({ queue }: Params) {
 				<table>
 					<thead>
 						<tr>
-							<th>Input</th>
 							<th>Output</th>
 							<th>Status</th>
 							<th>Progress</th>
@@ -36,10 +35,9 @@ export default function DashboardQueue({ queue }: Params) {
 
 							return (
 								<tr key={`queue-job-${key}`}>
-									<td>{job.input}</td>
-									<td>{job.output}</td>
+									<td className='output'>{job.output.match(/[^/]+$/)}</td>
 									<td
-										className={`center ${
+										className={`status center ${
 											job.status.stage == TranscodeStage.Waiting
 												? 'color-yellow'
 												: job.status.stage == TranscodeStage.Scanning
@@ -53,7 +51,7 @@ export default function DashboardQueue({ queue }: Params) {
 									>
 										{TranscodeStage[job.status.stage]}
 									</td>
-									<td>
+									<td className='progress'>
 										<ProgressBar percentage={percentage} />
 									</td>
 								</tr>
