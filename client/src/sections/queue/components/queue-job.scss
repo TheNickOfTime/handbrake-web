@@ -8,7 +8,7 @@
 	border-radius: 1rem;
 	background-color: $background-tertiary;
 
-	h4 {
+	h5 {
 		margin: 0;
 	}
 
@@ -22,10 +22,19 @@
 	.job-info {
 		padding: 1rem 2rem;
 		flex-grow: 1;
-
 		display: flex;
-		flex-flow: row wrap;
-		gap: 2rem;
+		flex-flow: column nowrap;
+		gap: 1.5rem;
+
+		.job-info-section {
+			display: flex;
+			flex-flow: row wrap;
+			gap: 1rem;
+		}
+
+		#progress {
+			min-width: 50%;
+		}
 	}
 
 	.job-actions {
@@ -34,7 +43,7 @@
 		gap: 0.2rem;
 
 		button {
-			padding: 0 0.75rem;
+			padding: 0.5rem 0.75rem;
 
 			border: none;
 			border-radius: 0;
