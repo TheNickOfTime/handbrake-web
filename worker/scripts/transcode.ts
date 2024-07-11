@@ -92,7 +92,7 @@ export function StartTranscode(queueEntry: QueueEntry, socket: Socket) {
 								percentage: `${(working.Progress * 100).toFixed(2)} %`,
 								eta: `${working.Hours > 0 ? working.Hours + 'h' : ''}${
 									working.Minutes > 0 ? working.Minutes + 'm' : ''
-								}${working.Seconds > 0 ? working.Seconds + 's' : ''}`,
+								}${working.Seconds >= 0 ? working.Seconds + 's' : ''}`,
 								currentFPS: working.Rate,
 								averageFPS: working.RateAvg,
 							};
