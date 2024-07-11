@@ -39,23 +39,40 @@ export default function QueueJob({
 				<h3>{index + 1}</h3>
 			</div>
 			<div className='job-info'>
-				<QueueJobSection label='Paths'>
-					<div className='job-input-path'>{data.input}</div>
-					<i className='bi bi-arrow-down' />
-					<div className='job-output-path'>{data.output}</div>
-				</QueueJobSection>
-				<QueueJobSection label='Preset'>
-					<div>{data.preset.PresetList[0].PresetName}</div>
-				</QueueJobSection>
-				<QueueJobSection label='Worker'>
-					<div>{data.worker ? data.worker : 'N/A'}</div>
-				</QueueJobSection>
-				<QueueJobSection label='Status'>
-					<div>{TranscodeStage[data.status.stage]}</div>
-				</QueueJobSection>
-				<QueueJobSection label='Progress'>
-					<ProgressBar percentage={percentage} />
-				</QueueJobSection>
+				<div className='job-info-section'>
+					<QueueJobSection label='Output'>{data.output.match(/[^/]+$/)}</QueueJobSection>
+					<QueueJobSection label='Preset'>
+						{data.preset.PresetList[0].PresetName}
+					</QueueJobSection>
+					<QueueJobSection label='Worker'>
+						{data.worker ? data.worker : 'N/A'}
+					</QueueJobSection>
+					<QueueJobSection label='Status'>
+						{TranscodeStage[data.status.stage]}
+					</QueueJobSection>
+				</div>
+				{(data.status.stage == TranscodeStage.Scanning ||
+					data.status.stage == TranscodeStage.Transcoding) && (
+					<div className='job-info-section'>
+						<QueueJobSection label='Current FPS'>
+							{data.status.info.currentFPS
+								? `${data.status.info.currentFPS.toFixed(1)}`
+								: 'N/A'}
+						</QueueJobSection>
+						<QueueJobSection label='Average FPS'>
+							{data.status.info.averageFPS
+								? `${data.status.info.averageFPS.toFixed(1)}`
+								: 'N/A'}
+						</QueueJobSection>
+						{/* <QueueJobSection label='Time Elapsed'></QueueJobSection> */}
+						<QueueJobSection label='Time Left'>
+							{data.status.info.eta ? data.status.info.eta : 'N/A'}
+						</QueueJobSection>
+						<QueueJobSection label='Progress'>
+							<ProgressBar percentage={percentage} />
+						</QueueJobSection>
+					</div>
+				)}
 			</div>
 			<div className='job-actions'>
 				<button

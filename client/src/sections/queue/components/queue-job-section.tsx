@@ -7,10 +7,10 @@ type Params = PropsWithChildren & {
 
 export default function QueueJobSection({ children, label }: Params) {
 	return (
-		<div className={`job-section ${label.toLowerCase()}`}>
-			<h4>{label}</h4>
+		<div className={`job-section`} id={label.toLowerCase()}>
+			<h5>{label}</h5>
 			<hr />
-			{children}
+			<div>{children}</div>
 		</div>
 	);
 }
