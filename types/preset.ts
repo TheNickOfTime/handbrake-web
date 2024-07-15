@@ -1,16 +1,68 @@
-enum PictureCropMode {
+export const AudioEncoderLookup: { [index: string]: string } = {
+	copy: 'Auto Passthru',
+	'copy:aac': 'AAC Passthru',
+	'copy:ac3': 'AC3 Passthru',
+	'copy:eac3': 'E-AC3 Passthru',
+	'copy:truehd': 'TrueHD Passthru',
+	'copy:dts': 'DTS Passthru',
+	'copy:dtshd': 'DTS-HD Passthru',
+	'copy:mp2': 'MP2 Passthru',
+	'copy:mp3': 'MP3 Passthru',
+	'copy:flac': 'FLAC Passthru',
+	'copy:opus': 'Opus Passthru',
+	ac3: 'AC3',
+	av_aac: 'AAC (avcodec)',
+	eac3: 'E-AC3',
+};
+
+export const FilterLookup: { [index: string]: string } = {
+	off: 'Off',
+	none: 'None',
+	default: 'Default',
+	custom: 'Custom',
+	ultralight: 'Ultralight',
+	light: 'Light',
+	medium: 'Medium',
+	strong: 'Strong',
+	stronger: 'Stronger',
+	verystrong: 'Very Strong',
+	ultrafine: 'Ultrafine',
+	fine: 'Fine',
+	coarse: 'Coarse',
+	verycoarse: 'Very Coarse',
+	tiny: 'Tiny',
+	small: 'Small',
+	large: 'Large',
+	wide: 'Wide',
+	verywide: 'Very Wide',
+	yadif: 'Yadif',
+	decomb: 'Decomb',
+	'skip-spatial': 'Skip Spatial Check',
+	bob: 'Bob',
+	nlmeans: 'NLMeans',
+	eedi2: 'EEDI2',
+	eedi2bob: 'EEDI2 Bob',
+	unsharp: 'UnSharp',
+	lapsharp: 'LapSharp',
+	bt2020: 'BT.2020',
+	bt709: 'BT.709',
+	'bt601-6-525': 'BT.601 SMPTE-C',
+	'bt601-6-625': 'BT.601 EBU',
+};
+
+export enum PictureCropMode {
 	Automatic,
 	Conservative,
 	None,
 	Custom,
 }
 
-enum VideoQualityType {
-	ConstantQuality,
-	AvgBitrate,
+export enum VideoQualityType {
+	AvgBitrate = 1,
+	ConstantQuality = 2,
 }
 
-export type HandbrakePreset = {
+export type HandbrakePresetData = {
 	AlignAVStart: boolean;
 	AudioCopyMask: string[];
 	AudioEncoderFallback: string;
@@ -57,23 +109,20 @@ export type HandbrakePreset = {
 	PictureDeblockTune: 'small' | 'medium' | 'large';
 	PictureDeblockCustom: string;
 	PictureDeinterlaceFilter: 'off' | 'yadif' | 'decomb' | 'custom';
-	PictureCombDetectPreset: 'custom' | 'default' | 'bob' | 'eedi2' | 'eedi2 bob';
+	PictureDeinterlacePreset: 'custom' | 'default' | 'skip-spatial' | 'bob';
+	PictureDeinterlaceCustom: string;
+	PictureCombDetectPreset: 'custom' | 'default' | 'bob' | 'eedi2' | 'eedi2bob';
 	PictureCombDetectCustom: string;
 	PictureDenoiseCustom: string;
 	PictureDenoiseFilter: 'off' | 'hqdn3d' | 'nlmeans';
+	PictureDenoisePreset: string;
 	PictureSharpenCustom: string;
 	PictureSharpenFilter: 'off' | 'unsharp' | 'lapsharp';
-	PictureSharpenPreset: 'custom' | 'light' | 'medium' | 'strong' | 'stronger' | 'very strong';
-	PictureSharpenTune: 'none' | 'ultrafine' | 'fine' | 'medium' | 'coarse' | 'very coarse';
+	PictureSharpenPreset: 'custom' | 'light' | 'medium' | 'strong' | 'stronger' | 'verystrong';
+	PictureSharpenTune: 'none' | 'ultrafine' | 'fine' | 'medium' | 'coarse' | 'verycoarse';
 	PictureDetelecine: 'off' | 'custom' | 'default';
 	PictureDetelecineCustom: string;
-	PictureColorspacePreset:
-		| 'off'
-		| 'custom'
-		| 'bt.2020'
-		| 'bt.709'
-		| 'bt.601 smpte-c'
-		| 'bt.601 ebu';
+	PictureColorspacePreset: 'off' | 'custom' | 'bt2020' | 'bt709' | 'bt601-6-525' | 'bt601-6-625';
 	PictureColorspaceCustom: string;
 	PictureChromaSmoothPreset:
 		| 'off'
@@ -84,13 +133,14 @@ export type HandbrakePreset = {
 		| 'strong'
 		| 'stronger'
 		| 'very strong';
-	PictureChromaSmoothTune: 'none' | 'tiny' | 'small' | 'medium' | 'wide' | 'very wide';
+	PictureChromaSmoothTune: 'none' | 'tiny' | 'small' | 'medium' | 'wide' | 'verywide';
 	PictureChromaSmoothCustom: string;
 	PictureItuPAR: boolean;
 	PictureKeepRatio: boolean;
 	PicturePAR: 'none' | 'automatic' | 'custom';
 	PicturePARWidth: number;
 	PicturePARHeight: number;
+	PictureRotate?: string;
 	PictureWidth: number;
 	PictureHeight: number;
 	PictureUseMaximumSize: boolean;
@@ -134,8 +184,10 @@ export type HandbrakePreset = {
 	MetadataPassthrough: boolean;
 };
 
+export type HandbrakePreset = {
+	PresetList: HandbrakePresetData[];
+};
+
 export type HandbrakePresetList = {
-	[index: string]: {
-		PresetList: HandbrakePreset[];
-	};
+	[index: string]: HandbrakePreset;
 };
