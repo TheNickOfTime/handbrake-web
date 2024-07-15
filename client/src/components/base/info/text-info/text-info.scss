@@ -1,0 +1,14 @@
+@import '../../../../style/modules/colors';
+@import '../../../../style/modules/font';
+
+.text-info {
+	.text-info-label {
+		margin-right: 1rem;
+		font-size: 1.25rem;
+		color: $text-color-tertiary;
+	}
+
+	// .text-info-content {
+	// 	display: flex;
+	// }
+}
