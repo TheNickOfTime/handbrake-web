@@ -15,8 +15,18 @@ type Params = {
 	handleRemovePreset: (preset: string) => void;
 };
 
+enum PresetTabs {
+	Summary,
+	Dimensions,
+	Filters,
+	Video,
+	Audio,
+	Subtitles,
+	Chapters,
+}
+
 export default function PresetCard({ preset, handleRemovePreset }: Params) {
-	const [currentTab, setCurrentTab] = useState(0);
+	const [currentTab, setCurrentTab] = useState(PresetTabs.Summary);
 
 	const tabs = ['Summary', 'Dimensions', 'Filters', 'Video', 'Audio', 'Subtitles', 'Chapters'];
 
@@ -52,19 +62,19 @@ export default function PresetCard({ preset, handleRemovePreset }: Params) {
 				<div className='current-tab'>
 					{(() => {
 						switch (currentTab) {
-							case 0:
+							case PresetTabs.Summary:
 								return <PresetCardSummary preset={preset} />;
-							case 1:
+							case PresetTabs.Dimensions:
 								return <PresetCardDimensions preset={preset} />;
-							case 2:
+							case PresetTabs.Filters:
 								return <PresetCardFilters preset={preset} />;
-							case 3:
+							case PresetTabs.Video:
 								return <PresetCardVideo preset={preset} />;
-							case 4:
+							case PresetTabs.Audio:
 								return <PresetCardAudio preset={preset} />;
-							case 5:
+							case PresetTabs.Subtitles:
 								return <PresetCardSubtitles preset={preset} />;
-							case 6:
+							case PresetTabs.Chapters:
 								return <PresetCardChapters preset={preset} />;
 							default:
 								return null;
