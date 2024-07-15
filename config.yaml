@@ -1,2 +1,2 @@
-input-path: '/workspaces/handbrake-web/video'
+input-path: '/video/input'
 output-path: '/video/output'
