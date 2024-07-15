@@ -1,0 +1,96 @@
+@use 'client/src/style/modules/colors';
+@use 'client/src/style/modules/font';
+
+.preset-card {
+	padding: 1rem;
+	background-color: colors.$background-tertiary;
+	border-radius: 1rem;
+
+	.preset-header {
+		display: flex;
+		flex-flow: row nowrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		margin: 1rem 0 1.5rem 0;
+
+		.preset-label {
+			// height: 100%;
+			flex-grow: 1;
+			margin: 0;
+			padding: 0.5rem 0;
+			// border-bottom: 0.2rem solid hsla(0, 0%, 100%, 0.1);
+		}
+
+		.preset-buttons {
+			display: flex;
+			flex-flow: row nowrap;
+			justify-content: right;
+			gap: 1rem;
+
+			* {
+				font-size: 1.75rem;
+			}
+		}
+	}
+
+	.preset-body {
+		.preset-tabs {
+			button {
+				padding: 0.5rem 1rem;
+				border: none;
+				border-radius: 0;
+				font-family: font.$font-family-primary;
+				font-size: 1.25rem;
+				background-color: colors.$transparent-light-tertiary;
+				color: colors.$text-color-tertiary;
+
+				&.current {
+					background-color: colors.$transparent-light-primary;
+					color: colors.$text-color-secondary;
+				}
+
+				&:hover {
+					background-color: colors.$transparent-light-secondary;
+				}
+			}
+		}
+
+		.current-tab {
+			background-color: colors.$transparent-light-primary;
+			padding: 1rem;
+
+			.preset-card-section {
+				max-width: 100%;
+				display: flex;
+				flex-flow: row wrap;
+				gap: 2rem;
+
+				.preset-card-subsection {
+					max-width: 100%;
+					flex-grow: 1;
+					display: flex;
+					flex-flow: column nowrap;
+					gap: 0.5rem;
+
+					.preset-card-subsection-header {
+						font-size: 1.25rem;
+						font-weight: bold;
+						color: colors.$text-color-tertiary;
+					}
+
+					.side-by-side {
+						display: grid;
+						grid-template-columns: repeat(2, fit-content(50%));
+						row-gap: 0.5rem;
+						column-gap: 1rem;
+
+						& > * {
+							white-space: nowrap;
+						}
+					}
+				}
+			}
+		}
+	}
+}

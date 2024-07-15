@@ -1,0 +1,17 @@
+@use 'client/src/style/modules/colors';
+
+.preset-card > .preset-body > .current-tab > .preset-card-section#dimensions {
+	.preset-card-subsection {
+		.cropping-values,
+		.padding-values {
+			display: grid;
+			grid-template-columns: repeat(2, fit-content(50%));
+			row-gap: 0.5rem;
+			column-gap: 1rem;
+
+			& > * {
+				white-space: nowrap;
+			}
+		}
+	}
+}
