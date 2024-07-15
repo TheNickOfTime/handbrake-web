@@ -1,0 +1,19 @@
+@use 'client/src/style/modules/colors';
+@use 'client/src/style/modules/font';
+
+.preset-card > .preset-body > .current-tab > .preset-card-section#audio {
+	.audio-list-entry {
+		display: flex;
+		flex-flow: row wrap;
+		gap: 1rem;
+	}
+
+	table {
+		border-spacing: 0;
+		tbody {
+			td {
+				padding: 0.25rem 1rem 0.25rem 0rem;
+			}
+		}
+	}
+}
