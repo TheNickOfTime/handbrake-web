@@ -23,8 +23,11 @@ export default function PresetCardAudio({ preset }: Params) {
 				<div className='side-by-side'>
 					{Object.keys(AudioEncoderLookup)
 						.filter((entry) => entry.includes('copy:'))
-						.map((entry) => (
-							<TextInfo label={AudioEncoderLookup[entry]}>
+						.map((entry, index) => (
+							<TextInfo
+								label={AudioEncoderLookup[entry]}
+								key={`audio-passthru-${index}`}
+							>
 								{preset.AudioCopyMask.includes(entry) ? 'Yes' : 'No'}
 							</TextInfo>
 						))}
@@ -41,8 +44,8 @@ export default function PresetCardAudio({ preset }: Params) {
 							<tbody>
 								{preset.AudioList.sort((entry) =>
 									entry.AudioEncoder.includes('copy') ? -1 : 1
-								).map((entry) => (
-									<tr>
+								).map((entry, index) => (
+									<tr key={`audio-encoder-${index}`}>
 										<td>
 											<TextInfo label='Encoder'>
 												{AudioEncoderLookup[entry.AudioEncoder]}

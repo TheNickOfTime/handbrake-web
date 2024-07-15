@@ -13,7 +13,13 @@ export default function PresetsList({ presets, handleRemovePreset }: Params) {
 		<SubSection title='List' id='list'>
 			{Object.keys(presets).map((key) => {
 				const presetData = presets[key].PresetList[0];
-				return <PresetCard preset={presetData} handleRemovePreset={handleRemovePreset} />;
+				return (
+					<PresetCard
+						preset={presetData}
+						handleRemovePreset={handleRemovePreset}
+						key={key}
+					/>
+				);
 			})}
 		</SubSection>
 	);

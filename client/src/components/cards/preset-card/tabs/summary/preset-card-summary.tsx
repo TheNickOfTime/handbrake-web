@@ -42,8 +42,8 @@ export default function PresetCardSummary({ preset }: Params) {
 			</div>
 			<div className='preset-card-subsection'>
 				<div className='preset-card-subsection-header'>Audio Tracks</div>
-				{preset.AudioList.map((track) => (
-					<div>
+				{preset.AudioList.map((track, index) => (
+					<div key={`summary-audio-track-${index}`}>
 						{AudioEncoderLookup[track.AudioEncoder]
 							? AudioEncoderLookup[track.AudioEncoder]
 							: track.AudioEncoder}
@@ -53,14 +53,22 @@ export default function PresetCardSummary({ preset }: Params) {
 			<div className='preset-card-subsection'>
 				<div className='preset-card-subsection-header'>Subtitles</div>
 				{preset.SubtitleLanguageList.length > 0 ? (
-					preset.SubtitleLanguageList.map((language) => <div>{language}</div>)
+					preset.SubtitleLanguageList.map((language, index) => (
+						<div key={`summary-subtitle-language-${index}`}>{language}</div>
+					))
 				) : (
 					<div>N/A</div>
 				)}
 			</div>
 			<div className='preset-card-subsection'>
 				<div className='preset-card-subsection-header'>Filters</div>
-				{filters.length > 0 ? filters.map((filter) => <div>{filter}</div>) : <div>N/A</div>}
+				{filters.length > 0 ? (
+					filters.map((filter, index) => (
+						<div key={`summary-filter-${index}`}>{filter}</div>
+					))
+				) : (
+					<div>N/A</div>
+				)}
 			</div>
 		</div>
 	);
