@@ -1,0 +1,14 @@
+.table-scroll {
+	max-width: 100%;
+	overflow-x: scroll;
+	padding-bottom: 2rem;
+
+	table {
+		width: 100%;
+
+		th,
+		td {
+			white-space: nowrap;
+		}
+	}
+}
