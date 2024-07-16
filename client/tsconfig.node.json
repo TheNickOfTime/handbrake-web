@@ -1,11 +1,19 @@
 {
 	"compilerOptions": {
 		"composite": true,
+		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
 		"skipLibCheck": true,
 		"module": "ESNext",
 		"moduleResolution": "bundler",
 		"allowSyntheticDefaultImports": true,
-		"strict": true
+		"strict": true,
+		"noEmit": true,
+		"paths": {
+			"components/*": ["./src/components/*"],
+			"pages/*": ["./src/pages/*"],
+			"sections/*": ["./src/sections/*"],
+			"types/*": ["../types/*"]
+		}
 	},
-	"include": ["vite.config.mts"]
+	"include": ["vite.config.ts"]
 }

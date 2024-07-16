@@ -7,7 +7,8 @@ import {
 } from 'types/directory';
 import { HandbrakePreset } from 'types/preset';
 import { QueueRequest } from 'types/queue';
-import { Client } from 'types/socket';
+// import { Client } from 'types/socket';
+import { Socket as Client } from 'socket.io';
 import { AddClient, RemoveClient } from 'scripts/connections';
 import { GetDirectoryItems, MakeDirectory } from 'scripts/files';
 import { AddPreset, GetPresetNames, GetPresets, RemovePreset } from 'scripts/presets';
