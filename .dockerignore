@@ -1,9 +1,0 @@
-/.git
-/data
-/node_modules
-/presets
-/video
-.dockerignore
-.gitignore
-Dockerfile
-*.db
