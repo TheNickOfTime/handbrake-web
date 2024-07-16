@@ -4,6 +4,7 @@ import { ReadDataFromFile } from './data';
 import { SetPresets, presetsPath } from './presets';
 import { InitializeQueue } from './queue';
 import { DatabaseConnect } from './database/database';
+import { RegisterWatchers } from './watcher';
 
 export default async function Initialization(server: Server) {
 	// JSON ----------------------------------------------------------------------------------------
@@ -15,6 +16,7 @@ export default async function Initialization(server: Server) {
 	// Database ------------------------------------------------------------------------------------
 	DatabaseConnect();
 	InitializeQueue();
+	RegisterWatchers();
 
 	// Start Server --------------------------------------------------------------------------------
 	const url = process.env.SERVER_URL || 'http://localhost';
