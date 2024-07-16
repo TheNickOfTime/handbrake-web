@@ -34,7 +34,7 @@ export default function FileBrowserBody({
 	};
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const onDoubleClickFile = (item: DirectoryItem) => {
+	const onDoubleClickFile = (_item: DirectoryItem) => {
 		switch (mode) {
 			case FileBrowserMode.SingleFile:
 				break;

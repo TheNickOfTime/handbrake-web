@@ -25,10 +25,8 @@ HandBrake Web is deployed via docker, and most easily via `docker compose`. The 
 ```yaml
 services:
   handbrake-server:
-    image: ghcr.io/thenickoftime/handbrake-web:latest
+    image: ghcr.io/thenickoftime/handbrake-web-server:latest
     container_name: handbrake-web-server
-    environment:
-      - HANDBRAKE_MODE=server
     ports:
       - 9999:9999
     volumes:
@@ -36,10 +34,9 @@ services:
       - /path/to/your/media:/video #ensure this path is the same across all containers
 
   handbrake-worker:
-    image: ghcr.io/thenickoftime/handbrake-web:latest
+    image: ghcr.io/thenickoftime/handbrake-web-worker:latest
     container_name: handbrake-web-worker
     environment:
-      - HANDBRAKE_MODE=worker
       - WORKER_ID= #give your worker a unique name
       - SERVER_URL= #set to the url or ip of your server
       - SERVER_PORT= #if using a reverse proxy, this may be different than what is set above

@@ -1,4 +1,14 @@
-import { Client, Connections, Worker } from 'types/socket';
+import { Socket } from 'socket.io';
+// import { Client, Connections, Worker } from 'types/socket';
+
+type Client = Socket;
+
+type Worker = Socket;
+
+type Connections = {
+	clients: Client[];
+	workers: Worker[];
+};
 
 const connections: Connections = {
 	clients: [],
