@@ -20,10 +20,10 @@ jobs:
       matrix:
         include:
           - image: handbrake-web-server
-            file: worker/Dockerfile
+            file: server/Dockerfile
 
           - image: handbrake-web-worker
-            file: server/Dockerfile
+            file: worker/Dockerfile
 
     permissions:
       contents: read
