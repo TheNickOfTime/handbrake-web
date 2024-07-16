@@ -10,7 +10,7 @@ export default defineConfig({
 		port: process.env.CLIENT_PORT ? parseInt(process.env.CLIENT_PORT) : 5173,
 	},
 	build: {
-		outDir: '../build/client',
+		outDir: './build',
 		emptyOutDir: true,
 	},
 });
