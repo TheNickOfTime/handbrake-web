@@ -1,8 +1,8 @@
-import { Socket } from 'socket.io';
+// import { Socket } from 'socket.io';
 
-export type Client = Socket;
+// export type Client = Socket;
 
-export type Worker = Socket;
+// export type Worker = Socket;
 
 export type ClientID = string;
 
@@ -11,10 +11,10 @@ export type workerID = {
 	connectionID: string;
 };
 
-export type Connections = {
-	clients: Client[];
-	workers: Worker[];
-};
+// export type Connections = {
+// 	clients: Client[];
+// 	workers: Worker[];
+// };
 
 export type ConnectionIDs = {
 	clients: ClientID[];
