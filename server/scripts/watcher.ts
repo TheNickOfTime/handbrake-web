@@ -5,25 +5,16 @@ import {
 	InsertWatcherToDatabase,
 	RemoveWatcherFromDatabase,
 } from './database/database-watcher';
-import { Watcher } from 'types/watcher';
+import { Watcher, WatcherWithRowID } from 'types/watcher';
 import { EmitToAllClients } from './connections';
 
-export function RegisterWatchers() {
-	// FOR TESTING!!!
-	// if (GetWatchersFromDatabase() == null || GetWatchersFromDatabase()?.length == 0) {
-	InsertWatcherToDatabase({
-		watch_path: '/workspaces/handbrake-web/video/monitor',
-		preset_id: '2160p HDR -> 1080p HDR',
-	});
-	// }
+const watchers: { [index: number]: chokidar.FSWatcher } = [];
 
-	const watchers = GetWatchersFromDatabase();
-	// console.log(watchers);
-	if (watchers) {
-		watchers.forEach((watcher) => {
+export function RegisterWatcher(watcher: WatcherWithRowID) {
 			const newWatcher = chokidar.watch(watcher.watch_path, {
+		awaitWriteFinish: true,
 				ignoreInitial: true,
-				awaitWriteFinish: true,
+		ignorePermissionErrors: true,
 			});
 
 			newWatcher.on('add', (path) => {
@@ -38,7 +29,43 @@ export function RegisterWatchers() {
 				onWatcherDetectFileChange(watcher, path);
 			});
 
+	newWatcher.on('error', (error) => {
+		console.error(error);
+	});
+
+	watchers[watcher.rowid] = newWatcher;
+
 			console.log(`[server] [watcher] Registered watcher for '${watcher.watch_path}'.`);
+}
+
+export async function DeregisterWatcher(rowid: number) {
+	try {
+		const directory = Object.entries(watchers[rowid].getWatched())[0].join('/');
+		await watchers[rowid].close();
+		console.log(`[server] [watcher] Deregistered watcher for '${directory}'.`);
+
+		delete watchers[rowid];
+	} catch (error) {
+		console.error(
+			`[server] [watcher] [error] Could not deregister watcher with rowid '${rowid}'.`
+		);
+		console.error(error);
+	}
+}
+
+export function InitializeWatchers() {
+	// FOR TESTING!!!
+	// if (GetWatchersFromDatabase() == null || GetWatchersFromDatabase()?.length == 0) {
+	// 	InsertWatcherToDatabase({
+	// 		watch_path: '/workspaces/handbrake-web/video/monitor',
+	// 		preset_id: '2160p HDR -> 1080p HDR',
+	// 	});
+	// }
+
+	const watchers = GetWatchersFromDatabase();
+	if (watchers) {
+		watchers.forEach((watcher) => {
+			RegisterWatcher(watcher);
 		});
 	}
 }
@@ -73,12 +100,20 @@ export function UpdateWatchers() {
 }
 
 export function AddWatcher(watcher: Watcher) {
-	InsertWatcherToDatabase(watcher);
+	const result = InsertWatcherToDatabase(watcher);
+	if (result) {
+		RegisterWatcher({
+			...watcher,
+			rowid: result.lastInsertRowid as number,
+		});
 	UpdateWatchers();
+	}
 }
 
 export function RemoveWatcher(rowid: number) {
-	console.log(`[server] [watcher] Removing watcher with rowid '${rowid}'.`);
-	RemoveWatcherFromDatabase(rowid);
+	const result = RemoveWatcherFromDatabase(rowid);
+	if (result) {
+		DeregisterWatcher(rowid);
 	UpdateWatchers();
+	}
 }
