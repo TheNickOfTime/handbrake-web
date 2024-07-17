@@ -23,7 +23,7 @@ export default function WatcherCard({ watcher, handleRemoveWatcher }: Params) {
 			</div>
 			<div className='watcher-card-body'>
 				<TextInfo label='Output Path'>{watcher.output_path || 'N/A'}</TextInfo>
-				<TextInfo label='Preset'>{watcher.output_path || 'N/A'}</TextInfo>
+				<TextInfo label='Preset'>{watcher.preset_id}</TextInfo>
 			</div>
 		</div>
 	);
