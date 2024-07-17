@@ -2,7 +2,7 @@ import Database from 'better-sqlite3';
 import path from 'path';
 
 import { dataPath } from '../data';
-import { watcherTableCreateStatement } from 'scripts/watcher';
+import { watcherTableCreateStatement } from 'scripts/database/database-watcher';
 
 const databasePath = path.join(dataPath, 'handbrake.db');
 

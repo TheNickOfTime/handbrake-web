@@ -8,9 +8,6 @@ import {
 import { Watcher } from 'types/watcher';
 import { EmitToAllClients } from './connections';
 
-export const watcherTableCreateStatement =
-	'CREATE TABLE IF NOT EXISTS watchers(watch_path TEXT NOT NULL, output_path TEXT)';
-
 export function RegisterWatchers() {
 	// FOR TESTING!!!
 	if (GetWatchersFromDatabase() == null || GetWatchersFromDatabase()?.length == 0) {

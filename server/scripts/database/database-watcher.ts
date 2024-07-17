@@ -1,6 +1,9 @@
 import { database } from './database';
 import { Watcher, WatcherWithRowID } from 'types/watcher';
 
+export const watcherTableCreateStatement =
+	'CREATE TABLE IF NOT EXISTS watchers(watch_path TEXT NOT NULL, output_path TEXT)';
+
 export function GetWatchersFromDatabase() {
 	try {
 		const watchersStatement = database.prepare<[], WatcherWithRowID>(
