@@ -10,9 +10,12 @@ import { EmitToAllClients } from './connections';
 
 export function RegisterWatchers() {
 	// FOR TESTING!!!
-	if (GetWatchersFromDatabase() == null || GetWatchersFromDatabase()?.length == 0) {
-		InsertWatcherToDatabase({ watch_path: '/workspaces/handbrake-web/video/monitor' });
-	}
+	// if (GetWatchersFromDatabase() == null || GetWatchersFromDatabase()?.length == 0) {
+	InsertWatcherToDatabase({
+		watch_path: '/workspaces/handbrake-web/video/monitor',
+		preset_id: '2160p HDR -> 1080p HDR',
+	});
+	// }
 
 	const watchers = GetWatchersFromDatabase();
 	// console.log(watchers);

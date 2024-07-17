@@ -2,7 +2,7 @@ import { database } from './database';
 import { Watcher, WatcherWithRowID } from 'types/watcher';
 
 export const watcherTableCreateStatement =
-	'CREATE TABLE IF NOT EXISTS watchers(watch_path TEXT NOT NULL, output_path TEXT)';
+	'CREATE TABLE IF NOT EXISTS watchers(watch_path TEXT NOT NULL, output_path TEXT, preset_id TEXT NOT NULL)';
 
 export function GetWatchersFromDatabase() {
 	try {
@@ -20,11 +20,12 @@ export function GetWatchersFromDatabase() {
 export function InsertWatcherToDatabase(watcher: Watcher) {
 	try {
 		const insertStatement = database.prepare<Watcher, Watcher>(
-			'INSERT INTO watchers(watch_path, output_path) VALUES($watch_path, $output_path)'
+			'INSERT INTO watchers(watch_path, output_path, preset_id) VALUES($watch_path, $output_path, $preset_id)'
 		);
 		const insertResult = insertStatement.run({
 			watch_path: watcher.watch_path,
 			output_path: watcher.output_path,
+			preset_id: watcher.preset_id,
 		});
 		return insertResult;
 	} catch (err) {
