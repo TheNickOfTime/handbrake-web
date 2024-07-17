@@ -11,4 +11,4 @@ export type WatcherWithRowID = {
 	rowid: number;
 } & Watcher;
 
-export type Watchers = Watcher[];
+// export type Watchers = Watcher[];
