@@ -1,14 +1,19 @@
 import path from 'path';
 import chokidar from 'chokidar';
-import { GetWatchersFromDatabase, InsertWatcherToDatabase } from './database/database-watcher';
+import {
+	GetWatchersFromDatabase,
+	InsertWatcherToDatabase,
+	RemoveWatcherFromDatabase,
+} from './database/database-watcher';
 import { Watcher } from 'types/watcher';
+import { EmitToAllClients } from './connections';
 
 export const watcherTableCreateStatement =
 	'CREATE TABLE IF NOT EXISTS watchers(watch_path TEXT NOT NULL, output_path TEXT)';
 
 export function RegisterWatchers() {
 	if (GetWatchersFromDatabase() == null || GetWatchersFromDatabase()?.length == 0) {
-		InsertWatcherToDatabase('/workspaces/handbrake-web/video/monitor');
+		InsertWatcherToDatabase({ watch_path: '/workspaces/handbrake-web/video/monitor' });
 	}
 
 	const watchers = GetWatchersFromDatabase();

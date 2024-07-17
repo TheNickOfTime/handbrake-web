@@ -1,5 +1,5 @@
 import { database } from './database';
-import { Watcher, Watchers, WatcherWithRowID } from 'types/watcher';
+import { Watcher, WatcherWithRowID } from 'types/watcher';
 
 export function GetWatchersFromDatabase() {
 	try {
@@ -14,19 +14,16 @@ export function GetWatchersFromDatabase() {
 	}
 }
 
-export function InsertWatcherToDatabase(watchPath: string, outputPath?: string) {
+export function InsertWatcherToDatabase(watcher: Watcher) {
 	try {
 		const insertStatement = database.prepare<Watcher, Watcher>(
 			'INSERT INTO watchers(watch_path, output_path) VALUES($watch_path, $output_path)'
 		);
-		const insertResult = insertStatement.run({
-			watch_path: watchPath,
-			output_path: outputPath,
-		});
+		const insertResult = insertStatement.run(watcher);
 		return insertResult;
 	} catch (err) {
 		console.error(
-			`[server] [database] [error] Could not add a watcher for '${watchPath}' to the database.`
+			`[server] [database] [error] Could not add a watcher for '${watcher.watch_path}' to the database.`
 		);
 		console.error(err);
 	}
