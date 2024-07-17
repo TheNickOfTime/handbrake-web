@@ -1,0 +1,35 @@
+@use 'src/style/modules/colors';
+
+.watcher-card {
+	padding: 1rem;
+	background-color: colors.$background-tertiary;
+	border-radius: 1rem;
+
+	.watcher-card-header {
+		display: flex;
+		flex-flow: row nowrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		margin: 1rem 0 1.5rem 0;
+
+		.watcher-card-header-label {
+			// height: 100%;
+			flex-grow: 1;
+			margin: 0;
+			padding: 0.5rem 0;
+			// border-bottom: 0.2rem solid hsla(0, 0%, 100%, 0.1);
+		}
+
+		.watcher-card-header-buttons {
+			display: flex;
+			flex-flow: row nowrap;
+			justify-content: right;
+			gap: 1rem;
+
+			* {
+				font-size: 1.75rem;
+			}
+		}
+	}
+}
