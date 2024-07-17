@@ -3,6 +3,7 @@ import { Queue, QueueStatus } from 'types/queue';
 import { ConnectionIDs } from 'types/socket';
 import { HandbrakePresetList } from 'types/preset';
 import { Config } from 'types/config';
+import { WatcherWithRowID } from 'types/watcher';
 
 export type PrimaryOutletContextType = {
 	socket: Socket;
@@ -11,4 +12,5 @@ export type PrimaryOutletContextType = {
 	presets: HandbrakePresetList;
 	connections: ConnectionIDs;
 	config: Config;
+	watchers: WatcherWithRowID[];
 };

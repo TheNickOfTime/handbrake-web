@@ -40,15 +40,21 @@ export default function SideBar({ showSidebar, setShowSidebar }: Params) {
 							</NavLink>
 						</li>
 						<li>
-							<NavLink to='/workers' onClick={handleNavLinkClick}>
-								<i className='bi bi-robot' />
-								Workers
-							</NavLink>
-						</li>
-						<li>
 							<NavLink to='/presets' onClick={handleNavLinkClick}>
 								<i className='bi bi-sliders' />
 								Presets
+							</NavLink>
+						</li>
+						<li>
+							<NavLink to='/watchers' onClick={handleNavLinkClick}>
+								<i className='bi bi-eye-fill' />
+								Watchers
+							</NavLink>
+						</li>
+						<li>
+							<NavLink to='/workers' onClick={handleNavLinkClick}>
+								<i className='bi bi-robot' />
+								Workers
 							</NavLink>
 						</li>
 						{/* <li>

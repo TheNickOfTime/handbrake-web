@@ -11,6 +11,7 @@ import QueueSection from 'sections/queue/queue';
 import WorkersSection from 'sections/workers/workers';
 import PresetsSection from 'sections/presets/presets';
 import DashboardSection from 'sections/dashboard/dashboard';
+import WatchersSection from 'sections/watchers/watchers';
 
 const routes: RouteObject[] = [
 	{
@@ -33,6 +34,10 @@ const routes: RouteObject[] = [
 			{
 				path: 'presets',
 				element: <PresetsSection />,
+			},
+			{
+				path: 'watchers',
+				element: <WatchersSection />,
 			},
 			{
 				path: '*',
