@@ -135,7 +135,7 @@ export default function ClientSocket(io: Server) {
 			AddWatcher(watcher);
 		});
 
-		socket.on('delete-watcher', (rowid: number) => {
+		socket.on('remove-watcher', (rowid: number) => {
 			RemoveWatcher(rowid);
 		});
 	});

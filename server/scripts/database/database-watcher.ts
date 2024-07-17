@@ -19,7 +19,10 @@ export function InsertWatcherToDatabase(watcher: Watcher) {
 		const insertStatement = database.prepare<Watcher, Watcher>(
 			'INSERT INTO watchers(watch_path, output_path) VALUES($watch_path, $output_path)'
 		);
-		const insertResult = insertStatement.run(watcher);
+		const insertResult = insertStatement.run({
+			watch_path: watcher.watch_path,
+			output_path: watcher.output_path,
+		});
 		return insertResult;
 	} catch (err) {
 		console.error(
@@ -31,8 +34,9 @@ export function InsertWatcherToDatabase(watcher: Watcher) {
 
 export function RemoveWatcherFromDatabase(rowid: number) {
 	try {
-		const removeStatement = database.prepare('DELETE FROM queue WHERE rowid = $rowid');
+		const removeStatement = database.prepare('DELETE FROM watchers WHERE rowid = $rowid');
 		const removalResult = removeStatement.run({ rowid: rowid });
+		return removalResult;
 	} catch (err) {
 		console.error(
 			`[server] [database] [error] Could not remove a watcher with the rowid '${rowid}' from the database.`

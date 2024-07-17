@@ -12,6 +12,7 @@ export const watcherTableCreateStatement =
 	'CREATE TABLE IF NOT EXISTS watchers(watch_path TEXT NOT NULL, output_path TEXT)';
 
 export function RegisterWatchers() {
+	// FOR TESTING!!!
 	if (GetWatchersFromDatabase() == null || GetWatchersFromDatabase()?.length == 0) {
 		InsertWatcherToDatabase({ watch_path: '/workspaces/handbrake-web/video/monitor' });
 	}
@@ -77,6 +78,7 @@ export function AddWatcher(watcher: Watcher) {
 }
 
 export function RemoveWatcher(rowid: number) {
+	console.log(`[server] [watcher] Removing watcher with rowid '${rowid}'.`);
 	RemoveWatcherFromDatabase(rowid);
 	UpdateWatchers();
 }
