@@ -1,12 +1,21 @@
 import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import { useOutletContext } from 'react-router-dom';
 import './watchers.scss';
+import ButtonInput from 'components/base/inputs/button/button-input';
+import RegisterWatcher from 'components/overlays/register-watcher/register-watcher';
 import Section from 'components/section/section';
 import SubSection from 'components/section/sub-section';
 import WatcherCard from 'components/cards/watcher-card/watcher-card';
+import { useState } from 'react';
 
 export default function WatchersSection() {
 	const { socket, watchers } = useOutletContext<PrimaryOutletContextType>();
+
+	const [showRegisterOverlay, setShowRegisterOverlay] = useState(false);
+
+	const handleNewWatcher = () => {
+		setShowRegisterOverlay(true);
+	};
 
 	const handleRemoveWatcher = (rowid: number) => {
 		socket.emit('remove-watcher', rowid);
@@ -14,6 +23,15 @@ export default function WatchersSection() {
 
 	return (
 		<Section title='Watchers' id='watchers'>
+			<SubSection id='watchers-status'>
+				<div className='watcher-count'>Watchers: {watchers.length}</div>
+				<ButtonInput
+					label='Register New Watcher'
+					icon='bi-plus-lg'
+					color='blue'
+					onClick={handleNewWatcher}
+				/>
+			</SubSection>
 			<SubSection title='Registered Watchers' id='registered-watchers'>
 				{watchers.map((watcher) => (
 					<WatcherCard
@@ -23,6 +41,9 @@ export default function WatchersSection() {
 					/>
 				))}
 			</SubSection>
+			{showRegisterOverlay && (
+				<RegisterWatcher onClose={() => setShowRegisterOverlay(false)} />
+			)}
 		</Section>
 	);
 }
