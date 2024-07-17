@@ -32,15 +32,17 @@ export default function WatchersSection() {
 					onClick={handleNewWatcher}
 				/>
 			</SubSection>
-			<SubSection title='Registered Watchers' id='registered-watchers'>
-				{watchers.map((watcher) => (
-					<WatcherCard
-						watcher={watcher}
-						handleRemoveWatcher={handleRemoveWatcher}
-						key={`watcher-card-${watcher.rowid}`}
-					/>
-				))}
-			</SubSection>
+			{watchers.length > 0 && (
+				<SubSection title='Registered Watchers' id='registered-watchers'>
+					{watchers.map((watcher) => (
+						<WatcherCard
+							watcher={watcher}
+							handleRemoveWatcher={handleRemoveWatcher}
+							key={`watcher-card-${watcher.rowid}`}
+						/>
+					))}
+				</SubSection>
+			)}
 			{showRegisterOverlay && (
 				<RegisterWatcher onClose={() => setShowRegisterOverlay(false)} />
 			)}
