@@ -106,8 +106,7 @@ export default function Primary() {
 	};
 
 	const onWatchersUpdate = (watchers: WatcherWithRowID[]) => {
-		console.log('[client] Watchers have been updated...');
-		console.log(watchers);
+		console.log('[client] Watchers have been updated.');
 		setWatchers(watchers);
 	};
 
