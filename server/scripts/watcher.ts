@@ -65,3 +65,18 @@ function onWatcherDetectFileChange(watcher: Watcher, filePath: string) {
 		}' has detected a change in the file '${path.basename(filePath)}'.`
 	);
 }
+
+export function UpdateWatchers() {
+	const updatedWatchers = GetWatchersFromDatabase();
+	EmitToAllClients('watchers-update', updatedWatchers);
+}
+
+export function AddWatcher(watcher: Watcher) {
+	InsertWatcherToDatabase(watcher);
+	UpdateWatchers();
+}
+
+export function RemoveWatcher(rowid: number) {
+	RemoveWatcherFromDatabase(rowid);
+	UpdateWatchers();
+}
