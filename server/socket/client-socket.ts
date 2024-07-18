@@ -5,7 +5,7 @@ import {
 	DirectoryItemType,
 	DirectoryRequestType,
 } from 'types/directory.types';
-import { HandbrakePreset } from 'types/preset.types';
+import { HandbrakePresetType } from 'types/preset.types';
 import { QueueRequest } from 'types/queue.types';
 // import { Client } from 'types/socket.types';
 import { Socket as Client } from 'socket.io';
@@ -115,7 +115,7 @@ export default function ClientSocket(io: Server) {
 		);
 
 		// Preset ----------------------------------------------------------------------------------
-		socket.on('add-preset', (preset: HandbrakePreset) => {
+		socket.on('add-preset', (preset: HandbrakePresetType) => {
 			AddPreset(preset);
 		});
 
