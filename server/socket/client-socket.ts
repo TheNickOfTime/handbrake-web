@@ -1,9 +1,9 @@
 import { Server } from 'socket.io';
 import {
-	CreateDirectoryRequest,
-	Directory,
-	DirectoryItem,
-	DirectoryRequest,
+	CreateDirectoryRequestType,
+	DirectoryType,
+	DirectoryItemType,
+	DirectoryRequestType,
 } from 'types/directory.types';
 import { HandbrakePreset } from 'types/preset.types';
 import { QueueRequest } from 'types/queue.types';
@@ -98,7 +98,7 @@ export default function ClientSocket(io: Server) {
 		// Directory -------------------------------------------------------------------------------
 		socket.on(
 			'get-directory',
-			async (request: DirectoryRequest, callback: (directory: Directory) => void) => {
+			async (request: DirectoryRequestType, callback: (directory: DirectoryType) => void) => {
 				const items = await GetDirectoryItems(request.path, request.isRecursive);
 				if (items) {
 					callback(items);
@@ -108,7 +108,7 @@ export default function ClientSocket(io: Server) {
 
 		socket.on(
 			'make-directory',
-			async (item: CreateDirectoryRequest, callback: (result: boolean) => void) => {
+			async (item: CreateDirectoryRequestType, callback: (result: boolean) => void) => {
 				const result = await MakeDirectory(item.path, item.name);
 				callback(result);
 			}

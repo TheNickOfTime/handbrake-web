@@ -1,24 +1,24 @@
-export type DirectoryItem = {
+export type DirectoryItemType = {
 	path: string;
 	name: string;
 	extension?: string;
 	isDirectory: boolean;
 };
 
-export type DirectoryItems = DirectoryItem[];
+export type DirectoryItemsType = DirectoryItemType[];
 
-export type Directory = {
-	parent?: DirectoryItem;
-	current: DirectoryItem;
-	items: DirectoryItem[];
+export type DirectoryType = {
+	parent?: DirectoryItemType;
+	current: DirectoryItemType;
+	items: DirectoryItemType[];
 };
 
-export type DirectoryRequest = {
+export type DirectoryRequestType = {
 	path: string;
 	isRecursive: boolean;
 };
 
-export type CreateDirectoryRequest = {
+export type CreateDirectoryRequestType = {
 	path: string;
 	name: string;
 };
