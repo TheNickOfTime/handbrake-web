@@ -1,0 +1,17 @@
+@use 'src/style/modules/colors';
+
+.section#watchers {
+	.sub-section#watchers-status {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: space-between;
+		align-items: center;
+
+		.watcher-count {
+			font-size: 2rem;
+		}
+	}
+
+	.sub-section#registered-watchers {
+	}
+}

@@ -1,0 +1,29 @@
+@use 'src/style/modules/colors';
+@use 'src/style/modules/font';
+
+.section-overlay#register-watcher {
+	.register-watcher-fields {
+		display: flex;
+		flex-flow: column nowrap;
+		gap: 2rem;
+
+		.fields-section {
+			display: flex;
+			flex-flow: column nowrap;
+			gap: 1rem;
+		}
+
+		.buttons-section {
+			display: flex;
+			flex-direction: row wrap;
+			justify-content: right;
+			gap: 1rem;
+		}
+	}
+
+	.controlled-button {
+		.button-label {
+			font-size: 1.5rem;
+		}
+	}
+}

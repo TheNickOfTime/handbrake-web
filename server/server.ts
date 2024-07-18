@@ -29,7 +29,6 @@ console.log(`[server] [env] The video path is '${process.env.VIDEO_PATH}'.`);
 
 // Config ------------------------------------------------------------------------------------------
 LoadConfig();
-console.log(GetConfig());
 
 // Routes ------------------------------------------------------------------------------------------
 ClientRoutes(app);

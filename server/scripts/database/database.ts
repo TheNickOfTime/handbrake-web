@@ -2,6 +2,7 @@ import Database from 'better-sqlite3';
 import path from 'path';
 
 import { dataPath } from '../data';
+import { watcherTableCreateStatement } from 'scripts/database/database-watcher';
 
 const databasePath = path.join(dataPath, 'handbrake.db');
 
@@ -17,6 +18,7 @@ export function DatabaseConnect() {
 			database.prepare(
 				'CREATE TABLE IF NOT EXISTS status(id TEXT NOT NULL, state INTEGER NOT NULL, PRIMARY KEY (id))'
 			),
+			database.prepare(watcherTableCreateStatement),
 		];
 		initQueueStatement.forEach((statement) => statement.run());
 		console.log('[server] [database] The database connection has been initalized!');

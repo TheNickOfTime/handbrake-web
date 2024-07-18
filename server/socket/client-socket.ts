@@ -26,12 +26,16 @@ import {
 import { videoPath } from 'scripts/video';
 import { Config, ConfigProperty } from 'types/config';
 import { GetConfig, GetPropertyFromConfig } from 'scripts/config';
+import { Watcher, WatcherWithRowID } from 'types/watcher';
+import { GetWatchersFromDatabase } from 'scripts/database/database-watcher';
+import { AddWatcher, RemoveWatcher } from 'scripts/watcher';
 
 const initClient = (socket: Client) => {
 	const queue = GetQueue();
 	socket.emit('queue-update', queue);
 	socket.emit('presets-update', GetPresets());
 	socket.emit('queue-status-update', GetQueueStatus());
+	socket.emit('watchers-update', GetWatchersFromDatabase());
 };
 
 export default function ClientSocket(io: Server) {
@@ -117,6 +121,22 @@ export default function ClientSocket(io: Server) {
 
 		socket.on('remove-preset', (presetName: string) => {
 			RemovePreset(presetName);
+		});
+
+		// Watchers --------------------------------------------------------------------------------
+		socket.on(
+			'get-watchers',
+			(callback: (watchers: WatcherWithRowID[] | undefined) => void) => {
+				callback(GetWatchersFromDatabase());
+			}
+		);
+
+		socket.on('add-watcher', (watcher: Watcher) => {
+			AddWatcher(watcher);
+		});
+
+		socket.on('remove-watcher', (rowid: number) => {
+			RemoveWatcher(rowid);
 		});
 	});
 }

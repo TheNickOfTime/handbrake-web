@@ -15,6 +15,7 @@ import { PrimaryOutletContextType } from './primary-context';
 import './primary.scss';
 import { Config } from 'types/config';
 import NoConnection from 'sections/no-connection/no-connection';
+import { WatcherWithRowID } from 'types/watcher';
 
 export default function Primary() {
 	const baseURLRegex = /(^https?:\/\/.+\/)(.+$)/;
@@ -34,6 +35,7 @@ export default function Primary() {
 		clients: [],
 		workers: [],
 	});
+	const [watchers, setWatchers] = useState<WatcherWithRowID[]>([]);
 	const [showSidebar, setShowSidebar] = useState(false);
 
 	// Connect to server -------------------------------------------------------
@@ -103,17 +105,24 @@ export default function Primary() {
 		setConnections(data);
 	};
 
+	const onWatchersUpdate = (watchers: WatcherWithRowID[]) => {
+		console.log('[client] Watchers have been updated.');
+		setWatchers(watchers);
+	};
+
 	useEffect(() => {
 		socket.on('queue-update', onQueueUpdate);
 		socket.on('queue-status-update', onQueueStatusUpdate);
 		socket.on('presets-update', onPresetsUpdate);
 		socket.on('connections-update', onConnectionsUpdate);
+		socket.on('watchers-update', onWatchersUpdate);
 
 		return () => {
 			socket.off('queue-update', onQueueUpdate);
 			socket.off('queue-status-update', onQueueStatusUpdate);
 			socket.off('presets-update', onPresetsUpdate);
 			socket.off('connections-update', onConnectionsUpdate);
+			socket.off('watchers-update', onWatchersUpdate);
 		};
 	});
 
@@ -142,6 +151,7 @@ export default function Primary() {
 									presets,
 									connections,
 									config,
+									watchers,
 								} satisfies PrimaryOutletContextType
 							}
 						/>
