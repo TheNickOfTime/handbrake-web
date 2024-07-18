@@ -1,5 +1,3 @@
-import { HandbrakePreset } from './preset';
-
 export type Watcher = {
 	watch_path: string;
 	output_path?: string;
