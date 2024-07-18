@@ -4,7 +4,7 @@ import path from 'path';
 import { Socket } from 'socket.io-client';
 import { Job, QueueEntry } from 'types/queue.types';
 import { TranscodeStage, TranscodeStatus, TranscodeStatusUpdate } from 'types/transcode.types';
-import { HandbrakeJSONOutput, Muxing, Scanning, WorkDone, Working } from 'types/handbrake.types';
+import { HandbrakeOutputType, Muxing, Scanning, WorkDone, Working } from 'types/handbrake.types';
 
 let handbrake: ChildProcess | null = null;
 export const isTranscoding = () => handbrake != null;
@@ -64,7 +64,7 @@ export function StartTranscode(queueEntry: QueueEntry, socket: Socket) {
 
 		for (const match of jsonOutputMatches) {
 			const outputKind = match[2];
-			const outputJSON: HandbrakeJSONOutput = JSON.parse(match[3]);
+			const outputJSON: HandbrakeOutputType = JSON.parse(match[3]);
 
 			switch (outputKind) {
 				case 'Version':
