@@ -1,10 +1,10 @@
-import { QueueTable } from 'types/database.types';
+import { QueueTableType } from 'types/database.types';
 import { Job, Queue, QueueEntry } from 'types/queue.types';
 import { database } from './database';
 
 export function GetQueueFromDatabase() {
 	try {
-		const queueStatement = database.prepare<[], QueueTable>('SELECT * FROM queue');
+		const queueStatement = database.prepare<[], QueueTableType>('SELECT * FROM queue');
 		const queueTable = queueStatement.all();
 		const queueResult = queueTable
 			.map((entry) => {
@@ -32,7 +32,7 @@ export function GetQueueFromDatabase() {
 
 export function GetJobFromDatabase(id: string): Job | undefined {
 	try {
-		const jobStatement = database.prepare<{ id: string }, QueueTable>(
+		const jobStatement = database.prepare<{ id: string }, QueueTableType>(
 			'SELECT job FROM queue WHERE id = $id'
 		);
 		const jobQuery = jobStatement.get({ id: id });
@@ -47,7 +47,7 @@ export function GetJobFromDatabase(id: string): Job | undefined {
 export function InsertJobToDatabase(id: string, job: Job) {
 	try {
 		const jobJSON = JSON.stringify(job);
-		const insertStatement = database.prepare<QueueTable, QueueTable>(
+		const insertStatement = database.prepare<QueueTableType, QueueTableType>(
 			'INSERT INTO queue (id, job) VALUES ($id, $job)'
 		);
 		const insertResult = insertStatement.run({ id: id, job: jobJSON });

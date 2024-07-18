@@ -1,4 +1,4 @@
-import { StatusTable } from 'types/database.types';
+import { StatusTableType } from 'types/database.types';
 import { database } from './database';
 
 // export function InitializeStatus() {
@@ -7,7 +7,7 @@ import { database } from './database';
 
 export function GetStatusFromDatabase(id: string) {
 	try {
-		const statusStatement = database.prepare<{ id: string }, StatusTable>(
+		const statusStatement = database.prepare<{ id: string }, StatusTableType>(
 			'SELECT state FROM status WHERE id = $id'
 		);
 		const statusQuery = statusStatement.get({ id: id });

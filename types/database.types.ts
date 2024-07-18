@@ -1,9 +1,9 @@
-export type QueueTable = {
+export type QueueTableType = {
 	id: string;
 	job: string;
 };
 
-export type StatusTable = {
+export type StatusTableType = {
 	id: string;
 	state: number;
 };
