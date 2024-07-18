@@ -1,5 +1,5 @@
-import { Queue } from 'types/queue';
-import { TranscodeStage } from 'types/transcode';
+import { Queue } from 'types/queue.types';
+import { TranscodeStage } from 'types/transcode.types';
 import SubSection from 'components/section/sub-section';
 import { WorkerInfo } from '../workers';
 

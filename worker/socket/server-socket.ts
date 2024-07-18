@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io-client';
-import { QueueEntry } from 'types/queue';
+import { QueueEntry } from 'types/queue.types';
 import { StartTranscode, StopTranscode, getJobID } from 'scripts/transcode';
 import { serverAddress } from '../worker';
 

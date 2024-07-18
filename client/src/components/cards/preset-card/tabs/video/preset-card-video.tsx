@@ -1,5 +1,5 @@
 import TextInfo from 'components/base/info/text-info/text-info';
-import { HandbrakePresetData, VideoQualityType } from 'types/preset';
+import { HandbrakePresetData, VideoQualityType } from 'types/preset.types';
 import './preset-card-video.scss';
 
 type Params = {

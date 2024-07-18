@@ -1,4 +1,4 @@
-import { StatusTable } from 'types/database';
+import { StatusTable } from 'types/database.types';
 import { database } from './database';
 
 // export function InitializeStatus() {

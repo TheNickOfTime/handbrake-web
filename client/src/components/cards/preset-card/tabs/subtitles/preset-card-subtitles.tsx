@@ -1,5 +1,5 @@
 import TextInfo from 'components/base/info/text-info/text-info';
-import { HandbrakePresetData } from 'types/preset';
+import { HandbrakePresetData } from 'types/preset.types';
 import './preset-card-subtitles.scss';
 
 type Params = {

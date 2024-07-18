@@ -5,17 +5,17 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { io } from 'socket.io-client';
 // import 'dotenv/config';
 
-import { Queue, QueueStatus } from 'types/queue';
-import { ConnectionIDs } from 'types/socket';
-import { HandbrakePresetList } from 'types/preset';
+import { Queue, QueueStatus } from 'types/queue.types';
+import { ConnectionIDs } from 'types/socket.types';
+import { HandbrakePresetList } from 'types/preset.types';
 
 import SideBar from 'components/modules/side-bar/side-bar';
 
 import { PrimaryOutletContextType } from './primary-context';
 import './primary.scss';
-import { Config } from 'types/config';
+import { Config } from 'types/config.types';
 import NoConnection from 'sections/no-connection/no-connection';
-import { WatcherWithRowID } from 'types/watcher';
+import { WatcherWithRowID } from 'types/watcher.types';
 
 export default function Primary() {
 	const baseURLRegex = /(^https?:\/\/.+\/)(.+$)/;

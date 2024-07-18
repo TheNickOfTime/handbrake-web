@@ -1,5 +1,5 @@
 import TextInfo from 'components/base/info/text-info/text-info';
-import { HandbrakePresetData } from 'types/preset';
+import { HandbrakePresetData } from 'types/preset.types';
 
 type Params = {
 	preset: HandbrakePresetData;

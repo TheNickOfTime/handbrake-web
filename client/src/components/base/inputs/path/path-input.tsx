@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { FileBrowserMode } from 'types/file-browser';
-import { DirectoryItem } from 'types/directory';
+import { FileBrowserMode } from 'types/file-browser.types';
+import { DirectoryItem } from 'types/directory.types';
 import FileBrowser from 'components/modules/file-browser/file-browser';
 import './path-input.scss';
 

@@ -1,8 +1,8 @@
 import hash from 'object-hash';
-import { Job, QueueEntry, QueueRequest, QueueStatus } from 'types/queue';
-// import { Worker } from 'types/socket';
+import { Job, QueueEntry, QueueRequest, QueueStatus } from 'types/queue.types';
+// import { Worker } from 'types/socket.types';
 import { Socket as Worker } from 'socket.io';
-import { TranscodeStage, TranscodeStatusUpdate } from 'types/transcode';
+import { TranscodeStage, TranscodeStatusUpdate } from 'types/transcode.types';
 import {
 	EmitToAllClients,
 	EmitToWorkerWithID,

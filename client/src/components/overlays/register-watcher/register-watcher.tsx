@@ -5,10 +5,10 @@ import SectionOverlay from 'components/section/section-overlay';
 import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import './register-watcher.scss';
 import PathInput from 'components/base/inputs/path/path-input';
-import { FileBrowserMode } from 'types/file-browser';
-import { DirectoryItem } from 'types/directory';
+import { FileBrowserMode } from 'types/file-browser.types';
+import { DirectoryItem } from 'types/directory.types';
 import SelectInput from 'components/base/inputs/select/select-input';
-import { Watcher } from 'types/watcher';
+import { Watcher } from 'types/watcher.types';
 
 type Params = {
 	onClose: () => void;

@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { Directory, DirectoryItem, DirectoryItems } from 'types/directory';
+import { Directory, DirectoryItem, DirectoryItems } from 'types/directory.types';
 
 export async function GetDirectoryItems(absolutePath: string, recursive: boolean = false) {
 	try {

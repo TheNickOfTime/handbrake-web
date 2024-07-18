@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
 import { AddWorker, RemoveWorker } from 'scripts/connections';
-import { TranscodeStage, TranscodeStatusUpdate } from 'types/transcode';
+import { TranscodeStage, TranscodeStatusUpdate } from 'types/transcode.types';
 import { GetQueue, StopJob, UpdateJob, WorkerForAvailableJobs } from 'scripts/queue';
 
 export default function WorkerSocket(io: Server) {

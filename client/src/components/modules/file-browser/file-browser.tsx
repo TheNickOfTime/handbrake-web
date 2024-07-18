@@ -6,8 +6,8 @@ import {
 	Directory,
 	DirectoryItem,
 	DirectoryRequest,
-} from 'types/directory';
-import { FileBrowserMode } from 'types/file-browser';
+} from 'types/directory.types';
+import { FileBrowserMode } from 'types/file-browser.types';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import FileBrowserBody from './components/file-browser-body';
 import { PrimaryOutletContextType } from 'pages/primary/primary-context';

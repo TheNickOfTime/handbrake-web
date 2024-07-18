@@ -1,4 +1,4 @@
-import { Queue } from 'types/queue';
+import { Queue } from 'types/queue.types';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import SubSection from 'components/section/sub-section';
 import QueueJob from '../components/queue-job';

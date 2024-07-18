@@ -1,4 +1,4 @@
-import { WatcherWithRowID } from 'types/watcher';
+import { WatcherWithRowID } from 'types/watcher.types';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import './watcher-card.scss';
 import TextInfo from 'components/base/info/text-info/text-info';

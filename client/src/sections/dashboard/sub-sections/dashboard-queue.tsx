@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
-import { Queue } from 'types/queue';
-import { TranscodeStage } from 'types/transcode';
+import { Queue } from 'types/queue.types';
+import { TranscodeStage } from 'types/transcode.types';
 import ProgressBar from 'components/base/progress/progress-bar';
 import SubSection from 'components/section/sub-section';
 import './dashboard-queue.scss';

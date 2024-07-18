@@ -1,6 +1,6 @@
 import mime from 'mime';
-import { FileBrowserMode } from 'types/file-browser';
-import { Directory, DirectoryItem } from 'types/directory';
+import { FileBrowserMode } from 'types/file-browser.types';
+import { Directory, DirectoryItem } from 'types/directory.types';
 
 type Params = {
 	mode: FileBrowserMode;

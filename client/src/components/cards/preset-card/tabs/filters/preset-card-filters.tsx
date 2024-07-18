@@ -1,4 +1,4 @@
-import { FilterLookup, HandbrakePresetData } from 'types/preset';
+import { FilterLookup, HandbrakePresetData } from 'types/preset.types';
 import './preset-card-filters.scss';
 import TextInfo from 'components/base/info/text-info/text-info';
 

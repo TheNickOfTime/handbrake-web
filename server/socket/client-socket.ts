@@ -4,10 +4,10 @@ import {
 	Directory,
 	DirectoryItem,
 	DirectoryRequest,
-} from 'types/directory';
-import { HandbrakePreset } from 'types/preset';
-import { QueueRequest } from 'types/queue';
-// import { Client } from 'types/socket';
+} from 'types/directory.types';
+import { HandbrakePreset } from 'types/preset.types';
+import { QueueRequest } from 'types/queue.types';
+// import { Client } from 'types/socket.types';
 import { Socket as Client } from 'socket.io';
 import { AddClient, RemoveClient } from 'scripts/connections';
 import { GetDirectoryItems, MakeDirectory } from 'scripts/files';
@@ -24,9 +24,9 @@ import {
 	StopQueue,
 } from 'scripts/queue';
 import { videoPath } from 'scripts/video';
-import { Config, ConfigProperty } from 'types/config';
+import { Config, ConfigProperty } from 'types/config.types';
 import { GetConfig, GetPropertyFromConfig } from 'scripts/config';
-import { Watcher, WatcherWithRowID } from 'types/watcher';
+import { Watcher, WatcherWithRowID } from 'types/watcher.types';
 import { GetWatchersFromDatabase } from 'scripts/database/database-watcher';
 import { AddWatcher, RemoveWatcher } from 'scripts/watcher';
 

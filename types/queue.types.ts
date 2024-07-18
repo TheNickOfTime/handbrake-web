@@ -1,5 +1,5 @@
-import { HandbrakePreset } from './preset';
-import { TranscodeStatus } from './transcode';
+import { HandbrakePreset } from './preset.types';
+import { TranscodeStatus } from './transcode.types';
 
 export type QueueRequest = {
 	input: string;

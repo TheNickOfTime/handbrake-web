@@ -2,9 +2,9 @@ import { spawn, ChildProcessWithoutNullStreams as ChildProcess } from 'child_pro
 import fs from 'fs';
 import path from 'path';
 import { Socket } from 'socket.io-client';
-import { Job, QueueEntry } from 'types/queue';
-import { TranscodeStage, TranscodeStatus, TranscodeStatusUpdate } from 'types/transcode';
-import { HandbrakeJSONOutput, Muxing, Scanning, WorkDone, Working } from 'types/handbrake';
+import { Job, QueueEntry } from 'types/queue.types';
+import { TranscodeStage, TranscodeStatus, TranscodeStatusUpdate } from 'types/transcode.types';
+import { HandbrakeJSONOutput, Muxing, Scanning, WorkDone, Working } from 'types/handbrake.types';
 
 let handbrake: ChildProcess | null = null;
 export const isTranscoding = () => handbrake != null;
