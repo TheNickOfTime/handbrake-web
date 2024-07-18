@@ -1,5 +1,5 @@
 import hash from 'object-hash';
-import { Job, QueueEntry, QueueRequest, QueueStatus } from 'types/queue.types';
+import { JobType, QueueEntryType, QueueRequestType, QueueStatus } from 'types/queue.types';
 // import { Worker } from 'types/socket.types';
 import { Socket as Worker } from 'socket.io';
 import { TranscodeStage, TranscodeStatusUpdate } from 'types/transcode.types';
@@ -150,14 +150,14 @@ export function WorkerForAvailableJobs(workerID: string) {
 	}
 }
 
-export function StartJob(jobID: string, job: Job, worker: Worker) {
+export function StartJob(jobID: string, job: JobType, worker: Worker) {
 	const workerID = GetWorkerID(worker);
 	job.worker = workerID;
 	job.time = {
 		started: new Date().getTime(),
 	};
 	UpdateJobInDatabase(jobID, job);
-	const newJob: QueueEntry = {
+	const newJob: QueueEntryType = {
 		id: jobID,
 		job: job,
 	};
@@ -199,7 +199,7 @@ export function StartQueue(clientID: string) {
 					UpdateJobInDatabase(selectedJobID, selectedJob);
 
 					//Send job to worker
-					const data: QueueEntry = {
+					const data: QueueEntryType = {
 						id: selectedJobID,
 						job: selectedJob,
 					};
@@ -253,12 +253,12 @@ export function UpdateQueue() {
 }
 
 // Job Actions -------------------------------------------------------------------------------------
-export function AddJob(data: QueueRequest) {
+export function AddJob(data: QueueRequestType) {
 	const jobID =
 		new Date().getTime().toString() +
 		hash(data) +
 		(Math.random() * 9999).toString().padStart(4);
-	const newJob: Job = {
+	const newJob: JobType = {
 		input: data.input,
 		output: data.output,
 		preset: GetPresets()[data.preset],
@@ -377,7 +377,7 @@ export function ClearQueue(clientID: string, finishedOnly: boolean = false) {
 	const queue = GetQueueFromDatabase();
 	if (queue) {
 		for (const key of Object.keys(queue)) {
-			const job: Job = queue[key];
+			const job: JobType = queue[key];
 
 			switch (job.status.stage) {
 				case TranscodeStage.Waiting:

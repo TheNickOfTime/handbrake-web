@@ -1,13 +1,13 @@
 import { HandbrakePresetType } from './preset.types';
 import { TranscodeStatus } from './transcode.types';
 
-export type QueueRequest = {
+export type QueueRequestType = {
 	input: string;
 	output: string;
 	preset: string;
 };
 
-export type Job = {
+export type JobType = {
 	input: string;
 	output: string;
 	preset: HandbrakePresetType;
@@ -19,13 +19,13 @@ export type Job = {
 	};
 };
 
-export type QueueEntry = {
+export type QueueEntryType = {
 	id: string;
-	job: Job;
+	job: JobType;
 };
 
-export type Queue = {
-	[index: string]: Job;
+export type QueueType = {
+	[index: string]: JobType;
 };
 
 export enum QueueStatus {

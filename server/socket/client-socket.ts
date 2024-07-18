@@ -6,7 +6,7 @@ import {
 	DirectoryRequestType,
 } from 'types/directory.types';
 import { HandbrakePresetType } from 'types/preset.types';
-import { QueueRequest } from 'types/queue.types';
+import { QueueRequestType } from 'types/queue.types';
 // import { Client } from 'types/socket.types';
 import { Socket as Client } from 'socket.io';
 import { AddClient, RemoveClient } from 'scripts/connections';
@@ -62,7 +62,7 @@ export default function ClientSocket(io: Server) {
 		);
 
 		// Queue -----------------------------------------------------------------------------------
-		socket.on('add-to-queue', (data: QueueRequest) => {
+		socket.on('add-to-queue', (data: QueueRequestType) => {
 			console.log(
 				`[server] Client '${socket.id}' has requested to add a job for '${data.input}' to the queue.`
 			);

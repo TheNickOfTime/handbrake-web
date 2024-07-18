@@ -2,14 +2,14 @@ import { spawn, ChildProcessWithoutNullStreams as ChildProcess } from 'child_pro
 import fs from 'fs';
 import path from 'path';
 import { Socket } from 'socket.io-client';
-import { Job, QueueEntry } from 'types/queue.types';
+import { JobType, QueueEntryType } from 'types/queue.types';
 import { TranscodeStage, TranscodeStatus, TranscodeStatusUpdate } from 'types/transcode.types';
 import { HandbrakeOutputType, Muxing, Scanning, WorkDone, Working } from 'types/handbrake.types';
 
 let handbrake: ChildProcess | null = null;
 export const isTranscoding = () => handbrake != null;
 
-let job: QueueEntry | null = null;
+let job: QueueEntryType | null = null;
 export const getJobID = () => job?.id;
 export const getJobData = () => job?.job;
 
@@ -32,7 +32,7 @@ const writePresetToFile = (preset: object) => {
 	});
 };
 
-export function StartTranscode(queueEntry: QueueEntry, socket: Socket) {
+export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 	job = queueEntry;
 	writePresetToFile(queueEntry.job.preset);
 

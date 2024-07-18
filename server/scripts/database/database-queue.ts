@@ -1,5 +1,5 @@
 import { QueueTableType } from 'types/database.types';
-import { Job, Queue, QueueEntry } from 'types/queue.types';
+import { JobType, QueueType, QueueEntryType } from 'types/queue.types';
 import { database } from './database';
 
 export function GetQueueFromDatabase() {
@@ -8,13 +8,13 @@ export function GetQueueFromDatabase() {
 		const queueTable = queueStatement.all();
 		const queueResult = queueTable
 			.map((entry) => {
-				const newEntry: QueueEntry = {
+				const newEntry: QueueEntryType = {
 					id: entry.id,
 					job: JSON.parse(entry.job),
 				};
 				return newEntry;
 			})
-			.reduce<Queue>((prev, curr) => {
+			.reduce<QueueType>((prev, curr) => {
 				prev[curr.id] = curr.job;
 				return prev;
 			}, {});
@@ -30,13 +30,13 @@ export function GetQueueFromDatabase() {
 	}
 }
 
-export function GetJobFromDatabase(id: string): Job | undefined {
+export function GetJobFromDatabase(id: string): JobType | undefined {
 	try {
 		const jobStatement = database.prepare<{ id: string }, QueueTableType>(
 			'SELECT job FROM queue WHERE id = $id'
 		);
 		const jobQuery = jobStatement.get({ id: id });
-		const jobResult: Job = jobQuery ? JSON.parse(jobQuery.job) : jobQuery;
+		const jobResult: JobType = jobQuery ? JSON.parse(jobQuery.job) : jobQuery;
 		return jobResult;
 	} catch (err) {
 		console.error(`[database] [error] Could not get jobs from the queue table.`);
@@ -44,7 +44,7 @@ export function GetJobFromDatabase(id: string): Job | undefined {
 	}
 }
 
-export function InsertJobToDatabase(id: string, job: Job) {
+export function InsertJobToDatabase(id: string, job: JobType) {
 	try {
 		const jobJSON = JSON.stringify(job);
 		const insertStatement = database.prepare<QueueTableType, QueueTableType>(
@@ -59,7 +59,7 @@ export function InsertJobToDatabase(id: string, job: Job) {
 	}
 }
 
-export function UpdateJobInDatabase(id: string, job: Job) {
+export function UpdateJobInDatabase(id: string, job: JobType) {
 	try {
 		const jobJSON = JSON.stringify(job);
 		const updateStatement = database.prepare('UPDATE queue SET job = $job WHERE id = $id');

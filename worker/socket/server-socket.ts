@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io-client';
-import { QueueEntry } from 'types/queue.types';
+import { QueueEntryType } from 'types/queue.types';
 import { StartTranscode, StopTranscode, getJobID } from 'scripts/transcode';
 import { serverAddress } from '../worker';
 
@@ -30,7 +30,7 @@ export default function ServerSocket(server: Socket) {
 		console.log(details);
 	});
 
-	server.on('transcode', (data: QueueEntry) => {
+	server.on('transcode', (data: QueueEntryType) => {
 		console.log(`[worker] Request to transcode queue entry '${data.id}'.`);
 		StartTranscode(data, server);
 	});
