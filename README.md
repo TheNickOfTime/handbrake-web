@@ -84,10 +84,10 @@ exported to .json files to configure transcoding jobs. Exported presets can then
 - Transcode Queue - queue up multiple transcode jobs for your workers to tackle in order
 - Add Jobs Via Directory - bulk add videos to transcode
 - Preset Manager - Upload, Rename, and Delete HandBrake presets in the web interface
+- Directory Monitoring - for automatic job creation
 
 ### Planned Features (not yet implemented)
 
-- Directory Monitoring - for automatic job creation
 - Preset Creator - create presets directly in the web interface
 - User Sessions - logging in required to access the web interface
 
@@ -97,6 +97,5 @@ exported to .json files to configure transcoding jobs. Exported presets can then
 
 Please see the planned features section, as all of these are intended to be addressed.
 
-- Jobs can only be created manually via the web interface
 - Presets have to be created externally and uploaded to HandBrake Web
 - No security features on the client interface
