@@ -1,10 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import { parse } from 'yaml';
-import { Config, ConfigProperty } from 'types/config.types';
+import { ConfigType, ConfigPropertyType } from 'types/config.types';
 import { dataPath } from './data';
 
-let config: Config = {
+let config: ConfigType = {
 	'input-path': '/video',
 	'output-path': '/video',
 };
@@ -28,6 +28,6 @@ export function GetConfig() {
 	return config;
 }
 
-export function GetPropertyFromConfig(property: ConfigProperty) {
+export function GetPropertyFromConfig(property: ConfigPropertyType) {
 	return config[property];
 }

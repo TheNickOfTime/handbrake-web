@@ -24,7 +24,7 @@ import {
 	StopQueue,
 } from 'scripts/queue';
 import { videoPath } from 'scripts/video';
-import { Config, ConfigProperty } from 'types/config.types';
+import { ConfigType, ConfigPropertyType } from 'types/config.types';
 import { GetConfig, GetPropertyFromConfig } from 'scripts/config';
 import { Watcher, WatcherWithRowID } from 'types/watcher.types';
 import { GetWatchersFromDatabase } from 'scripts/database/database-watcher';
@@ -50,13 +50,13 @@ export default function ClientSocket(io: Server) {
 		});
 
 		// Config ----------------------------------------------------------------------------------
-		socket.on('get-config', (callback: (config: Config) => void) => {
+		socket.on('get-config', (callback: (config: ConfigType) => void) => {
 			callback(GetConfig());
 		});
 
 		socket.on(
 			'get-config-property',
-			(property: ConfigProperty, callback: (result: string) => void) => {
+			(property: ConfigPropertyType, callback: (result: string) => void) => {
 				callback(GetPropertyFromConfig(property));
 			}
 		);

@@ -1,6 +1,6 @@
-export type Config = {
+export type ConfigType = {
 	'input-path': string;
 	'output-path': string;
 };
 
-export type ConfigProperty = keyof Config;
+export type ConfigPropertyType = keyof ConfigType;
