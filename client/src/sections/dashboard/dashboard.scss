@@ -1,4 +1,4 @@
-@import '../../style/modules/colors';
+@use 'src/style/modules/colors';
 
 .section#dashboard {
 	.table-scroll {
@@ -23,11 +23,11 @@
 		}
 
 		&:hover {
-			color: $text-color-primary;
+			color: colors.$text-color-primary;
 			// text-decoration: underline;
 			i {
-				background-color: $text-color-primary;
-				color: $background-primary;
+				background-color: colors.$text-color-primary;
+				color: colors.$background-primary;
 			}
 		}
 	}
@@ -58,7 +58,7 @@
 
 		th {
 			font-size: 1.25rem;
-			border-bottom: 0.1rem solid $text-color-tertiary;
+			border-bottom: 0.1rem solid colors.$text-color-tertiary;
 		}
 
 		td {

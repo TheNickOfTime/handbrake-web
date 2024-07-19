@@ -1,5 +1,5 @@
-@import '../../../style/modules/colors';
-@import '../../../style/modules/sizing';
+@use 'src/style/modules/colors';
+@use 'src/style/modules/sizing';
 
 @media (max-width: 1000px) {
 	.side-bar {
@@ -21,14 +21,14 @@
 	.side-bar.expanded {
 		// background-color: red;
 		// min-width: 100% !important;
-		max-width: $sidebar-width !important;
+		max-width: sizing.$sidebar-width !important;
 	}
 }
 
 .side-bar {
 	// position: relative;
 	height: 100%;
-	min-width: $sidebar-width;
+	min-width: sizing.$sidebar-width;
 	// max-width: $sidebar-width;
 	// max-width: 100px;
 
@@ -44,9 +44,9 @@
 
 	.side-bar-inner {
 		height: 100%;
-		min-width: $sidebar-width;
-		max-width: $sidebar-width;
-		background-color: $background-secondary;
+		min-width: sizing.$sidebar-width;
+		max-width: sizing.$sidebar-width;
+		background-color: colors.$background-secondary;
 	}
 
 	.side-bar-header {
@@ -54,14 +54,14 @@
 		text-align: center;
 		padding-top: 2.5rem;
 
-		border-bottom: 0.2rem solid $background-primary;
+		border-bottom: 0.2rem solid colors.$background-primary;
 
 		img {
 			width: 25%;
 		}
 
 		h2 {
-			color: $text-color-secondary;
+			color: colors.$text-color-secondary;
 		}
 	}
 
@@ -76,14 +76,14 @@
 			li {
 				// width: 100%;
 				font-size: 1.75rem;
-				border-bottom: 0.2rem solid $background-primary;
+				border-bottom: 0.2rem solid colors.$background-primary;
 
 				a {
 					width: 100%;
 					padding: 1rem 2rem;
 
 					display: block;
-					color: $text-color-secondary;
+					color: colors.$text-color-secondary;
 					text-decoration: none;
 
 					.bi {
@@ -92,13 +92,13 @@
 				}
 
 				a.active {
-					color: $text-color-primary;
+					color: colors.$text-color-primary;
 					font-weight: bold;
 					text-decoration: underline;
 				}
 
 				a:hover {
-					background-color: $background-tertiary;
+					background-color: colors.$background-tertiary;
 				}
 			}
 		}

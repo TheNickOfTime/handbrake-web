@@ -1,4 +1,4 @@
-@import '../../style/modules/colors';
+@use 'src/style/modules/colors';
 
 .section-overlay {
 	position: absolute;
@@ -23,7 +23,7 @@
 		padding: 2rem;
 
 		border-radius: 1rem;
-		background-color: $background-tertiary;
+		background-color: colors.$background-tertiary;
 		box-shadow: 0 0 2rem 0 black;
 	}
 }

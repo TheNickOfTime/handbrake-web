@@ -1,4 +1,4 @@
-@import '../../../style/modules/colors';
+@use 'src/style/modules/colors';
 
 .section#workers {
 	.sub-section#summary {
@@ -20,19 +20,19 @@
 		}
 
 		.info.total {
-			color: $handbrake-blue;
+			color: colors.$handbrake-blue;
 		}
 
 		.info.idle {
-			color: $handbrake-yellow;
+			color: colors.$handbrake-yellow;
 		}
 
 		.info.active {
-			color: $handbrake-green;
+			color: colors.$handbrake-green;
 		}
 
 		.info.jobs {
-			color: $text-color-tertiary;
+			color: colors.$text-color-tertiary;
 		}
 	}
 }
