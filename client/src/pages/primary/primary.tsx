@@ -1,21 +1,17 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-
 import { useEffect, useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { io } from 'socket.io-client';
-// import 'dotenv/config';
-
-import { Queue, QueueStatus } from 'types/queue';
-import { ConnectionIDs } from 'types/socket';
-import { HandbrakePresetList } from 'types/preset';
-
-import SideBar from 'components/modules/side-bar/side-bar';
 
 import { PrimaryOutletContextType } from './primary-context';
-import './primary.scss';
-import { Config } from 'types/config';
+import { ConfigType } from 'types/config.types';
+import { HandbrakePresetListType } from 'types/preset.types';
+import { QueueType, QueueStatus } from 'types/queue.types';
+import { ConnectionIDsType } from 'types/socket.types';
+import { WatcherDefinitionWithIDType } from 'types/watcher.types';
+
+import SideBar from 'components/modules/side-bar/side-bar';
 import NoConnection from 'sections/no-connection/no-connection';
-import { WatcherWithRowID } from 'types/watcher';
+import './primary.scss';
 
 export default function Primary() {
 	const baseURLRegex = /(^https?:\/\/.+\/)(.+$)/;
@@ -27,15 +23,15 @@ export default function Primary() {
 	const server = `${serverURL}${serverSocketPath}`;
 
 	const [socket] = useState(io(server, { autoConnect: false }));
-	const [config, setConfig] = useState<Config>();
-	const [queue, setQueue] = useState<Queue>({});
+	const [config, setConfig] = useState<ConfigType>();
+	const [queue, setQueue] = useState<QueueType>({});
 	const [queueStatus, setQueueStatus] = useState<QueueStatus>(QueueStatus.Idle);
-	const [presets, setPresets] = useState<HandbrakePresetList>({});
-	const [connections, setConnections] = useState<ConnectionIDs>({
+	const [presets, setPresets] = useState<HandbrakePresetListType>({});
+	const [connections, setConnections] = useState<ConnectionIDsType>({
 		clients: [],
 		workers: [],
 	});
-	const [watchers, setWatchers] = useState<WatcherWithRowID[]>([]);
+	const [watchers, setWatchers] = useState<WatcherDefinitionWithIDType[]>([]);
 	const [showSidebar, setShowSidebar] = useState(false);
 
 	// Connect to server -------------------------------------------------------
@@ -84,7 +80,7 @@ export default function Primary() {
 	});
 
 	// Server event listeners --------------------------------------------------
-	const onQueueUpdate = (queue: Queue) => {
+	const onQueueUpdate = (queue: QueueType) => {
 		console.log(`[client] The queue has been updated.`);
 		setQueue(queue);
 	};
@@ -95,17 +91,17 @@ export default function Primary() {
 		setQueueStatus(queueStatus);
 	};
 
-	const onPresetsUpdate = (presets: HandbrakePresetList) => {
+	const onPresetsUpdate = (presets: HandbrakePresetListType) => {
 		console.log('[client] Available presets have been updated.');
 		setPresets(presets);
 	};
 
-	const onConnectionsUpdate = (data: ConnectionIDs) => {
+	const onConnectionsUpdate = (data: ConnectionIDsType) => {
 		console.log(`[client] Connections have been updated.`);
 		setConnections(data);
 	};
 
-	const onWatchersUpdate = (watchers: WatcherWithRowID[]) => {
+	const onWatchersUpdate = (watchers: WatcherDefinitionWithIDType[]) => {
 		console.log('[client] Watchers have been updated.');
 		setWatchers(watchers);
 	};

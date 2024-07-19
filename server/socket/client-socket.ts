@@ -1,13 +1,13 @@
 import { Server } from 'socket.io';
 import {
-	CreateDirectoryRequest,
-	Directory,
-	DirectoryItem,
-	DirectoryRequest,
-} from 'types/directory';
-import { HandbrakePreset } from 'types/preset';
-import { QueueRequest } from 'types/queue';
-// import { Client } from 'types/socket';
+	CreateDirectoryRequestType,
+	DirectoryType,
+	DirectoryItemType,
+	DirectoryRequestType,
+} from 'types/directory.types';
+import { HandbrakePresetType } from 'types/preset.types';
+import { QueueRequestType } from 'types/queue.types';
+// import { Client } from 'types/socket.types';
 import { Socket as Client } from 'socket.io';
 import { AddClient, RemoveClient } from 'scripts/connections';
 import { GetDirectoryItems, MakeDirectory } from 'scripts/files';
@@ -24,9 +24,9 @@ import {
 	StopQueue,
 } from 'scripts/queue';
 import { videoPath } from 'scripts/video';
-import { Config, ConfigProperty } from 'types/config';
+import { ConfigType, ConfigPropertyType } from 'types/config.types';
 import { GetConfig, GetPropertyFromConfig } from 'scripts/config';
-import { Watcher, WatcherWithRowID } from 'types/watcher';
+import { WatcherDefinitionType, WatcherDefinitionWithIDType } from 'types/watcher.types';
 import { GetWatchersFromDatabase } from 'scripts/database/database-watcher';
 import { AddWatcher, RemoveWatcher } from 'scripts/watcher';
 
@@ -50,19 +50,19 @@ export default function ClientSocket(io: Server) {
 		});
 
 		// Config ----------------------------------------------------------------------------------
-		socket.on('get-config', (callback: (config: Config) => void) => {
+		socket.on('get-config', (callback: (config: ConfigType) => void) => {
 			callback(GetConfig());
 		});
 
 		socket.on(
 			'get-config-property',
-			(property: ConfigProperty, callback: (result: string) => void) => {
+			(property: ConfigPropertyType, callback: (result: string) => void) => {
 				callback(GetPropertyFromConfig(property));
 			}
 		);
 
 		// Queue -----------------------------------------------------------------------------------
-		socket.on('add-to-queue', (data: QueueRequest) => {
+		socket.on('add-to-queue', (data: QueueRequestType) => {
 			console.log(
 				`[server] Client '${socket.id}' has requested to add a job for '${data.input}' to the queue.`
 			);
@@ -98,7 +98,7 @@ export default function ClientSocket(io: Server) {
 		// Directory -------------------------------------------------------------------------------
 		socket.on(
 			'get-directory',
-			async (request: DirectoryRequest, callback: (directory: Directory) => void) => {
+			async (request: DirectoryRequestType, callback: (directory: DirectoryType) => void) => {
 				const items = await GetDirectoryItems(request.path, request.isRecursive);
 				if (items) {
 					callback(items);
@@ -108,14 +108,14 @@ export default function ClientSocket(io: Server) {
 
 		socket.on(
 			'make-directory',
-			async (item: CreateDirectoryRequest, callback: (result: boolean) => void) => {
+			async (item: CreateDirectoryRequestType, callback: (result: boolean) => void) => {
 				const result = await MakeDirectory(item.path, item.name);
 				callback(result);
 			}
 		);
 
 		// Preset ----------------------------------------------------------------------------------
-		socket.on('add-preset', (preset: HandbrakePreset) => {
+		socket.on('add-preset', (preset: HandbrakePresetType) => {
 			AddPreset(preset);
 		});
 
@@ -126,12 +126,12 @@ export default function ClientSocket(io: Server) {
 		// Watchers --------------------------------------------------------------------------------
 		socket.on(
 			'get-watchers',
-			(callback: (watchers: WatcherWithRowID[] | undefined) => void) => {
+			(callback: (watchers: WatcherDefinitionWithIDType[] | undefined) => void) => {
 				callback(GetWatchersFromDatabase());
 			}
 		);
 
-		socket.on('add-watcher', (watcher: Watcher) => {
+		socket.on('add-watcher', (watcher: WatcherDefinitionType) => {
 			AddWatcher(watcher);
 		});
 

@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { DirectoryItem, DirectoryItems } from 'types/directory';
-import { FileBrowserMode } from 'types/file-browser';
-import { HandbrakeOutputExtensions } from 'types/file-extensions';
-import { QueueRequest } from 'types/queue';
+import { DirectoryItemType, DirectoryItemsType } from 'types/directory.types';
+import { FileBrowserMode } from 'types/file-browser.types';
+import { HandbrakeOutputExtensions } from 'types/file-extensions.types';
+import { QueueRequestType } from 'types/queue.types';
 import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import ButtonGroup from 'components/base/inputs/button-group/button-group';
 import ButtonInput from 'components/base/inputs/button/button-input';
@@ -38,12 +38,12 @@ export default function CreateJob({ onClose }: Params) {
 
 	// Input -------------------------------------------------------------------
 	const [inputPath, setInputPath] = useState('');
-	const [inputFiles, setInputFiles] = useState<DirectoryItems>([]);
+	const [inputFiles, setInputFiles] = useState<DirectoryItemsType>([]);
 	const [isRecursive, setIsRecursive] = useState(false);
 
 	// Output ------------------------------------------------------------------
 	const [outputPath, setOutputPath] = useState('');
-	const [outputFiles, setOutputFiles] = useState<DirectoryItems>([]);
+	const [outputFiles, setOutputFiles] = useState<DirectoryItemsType>([]);
 	const [outputExtension, setOutputExtension] = useState(HandbrakeOutputExtensions.mkv);
 	const [nameCollision, setNameCollision] = useState(false);
 	const [outputChanged, setOutputChanged] = useState(false);
@@ -86,7 +86,7 @@ export default function CreateJob({ onClose }: Params) {
 
 		inputFiles.forEach((file, index) => {
 			const outputFile = outputFiles[index];
-			const newJob: QueueRequest = {
+			const newJob: QueueRequestType = {
 				input: file.path,
 				output: outputFile.path,
 				preset: preset,
@@ -98,7 +98,7 @@ export default function CreateJob({ onClose }: Params) {
 		onClose();
 	};
 
-	const handleFileInputConfirm = async (item: DirectoryItem) => {
+	const handleFileInputConfirm = async (item: DirectoryItemType) => {
 		const prevPath =
 			inputFiles.length > 0
 				? inputFiles[0].path.replace(inputFiles[0].name + inputFiles[0].extension, '')
@@ -114,9 +114,9 @@ export default function CreateJob({ onClose }: Params) {
 			const parentPath = item.path.replace(item.name + item.extension, '');
 			setOutputPath(parentPath);
 
-			const existingFiles: DirectoryItems = (await RequestDirectory(socket, parentPath))
+			const existingFiles: DirectoryItemsType = (await RequestDirectory(socket, parentPath))
 				.items;
-			const newOutputFiles: DirectoryItems = [
+			const newOutputFiles: DirectoryItemsType = [
 				{
 					path: parentPath + item.name + outputExtension,
 					name: item.name,
@@ -129,15 +129,15 @@ export default function CreateJob({ onClose }: Params) {
 		}
 	};
 
-	const handleDirectoryInputConfirm = async (item: DirectoryItem) => {
+	const handleDirectoryInputConfirm = async (item: DirectoryItemType) => {
 		// Get input/output variables
-		const inputPathItems: DirectoryItems = FilterVideoFiles(
+		const inputPathItems: DirectoryItemsType = FilterVideoFiles(
 			(await RequestDirectory(socket, item.path, isRecursive)).items
 		);
 
 		const newOutputPath = outputChanged ? outputPath : item.path;
-		const existingFiles: DirectoryItems = (await RequestDirectory(socket, item.path)).items;
-		const newOutputFiles: DirectoryItems = inputPathItems.map((inputItem) => {
+		const existingFiles: DirectoryItemsType = (await RequestDirectory(socket, item.path)).items;
+		const newOutputFiles: DirectoryItemsType = inputPathItems.map((inputItem) => {
 			return {
 				path: newOutputPath + '/' + inputItem.name + inputItem.extension,
 				name: inputItem.name,
@@ -157,7 +157,7 @@ export default function CreateJob({ onClose }: Params) {
 		setOutputFiles(dedupedOutputFiles);
 	};
 
-	const handleInputConfirm = async (item: DirectoryItem) => {
+	const handleInputConfirm = async (item: DirectoryItemType) => {
 		switch (jobFrom) {
 			case JobFrom.FromFile:
 				handleFileInputConfirm(item);
@@ -173,7 +173,7 @@ export default function CreateJob({ onClose }: Params) {
 			const newInputFiles = FilterVideoFiles(
 				(await RequestDirectory(socket, inputPath, value)).items
 			);
-			const existingFiles: DirectoryItems = (await RequestDirectory(socket, outputPath))
+			const existingFiles: DirectoryItemsType = (await RequestDirectory(socket, outputPath))
 				.items;
 			const newOutputFiles = HandleNameCollision(
 				GetOutputItemsFromInputItems(newInputFiles, outputExtension),
@@ -184,9 +184,9 @@ export default function CreateJob({ onClose }: Params) {
 		}
 	};
 
-	const handleOutputConfirm = async (item: DirectoryItem) => {
+	const handleOutputConfirm = async (item: DirectoryItemType) => {
 		setOutputPath(item.path);
-		const existingFiles: DirectoryItems = (await RequestDirectory(socket, item.path)).items;
+		const existingFiles: DirectoryItemsType = (await RequestDirectory(socket, item.path)).items;
 		const newOutputFiles = inputFiles.map((inputItem) => {
 			return {
 				path: item.path + '/' + inputItem.name + outputExtension,
@@ -209,7 +209,7 @@ export default function CreateJob({ onClose }: Params) {
 			setOutputFiles(newOutputFiles);
 			setOutputChanged(true);
 
-			const existingFiles: DirectoryItems = (await RequestDirectory(socket, outputPath))
+			const existingFiles: DirectoryItemsType = (await RequestDirectory(socket, outputPath))
 				.items;
 			if (
 				existingFiles
@@ -232,7 +232,8 @@ export default function CreateJob({ onClose }: Params) {
 			return file;
 		});
 
-		const existingFiles: DirectoryItems = (await RequestDirectory(socket, outputPath)).items;
+		const existingFiles: DirectoryItemsType = (await RequestDirectory(socket, outputPath))
+			.items;
 		if (jobFrom == JobFrom.FromFile) {
 			if (
 				existingFiles

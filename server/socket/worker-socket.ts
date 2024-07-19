@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
 import { AddWorker, RemoveWorker } from 'scripts/connections';
-import { TranscodeStage, TranscodeStatusUpdate } from 'types/transcode';
+import { TranscodeStage, TranscodeStatusUpdateType } from 'types/transcode.types';
 import { GetQueue, StopJob, UpdateJob, WorkerForAvailableJobs } from 'scripts/queue';
 
 export default function WorkerSocket(io: Server) {
@@ -28,7 +28,7 @@ export default function WorkerSocket(io: Server) {
 			}
 		});
 
-		socket.on('transcode-stopped', (status: TranscodeStatusUpdate) => {
+		socket.on('transcode-stopped', (status: TranscodeStatusUpdateType) => {
 			console.log(
 				`[server] Worker '${workerID}' with ID '${socket.id}' has stopped transcoding. The job will be reset.`
 			);
@@ -36,7 +36,7 @@ export default function WorkerSocket(io: Server) {
 			UpdateJob(status);
 		});
 
-		socket.on('transcoding', (data: TranscodeStatusUpdate) => {
+		socket.on('transcoding', (data: TranscodeStatusUpdateType) => {
 			console.log(
 				`[server] Worker '${workerID}' with ID '${socket.id}' is ${
 					TranscodeStage[data.status.stage]

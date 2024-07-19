@@ -1,14 +1,14 @@
 import mime from 'mime';
-import { FileBrowserMode } from 'types/file-browser';
-import { Directory, DirectoryItem } from 'types/directory';
+import { FileBrowserMode } from 'types/file-browser.types';
+import { DirectoryType, DirectoryItemType } from 'types/directory.types';
 
 type Params = {
 	mode: FileBrowserMode;
 	basePath: string;
-	directory: Directory | null;
+	directory: DirectoryType | null;
 	updateDirectory: (newPath: string) => void;
-	selectedItem: DirectoryItem | undefined;
-	setSelectedItem: React.Dispatch<React.SetStateAction<DirectoryItem | undefined>>;
+	selectedItem: DirectoryItemType | undefined;
+	setSelectedItem: React.Dispatch<React.SetStateAction<DirectoryItemType | undefined>>;
 };
 
 export default function FileBrowserBody({
@@ -19,7 +19,7 @@ export default function FileBrowserBody({
 	selectedItem,
 	setSelectedItem,
 }: Params) {
-	const onClickFile = (item: DirectoryItem) => {
+	const onClickFile = (item: DirectoryItemType) => {
 		switch (mode) {
 			case FileBrowserMode.SingleFile:
 				setSelectedItem(item);
@@ -34,7 +34,7 @@ export default function FileBrowserBody({
 	};
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const onDoubleClickFile = (_item: DirectoryItem) => {
+	const onDoubleClickFile = (_item: DirectoryItemType) => {
 		switch (mode) {
 			case FileBrowserMode.SingleFile:
 				break;
@@ -46,7 +46,7 @@ export default function FileBrowserBody({
 		}
 	};
 
-	const onClickFolder = (item: DirectoryItem) => {
+	const onClickFolder = (item: DirectoryItemType) => {
 		switch (mode) {
 			case FileBrowserMode.SingleFile:
 				break;
@@ -56,7 +56,7 @@ export default function FileBrowserBody({
 		}
 	};
 
-	const onDoubleClickFolder = (item: DirectoryItem) => {
+	const onDoubleClickFolder = (item: DirectoryItemType) => {
 		updateDirectory(item.path);
 		console.log(`[client] [file-browser] Current path set to '${item.path}'.`);
 	};

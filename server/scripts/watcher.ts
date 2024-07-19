@@ -6,14 +6,14 @@ import {
 	InsertWatcherToDatabase,
 	RemoveWatcherFromDatabase,
 } from './database/database-watcher';
-import { Watcher, WatcherWithRowID } from 'types/watcher';
+import { WatcherDefinitionType, WatcherDefinitionWithIDType } from 'types/watcher.types';
 import { EmitToAllClients } from './connections';
 import { AddJob, GetQueue, RemoveJob } from './queue';
-import { Queue, QueueRequest } from 'types/queue';
+import { QueueType, QueueRequestType } from 'types/queue.types';
 
 const watchers: { [index: number]: chokidar.FSWatcher } = [];
 
-export function RegisterWatcher(watcher: WatcherWithRowID) {
+export function RegisterWatcher(watcher: WatcherDefinitionWithIDType) {
 	const newWatcher = chokidar.watch(watcher.watch_path, {
 		awaitWriteFinish: true,
 		ignoreInitial: true,
@@ -65,7 +65,7 @@ export function InitializeWatchers() {
 	}
 }
 
-function onWatcherDetectFileAdd(watcher: Watcher, filePath: string) {
+function onWatcherDetectFileAdd(watcher: WatcherDefinitionType, filePath: string) {
 	console.log(
 		`[server] [watcher] Watcher for '${
 			watcher.watch_path
@@ -75,7 +75,7 @@ function onWatcherDetectFileAdd(watcher: Watcher, filePath: string) {
 	const isVideo = mime.getType(filePath);
 	if (isVideo && isVideo.includes('video')) {
 		const parsedPath = path.parse(filePath);
-		const newJobRequest: QueueRequest = {
+		const newJobRequest: QueueRequestType = {
 			input: filePath,
 			output: watcher.output_path
 				? path.join(watcher.output_path, parsedPath.base)
@@ -89,7 +89,7 @@ function onWatcherDetectFileAdd(watcher: Watcher, filePath: string) {
 	}
 }
 
-function onWatcherDetectFileDelete(watcher: Watcher, filePath: string) {
+function onWatcherDetectFileDelete(watcher: WatcherDefinitionType, filePath: string) {
 	console.log(
 		`[server] [watcher] Watcher for '${
 			watcher.watch_path
@@ -109,7 +109,7 @@ function onWatcherDetectFileDelete(watcher: Watcher, filePath: string) {
 	}
 }
 
-function onWatcherDetectFileChange(watcher: Watcher, filePath: string) {
+function onWatcherDetectFileChange(watcher: WatcherDefinitionType, filePath: string) {
 	console.log(
 		`[server] [watcher] Watcher for '${
 			watcher.watch_path
@@ -122,7 +122,7 @@ export function UpdateWatchers() {
 	EmitToAllClients('watchers-update', updatedWatchers);
 }
 
-export function AddWatcher(watcher: Watcher) {
+export function AddWatcher(watcher: WatcherDefinitionType) {
 	const result = InsertWatcherToDatabase(watcher);
 	if (result) {
 		RegisterWatcher({

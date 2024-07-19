@@ -1,10 +1,10 @@
 import { NavLink } from 'react-router-dom';
-import { HandbrakePresetList } from 'types/preset';
+import { HandbrakePresetListType } from 'types/preset.types';
 import SubSection from 'components/section/sub-section';
 import './dashboard-presets.scss';
 
 type Params = {
-	presets: HandbrakePresetList;
+	presets: HandbrakePresetListType;
 };
 
 export default function DashboardPresets({ presets }: Params) {

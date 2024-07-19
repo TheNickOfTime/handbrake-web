@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-// import { Client, Connections, Worker } from 'types/socket';
+// import { Client, Connections, Worker } from 'types/socket.types';
 
 type Client = Socket;
 

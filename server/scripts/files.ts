@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { Directory, DirectoryItem, DirectoryItems } from 'types/directory';
+import { DirectoryType, DirectoryItemType, DirectoryItemsType } from 'types/directory.types';
 
 export async function GetDirectoryItems(absolutePath: string, recursive: boolean = false) {
 	try {
@@ -13,7 +13,7 @@ export async function GetDirectoryItems(absolutePath: string, recursive: boolean
 
 		// Make parent item
 		const parentPath = path.resolve(absolutePath, '..');
-		const parentItem: DirectoryItem | undefined =
+		const parentItem: DirectoryItemType | undefined =
 			parentPath == absolutePath
 				? undefined
 				: {
@@ -23,14 +23,14 @@ export async function GetDirectoryItems(absolutePath: string, recursive: boolean
 				  };
 
 		// Make current item
-		const currentItem: DirectoryItem = {
+		const currentItem: DirectoryItemType = {
 			path: absolutePath,
 			name: path.dirname(absolutePath),
 			isDirectory: true,
 		};
 
 		// Make directory items
-		const items: DirectoryItems = dir.map((item) => {
+		const items: DirectoryItemsType = dir.map((item) => {
 			const parsedName = path.parse(item.name);
 			return {
 				path: path.join(item.path, item.name),
@@ -41,7 +41,7 @@ export async function GetDirectoryItems(absolutePath: string, recursive: boolean
 		});
 
 		// Build directory object
-		const result: Directory = {
+		const result: DirectoryType = {
 			parent: parentPath != absolutePath ? parentItem : undefined,
 			current: currentItem,
 			items: items,

@@ -1,10 +1,10 @@
+import { useState } from 'react';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import TextInput from 'components/base/inputs/text/text-input';
-import { useState } from 'react';
-import { DirectoryItems } from 'types/directory';
+import { DirectoryItemsType } from 'types/directory.types';
 
 type Params = {
-	existingItems: DirectoryItems;
+	existingItems: DirectoryItemsType;
 	onCancel: () => void;
 	onSubmit: (directoryName: string) => void;
 };
