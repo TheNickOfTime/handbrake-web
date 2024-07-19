@@ -26,7 +26,7 @@ import {
 import { videoPath } from 'scripts/video';
 import { ConfigType, ConfigPropertyType } from 'types/config.types';
 import { GetConfig, GetPropertyFromConfig } from 'scripts/config';
-import { Watcher, WatcherWithRowID } from 'types/watcher.types';
+import { WatcherDefinitionType, WatcherDefinitionWithIDType } from 'types/watcher.types';
 import { GetWatchersFromDatabase } from 'scripts/database/database-watcher';
 import { AddWatcher, RemoveWatcher } from 'scripts/watcher';
 
@@ -126,12 +126,12 @@ export default function ClientSocket(io: Server) {
 		// Watchers --------------------------------------------------------------------------------
 		socket.on(
 			'get-watchers',
-			(callback: (watchers: WatcherWithRowID[] | undefined) => void) => {
+			(callback: (watchers: WatcherDefinitionWithIDType[] | undefined) => void) => {
 				callback(GetWatchersFromDatabase());
 			}
 		);
 
-		socket.on('add-watcher', (watcher: Watcher) => {
+		socket.on('add-watcher', (watcher: WatcherDefinitionType) => {
 			AddWatcher(watcher);
 		});
 
