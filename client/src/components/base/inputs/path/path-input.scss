@@ -1,6 +1,4 @@
-@import '../../../../style/modules/colors';
-@import '../../../../style/modules/font';
-@import '../../../../style/modules/sizing';
+@use 'src/style/modules/sizing';
 
 .path-input {
 	display: flex;
@@ -23,7 +21,7 @@
 	}
 }
 
-@media screen and (max-width: $small-max-width) {
+@media screen and (max-width: sizing.$small-max-width) {
 	.path-input {
 		.input-section {
 			flex-flow: row wrap;
@@ -36,7 +34,7 @@
 	}
 }
 
-@media screen and (min-width: $medium-min-width) {
+@media screen and (min-width: sizing.$medium-min-width) {
 	.path-input {
 		.input-section {
 			flex-flow: row nowrap;

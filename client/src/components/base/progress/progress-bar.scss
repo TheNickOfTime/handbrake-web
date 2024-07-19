@@ -1,4 +1,4 @@
-@import '../../../style/modules/colors';
+@use 'src/style/modules/colors';
 
 .progress-bar {
 	position: relative;
@@ -10,7 +10,7 @@
 
 	.progress-value {
 		height: 100%;
-		background-color: $handbrake-blue;
+		background-color: colors.$handbrake-blue;
 		display: block;
 	}
 

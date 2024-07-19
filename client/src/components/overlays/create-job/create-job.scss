@@ -1,5 +1,5 @@
-@import '../../../style/modules/colors';
-@import '../../../style/modules/font';
+@use 'src/style/modules/colors';
+@use 'src/style/modules/font';
 
 .section-overlay#create-new-job {
 	.button-group {
@@ -21,17 +21,17 @@
 			flex-flow: column nowrap;
 			gap: 1rem;
 
-			border: 0.1rem solid $text-color-primary;
+			border: 0.1rem solid colors.$text-color-primary;
 			border-radius: 1rem;
 
 			legend {
-				font-family: $font-family-secondary;
+				font-family: font.$font-family-secondary;
 				font-size: 2rem;
 			}
 		}
 
 		label {
-			color: $text-color-secondary;
+			color: colors.$text-color-secondary;
 		}
 	}
 
@@ -45,14 +45,14 @@
 
 				thead {
 					th {
-						border-bottom: 0.1rem solid $text-color-secondary;
+						border-bottom: 0.1rem solid colors.$text-color-secondary;
 					}
 				}
 
 				tbody {
 					tr {
 						&:hover {
-							background-color: $transparent-light-secondary;
+							background-color: colors.$transparent-light-secondary;
 						}
 
 						td {
@@ -67,7 +67,7 @@
 
 						.input-cell:hover,
 						.output-cell:hover {
-							background-color: $transparent-light-secondary;
+							background-color: colors.$transparent-light-secondary;
 						}
 					}
 				}
@@ -78,11 +78,11 @@
 			width: 100%;
 			border: none;
 			background-color: transparent;
-			color: $text-color-secondary;
+			color: colors.$text-color-secondary;
 			cursor: pointer;
 
 			&:hover {
-				background-color: $transparent-light-primary;
+				background-color: colors.$transparent-light-primary;
 			}
 		}
 	}

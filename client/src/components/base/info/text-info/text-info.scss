@@ -1,11 +1,10 @@
-@import '../../../../style/modules/colors';
-@import '../../../../style/modules/font';
+@use 'src/style/modules/colors';
 
 .text-info {
 	.text-info-label {
 		margin-right: 1rem;
 		font-size: 1.25rem;
-		color: $text-color-tertiary;
+		color: colors.$text-color-tertiary;
 	}
 
 	// .text-info-content {

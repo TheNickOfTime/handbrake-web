@@ -1,6 +1,5 @@
-@import '../../../../style/modules/colors';
-@import '../../../../style/modules/font';
-@import '../../../../style/modules/sizing';
+@use 'src/style/modules/colors';
+@use 'src/style/modules/sizing';
 
 .select-input {
 	display: flex;
@@ -12,11 +11,11 @@
 
 	select {
 		max-width: 100%;
-		background-color: $background-tertiary;
+		background-color: colors.$background-tertiary;
 	}
 }
 
-@media screen and (max-width: $small-max-width) {
+@media screen and (max-width: sizing.$small-max-width) {
 	.select-input {
 		flex-flow: row wrap;
 		gap: 0.5rem;
@@ -27,7 +26,7 @@
 	}
 }
 
-@media screen and (min-width: $medium-min-width) {
+@media screen and (min-width: sizing.$medium-min-width) {
 	.select-input {
 		flex-flow: row nowrap;
 		gap: 1rem;

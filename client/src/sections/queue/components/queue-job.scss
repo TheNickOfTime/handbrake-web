@@ -1,4 +1,4 @@
-@import '../../../style/modules/colors';
+@use 'src/style/modules/colors';
 
 .queue-job {
 	display: flex;
@@ -6,7 +6,7 @@
 	overflow: hidden;
 
 	border-radius: 1rem;
-	background-color: $background-tertiary;
+	background-color: colors.$background-tertiary;
 
 	h5 {
 		margin: 0;
@@ -16,7 +16,7 @@
 		padding: 0 1rem;
 		display: flex;
 		align-items: center;
-		background-color: $transparent-light-primary;
+		background-color: colors.$transparent-light-primary;
 	}
 
 	.job-info {
@@ -58,15 +58,15 @@
 
 			border: none;
 			border-radius: 0;
-			background-color: $transparent-light-secondary;
+			background-color: colors.$transparent-light-secondary;
 
 			.bi {
-				color: $text-color-secondary;
+				color: colors.$text-color-secondary;
 				font-size: 1.5rem;
 			}
 
 			&:hover:not(:disabled) {
-				background-color: $transparent-light-primary;
+				background-color: colors.$transparent-light-primary;
 				cursor: pointer;
 			}
 
@@ -76,13 +76,13 @@
 			}
 
 			&:active {
-				background-color: $transparent-light-tertiary;
+				background-color: colors.$transparent-light-tertiary;
 			}
 
 			&:disabled {
-				background-color: $transparent-light-tertiary;
+				background-color: colors.$transparent-light-tertiary;
 				.bi {
-					color: $text-color-disabled;
+					color: colors.$text-color-disabled;
 				}
 			}
 		}

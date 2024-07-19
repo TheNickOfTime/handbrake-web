@@ -1,21 +1,21 @@
-@import './colors';
-@import './font';
+@use './colors';
+@use './font';
 
 .form-item {
 	padding: 0.5rem 1rem;
 
-	font-family: $font-family-primary;
+	font-family: font.$font-family-primary;
 	font-size: 1.5rem;
 
 	border-radius: 0.75rem;
-	border: 0.1rem solid $text-color-primary;
+	border: 0.1rem solid colors.$text-color-primary;
 
 	background-color: transparent;
-	color: $text-color-primary;
+	color: colors.$text-color-primary;
 
 	&:disabled,
 	&.disabled {
-		color: $text-color-disabled;
+		color: colors.$text-color-disabled;
 	}
 
 	&:empty::after {

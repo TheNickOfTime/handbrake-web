@@ -1,5 +1,5 @@
-@import '../../../../style/modules/font';
-@import '../../../../style/modules/colors';
+@use 'src/style/modules/font';
+@use 'src/style/modules/colors';
 
 .controlled-button {
 	// margin: 1rem;
@@ -12,16 +12,16 @@
 	gap: 1rem;
 	box-shadow: 0 0 1rem black;
 
-	background-color: $handbrake-green;
-	color: $text-color-primary;
-	text-shadow: 0 0 1rem $background-primary;
+	background-color: colors.$handbrake-green;
+	color: colors.$text-color-primary;
+	text-shadow: 0 0 1rem colors.$background-primary;
 
 	.button-icon {
 		font-size: 2.5rem;
 	}
 
 	.button-label {
-		font-family: $font-family-primary;
+		font-family: font.$font-family-primary;
 		font-size: 2rem;
 	}
 }
@@ -40,25 +40,25 @@
 }
 
 .controlled-button.red {
-	background-color: $handbrake-red;
+	background-color: colors.$handbrake-red;
 }
 
 .controlled-button.orange {
-	background-color: $handbrake-orange;
+	background-color: colors.$handbrake-orange;
 }
 
 .controlled-button.yellow {
-	background-color: $handbrake-yellow;
+	background-color: colors.$handbrake-yellow;
 }
 
 .controlled-button.green {
-	background-color: $handbrake-green;
+	background-color: colors.$handbrake-green;
 }
 
 .controlled-button.blue {
-	background-color: $handbrake-blue;
+	background-color: colors.$handbrake-blue;
 }
 
 .controlled-button.magenta {
-	background-color: $handbrake-magenta;
+	background-color: colors.$handbrake-magenta;
 }

@@ -1,4 +1,4 @@
-@import '../../style/modules/colors';
+@use 'src/style/modules/colors';
 
 .section {
 	position: relative;
@@ -28,12 +28,12 @@
 		gap: 1rem;
 
 		border-radius: 1rem;
-		background-color: $background-secondary;
+		background-color: colors.$background-secondary;
 
 		h2 {
 			margin: 0;
 			margin-bottom: 1rem;
-			color: $text-color-tertiary;
+			color: colors.$text-color-tertiary;
 		}
 	}
 }

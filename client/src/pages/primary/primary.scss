@@ -1,4 +1,4 @@
-@import '../../style/modules/colors';
+@use 'src/style/modules/colors';
 
 @media (max-width: 1000px) {
 	#primary {
@@ -61,7 +61,7 @@
 			min-width: 100%;
 			max-width: 100%;
 
-			background-color: $background-secondary;
+			background-color: colors.$background-secondary;
 
 			.title {
 				min-width: 100%;
@@ -71,7 +71,7 @@
 				align-items: center;
 				gap: 1rem;
 				// position: relative;
-				color: $text-color-primary;
+				color: colors.$text-color-primary;
 				text-decoration: none;
 
 				img {
@@ -98,13 +98,13 @@
 				border: none;
 
 				i {
-					color: $text-color-primary;
+					color: colors.$text-color-primary;
 					font-size: 3.5rem;
 				}
 
 				&:hover {
 					cursor: pointer;
-					background-color: $transparent-light-secondary;
+					background-color: colors.$transparent-light-secondary;
 				}
 			}
 		}
