@@ -1,12 +1,11 @@
-@import '../../../style/modules/colors';
-@import '../../../style/modules/font';
-@import '../../../style/modules/sizing';
+@use 'src/style/modules/colors';
+@use 'src/style/modules/sizing';
 
 .file-browser {
 	overflow: hidden;
 
 	border-radius: 1rem;
-	border: 0.2rem solid $background-primary;
+	border: 0.2rem solid colors.$background-primary;
 
 	.file-browser-header {
 		padding: 0 1rem;
@@ -15,7 +14,7 @@
 		justify-content: space-between;
 		align-items: stretch;
 
-		background-color: $background-primary;
+		background-color: colors.$background-primary;
 
 		.current-path {
 			padding: 0.5rem 0;
@@ -31,10 +30,10 @@
 			border-radius: 0.5rem;
 			font-size: 2rem;
 			background-color: transparent;
-			color: $text-color-primary;
+			color: colors.$text-color-primary;
 
 			&:hover {
-				background-color: $transparent-light-primary;
+				background-color: colors.$transparent-light-primary;
 			}
 		}
 	}
@@ -54,9 +53,9 @@
 				display: block;
 
 				border: none;
-				border-bottom: 0.1rem solid $background-primary;
+				border-bottom: 0.1rem solid colors.$background-primary;
 				background-color: transparent;
-				color: $text-color-primary;
+				color: colors.$text-color-primary;
 
 				font-size: 1.5rem;
 				text-align: left;
@@ -75,11 +74,11 @@
 				}
 
 				&:disabled {
-					color: $text-color-disabled;
+					color: colors.$text-color-disabled;
 				}
 
 				&:hover {
-					background-color: $transparent-light-primary;
+					background-color: colors.$transparent-light-primary;
 					cursor: pointer;
 
 					&:disabled {
@@ -89,7 +88,7 @@
 
 				&:active,
 				&.selected {
-					background-color: $transparent-light-secondary;
+					background-color: colors.$transparent-light-secondary;
 				}
 			}
 		}
@@ -109,7 +108,7 @@
 					flex-grow: 1;
 					padding: 0.5rem 1rem;
 					border-radius: 0.75rem;
-					background-color: $transparent-light-primary;
+					background-color: colors.$transparent-light-primary;
 				}
 			}
 		}
@@ -123,7 +122,7 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			background-color: $transparent-dark-primary;
+			background-color: colors.$transparent-dark-primary;
 
 			.prompt-window {
 				padding: 2rem 1rem;
@@ -133,10 +132,10 @@
 				gap: 1.5rem;
 
 				border-radius: 1rem;
-				background-color: $background-tertiary;
+				background-color: colors.$background-tertiary;
 
 				.already-exists {
-					color: $handbrake-red;
+					color: colors.$handbrake-red;
 				}
 
 				.text-input {
@@ -156,7 +155,7 @@
 	}
 }
 
-@media screen and (max-width: $small-max-width) {
+@media screen and (max-width: sizing.$small-max-width) {
 	.file-browser {
 		.file-browser-footer {
 			.selected-file {
@@ -171,7 +170,7 @@
 	}
 }
 
-@media screen and (min-width: $medium-min-width) {
+@media screen and (min-width: sizing.$medium-min-width) {
 	.file-browser {
 		.file-browser-footer {
 			.selected-file {

@@ -1,4 +1,4 @@
-@import '../../../style/modules/colors';
+@use 'src/style/modules/colors';
 
 .section#dashboard {
 	.sub-section#summary {
@@ -14,7 +14,7 @@
 				flex-grow: 1;
 				text-align: center;
 				border-radius: 0.75rem;
-				background-color: $transparent-light-primary;
+				background-color: colors.$transparent-light-primary;
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-@import '../../../style/modules/colors';
+@use 'src/style/modules/colors';
 
 .section#workers {
 	.sub-section#status {
@@ -13,7 +13,7 @@
 
 			thead {
 				th {
-					border-bottom: 0.1rem solid $text-color-tertiary;
+					border-bottom: 0.1rem solid colors.$text-color-tertiary;
 				}
 			}
 
@@ -36,7 +36,7 @@
 				}
 
 				.status.idle {
-					color: $handbrake-yellow;
+					color: colors.$handbrake-yellow;
 				}
 
 				.status,

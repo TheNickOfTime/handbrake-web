@@ -1,11 +1,13 @@
-@import '../node_modules/bootstrap-icons/font/bootstrap-icons.css';
+// Local scope
+@use './style/modules/colors';
+@use './style/modules/font';
+@use './style/modules/sizing';
 
-@import './style/modules/colors';
-@import './style/modules/font';
-@import './style/modules/form';
+// Global scope
+@import '../node_modules/bootstrap-icons/font/bootstrap-icons.css';
 @import './style/modules/general';
+@import './style/modules/form';
 @import './style/modules/headings';
-@import './style/modules/sizing';
 @import './style/modules/table';
 
 :root {
@@ -26,14 +28,14 @@ body {
 
 	// Font --------------------------------------------------------------------
 	font-size: 1.5rem;
-	font-family: $font-family-primary;
+	font-family: font.$font-family-primary;
 
 	// Color -------------------------------------------------------------------
-	background-color: $background-primary;
-	color: $text-color-primary;
+	background-color: colors.$background-primary;
+	color: colors.$text-color-primary;
 
 	#root {
-		min-width: $small-min-width;
+		min-width: sizing.$small-min-width;
 		height: 100vh;
 	}
 }

@@ -1,6 +1,5 @@
-// @import '../../style/bootstrap/forms';
-@import '../../../style/modules/colors';
-@import '../../../style/modules/font';
+@use 'src/style/modules/colors';
+@use 'src/style/modules/font';
 
 .section-overlay#upload-preset {
 	.section-overlay-window {
@@ -18,7 +17,7 @@
 				flex-grow: 1;
 
 				font-size: 1.75rem;
-				font-family: $font-family-primary;
+				font-family: font.$font-family-primary;
 
 				border: 0.2rem solid hsla(0, 0%, 100%, 0.1);
 				border-radius: 0.75rem;
@@ -27,8 +26,8 @@
 				&::file-selector-button {
 					padding: 0.5rem 1rem;
 					background-color: hsla(0, 0%, 100%, 0.1);
-					color: $text-color-primary;
-					font-family: $font-family-primary;
+					color: colors.$text-color-primary;
+					font-family: font.$font-family-primary;
 					border: none;
 				}
 
@@ -48,8 +47,8 @@
 				padding: 0.5rem 1rem;
 				flex-grow: 1;
 				font-size: 1.75rem;
-				font-family: $font-family-primary;
-				color: $text-color-primary;
+				font-family: font.$font-family-primary;
+				color: colors.$text-color-primary;
 				// border: 0.2rem solid hsla(0, 0%, 100%, 0.1);
 				border: none;
 				border-radius: 0.75rem;
