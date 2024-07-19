@@ -1,5 +1,5 @@
 import { HandbrakePresetType } from './preset.types';
-import { TranscodeStatus } from './transcode.types';
+import { TranscodeStatusType } from './transcode.types';
 
 export type QueueRequestType = {
 	input: string;
@@ -12,7 +12,7 @@ export type JobType = {
 	output: string;
 	preset: HandbrakePresetType;
 	worker: string | null;
-	status: TranscodeStatus;
+	status: TranscodeStatusType;
 	time: {
 		started?: number;
 		finished?: number;

@@ -2,7 +2,7 @@ import hash from 'object-hash';
 import { JobType, QueueEntryType, QueueRequestType, QueueStatus } from 'types/queue.types';
 // import { Worker } from 'types/socket.types';
 import { Socket as Worker } from 'socket.io';
-import { TranscodeStage, TranscodeStatusUpdate } from 'types/transcode.types';
+import { TranscodeStage, TranscodeStatusUpdateType } from 'types/transcode.types';
 import {
 	EmitToAllClients,
 	EmitToWorkerWithID,
@@ -277,7 +277,7 @@ export function AddJob(data: QueueRequestType) {
 	JobForAvailableWorkers(jobID);
 }
 
-export function UpdateJob(data: TranscodeStatusUpdate) {
+export function UpdateJob(data: TranscodeStatusUpdateType) {
 	const job = GetJobFromDatabase(data.id);
 	if (job) {
 		switch (data.status.stage) {

@@ -3,7 +3,11 @@ import fs from 'fs';
 import path from 'path';
 import { Socket } from 'socket.io-client';
 import { JobType, QueueEntryType } from 'types/queue.types';
-import { TranscodeStage, TranscodeStatus, TranscodeStatusUpdate } from 'types/transcode.types';
+import {
+	TranscodeStage,
+	TranscodeStatusType,
+	TranscodeStatusUpdateType,
+} from 'types/transcode.types';
 import { HandbrakeOutputType, Muxing, Scanning, WorkDone, Working } from 'types/handbrake.types';
 
 let handbrake: ChildProcess | null = null;
@@ -50,7 +54,7 @@ export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 		'--json',
 	]);
 
-	const transcodeStatus: TranscodeStatus = {
+	const transcodeStatus: TranscodeStatusType = {
 		stage: TranscodeStage.Waiting,
 		info: {
 			percentage: '0.00 %',
@@ -78,7 +82,7 @@ export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 							transcodeStatus.info = {
 								percentage: `${scanning.Progress.toFixed(2)} %`,
 							};
-							const scanningUpdate: TranscodeStatusUpdate = {
+							const scanningUpdate: TranscodeStatusUpdateType = {
 								id: queueEntry.id,
 								status: transcodeStatus,
 							};
@@ -96,7 +100,7 @@ export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 								currentFPS: working.Rate,
 								averageFPS: working.RateAvg,
 							};
-							const workingUpdate: TranscodeStatusUpdate = {
+							const workingUpdate: TranscodeStatusUpdateType = {
 								id: queueEntry.id,
 								status: transcodeStatus,
 							};
@@ -117,7 +121,7 @@ export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 								transcodeStatus.info = {
 									percentage: `100.00 %`,
 								};
-								const finishedUpdate: TranscodeStatusUpdate = {
+								const finishedUpdate: TranscodeStatusUpdateType = {
 									id: queueEntry.id,
 									status: transcodeStatus,
 								};
@@ -150,13 +154,13 @@ export function StopTranscode(socket: Socket) {
 	if (handbrake) {
 		if (job) {
 			if (socket.connected) {
-				const newStatus: TranscodeStatus = {
+				const newStatus: TranscodeStatusType = {
 					stage: TranscodeStage.Stopped,
 					info: {
 						percentage: `${(0).toFixed(2)} %`,
 					},
 				};
-				const statusUpdate: TranscodeStatusUpdate = {
+				const statusUpdate: TranscodeStatusUpdateType = {
 					id: job.id,
 					status: newStatus,
 				};
