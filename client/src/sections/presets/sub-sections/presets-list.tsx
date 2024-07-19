@@ -1,10 +1,10 @@
-import { HandbrakePresetList } from 'types/preset.types';
+import { HandbrakePresetListType } from 'types/preset.types';
 import SubSection from 'components/section/sub-section';
 import PresetCard from 'components/cards/preset-card/preset-card';
 import './presets-list.scss';
 
 type Params = {
-	presets: HandbrakePresetList;
+	presets: HandbrakePresetListType;
 	handleRemovePreset: (preset: string) => void;
 };
 

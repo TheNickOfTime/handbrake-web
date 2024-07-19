@@ -1,11 +1,11 @@
-import { Queue } from 'types/queue.types';
+import { QueueType } from 'types/queue.types';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import SubSection from 'components/section/sub-section';
 import QueueJob from '../components/queue-job';
 import './queue-jobs.scss';
 
 type Params = {
-	queue: Queue;
+	queue: QueueType;
 	handleAddNewJob: () => void;
 	handleClearAllJobs: () => void;
 	handleClearFinishedJobs: () => void;

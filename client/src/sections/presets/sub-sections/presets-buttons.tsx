@@ -1,10 +1,10 @@
-import { HandbrakePresetList } from 'types/preset.types';
+import { HandbrakePresetListType } from 'types/preset.types';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import SubSection from 'components/section/sub-section';
 import './presets-buttons.scss';
 
 type Params = {
-	presets: HandbrakePresetList;
+	presets: HandbrakePresetListType;
 	handleOpenUploadPreset: () => void;
 };
 

@@ -1,10 +1,10 @@
-import { WatcherWithRowID } from 'types/watcher.types';
+import { WatcherDefinitionWithIDType } from 'types/watcher.types';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import './watcher-card.scss';
 import TextInfo from 'components/base/info/text-info/text-info';
 
 type Params = {
-	watcher: WatcherWithRowID;
+	watcher: WatcherDefinitionWithIDType;
 	handleRemoveWatcher: (rowid: number) => void;
 };
 

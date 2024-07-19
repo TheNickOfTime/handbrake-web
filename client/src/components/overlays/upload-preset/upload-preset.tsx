@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { HandbrakePreset } from 'types/preset.types';
+import { HandbrakePresetType } from 'types/preset.types';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import SectionOverlay from 'components/section/section-overlay';
 import './upload-preset.scss';
@@ -11,7 +11,7 @@ type Params = {
 };
 
 export default function UploadPreset({ socket, handleClose }: Params) {
-	const [preset, setPreset] = useState<null | HandbrakePreset>(null);
+	const [preset, setPreset] = useState<null | HandbrakePresetType>(null);
 	const [presetName, setPresetName] = useState('');
 
 	const handlePresetFile = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,7 +24,7 @@ export default function UploadPreset({ socket, handleClose }: Params) {
 			const reader = new FileReader();
 			reader.onload = (event) => {
 				const result = event.target?.result?.toString();
-				const json: HandbrakePreset = JSON.parse(result!);
+				const json: HandbrakePresetType = JSON.parse(result!);
 				setPreset(json);
 				setPresetName(json.PresetList[0].PresetName);
 				console.log(`[client] Preset has been updated to '${file.name}'`);

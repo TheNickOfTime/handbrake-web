@@ -1,18 +1,21 @@
 import mime from 'mime';
 import { Socket } from 'socket.io-client';
-import { Directory, DirectoryItems, DirectoryRequest } from 'types/directory.types';
+import { DirectoryType, DirectoryItemsType, DirectoryRequestType } from 'types/directory.types';
 import { HandbrakeOutputExtensions } from 'types/file-extensions.types';
 
 export async function RequestDirectory(socket: Socket, path: string, isRecursive: boolean = false) {
-	const request: DirectoryRequest = {
+	const request: DirectoryRequestType = {
 		path: path,
 		isRecursive: isRecursive,
 	};
-	const response: Directory = await socket.emitWithAck('get-directory', request);
+	const response: DirectoryType = await socket.emitWithAck('get-directory', request);
 	return response;
 }
 
-export function HandleNameCollision(newItems: DirectoryItems, existingItems: DirectoryItems) {
+export function HandleNameCollision(
+	newItems: DirectoryItemsType,
+	existingItems: DirectoryItemsType
+) {
 	const fileCollisions: { [index: string]: number[] } = {};
 
 	newItems.forEach((newItem, newItemIndex) => {
@@ -51,7 +54,7 @@ export function HandleNameCollision(newItems: DirectoryItems, existingItems: Dir
 			});
 	});
 
-	const renamedItems: DirectoryItems = JSON.parse(JSON.stringify(newItems));
+	const renamedItems: DirectoryItemsType = JSON.parse(JSON.stringify(newItems));
 	Object.values(fileCollisions).forEach((collisionArray) => {
 		let fileIndex = 1;
 		collisionArray.forEach((value) => {
@@ -77,14 +80,14 @@ export function HandleNameCollision(newItems: DirectoryItems, existingItems: Dir
 	return renamedItems;
 }
 
-export function FilterVideoFiles(items: DirectoryItems) {
+export function FilterVideoFiles(items: DirectoryItemsType) {
 	return items
 		.filter((item) => !item.isDirectory)
 		.filter((item) => mime.getType(item.path)?.includes('video'));
 }
 
 export function GetOutputItemsFromInputItems(
-	inputItems: DirectoryItems,
+	inputItems: DirectoryItemsType,
 	extension: HandbrakeOutputExtensions
 ) {
 	return inputItems.map((item) => {

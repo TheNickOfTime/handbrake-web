@@ -1,12 +1,12 @@
 import { NavLink } from 'react-router-dom';
-import { Queue } from 'types/queue.types';
-import { workerID } from 'types/socket.types';
+import { QueueType } from 'types/queue.types';
+import { WorkerIDType } from 'types/socket.types';
 import SubSection from 'components/section/sub-section';
 import './dashboard-workers.scss';
 
 type Params = {
-	queue: Queue;
-	workers: workerID[];
+	queue: QueueType;
+	workers: WorkerIDType[];
 };
 
 export default function DashboardWorkers({ queue, workers }: Params) {

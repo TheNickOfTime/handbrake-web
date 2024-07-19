@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FileBrowserMode } from 'types/file-browser.types';
-import { DirectoryItem } from 'types/directory.types';
+import { DirectoryItemType } from 'types/directory.types';
 import FileBrowser from 'components/modules/file-browser/file-browser';
 import './path-input.scss';
 
@@ -11,7 +11,7 @@ type Params = {
 	mode: FileBrowserMode;
 	allowCreate?: boolean;
 	value: string | undefined;
-	onConfirm?: (item: DirectoryItem) => void;
+	onConfirm?: (item: DirectoryItemType) => void;
 };
 
 export default function PathInput({
@@ -25,7 +25,7 @@ export default function PathInput({
 }: Params) {
 	const [showFileBrowser, setShowFileBrowser] = useState(false);
 
-	const handleConfirm = (item: DirectoryItem) => {
+	const handleConfirm = (item: DirectoryItemType) => {
 		if (onConfirm) {
 			onConfirm(item);
 		}

@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
+import { DirectoryItemType } from 'types/directory.types';
+import { FileBrowserMode } from 'types/file-browser.types';
+import { WatcherDefinitionType } from 'types/watcher.types';
 import ButtonInput from 'components/base/inputs/button/button-input';
+import PathInput from 'components/base/inputs/path/path-input';
+import SelectInput from 'components/base/inputs/select/select-input';
 import SectionOverlay from 'components/section/section-overlay';
 import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import './register-watcher.scss';
-import PathInput from 'components/base/inputs/path/path-input';
-import { FileBrowserMode } from 'types/file-browser.types';
-import { DirectoryItem } from 'types/directory.types';
-import SelectInput from 'components/base/inputs/select/select-input';
-import { Watcher } from 'types/watcher.types';
 
 type Params = {
 	onClose: () => void;
@@ -23,16 +23,16 @@ export default function RegisterWatcher({ onClose }: Params) {
 
 	const canSubmit = watchPath && presetID;
 
-	const handleWatchPathConfirm = (item: DirectoryItem) => {
+	const handleWatchPathConfirm = (item: DirectoryItemType) => {
 		setWatchPath(item.path);
 	};
 
-	const handleOutputPathConfirm = (item: DirectoryItem) => {
+	const handleOutputPathConfirm = (item: DirectoryItemType) => {
 		setOutputPath(item.path);
 	};
 
 	const handleSubmit = () => {
-		const newWatcher: Watcher = {
+		const newWatcher: WatcherDefinitionType = {
 			watch_path: watchPath,
 			output_path: outputPath,
 			preset_id: presetID,

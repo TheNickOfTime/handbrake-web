@@ -2,42 +2,42 @@
 import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import {
-	CreateDirectoryRequest,
-	Directory,
-	DirectoryItem,
-	DirectoryRequest,
+	CreateDirectoryRequestType,
+	DirectoryType,
+	DirectoryItemType,
+	DirectoryRequestType,
 } from 'types/directory.types';
 import { FileBrowserMode } from 'types/file-browser.types';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import FileBrowserBody from './components/file-browser-body';
+import AddDirectory from './components/file-browser-add-directory';
 import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import './file-browser.scss';
-import AddDirectory from './components/file-browser-add-directory';
 
 type Params = {
 	basePath: string;
 	mode: FileBrowserMode;
 	allowCreate: boolean;
-	onConfirm: (item: DirectoryItem) => void;
+	onConfirm: (item: DirectoryItemType) => void;
 };
 
 export default function FileBrowser({ basePath, mode, allowCreate, onConfirm }: Params) {
 	const { socket } = useOutletContext<PrimaryOutletContextType>();
 
 	const [currentPath, setCurrentPath] = useState(basePath);
-	const [selectedItem, setSelectedItem] = useState<DirectoryItem>();
-	const [directory, setDirectory] = useState<Directory | null>(null);
+	const [selectedItem, setSelectedItem] = useState<DirectoryItemType>();
+	const [directory, setDirectory] = useState<DirectoryType | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [createNewItem, setCreateNewItem] = useState(false);
 
 	const requestDirectory = async (path: string, isRecursive: boolean = false) => {
 		setIsLoading(true);
 		console.log(`[client] Requesting directory ${path}...`);
-		const request: DirectoryRequest = {
+		const request: DirectoryRequestType = {
 			path: path,
 			isRecursive: isRecursive,
 		};
-		const response: Directory = await socket.emitWithAck('get-directory', request);
+		const response: DirectoryType = await socket.emitWithAck('get-directory', request);
 		console.log(
 			`[client] Received directory ${response.current.path} with ${response.items.length} items.`
 		);
@@ -78,7 +78,7 @@ export default function FileBrowser({ basePath, mode, allowCreate, onConfirm }: 
 	};
 
 	const handleAddDirectorySubmit = async (directoryName: string) => {
-		const request: CreateDirectoryRequest = {
+		const request: CreateDirectoryRequestType = {
 			path: currentPath,
 			name: directoryName,
 		};

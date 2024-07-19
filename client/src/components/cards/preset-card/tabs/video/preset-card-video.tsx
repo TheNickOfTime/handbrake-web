@@ -1,9 +1,9 @@
 import TextInfo from 'components/base/info/text-info/text-info';
-import { HandbrakePresetData, VideoQualityType } from 'types/preset.types';
+import { HandbrakePresetDataType, VideoQualityType } from 'types/preset.types';
 import './preset-card-video.scss';
 
 type Params = {
-	preset: HandbrakePresetData;
+	preset: HandbrakePresetDataType;
 };
 
 export default function PresetCardVideo({ preset }: Params) {
