@@ -4,3 +4,5 @@ export type ConfigType = {
 };
 
 export type ConfigPropertyType = keyof ConfigType;
+
+//
