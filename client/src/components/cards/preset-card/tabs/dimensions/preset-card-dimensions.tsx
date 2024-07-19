@@ -1,9 +1,9 @@
 import TextInfo from 'components/base/info/text-info/text-info';
-import { HandbrakePresetData, PictureCropMode } from 'types/preset';
+import { HandbrakePresetDataType, PictureCropMode } from 'types/preset.types';
 import './preset-card-dimensions.scss';
 
 type Params = {
-	preset: HandbrakePresetData;
+	preset: HandbrakePresetDataType;
 };
 
 export default function PresetCardDimensions({ preset }: Params) {

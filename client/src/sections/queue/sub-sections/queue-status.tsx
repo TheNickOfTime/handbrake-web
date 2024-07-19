@@ -1,4 +1,4 @@
-import { QueueStatus as QueueStatusType } from 'types/queue';
+import { QueueStatus as QueueStatusType } from 'types/queue.types';
 import SubSection from 'components/section/sub-section';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import './queue-status.scss';

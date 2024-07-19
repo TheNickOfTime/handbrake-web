@@ -1,5 +1,5 @@
-import { Job, QueueEntry, QueueStatus } from 'types/queue';
-import { TranscodeStage } from 'types/transcode';
+import { JobType, QueueEntryType, QueueStatus } from 'types/queue.types';
+import { TranscodeStage } from 'types/transcode.types';
 import { GetWorkerID, GetWorkers } from './connections';
 import { GetQueueFromDatabase, UpdateJobInDatabase } from './database/database-queue';
 import { GetQueueStatus, SetQueueStatus, StopQueue } from './queue';
@@ -49,13 +49,13 @@ export function SearchForWorker() {
 				const selectedWorker = availableWorkers[0];
 				console.log(`[server] Found free worker '${GetWorkerID(selectedWorker)}'.`);
 
-				const selectedJob: Job = queue[selectedJobID];
+				const selectedJob: JobType = queue[selectedJobID];
 				selectedJob.worker = GetWorkerID(selectedWorker);
 				UpdateJobInDatabase(selectedJobID, selectedJob);
 
 				// EmitToAllClients('queue-update', queue);
 
-				const data: QueueEntry = {
+				const data: QueueEntryType = {
 					id: selectedJobID,
 					job: selectedJob,
 				};

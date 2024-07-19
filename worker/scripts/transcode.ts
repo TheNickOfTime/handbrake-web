@@ -2,14 +2,18 @@ import { spawn, ChildProcessWithoutNullStreams as ChildProcess } from 'child_pro
 import fs from 'fs';
 import path from 'path';
 import { Socket } from 'socket.io-client';
-import { Job, QueueEntry } from 'types/queue';
-import { TranscodeStage, TranscodeStatus, TranscodeStatusUpdate } from 'types/transcode';
-import { HandbrakeJSONOutput, Muxing, Scanning, WorkDone, Working } from 'types/handbrake';
+import { JobType, QueueEntryType } from 'types/queue.types';
+import {
+	TranscodeStage,
+	TranscodeStatusType,
+	TranscodeStatusUpdateType,
+} from 'types/transcode.types';
+import { HandbrakeOutputType, Muxing, Scanning, WorkDone, Working } from 'types/handbrake.types';
 
 let handbrake: ChildProcess | null = null;
 export const isTranscoding = () => handbrake != null;
 
-let job: QueueEntry | null = null;
+let job: QueueEntryType | null = null;
 export const getJobID = () => job?.id;
 export const getJobData = () => job?.job;
 
@@ -32,7 +36,7 @@ const writePresetToFile = (preset: object) => {
 	});
 };
 
-export function StartTranscode(queueEntry: QueueEntry, socket: Socket) {
+export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 	job = queueEntry;
 	writePresetToFile(queueEntry.job.preset);
 
@@ -50,7 +54,7 @@ export function StartTranscode(queueEntry: QueueEntry, socket: Socket) {
 		'--json',
 	]);
 
-	const transcodeStatus: TranscodeStatus = {
+	const transcodeStatus: TranscodeStatusType = {
 		stage: TranscodeStage.Waiting,
 		info: {
 			percentage: '0.00 %',
@@ -64,7 +68,7 @@ export function StartTranscode(queueEntry: QueueEntry, socket: Socket) {
 
 		for (const match of jsonOutputMatches) {
 			const outputKind = match[2];
-			const outputJSON: HandbrakeJSONOutput = JSON.parse(match[3]);
+			const outputJSON: HandbrakeOutputType = JSON.parse(match[3]);
 
 			switch (outputKind) {
 				case 'Version':
@@ -78,7 +82,7 @@ export function StartTranscode(queueEntry: QueueEntry, socket: Socket) {
 							transcodeStatus.info = {
 								percentage: `${scanning.Progress.toFixed(2)} %`,
 							};
-							const scanningUpdate: TranscodeStatusUpdate = {
+							const scanningUpdate: TranscodeStatusUpdateType = {
 								id: queueEntry.id,
 								status: transcodeStatus,
 							};
@@ -96,7 +100,7 @@ export function StartTranscode(queueEntry: QueueEntry, socket: Socket) {
 								currentFPS: working.Rate,
 								averageFPS: working.RateAvg,
 							};
-							const workingUpdate: TranscodeStatusUpdate = {
+							const workingUpdate: TranscodeStatusUpdateType = {
 								id: queueEntry.id,
 								status: transcodeStatus,
 							};
@@ -117,7 +121,7 @@ export function StartTranscode(queueEntry: QueueEntry, socket: Socket) {
 								transcodeStatus.info = {
 									percentage: `100.00 %`,
 								};
-								const finishedUpdate: TranscodeStatusUpdate = {
+								const finishedUpdate: TranscodeStatusUpdateType = {
 									id: queueEntry.id,
 									status: transcodeStatus,
 								};
@@ -150,13 +154,13 @@ export function StopTranscode(socket: Socket) {
 	if (handbrake) {
 		if (job) {
 			if (socket.connected) {
-				const newStatus: TranscodeStatus = {
+				const newStatus: TranscodeStatusType = {
 					stage: TranscodeStage.Stopped,
 					info: {
 						percentage: `${(0).toFixed(2)} %`,
 					},
 				};
-				const statusUpdate: TranscodeStatusUpdate = {
+				const statusUpdate: TranscodeStatusUpdateType = {
 					id: job.id,
 					status: newStatus,
 				};

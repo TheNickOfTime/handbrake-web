@@ -6,19 +6,19 @@ export enum TranscodeStage {
 	Stopped,
 }
 
-export type TranscodeInfo = {
+export type TranscodeInfoType = {
 	percentage: string;
 	eta?: string;
 	currentFPS?: number;
 	averageFPS?: number;
 };
 
-export type TranscodeStatus = {
+export type TranscodeStatusType = {
 	stage: TranscodeStage;
-	info: TranscodeInfo;
+	info: TranscodeInfoType;
 };
 
-export type TranscodeStatusUpdate = {
+export type TranscodeStatusUpdateType = {
 	id: string;
-	status: TranscodeStatus;
+	status: TranscodeStatusType;
 };

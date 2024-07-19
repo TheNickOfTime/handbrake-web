@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { HandbrakePresetData } from 'types/preset';
+import { HandbrakePresetDataType } from 'types/preset.types';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import PresetCardSummary from './tabs/summary/preset-card-summary';
 import PresetCardDimensions from './tabs/dimensions/preset-card-dimensions';
@@ -11,7 +11,7 @@ import PresetCardSubtitles from './tabs/subtitles/preset-card-subtitles';
 import PresetCardChapters from './tabs/chapters/preset-card-chapters';
 
 type Params = {
-	preset: HandbrakePresetData;
+	preset: HandbrakePresetDataType;
 	handleRemovePreset: (preset: string) => void;
 };
 

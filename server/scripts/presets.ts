@@ -1,12 +1,12 @@
 import path from 'path';
-import { HandbrakePreset, HandbrakePresetList } from 'types/preset';
+import { HandbrakePresetType, HandbrakePresetListType } from 'types/preset.types';
 import { EmitToAllClients } from './connections';
 import { WriteDataToFile, dataPath } from './data';
 
 export const presetsPath = path.join(dataPath, 'presets.json');
 console.log(`[server] [presets] Presets path is '${presetsPath}'`);
 
-let presets: HandbrakePresetList = {};
+let presets: HandbrakePresetListType = {};
 
 export function GetPresetNames() {
 	return Object.keys(presets);
@@ -16,11 +16,11 @@ export function GetPresets() {
 	return presets;
 }
 
-export function SetPresets(newPresets: HandbrakePresetList) {
+export function SetPresets(newPresets: HandbrakePresetListType) {
 	presets = newPresets;
 }
 
-export function AddPreset(preset: HandbrakePreset) {
+export function AddPreset(preset: HandbrakePresetType) {
 	const saveAs = preset.PresetList[0].PresetName;
 	presets[saveAs] = preset;
 	console.log(`[server] [presets] Adding preset '${preset.PresetList[0].PresetName}'.`);

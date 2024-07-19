@@ -1,4 +1,4 @@
-export type HandbrakeJSONOutput = {
+export type HandbrakeOutputType = {
 	State: string;
 	Scanning?: Scanning;
 	Working?: Working;

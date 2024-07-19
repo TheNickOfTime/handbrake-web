@@ -62,7 +62,7 @@ export enum VideoQualityType {
 	ConstantQuality = 2,
 }
 
-export type HandbrakePresetData = {
+export type HandbrakePresetDataType = {
 	AlignAVStart: boolean;
 	AudioCopyMask: string[];
 	AudioEncoderFallback: string;
@@ -184,10 +184,10 @@ export type HandbrakePresetData = {
 	MetadataPassthrough: boolean;
 };
 
-export type HandbrakePreset = {
-	PresetList: HandbrakePresetData[];
+export type HandbrakePresetType = {
+	PresetList: HandbrakePresetDataType[];
 };
 
-export type HandbrakePresetList = {
-	[index: string]: HandbrakePreset;
+export type HandbrakePresetListType = {
+	[index: string]: HandbrakePresetType;
 };

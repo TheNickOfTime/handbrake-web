@@ -1,12 +1,12 @@
-import { Job } from 'types/queue';
-import { TranscodeStage } from 'types/transcode';
+import { JobType } from 'types/queue.types';
+import { TranscodeStage } from 'types/transcode.types';
 import ProgressBar from 'components/base/progress/progress-bar';
 import QueueJobSection from './queue-job-section';
 import './queue-job.scss';
 
 type Params = {
 	// id: string;
-	data: Job;
+	data: JobType;
 	index: number;
 	handleStopJob: () => void;
 	handleResetJob: () => void;

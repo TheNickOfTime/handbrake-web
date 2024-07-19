@@ -4,9 +4,9 @@
 
 // export type Worker = Socket;
 
-export type ClientID = string;
+export type ClientIDType = string;
 
-export type workerID = {
+export type WorkerIDType = {
 	workerID: string;
 	connectionID: string;
 };
@@ -16,7 +16,7 @@ export type workerID = {
 // 	workers: Worker[];
 // };
 
-export type ConnectionIDs = {
-	clients: ClientID[];
-	workers: workerID[];
+export type ConnectionIDsType = {
+	clients: ClientIDType[];
+	workers: WorkerIDType[];
 };

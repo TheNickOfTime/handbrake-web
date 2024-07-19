@@ -1,12 +1,12 @@
 import { database } from './database';
-import { Watcher, WatcherWithRowID } from 'types/watcher';
+import { WatcherDefinitionType, WatcherDefinitionWithIDType } from 'types/watcher.types';
 
 export const watcherTableCreateStatement =
 	'CREATE TABLE IF NOT EXISTS watchers(watch_path TEXT NOT NULL, output_path TEXT, preset_id TEXT NOT NULL)';
 
 export function GetWatchersFromDatabase() {
 	try {
-		const watchersStatement = database.prepare<[], WatcherWithRowID>(
+		const watchersStatement = database.prepare<[], WatcherDefinitionWithIDType>(
 			'SELECT rowid, * FROM watchers'
 		);
 		const watchersQuery = watchersStatement.all();
@@ -17,9 +17,9 @@ export function GetWatchersFromDatabase() {
 	}
 }
 
-export function InsertWatcherToDatabase(watcher: Watcher) {
+export function InsertWatcherToDatabase(watcher: WatcherDefinitionType) {
 	try {
-		const insertStatement = database.prepare<Watcher, Watcher>(
+		const insertStatement = database.prepare<WatcherDefinitionType, WatcherDefinitionType>(
 			'INSERT INTO watchers(watch_path, output_path, preset_id) VALUES($watch_path, $output_path, $preset_id)'
 		);
 		const insertResult = insertStatement.run({
