@@ -17,7 +17,6 @@ import CheckboxInput from 'components/base/inputs/checkbox/checkbox-input';
 import {
 	FilterVideoFiles,
 	GetOutputItemsFromInputItems,
-	HandleNameCollision,
 	RequestDirectory,
 } from './create-job-funcs';
 import './create-job.scss';
@@ -124,7 +123,11 @@ export default function CreateJob({ onClose }: Params) {
 					isDirectory: false,
 				},
 			];
-			const dedupedOutputFiles = HandleNameCollision(newOutputFiles, existingFiles);
+			const dedupedOutputFiles = await socket.emitWithAck(
+				'check-name-collision',
+				newOutputFiles,
+				existingFiles
+			);
 			setOutputFiles(dedupedOutputFiles);
 		}
 	};
