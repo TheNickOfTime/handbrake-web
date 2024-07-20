@@ -11,7 +11,7 @@ import { QueueRequestType } from 'types/queue.types';
 // import { Client } from 'types/socket.types';
 import { Socket as Client } from 'socket.io';
 import { AddClient, RemoveClient } from 'scripts/connections';
-import { CheckNameCollision, GetDirectoryItems, MakeDirectory } from 'scripts/files';
+import { CheckFilenameCollision, GetDirectoryItems, MakeDirectory } from 'scripts/files';
 import { AddPreset, GetPresetNames, GetPresets, RemovePreset } from 'scripts/presets';
 import {
 	AddJob,
@@ -117,12 +117,12 @@ export default function ClientSocket(io: Server) {
 
 		socket.on(
 			'check-name-collision',
-			(
+			async (
+				path: string,
 				newItems: DirectoryItemsType,
-				existingItems: DirectoryItemsType,
 				callback: (items: DirectoryItemsType) => void
 			) => {
-				const checkItems = CheckNameCollision(newItems, existingItems);
+				const checkItems = await CheckFilenameCollision(path, newItems);
 				callback(checkItems);
 			}
 		);

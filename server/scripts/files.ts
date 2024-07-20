@@ -71,10 +71,9 @@ export async function MakeDirectory(directoryPath: string, directoryName: string
 	}
 }
 
-export function CheckNameCollision(
-	newItems: DirectoryItemsType,
-	existingItems: DirectoryItemsType
-) {
+export async function CheckFilenameCollision(path: string, newItems: DirectoryItemsType) {
+	const directory = await GetDirectoryItems(path);
+	const existingItems = directory ? directory.items : [];
 	const fileCollisions: { [index: string]: number[] } = {};
 
 	newItems.forEach((newItem, newItemIndex) => {

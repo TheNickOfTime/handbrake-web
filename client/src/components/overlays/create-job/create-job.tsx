@@ -113,8 +113,6 @@ export default function CreateJob({ onClose }: Params) {
 			const parentPath = item.path.replace(item.name + item.extension, '');
 			setOutputPath(parentPath);
 
-			const existingFiles: DirectoryItemsType = (await RequestDirectory(socket, parentPath))
-				.items;
 			const newOutputFiles: DirectoryItemsType = [
 				{
 					path: parentPath + item.name + outputExtension,
@@ -125,8 +123,8 @@ export default function CreateJob({ onClose }: Params) {
 			];
 			const dedupedOutputFiles = await socket.emitWithAck(
 				'check-name-collision',
-				newOutputFiles,
-				existingFiles
+				parentPath,
+				newOutputFiles
 			);
 			setOutputFiles(dedupedOutputFiles);
 		}
@@ -139,7 +137,6 @@ export default function CreateJob({ onClose }: Params) {
 		);
 
 		const newOutputPath = outputChanged ? outputPath : item.path;
-		const existingFiles: DirectoryItemsType = (await RequestDirectory(socket, item.path)).items;
 		const newOutputFiles: DirectoryItemsType = inputPathItems.map((inputItem) => {
 			return {
 				path: newOutputPath + '/' + inputItem.name + inputItem.extension,
@@ -148,7 +145,11 @@ export default function CreateJob({ onClose }: Params) {
 				isDirectory: inputItem.isDirectory,
 			};
 		});
-		const dedupedOutputFiles = HandleNameCollision(newOutputFiles, existingFiles);
+		const dedupedOutputFiles = await socket.emitWithAck(
+			'check-name-collision',
+			item.path,
+			newOutputFiles
+		);
 
 		// Set input/output states
 		setInputPath(item.path);
@@ -176,11 +177,10 @@ export default function CreateJob({ onClose }: Params) {
 			const newInputFiles = FilterVideoFiles(
 				(await RequestDirectory(socket, inputPath, value)).items
 			);
-			const existingFiles: DirectoryItemsType = (await RequestDirectory(socket, outputPath))
-				.items;
-			const newOutputFiles = HandleNameCollision(
-				GetOutputItemsFromInputItems(newInputFiles, outputExtension),
-				existingFiles
+			const newOutputFiles = await socket.emitWithAck(
+				'check-name-collision',
+				outputPath,
+				GetOutputItemsFromInputItems(newInputFiles, outputExtension)
 			);
 			setInputFiles(newInputFiles);
 			setOutputFiles(newOutputFiles);
@@ -189,7 +189,6 @@ export default function CreateJob({ onClose }: Params) {
 
 	const handleOutputConfirm = async (item: DirectoryItemType) => {
 		setOutputPath(item.path);
-		const existingFiles: DirectoryItemsType = (await RequestDirectory(socket, item.path)).items;
 		const newOutputFiles = inputFiles.map((inputItem) => {
 			return {
 				path: item.path + '/' + inputItem.name + outputExtension,
@@ -198,7 +197,11 @@ export default function CreateJob({ onClose }: Params) {
 				isDirectory: inputItem.isDirectory,
 			};
 		});
-		const dedupedOutputFiles = HandleNameCollision(newOutputFiles, existingFiles);
+		const dedupedOutputFiles = await socket.emitWithAck(
+			'check-name-collision',
+			item.path,
+			newOutputFiles
+		);
 		setOutputFiles(dedupedOutputFiles);
 		setOutputChanged(true);
 	};
@@ -235,8 +238,6 @@ export default function CreateJob({ onClose }: Params) {
 			return file;
 		});
 
-		const existingFiles: DirectoryItemsType = (await RequestDirectory(socket, outputPath))
-			.items;
 		if (jobFrom == JobFrom.FromFile) {
 			if (
 				existingFiles
@@ -249,7 +250,11 @@ export default function CreateJob({ onClose }: Params) {
 			}
 			setOutputFiles(newOutputFiles);
 		} else {
-			const dedupedOutputFiles = HandleNameCollision(newOutputFiles, existingFiles);
+			const dedupedOutputFiles = await socket.emitWithAck(
+				'check-name-collision',
+				outputPath,
+				newOutputFiles
+			);
 			setOutputFiles(dedupedOutputFiles);
 		}
 	};
