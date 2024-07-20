@@ -85,7 +85,9 @@ export async function CheckFilenameCollision(path: string, newItems: DirectoryIt
 			if (newItem.name + newItem.extension == existingItem.name + existingItem.extension) {
 				fileCollisions[newItem.name].push(newItemIndex);
 				console.log(
-					`'${newItem.name + newItem.extension}' collides with existing file '${
+					`[server] [files] '${
+						newItem.name + newItem.extension
+					}' collides with existing file '${
 						existingItem.name + existingItem.extension
 					}' at the output path.`
 				);
@@ -103,7 +105,9 @@ export async function CheckFilenameCollision(path: string, newItems: DirectoryIt
 				) {
 					fileCollisions[newItem.name].push(newItemIndex);
 					console.log(
-						`${newItem.name + newItem.extension} collides with another output ${
+						`[server] [files] ${
+							newItem.name + newItem.extension
+						} collides with another output ${
 							otherNewItem.name + otherNewItem.extension
 						}`
 					);
