@@ -236,6 +236,8 @@ export default function CreateJob({ onClose }: Params) {
 			return file;
 		});
 
+		const existingFiles: DirectoryItemsType = (await RequestDirectory(socket, outputPath))
+			.items;
 		if (jobFrom == JobFrom.FromFile) {
 			if (
 				existingFiles
