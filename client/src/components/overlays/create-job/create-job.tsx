@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { DirectoryItemType, DirectoryItemsType } from 'types/directory.types';
