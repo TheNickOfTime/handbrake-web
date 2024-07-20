@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { PropsWithChildren } from 'react';
 import './sub-section.scss';
 

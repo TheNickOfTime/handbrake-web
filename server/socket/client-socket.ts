@@ -4,13 +4,14 @@ import {
 	DirectoryType,
 	DirectoryItemType,
 	DirectoryRequestType,
+	DirectoryItemsType,
 } from 'types/directory.types';
 import { HandbrakePresetType } from 'types/preset.types';
 import { QueueRequestType } from 'types/queue.types';
 // import { Client } from 'types/socket.types';
 import { Socket as Client } from 'socket.io';
 import { AddClient, RemoveClient } from 'scripts/connections';
-import { GetDirectoryItems, MakeDirectory } from 'scripts/files';
+import { CheckFilenameCollision, GetDirectoryItems, MakeDirectory } from 'scripts/files';
 import { AddPreset, GetPresetNames, GetPresets, RemovePreset } from 'scripts/presets';
 import {
 	AddJob,
@@ -111,6 +112,18 @@ export default function ClientSocket(io: Server) {
 			async (item: CreateDirectoryRequestType, callback: (result: boolean) => void) => {
 				const result = await MakeDirectory(item.path, item.name);
 				callback(result);
+			}
+		);
+
+		socket.on(
+			'check-name-collision',
+			async (
+				path: string,
+				newItems: DirectoryItemsType,
+				callback: (items: DirectoryItemsType) => void
+			) => {
+				const checkItems = await CheckFilenameCollision(path, newItems);
+				callback(checkItems);
 			}
 		);
 
