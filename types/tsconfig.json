@@ -1,0 +1,10 @@
+{
+	"compilerOptions": {
+		"target": "ESNext", // Or whatever you want
+		"module": "ESNext", // Or whatever you want
+		"declaration": true,
+		"declarationMap": true,
+		"outDir": "./dist",
+		"composite": true
+	}
+}
