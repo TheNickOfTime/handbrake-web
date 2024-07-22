@@ -30,5 +30,10 @@
 			"types/*": ["../types/*"]
 		}
 	},
-	"include": ["src", "../types"]
+	"references": [
+		{
+			"path": "../types"
+		}
+	],
+	"include": ["src"]
 }
