@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { io } from 'socket.io-client';
 import ServerSocket from 'socket/server-socket';
-import Shutdown from 'scripts/shutdown';
+import Shutdown from './scripts/shutdown';
 
 // Setup -------------------------------------------------------------------------------------------
 
