@@ -3,8 +3,8 @@
 	"version": "0.0.0",
 	"description": "HandBrake Web",
 	"scripts": {
-		"dev": "nodemon ./worker.ts --watch ./ --exec ts-node --project ./tsconfig.json",
-		"prod": "ts-node -r tsconfig-paths/register worker.ts",
+		"dev": "tsx watch src/worker.ts",
+		"prod": "tsx src/worker.ts",
 		"build": "tsc --project ./tsconfig.json"
 	},
 	"repository": {
@@ -15,11 +15,10 @@
 		"dotenv": "^16.4.5",
 		"socket.io-client": "^4.7.5",
 		"tsconfig-paths": "^4.2.0",
-		"ts-node": "^10.9.2"
+		"tsx": "^4.16.2"
 	},
 	"devDependencies": {
 		"eslint": "^8.57.0",
-		"nodemon": "^3.1.0",
 		"typescript": "^5.4.5"
 	}
 }

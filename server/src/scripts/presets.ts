@@ -1,5 +1,5 @@
 import path from 'path';
-import { HandbrakePresetType, HandbrakePresetListType } from 'types/preset.types';
+import { HandbrakePresetType, HandbrakePresetListType } from 'types/preset';
 import { EmitToAllClients } from './connections';
 import { WriteDataToFile, dataPath } from './data';
 

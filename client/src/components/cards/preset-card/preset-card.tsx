@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { HandbrakePresetDataType } from 'types/preset.types';
+import { HandbrakePresetDataType } from 'types/preset';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import PresetCardSummary from './tabs/summary/preset-card-summary';
 import PresetCardDimensions from './tabs/dimensions/preset-card-dimensions';

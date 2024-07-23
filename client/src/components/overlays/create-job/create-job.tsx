@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { DirectoryItemType, DirectoryItemsType } from 'types/directory.types';
-import { FileBrowserMode } from 'types/file-browser.types';
-import { HandbrakeOutputExtensions } from 'types/file-extensions.types';
-import { QueueRequestType } from 'types/queue.types';
+import { DirectoryItemType, DirectoryItemsType } from 'types/directory';
+import { FileBrowserMode } from 'types/file-browser';
+import { HandbrakeOutputExtensions } from 'types/file-extensions';
+import { QueueRequestType } from 'types/queue';
 import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import ButtonGroup from 'components/base/inputs/button-group/button-group';
 import ButtonInput from 'components/base/inputs/button/button-input';

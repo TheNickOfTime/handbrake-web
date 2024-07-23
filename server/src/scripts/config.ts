@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { parse } from 'yaml';
-import { ConfigType, ConfigPropertyType } from 'types/config.types';
+import { ConfigType, ConfigPropertyType } from 'types/config';
 import { dataPath } from './data';
 
 let config: ConfigType = {
