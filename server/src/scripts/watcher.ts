@@ -6,10 +6,10 @@ import {
 	InsertWatcherToDatabase,
 	RemoveWatcherFromDatabase,
 } from './database/database-watcher';
-import { WatcherDefinitionType, WatcherDefinitionWithIDType } from 'types/watcher.types';
+import { WatcherDefinitionType, WatcherDefinitionWithIDType } from 'types/watcher';
 import { EmitToAllClients } from './connections';
 import { AddJob, GetQueue, RemoveJob } from './queue';
-import { QueueType, QueueRequestType } from 'types/queue.types';
+import { QueueType, QueueRequestType } from 'types/queue';
 
 const watchers: { [index: number]: chokidar.FSWatcher } = [];
 

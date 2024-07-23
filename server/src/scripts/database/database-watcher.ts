@@ -1,5 +1,5 @@
 import { database } from './database';
-import { WatcherDefinitionType, WatcherDefinitionWithIDType } from 'types/watcher.types';
+import { WatcherDefinitionType, WatcherDefinitionWithIDType } from 'types/watcher';
 
 export const watcherTableCreateStatement =
 	'CREATE TABLE IF NOT EXISTS watchers(watch_path TEXT NOT NULL, output_path TEXT, preset_id TEXT NOT NULL)';
