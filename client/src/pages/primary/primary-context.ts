@@ -1,9 +1,9 @@
 import { Socket } from 'socket.io-client';
-import { QueueType, QueueStatus } from 'types/queue.types';
-import { ConnectionIDsType } from 'types/socket.types';
-import { HandbrakePresetListType } from 'types/preset.types';
-import { ConfigType } from 'types/config.types';
-import { WatcherDefinitionWithIDType } from 'types/watcher.types';
+import { QueueType, QueueStatus } from 'types/queue';
+import { ConnectionIDsType } from 'types/socket';
+import { HandbrakePresetListType } from 'types/preset';
+import { ConfigType } from 'types/config';
+import { WatcherDefinitionWithIDType } from 'types/watcher';
 
 export type PrimaryOutletContextType = {
 	socket: Socket;

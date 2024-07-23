@@ -14,7 +14,8 @@
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"moduleDetection": "force",
-		"noEmit": true,
+		"emitDeclarationOnly": true,
+		// "noEmit": true,
 		"jsx": "react-jsx",
 
 		/* Linting */
@@ -23,12 +24,18 @@
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,
 
+		"baseUrl": ".",
 		"paths": {
 			"components/*": ["./src/components/*"],
 			"pages/*": ["./src/pages/*"],
 			"sections/*": ["./src/sections/*"],
-			"types/*": ["../types/*"]
+			"types/*": ["../types/src/*"]
 		}
 	},
-	"include": ["src", "../types"]
+	"references": [
+		{
+			"path": "../types"
+		}
+	],
+	"include": ["src"]
 }

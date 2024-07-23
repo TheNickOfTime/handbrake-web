@@ -1,5 +1,5 @@
 import TextInfo from 'components/base/info/text-info/text-info';
-import { HandbrakePresetDataType, PictureCropMode } from 'types/preset.types';
+import { HandbrakePresetDataType, PictureCropMode } from 'types/preset';
 import './preset-card-dimensions.scss';
 
 type Params = {

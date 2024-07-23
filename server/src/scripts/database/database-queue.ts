@@ -1,5 +1,5 @@
-import { QueueTableType } from 'types/database.types';
-import { JobType, QueueType, QueueEntryType } from 'types/queue.types';
+import { QueueTableType } from 'types/database';
+import { JobType, QueueType, QueueEntryType } from 'types/queue';
 import { database } from './database';
 
 export function GetQueueFromDatabase() {

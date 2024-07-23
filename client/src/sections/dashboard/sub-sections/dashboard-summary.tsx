@@ -1,4 +1,4 @@
-import { QueueStatus } from 'types/queue.types';
+import { QueueStatus } from 'types/queue';
 import SubSection from 'components/section/sub-section';
 import './dashboard-summary.scss';
 

@@ -1,4 +1,4 @@
-import Database from 'better-sqlite3';
+import Database, { Database as DatabaseType } from 'better-sqlite3';
 import path from 'path';
 
 import { dataPath } from '../data';
@@ -6,7 +6,7 @@ import { watcherTableCreateStatement } from 'scripts/database/database-watcher';
 
 const databasePath = path.join(dataPath, 'handbrake.db');
 
-export let database = new Database(databasePath, {});
+export let database: DatabaseType = new Database(databasePath, {});
 
 export function DatabaseConnect() {
 	try {

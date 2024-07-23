@@ -1,4 +1,4 @@
-import { HandbrakePresetListType } from 'types/preset.types';
+import { HandbrakePresetListType } from 'types/preset';
 import SubSection from 'components/section/sub-section';
 import PresetCard from 'components/cards/preset-card/preset-card';
 import './presets-list.scss';

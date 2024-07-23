@@ -1,5 +1,5 @@
-import { JobType, QueueEntryType, QueueStatus } from 'types/queue.types';
-import { TranscodeStage } from 'types/transcode.types';
+import { JobType, QueueEntryType, QueueStatus } from 'types/queue';
+import { TranscodeStage } from 'types/transcode';
 import { GetWorkerID, GetWorkers } from './connections';
 import { GetQueueFromDatabase, UpdateJobInDatabase } from './database/database-queue';
 import { GetQueueStatus, SetQueueStatus, StopQueue } from './queue';

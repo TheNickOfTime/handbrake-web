@@ -4,6 +4,7 @@
 /video/
 
 build/
+temp/
 node_modules/
 
 .env
