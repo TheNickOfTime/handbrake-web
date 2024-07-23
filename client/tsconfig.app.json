@@ -10,10 +10,11 @@
 
 		/* Bundler mode */
 		"moduleResolution": "bundler",
-		// "allowImportingTsExtensions": true,
+		"allowImportingTsExtensions": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"moduleDetection": "force",
+		"emitDeclarationOnly": true,
 		// "noEmit": true,
 		"jsx": "react-jsx",
 
@@ -23,6 +24,7 @@
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,
 
+		"baseUrl": ".",
 		"paths": {
 			"components/*": ["./src/components/*"],
 			"pages/*": ["./src/pages/*"],
