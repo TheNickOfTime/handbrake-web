@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { HandbrakePresetListType } from 'types/preset.types';
+import { HandbrakePresetListType } from 'types/preset';
 import SubSection from 'components/section/sub-section';
 import './dashboard-presets.scss';
 

@@ -1,4 +1,4 @@
-import { HandbrakePresetListType } from 'types/preset.types';
+import { HandbrakePresetListType } from 'types/preset';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import SubSection from 'components/section/sub-section';
 import './presets-buttons.scss';

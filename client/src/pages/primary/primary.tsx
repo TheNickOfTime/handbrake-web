@@ -5,11 +5,11 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { io } from 'socket.io-client';
 
 import { PrimaryOutletContextType } from './primary-context';
-import { ConfigType } from 'types/config.types';
-import { HandbrakePresetListType } from 'types/preset.types';
-import { QueueType, QueueStatus } from 'types/queue.types';
-import { ConnectionIDsType } from 'types/socket.types';
-import { WatcherDefinitionWithIDType } from 'types/watcher.types';
+import { ConfigType } from 'types/config';
+import { HandbrakePresetListType } from 'types/preset';
+import { QueueType, QueueStatus } from 'types/queue';
+import { ConnectionIDsType } from 'types/socket';
+import { WatcherDefinitionWithIDType } from 'types/watcher';
 
 import SideBar from 'components/modules/side-bar/side-bar';
 import NoConnection from 'sections/no-connection/no-connection';

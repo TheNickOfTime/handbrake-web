@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { HandbrakePresetType } from 'types/preset.types';
+import { HandbrakePresetType } from 'types/preset';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import SectionOverlay from 'components/section/section-overlay';
 import './upload-preset.scss';

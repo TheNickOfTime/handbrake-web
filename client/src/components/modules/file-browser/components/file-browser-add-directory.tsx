@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import TextInput from 'components/base/inputs/text/text-input';
-import { DirectoryItemsType } from 'types/directory.types';
+import { DirectoryItemsType } from 'types/directory';
 
 type Params = {
 	existingItems: DirectoryItemsType;
