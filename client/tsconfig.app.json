@@ -27,7 +27,7 @@
 			"components/*": ["./src/components/*"],
 			"pages/*": ["./src/pages/*"],
 			"sections/*": ["./src/sections/*"],
-			"types/*": ["../types/*"]
+			"types/*": ["../types/src/*"]
 		}
 	},
 	"references": [
