@@ -1,5 +1,6 @@
 import TextInfo from 'components/base/info/text-info/text-info';
-import { AudioEncoderLookup, HandbrakePresetDataType } from 'types/preset';
+import { AudioEncoderLookup } from '../../preset-lookups';
+import { HandbrakePresetDataType } from 'types/preset';
 import './preset-card-summary.scss';
 
 type Params = {

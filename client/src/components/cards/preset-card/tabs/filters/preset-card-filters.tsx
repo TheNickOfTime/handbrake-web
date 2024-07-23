@@ -1,6 +1,7 @@
-import { FilterLookup, HandbrakePresetDataType } from 'types/preset';
-import './preset-card-filters.scss';
+import { FilterLookup } from '../../preset-lookups';
+import { HandbrakePresetDataType } from 'types/preset';
 import TextInfo from 'components/base/info/text-info/text-info';
+import './preset-card-filters.scss';
 
 type Params = {
 	preset: HandbrakePresetDataType;
