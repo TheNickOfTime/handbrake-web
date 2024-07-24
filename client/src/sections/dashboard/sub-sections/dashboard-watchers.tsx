@@ -27,7 +27,7 @@ export default function DashboardWatchers({ watchers }: Params) {
 						{watchers.map((watcher) => (
 							<tr>
 								<td>{watcher.watch_path}</td>
-								<td>{watcher.output_path || 'Same as watching'}</td>
+								<td className='center'>{watcher.output_path || 'N/A'}</td>
 								<td className='center'>{watcher.preset_id}</td>
 							</tr>
 						))}
