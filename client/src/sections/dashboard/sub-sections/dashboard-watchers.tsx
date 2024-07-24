@@ -1,6 +1,7 @@
 import SubSection from 'components/section/sub-section';
 import { NavLink } from 'react-router-dom';
 import { WatcherDefinitionWithIDType } from 'types/watcher';
+import './dashboard-watchers.scss';
 
 type Params = {
 	watchers: WatcherDefinitionWithIDType[];
