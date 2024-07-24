@@ -1,8 +1,7 @@
 import { QueueType } from 'types/queue';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import SubSection from 'components/section/sub-section';
-import QueueJob from '../components/queue-job';
-import './queue-jobs.scss';
+import QueueCard from 'components/cards/queue-card/queue-card';
 
 type Params = {
 	queue: QueueType;
@@ -44,7 +43,7 @@ export default function QueueJobs({
 				const job = queue[key];
 
 				return (
-					<QueueJob
+					<QueueCard
 						key={key}
 						// id={key}
 						data={job}

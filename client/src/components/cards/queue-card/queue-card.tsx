@@ -1,8 +1,8 @@
 import { JobType } from 'types/queue';
 import { TranscodeStage } from 'types/transcode';
 import ProgressBar from 'components/base/progress/progress-bar';
-import QueueJobSection from './queue-job-section';
-import './queue-job.scss';
+import QueueCardSection from './components/queue-card-section';
+import './queue-card.scss';
 
 type Params = {
 	// id: string;
@@ -13,7 +13,7 @@ type Params = {
 	handleRemoveJob: () => void;
 };
 
-export default function QueueJob({
+export default function QueueCard({
 	data,
 	index,
 	handleStopJob,
@@ -51,41 +51,46 @@ export default function QueueJob({
 			</div>
 			<div className='job-info'>
 				<div className='job-info-section'>
-					<QueueJobSection label='Output'>{data.output.match(/[^/]+$/)}</QueueJobSection>
-					<QueueJobSection label='Preset'>
+					<QueueCardSection label='Input' title={data.input}>
+						{data.input.match(/[^/]+$/)}
+					</QueueCardSection>
+					<QueueCardSection label='Output' title={data.output}>
+						{data.output.match(/[^/]+$/)}
+					</QueueCardSection>
+					<QueueCardSection label='Preset'>
 						{data.preset.PresetList[0].PresetName}
-					</QueueJobSection>
-					<QueueJobSection label='Worker'>
+					</QueueCardSection>
+					<QueueCardSection label='Worker'>
 						{data.worker ? data.worker : 'N/A'}
-					</QueueJobSection>
-					<QueueJobSection label='Status'>
+					</QueueCardSection>
+					<QueueCardSection label='Status'>
 						{TranscodeStage[data.status.stage]}
-					</QueueJobSection>
+					</QueueCardSection>
 				</div>
 				{(data.status.stage == TranscodeStage.Scanning ||
 					data.status.stage == TranscodeStage.Transcoding) && (
 					<div className='job-info-section'>
-						<QueueJobSection label='FPS'>
+						<QueueCardSection label='FPS'>
 							{data.status.info.currentFPS
 								? `${data.status.info.currentFPS.toFixed(1)}fps`
 								: 'N/A'}
-						</QueueJobSection>
-						<QueueJobSection label='Avg. FPS'>
+						</QueueCardSection>
+						<QueueCardSection label='Avg. FPS'>
 							{data.status.info.averageFPS
 								? `${data.status.info.averageFPS.toFixed(1)}fps`
 								: 'N/A'}
-						</QueueJobSection>
-						<QueueJobSection label='Time Elapsed'>
+						</QueueCardSection>
+						<QueueCardSection label='Time Elapsed'>
 							{data.time.started
 								? secondsToTime((Date.now() - data.time.started) / 1000)
 								: 'N/A'}
-						</QueueJobSection>
-						<QueueJobSection label='Time Left'>
+						</QueueCardSection>
+						<QueueCardSection label='Time Left'>
 							{data.status.info.eta ? data.status.info.eta : 'N/A'}
-						</QueueJobSection>
-						<QueueJobSection label='Progress'>
+						</QueueCardSection>
+						<QueueCardSection label='Progress'>
 							<ProgressBar percentage={percentage} />
-						</QueueJobSection>
+						</QueueCardSection>
 					</div>
 				)}
 			</div>
