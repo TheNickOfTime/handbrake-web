@@ -2,7 +2,6 @@
 	"name": "handbrake-web",
 	"build": { "dockerfile": "Dockerfile" },
 	"runArgs": ["--name", "handbrake-web-dev"],
-	"remoteUser": "root", //set to root by default to avoid general permissions issues
 	"mounts": [
 		// Uncomment to map an external media directory
 		// {
@@ -11,6 +10,15 @@
 		// 	"type": "bind"
 		// }
 	],
+	"containerEnv": {
+		"SERVER_URL": "http://localhost",
+		"SERVER_PORT": "9999",
+		"CLIENT_PORT": "5173",
+		"DATA_PATH": "/workspaces/handbrake-web/data",
+		"VIDEO_PATH": "/video",
+		"SERVER_ID": "development-server",
+		"WORKER_ID": "development-worker"
+	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
