@@ -114,7 +114,10 @@ function onWatcherDetectFileDelete(watcher: WatcherDefinitionType, filePath: str
 	const isVideo = mime.getType(filePath);
 	if (isVideo && isVideo.includes('video')) {
 		const queue = GetQueue();
-		const jobsToDelete = Object.keys(queue).filter((key) => queue[key].input == filePath);
+		const jobsToDelete = Object.keys(queue).filter(
+			(key) =>
+				queue[key].input == filePath && queue[key].status.stage == TranscodeStage.Waiting
+		);
 		jobsToDelete.forEach((jobID) => {
 			console.log(
 				`[server] [watcher] Watcher for '${watcher.watch_path}' is requesting removal of job '${jobID}' because the input file '${filePath}' has been deleted.`
