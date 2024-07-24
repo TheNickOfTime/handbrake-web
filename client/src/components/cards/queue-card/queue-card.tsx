@@ -51,7 +51,10 @@ export default function QueueCard({
 			</div>
 			<div className='job-info'>
 				<div className='job-info-section'>
-					<QueueCardSection label='Output'>
+					<QueueCardSection label='Input' title={data.input}>
+						{data.input.match(/[^/]+$/)}
+					</QueueCardSection>
+					<QueueCardSection label='Output' title={data.output}>
 						{data.output.match(/[^/]+$/)}
 					</QueueCardSection>
 					<QueueCardSection label='Preset'>

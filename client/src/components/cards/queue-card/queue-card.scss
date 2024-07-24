@@ -33,6 +33,10 @@
 			.job-section-label {
 				min-width: fit-content;
 				white-space: nowrap;
+
+				& > * {
+					margin-right: 0.5rem;
+				}
 			}
 		}
 
