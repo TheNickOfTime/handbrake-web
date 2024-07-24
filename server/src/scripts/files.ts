@@ -71,8 +71,8 @@ export async function MakeDirectory(directoryPath: string, directoryName: string
 	}
 }
 
-export async function CheckFilenameCollision(path: string, newItems: DirectoryItemsType) {
-	const directory = await GetDirectoryItems(path);
+export async function CheckFilenameCollision(existingDir: string, newItems: DirectoryItemsType) {
+	const directory = await GetDirectoryItems(existingDir);
 	const existingItems = directory ? directory.items : [];
 	const fileCollisions: { [index: string]: number[] } = {};
 
@@ -120,22 +120,22 @@ export async function CheckFilenameCollision(path: string, newItems: DirectoryIt
 	Object.values(fileCollisions).forEach((collisionArray) => {
 		let fileIndex = 1;
 		collisionArray.forEach((value) => {
+			const renamedItem = renamedItems[value];
 			// Increment the file index while a filename with the appended index exists either in the existing or renamed files
 			while (
 				existingItems
 					.map((existingItem) => existingItem.name + existingItem.extension)
-					.includes(
-						renamedItems[value].name + `_${fileIndex}` + renamedItems[value].extension
-					) ||
-				renamedItems
-					.map((item) => item.name)
-					.includes(renamedItems[value].name + `_${fileIndex}`)
+					.includes(renamedItem.name + `_${fileIndex}` + renamedItem.extension) ||
+				renamedItems.map((item) => item.name).includes(renamedItem.name + `_${fileIndex}`)
 			) {
 				fileIndex += 1;
 			}
 
-			const newName = renamedItems[value].name + `_${fileIndex}`;
+			const newName = renamedItem.name + `_${fileIndex}`;
+			const newPath =
+				path.join(path.dirname(renamedItem.path), newName) + renamedItem.extension;
 			renamedItems[value].name = newName;
+			renamedItems[value].path = newPath;
 		});
 	});
 
