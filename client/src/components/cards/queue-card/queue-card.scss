@@ -26,6 +26,16 @@
 		flex-flow: column nowrap;
 		gap: 2rem;
 
+		.job-section {
+			flex-grow: 1;
+			min-width: fit-content;
+
+			.job-section-label {
+				min-width: fit-content;
+				white-space: nowrap;
+			}
+		}
+
 		.job-info-section {
 			display: flex;
 			flex-flow: row wrap;
