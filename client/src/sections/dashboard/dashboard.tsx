@@ -6,17 +6,19 @@ import DashboardQueue from './sub-sections/dashboard-queue';
 import DashboardWorkers from './sub-sections/dashboard-workers';
 import DashboardPresets from './sub-sections/dashboard-presets';
 import './dashboard.scss';
+import DashboardWatchers from './sub-sections/dashboard-watchers';
 
 export default function DashboardSection() {
-	const { socket, queue, queueStatus, presets, connections } =
+	const { socket, queue, queueStatus, presets, connections, watchers } =
 		useOutletContext<PrimaryOutletContextType>();
 
 	return (
 		<Section title='Dashboard' id='dashboard'>
 			<DashboardSummary connectionStatus={socket.connected} queueStatus={queueStatus} />
 			<DashboardQueue queue={queue} />
-			<DashboardWorkers queue={queue} workers={connections.workers} />
 			<DashboardPresets presets={presets} />
+			<DashboardWatchers watchers={watchers} />
+			<DashboardWorkers queue={queue} workers={connections.workers} />
 		</Section>
 	);
 }

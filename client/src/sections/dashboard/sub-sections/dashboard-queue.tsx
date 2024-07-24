@@ -21,6 +21,7 @@ export default function DashboardQueue({ queue }: Params) {
 				<table>
 					<thead>
 						<tr>
+							<th>Input</th>
 							<th>Output</th>
 							<th>Status</th>
 							<th>Progress</th>
@@ -35,7 +36,12 @@ export default function DashboardQueue({ queue }: Params) {
 
 							return (
 								<tr key={`queue-job-${key}`}>
-									<td className='output'>{job.output.match(/[^/]+$/)}</td>
+									<td className='input' title={job.input}>
+										{job.input.match(/[^/]+$/)}
+									</td>
+									<td className='output' title={job.output}>
+										{job.output.match(/[^/]+$/)}
+									</td>
 									<td
 										className={`status center ${
 											job.status.stage == TranscodeStage.Waiting
