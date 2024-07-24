@@ -9,7 +9,9 @@ import {
 import { WatcherDefinitionType, WatcherDefinitionWithIDType } from 'types/watcher';
 import { EmitToAllClients } from './connections';
 import { AddJob, GetQueue, RemoveJob } from './queue';
-import { QueueType, QueueRequestType } from 'types/queue';
+import { QueueRequestType } from 'types/queue';
+import { CheckFilenameCollision } from './files';
+import { TranscodeStage } from 'types/transcode';
 
 const watchers: { [index: number]: chokidar.FSWatcher } = [];
 
@@ -65,7 +67,7 @@ export function InitializeWatchers() {
 	}
 }
 
-function onWatcherDetectFileAdd(watcher: WatcherDefinitionType, filePath: string) {
+async function onWatcherDetectFileAdd(watcher: WatcherDefinitionType, filePath: string) {
 	console.log(
 		`[server] [watcher] Watcher for '${
 			watcher.watch_path
@@ -75,11 +77,24 @@ function onWatcherDetectFileAdd(watcher: WatcherDefinitionType, filePath: string
 	const isVideo = mime.getType(filePath);
 	if (isVideo && isVideo.includes('video')) {
 		const parsedPath = path.parse(filePath);
+		const outputPathBase = watcher.output_path ? watcher.output_path : parsedPath.dir;
+		const outputPathName = parsedPath.name;
+		const outputPathExtension = '.mkv';
+		const outputPathFull = path.join(outputPathBase, outputPathName) + outputPathExtension;
+		const checkedOutputPath = (
+			await CheckFilenameCollision(outputPathBase, [
+				{
+					path: outputPathFull,
+					name: outputPathName,
+					extension: outputPathExtension,
+					isDirectory: false,
+				},
+			])
+		)[0].path;
+		console.log(checkedOutputPath);
 		const newJobRequest: QueueRequestType = {
 			input: filePath,
-			output: watcher.output_path
-				? path.join(watcher.output_path, parsedPath.base)
-				: path.join(parsedPath.dir, parsedPath.name + ` - (${watcher.preset_id})` + '.mkv'),
+			output: checkedOutputPath,
 			preset: watcher.preset_id,
 		};
 		console.log(
@@ -99,7 +114,10 @@ function onWatcherDetectFileDelete(watcher: WatcherDefinitionType, filePath: str
 	const isVideo = mime.getType(filePath);
 	if (isVideo && isVideo.includes('video')) {
 		const queue = GetQueue();
-		const jobsToDelete = Object.keys(queue).filter((key) => queue[key].input == filePath);
+		const jobsToDelete = Object.keys(queue).filter(
+			(key) =>
+				queue[key].input == filePath && queue[key].status.stage == TranscodeStage.Waiting
+		);
 		jobsToDelete.forEach((jobID) => {
 			console.log(
 				`[server] [watcher] Watcher for '${watcher.watch_path}' is requesting removal of job '${jobID}' because the input file '${filePath}' has been deleted.`

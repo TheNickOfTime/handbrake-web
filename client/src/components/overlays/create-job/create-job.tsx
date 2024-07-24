@@ -208,7 +208,7 @@ export default function CreateJob({ onClose }: Params) {
 		// setOutputName(name);
 		if (outputFiles.length > 0) {
 			const newOutputFiles = [...outputFiles];
-			newOutputFiles[0].path = outputPath + name + outputExtension;
+			newOutputFiles[0].path = outputPath + '/' + name + outputExtension;
 			newOutputFiles[0].name = name;
 			setOutputFiles(newOutputFiles);
 			setOutputChanged(true);
@@ -389,16 +389,18 @@ export default function CreateJob({ onClose }: Params) {
 
 											const inputText =
 												file.path.length > 50
-													? `${file.path.slice(0, 10)}...${(
-															file.name + file.extension
-													  ).slice(-37)}`
+													? `${file.path.slice(
+															0,
+															10
+													  )}...${file.path.slice(-37)}`
 													: file.path;
 
 											const outputText =
 												outputFile.path.length > 50
-													? `${outputFile.path.slice(0, 10)}...${(
-															outputFile.name + outputFile.extension
-													  ).slice(-37)}`
+													? `${outputFile.path.slice(
+															0,
+															10
+													  )}...${outputFile.path.slice(-37)}`
 													: outputFile.path;
 
 											return (
