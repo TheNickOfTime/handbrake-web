@@ -37,6 +37,16 @@
 			}
 		}
 
+		.preset-overwrite {
+			margin-bottom: 0.5rem;
+			text-align: center;
+			color: colors.$handbrake-red;
+
+			.bi {
+				margin-right: 0.5rem;
+			}
+		}
+
 		.preset-name-section {
 			display: flex;
 			flex-flow: row nowrap;

@@ -40,7 +40,11 @@ export default function PresetsSection() {
 				<PresetsList presets={presets} handleRemovePreset={handleRemovePreset} />
 			)}
 			{showUploadPreset && (
-				<UploadPreset socket={socket} handleClose={handleCloseUploadPreset} />
+				<UploadPreset
+					socket={socket}
+					presets={Object.keys(presets)}
+					handleClose={handleCloseUploadPreset}
+				/>
 			)}
 		</Section>
 	);
