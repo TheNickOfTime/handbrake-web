@@ -7,10 +7,11 @@ import './upload-preset.scss';
 
 type Params = {
 	socket: Socket;
+	presets: string[];
 	handleClose: () => void;
 };
 
-export default function UploadPreset({ socket, handleClose }: Params) {
+export default function UploadPreset({ socket, presets, handleClose }: Params) {
 	const [preset, setPreset] = useState<null | HandbrakePresetType>(null);
 	const [presetName, setPresetName] = useState('');
 
@@ -62,6 +63,15 @@ export default function UploadPreset({ socket, handleClose }: Params) {
 				/>
 			</div>
 			<div>
+				{presets.includes(presetName) && (
+					<div className='preset-overwrite'>
+						<i className='bi bi-exclamation-circle-fill' />
+						<span>
+							Preset '{presetName}' already exists and will be overwriten if the name
+							is not changed.
+						</span>
+					</div>
+				)}
 				{preset && (
 					<div className='preset-name-section'>
 						<label htmlFor='preset-name'>Preset Name: </label>
