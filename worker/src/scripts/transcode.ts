@@ -134,6 +134,11 @@ export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 										if (err) {
 											console.error(err);
 										} else {
+											console.log(
+												`[worker] Overwriting '${path.basename(
+													queueEntry.job.output
+												)}' with the contents of the current job'.`
+											);
 											fs.renameSync(tempOutputName, queueEntry.job.output);
 										}
 									});
