@@ -341,7 +341,8 @@ export default function CreateJob({ onClose }: Params) {
 						<span className='filename-overwrite'>
 							<i className='bi bi-exclamation-circle-fill' />{' '}
 							<span>
-								WARNING: An existing file will be overwritten when this job is run.
+								WARNING: An existing file will be <u>permanently</u> overwritten
+								when this job is run.
 							</span>
 						</span>
 					)}
