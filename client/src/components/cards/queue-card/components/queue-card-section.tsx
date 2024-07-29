@@ -1,3 +1,4 @@
+import BadgeInfo from 'components/base/info/badge-info/badge-info';
 import { PropsWithChildren } from 'react';
 
 type Params = PropsWithChildren & {
@@ -10,7 +11,7 @@ export default function QueueCardSection({ children, label, title }: Params) {
 		<div className={`job-section`} id={label.toLowerCase().replace(/\s/g, '-')}>
 			<h5 className='job-section-label'>
 				<span>{label}</span>
-				{title && <i className='bi bi-info-circle-fill' title={title} />}
+				{title && <BadgeInfo info={title} />}
 			</h5>
 			<hr />
 			<div className='job-section-children'>{children}</div>
