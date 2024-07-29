@@ -333,7 +333,10 @@ export function StopJob(id: string) {
 export function ResetJob(id: string) {
 	const job = GetJobFromDatabase(id);
 	if (job) {
-		if (job.status.stage == TranscodeStage.Stopped) {
+		if (
+			job.status.stage == TranscodeStage.Stopped ||
+			job.status.stage == TranscodeStage.Finished
+		) {
 			// Update Job in database
 			job.worker = null;
 			job.status.stage = TranscodeStage.Waiting;
@@ -346,7 +349,7 @@ export function ResetJob(id: string) {
 			JobForAvailableWorkers(id);
 		} else {
 			console.error(
-				`[server] [error] Job with id '${id}' cannot be reset because it is not in a stopped state.`
+				`[server] [error] Job with id '${id}' cannot be reset because it is not in a stopped/finished state.`
 			);
 		}
 	} else {
