@@ -105,7 +105,12 @@
 
 	.filename-conflict {
 		text-align: center;
-		color: red;
+		color: colors.$handbrake-yellow;
+	}
+
+	.filename-overwrite {
+		text-align: center;
+		color: colors.$handbrake-red;
 	}
 
 	.buttons-section {

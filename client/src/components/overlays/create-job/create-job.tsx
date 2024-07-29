@@ -44,6 +44,7 @@ export default function CreateJob({ onClose }: Params) {
 	const [outputExtension, setOutputExtension] = useState(HandbrakeOutputExtensions.mkv);
 	const [nameCollision, setNameCollision] = useState(false);
 	const [outputChanged, setOutputChanged] = useState(false);
+	const [allowCollision, setAllowCollision] = useState(false);
 
 	// Preset ------------------------------------------------------------------
 	const [preset, setPreset] = useState('');
@@ -56,7 +57,8 @@ export default function CreateJob({ onClose }: Params) {
 		inputFiles.length > 0 &&
 		outputPath != '' &&
 		outputFiles.length > 0 &&
-		preset != '';
+		preset != '' &&
+		((!nameCollision && !allowCollision) || (nameCollision && allowCollision));
 	// noExistingCollision;
 
 	const handleJobFromChange = (newJobFrom: JobFrom) => {
@@ -204,6 +206,10 @@ export default function CreateJob({ onClose }: Params) {
 		setOutputChanged(true);
 	};
 
+	const handleAllowOverwriteSelect = (value: string) => {
+		setAllowCollision({ yes: true, no: false }[value]!);
+	};
+
 	const handleOutputNameChange = async (name: string) => {
 		// setOutputName(name);
 		if (outputFiles.length > 0) {
@@ -223,6 +229,7 @@ export default function CreateJob({ onClose }: Params) {
 				setNameCollision(true);
 			} else if (nameCollision) {
 				setNameCollision(false);
+				setAllowCollision(false);
 			}
 		}
 	};
@@ -321,14 +328,36 @@ export default function CreateJob({ onClose }: Params) {
 						onConfirm={handleOutputConfirm}
 						key={jobFrom == JobFrom.FromFile ? 'output-file' : 'output-directory'}
 					/>
-					{jobFrom == JobFrom.FromFile && nameCollision && (
+					{jobFrom == JobFrom.FromFile && nameCollision && !allowCollision && (
 						<span className='filename-conflict'>
 							<i className='bi bi-exclamation-circle-fill' />{' '}
 							<span>
-								This filename conflicts with an existing file in the directory.
+								This filename conflicts with an existing file in the directory. Do
+								you want to overwrite it?
 							</span>
 						</span>
 					)}
+					{jobFrom == JobFrom.FromFile && nameCollision && allowCollision && (
+						<span className='filename-overwrite'>
+							<i className='bi bi-exclamation-circle-fill' />{' '}
+							<span>
+								WARNING: An existing file will be <u>permanently</u> overwritten
+								when this job is run.
+							</span>
+						</span>
+					)}
+					{jobFrom == JobFrom.FromFile && nameCollision && (
+						<SelectInput
+							id='allow-collision'
+							label='Overwrite Existing File:'
+							value={allowCollision ? 'yes' : 'no'}
+							onChange={handleAllowOverwriteSelect}
+						>
+							<option value='yes'>Yes</option>
+							<option value='no'>No</option>
+						</SelectInput>
+					)}
+
 					{jobFrom == JobFrom.FromFile && (
 						<TextInput
 							id='output-name'

@@ -37,6 +37,12 @@ export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 	writePresetToFile(queueEntry.job.preset);
 
 	const presetName = queueEntry.job.preset.PresetList[0].PresetName;
+	const outputParsed = path.parse(queueEntry.job.output);
+	const tempOutputName = path.join(
+		outputParsed.dir,
+		outputParsed.name + '.transcoding' + outputParsed.ext
+	);
+	const fileCollision = fs.existsSync(queueEntry.job.output);
 
 	handbrake = spawn('HandBrakeCLI', [
 		'--preset-import-file',
@@ -46,7 +52,7 @@ export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 		'-i',
 		queueEntry.job.input,
 		'-o',
-		queueEntry.job.output,
+		tempOutputName,
 		'--json',
 	]);
 
@@ -122,7 +128,24 @@ export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 									status: transcodeStatus,
 								};
 
-								// isTranscoding = false;
+								// Remove original file if necessary, remove '.transoding' temp extension from the file
+								if (fileCollision) {
+									fs.rm(queueEntry.job.output, (err) => {
+										if (err) {
+											console.error(err);
+										} else {
+											console.log(
+												`[worker] Overwriting '${path.basename(
+													queueEntry.job.output
+												)}' with the contents of the current job'.`
+											);
+											fs.renameSync(tempOutputName, queueEntry.job.output);
+										}
+									});
+								} else {
+									fs.renameSync(tempOutputName, queueEntry.job.output);
+								}
+
 								job = null;
 
 								socket.emit('transcoding', finishedUpdate);
