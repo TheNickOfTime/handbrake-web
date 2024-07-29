@@ -4,6 +4,7 @@ import { TranscodeStage } from 'types/transcode';
 import ProgressBar from 'components/base/progress/progress-bar';
 import SubSection from 'components/section/sub-section';
 import './dashboard-queue.scss';
+import BadgeInfo from 'components/base/info/badge-info/badge-info';
 
 type Params = {
 	queue: QueueType;
@@ -38,9 +39,11 @@ export default function DashboardQueue({ queue }: Params) {
 								<tr key={`queue-job-${key}`}>
 									<td className='input' title={job.input}>
 										{job.input.match(/[^/]+$/)}
+										<BadgeInfo info={job.input} />
 									</td>
 									<td className='output' title={job.output}>
 										{job.output.match(/[^/]+$/)}
+										<BadgeInfo info={job.output} />
 									</td>
 									<td
 										className={`status center ${
