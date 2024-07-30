@@ -80,7 +80,7 @@ export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 
 			switch (outputKind) {
 				case 'Version':
-					console.log('Version: ', outputJSON);
+					console.log(`[worker] [transcode] [version]`, outputJSON);
 					break;
 				case 'Progress':
 					switch (outputJSON['State']) {
@@ -95,7 +95,11 @@ export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 								status: transcodeStatus,
 							};
 							socket.emit('transcoding', scanningUpdate);
-							console.log(`Scanning: ${(scanning.Progress * 100).toFixed(2)} %`);
+							console.log(
+								`[worker] [transcode] [scanning] ${(
+									scanning.Progress * 100
+								).toFixed(2)} %`
+							);
 							break;
 						case 'WORKING':
 							const working: Working = outputJSON.Working!;
@@ -113,13 +117,21 @@ export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 								status: transcodeStatus,
 							};
 							socket.emit('transcoding', workingUpdate);
-							console.log(`Transcoding: ${(working.Progress * 100).toFixed(2)} %`);
+							console.log(
+								`[worker] [transcode] [processing] ${(
+									working.Progress * 100
+								).toFixed(2)} %`
+							);
 							// console.log(working);
 							break;
 						case 'MUXING':
 							const muxing: Muxing = outputJSON.Muxing!;
 
-							console.log(`Muxing: ${(muxing.Progress * 100).toFixed(2)} %`);
+							console.log(
+								`[worker] [transcode] [muxing] ${(muxing.Progress * 100).toFixed(
+									2
+								)} %`
+							);
 							break;
 						case 'WORKDONE':
 							const workDone: WorkDone = outputJSON.WorkDone!;
@@ -141,7 +153,7 @@ export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 											console.error(err);
 										} else {
 											console.log(
-												`[worker] Overwriting '${path.basename(
+												`[worker] [transcode] Overwriting '${path.basename(
 													queueEntry.job.output
 												)}' with the contents of the current job'.`
 											);
@@ -155,13 +167,18 @@ export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 								job = null;
 
 								socket.emit('transcoding', finishedUpdate);
-								console.log(`Finished: 100.00%`);
+								console.log(`[worker] [transcode] [finished] 100.00%`);
 							} else {
-								console.log(`Finished: With error ${workDone.Error}`);
+								console.log(
+									`[worker] [transcode] [error] Finished with error ${workDone.Error}`
+								);
 							}
 							break;
 						default:
-							console.error('[error] unexpected json output:', outputJSON);
+							console.error(
+								'[worker] [transcode] [error] Unexpected json output:',
+								outputJSON
+							);
 							break;
 					}
 			}
@@ -171,7 +188,7 @@ export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 	handbrake.stderr.on('data', (data) => {
 		const output: string = data.toString();
 
-		console.error('[error] ', output);
+		console.error('[worker] [error] ', output);
 	});
 }
 
