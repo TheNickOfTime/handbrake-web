@@ -1,7 +1,8 @@
 import { QueueType } from 'types/queue';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import SubSection from 'components/section/sub-section';
-import QueueCard from 'components/cards/queue-card/queue-card';
+import QueueJobsCategory from './queue-jobs-category';
+import { TranscodeStage } from 'types/transcode';
 
 type Params = {
 	queue: QueueType;
@@ -22,6 +23,28 @@ export default function QueueJobs({
 	handleResetJob,
 	handleRemoveJob,
 }: Params) {
+	const jobsInProgress: QueueType = Object.fromEntries(
+		Object.entries(queue).filter(
+			(entry) =>
+				entry[1].status.stage == TranscodeStage.Transcoding ||
+				entry[1].status.stage == TranscodeStage.Scanning
+		)
+	);
+
+	const jobsWaiting: QueueType = Object.fromEntries(
+		Object.entries(queue).filter((entry) => entry[1].status.stage == TranscodeStage.Waiting)
+	);
+
+	const jobsStopped: QueueType = Object.fromEntries(
+		Object.entries(queue).filter((entry) => entry[1].status.stage == TranscodeStage.Stopped)
+	);
+
+	const jobsFinshed: QueueType = Object.fromEntries(
+		Object.entries(queue).filter((entry) => entry[1].status.stage == TranscodeStage.Finished)
+	);
+
+	const onlyFinished = Object.keys(queue).length == Object.keys(jobsFinshed).length;
+
 	return (
 		<SubSection title='Jobs' id='jobs'>
 			<div className='buttons'>
@@ -39,21 +62,40 @@ export default function QueueJobs({
 				/>
 				<ButtonInput label='Add New Job' icon='bi-plus-lg' onClick={handleAddNewJob} />
 			</div>
-			{Object.keys(queue).map((key, index) => {
-				const job = queue[key];
-
-				return (
-					<QueueCard
-						key={key}
-						// id={key}
-						data={job}
-						index={index}
-						handleStopJob={() => handleStopJob(key)}
-						handleResetJob={() => handleResetJob(key)}
-						handleRemoveJob={() => handleRemoveJob(key)}
-					/>
-				);
-			})}
+			<div className='cards'>
+				<QueueJobsCategory
+					queue={jobsInProgress}
+					label='In Progress'
+					handleStopJob={handleStopJob}
+					handleResetJob={handleResetJob}
+					handleRemoveJob={handleRemoveJob}
+				/>
+				<QueueJobsCategory
+					queue={jobsWaiting}
+					label='Pending'
+					handleStopJob={handleStopJob}
+					handleResetJob={handleResetJob}
+					handleRemoveJob={handleRemoveJob}
+				/>
+				<QueueJobsCategory
+					queue={jobsStopped}
+					label='Stopped'
+					collapsable={true}
+					startCollapsed={false}
+					handleStopJob={handleStopJob}
+					handleResetJob={handleResetJob}
+					handleRemoveJob={handleRemoveJob}
+				/>
+				<QueueJobsCategory
+					queue={jobsFinshed}
+					label='Finished'
+					collapsable={!onlyFinished}
+					startCollapsed={true}
+					handleStopJob={handleStopJob}
+					handleResetJob={handleResetJob}
+					handleRemoveJob={handleRemoveJob}
+				/>
+			</div>
 		</SubSection>
 	);
 }
