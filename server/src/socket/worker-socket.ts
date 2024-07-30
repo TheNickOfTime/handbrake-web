@@ -34,6 +34,7 @@ export default function WorkerSocket(io: Server) {
 			);
 
 			UpdateJob(status);
+			WorkerForAvailableJobs(workerID);
 		});
 
 		socket.on('transcoding', (data: TranscodeStatusUpdateType) => {
