@@ -3,8 +3,8 @@ import { useOutletContext } from 'react-router-dom';
 import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import Section from 'components/section/section';
 import CreateJob from 'components/overlays/create-job/create-job';
-import QueueJobs from './components/queue-jobs';
-import QueueStatus from './components/queue-status';
+import QueueJobs from './sub-sections/queue-jobs';
+import QueueStatus from './sub-sections/queue-status';
 import './queue.scss';
 
 export default function QueueSection() {

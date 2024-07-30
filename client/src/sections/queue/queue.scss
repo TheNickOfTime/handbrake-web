@@ -46,5 +46,36 @@
 			flex-flow: row wrap;
 			gap: 1rem;
 		}
+
+		.cards {
+			.queue-jobs-category {
+				margin-bottom: 2rem;
+
+				.queue-jobs-category-header {
+					h4 {
+						margin: 0rem 0 1rem 0;
+					}
+
+					.bi {
+						margin-left: 0.5rem;
+						display: inline-block;
+						border-radius: 50%;
+						line-height: 1rem;
+						cursor: pointer;
+
+						&:hover {
+							background-color: white;
+							color: colors.$background-tertiary;
+						}
+					}
+				}
+
+				.queue-jobs-category-cards {
+					display: flex;
+					flex-flow: column nowrap;
+					gap: 1rem;
+				}
+			}
+		}
 	}
 }
