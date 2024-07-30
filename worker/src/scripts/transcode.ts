@@ -2,9 +2,10 @@ import { spawn, ChildProcessWithoutNullStreams as ChildProcess } from 'child_pro
 import fs from 'fs';
 import path from 'path';
 import { Socket } from 'socket.io-client';
+import { setTimeout } from 'timers/promises';
+import { HandbrakeOutputType, Muxing, Scanning, WorkDone, Working } from 'types/handbrake';
 import { QueueEntryType } from 'types/queue';
 import { TranscodeStage, TranscodeStatusType, TranscodeStatusUpdateType } from 'types/transcode';
-import { HandbrakeOutputType, Muxing, Scanning, WorkDone, Working } from 'types/handbrake';
 
 let handbrake: ChildProcess | null = null;
 export const isTranscoding = () => handbrake != null;
@@ -12,6 +13,8 @@ export const isTranscoding = () => handbrake != null;
 let job: QueueEntryType | null = null;
 export const getJobID = () => job?.id;
 export const getJobData = () => job?.job;
+
+let presetPath: string | undefined;
 
 const writePresetToFile = (preset: object) => {
 	const presetString = JSON.stringify(preset);
@@ -22,7 +25,9 @@ const writePresetToFile = (preset: object) => {
 		fs.mkdirSync(presetDir);
 	}
 
-	fs.writeFile(path.join(presetDir, presetName), presetString, (err) => {
+	presetPath = path.join(presetDir, presetName);
+
+	fs.writeFile(presetPath, presetString, (err) => {
 		if (err) {
 			console.error('[worker] Preset failed to write to file.');
 			console.error(err);
@@ -32,16 +37,17 @@ const writePresetToFile = (preset: object) => {
 	});
 };
 
+const getTempOutputName = (output: string) => {
+	const outputParsed = path.parse(output);
+	return path.join(outputParsed.dir, outputParsed.name + '.transcoding' + outputParsed.ext);
+};
+
 export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 	job = queueEntry;
 	writePresetToFile(queueEntry.job.preset);
 
 	const presetName = queueEntry.job.preset.PresetList[0].PresetName;
-	const outputParsed = path.parse(queueEntry.job.output);
-	const tempOutputName = path.join(
-		outputParsed.dir,
-		outputParsed.name + '.transcoding' + outputParsed.ext
-	);
+	const tempOutputName = getTempOutputName(queueEntry.job.output);
 	const fileCollision = fs.existsSync(queueEntry.job.output);
 
 	handbrake = spawn('HandBrakeCLI', [
@@ -164,8 +170,7 @@ export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 									fs.renameSync(tempOutputName, queueEntry.job.output);
 								}
 
-								job = null;
-
+								TranscodeFileCleanup();
 								socket.emit('transcoding', finishedUpdate);
 								console.log(`[worker] [transcode] [finished] 100.00%`);
 							} else {
@@ -206,6 +211,7 @@ export function StopTranscode(socket: Socket) {
 					id: job.id,
 					status: newStatus,
 				};
+				TranscodeFileCleanup();
 				socket.emit('transcode-stopped', statusUpdate);
 				console.log(`[worker] Informing the server that job '${job.id}' has been stopped.`);
 			} else {
@@ -224,4 +230,40 @@ export function StopTranscode(socket: Socket) {
 			`[worker] The worker is not transcoding anything, there is no transcode to stop.`
 		);
 	}
+}
+
+async function TranscodeFileCleanup() {
+	// Wait one second to avoid race conditions with other file operations
+	await setTimeout(1000);
+
+	//Temp transcoding file
+	if (job) {
+		const tempOutputName = getTempOutputName(job.job.output);
+		const tempFileExists = fs.existsSync(tempOutputName);
+		if (tempFileExists) {
+			fs.rm(tempOutputName, (err) => {
+				if (err) {
+					console.error(err);
+				} else {
+					console.log(`[worker] [transcode] Cleaned up temp file '${tempOutputName}'.`);
+				}
+			});
+		}
+	}
+
+	//Temp preset file
+	if (presetPath) {
+		const presetExists = fs.existsSync(presetPath);
+		if (presetExists) {
+			fs.rm(presetPath, (err) => {
+				if (err) {
+					console.log(err);
+				}
+			});
+		}
+	}
+
+	// Reset variables
+	job = null;
+	presetPath = undefined;
 }
