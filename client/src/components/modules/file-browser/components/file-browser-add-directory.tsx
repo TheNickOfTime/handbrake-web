@@ -34,8 +34,6 @@ export default function AddDirectory({ existingItems, onCancel, onSubmit }: Para
 	const handleEnter = (value: string) => {
 		if (value) {
 			onSubmit(value);
-		} else {
-			console.log('pee');
 		}
 	};
 
