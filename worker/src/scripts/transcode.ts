@@ -57,11 +57,17 @@ export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
 	]);
 
 	const transcodeStatus: TranscodeStatusType = {
-		stage: TranscodeStage.Waiting,
+		stage: TranscodeStage.Scanning,
 		info: {
 			percentage: '0.00 %',
 		},
 	};
+	const statusUpdate: TranscodeStatusUpdateType = {
+		id: job.id,
+		status: transcodeStatus,
+	};
+
+	socket.emit('transcoding', statusUpdate);
 
 	handbrake.stdout.on('data', (data) => {
 		const outputString: string = data.toString();
