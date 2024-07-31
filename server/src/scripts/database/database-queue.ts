@@ -2,6 +2,9 @@ import { QueueTableType } from 'types/database';
 import { JobType, QueueType, QueueEntryType } from 'types/queue';
 import { database } from './database';
 
+export const queueTableCreateStatement =
+	'CREATE TABLE IF NOT EXISTS queue(id TEXT NOT NULL, job TEXT NOT NULL, PRIMARY KEY (id))';
+
 export function GetQueueFromDatabase() {
 	try {
 		const queueStatement = database.prepare<[], QueueTableType>('SELECT * FROM queue');
