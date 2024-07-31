@@ -1,6 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { DirectoryType, DirectoryItemType, DirectoryItemsType } from 'types/directory';
+import { GetQueue, JobForAvailableWorkers } from './queue';
+import { TranscodeStage } from 'types/transcode';
 
 export async function GetDirectoryItems(absolutePath: string, recursive: boolean = false) {
 	try {
@@ -105,11 +107,30 @@ export async function CheckFilenameCollision(existingDir: string, newItems: Dire
 				) {
 					fileCollisions[newItem.name].push(newItemIndex);
 					console.log(
-						`[server] [files] ${
+						`[server] [files] '${
 							newItem.name + newItem.extension
-						} collides with another output ${
+						}' collides with another output '${
 							otherNewItem.name + otherNewItem.extension
-						}`
+						}'`
+					);
+					return;
+				}
+			});
+
+		// Check for collisions against waiting jobs in the queue (files don't exist yet)
+		Object.values(GetQueue())
+			.filter((job) => job.status.stage == TranscodeStage.Waiting)
+			.map((job) => job.output)
+			.forEach((waitingItem) => {
+				if (
+					waitingItem == newItem.path &&
+					!fileCollisions[newItem.name].includes(newItemIndex)
+				) {
+					fileCollisions[newItem.name].push(newItemIndex);
+					console.log(
+						`[server] [files] '${
+							newItem.name + newItem.extension
+						}' collides with a pending job '${path.basename(waitingItem)}'`
 					);
 					return;
 				}
@@ -125,6 +146,10 @@ export async function CheckFilenameCollision(existingDir: string, newItems: Dire
 			while (
 				existingItems
 					.map((existingItem) => existingItem.name + existingItem.extension)
+					.includes(renamedItem.name + `_${fileIndex}` + renamedItem.extension) ||
+				Object.values(GetQueue())
+					.filter((job) => job.status.stage == TranscodeStage.Waiting)
+					.map((job) => path.basename(job.output))
 					.includes(renamedItem.name + `_${fileIndex}` + renamedItem.extension) ||
 				renamedItems.map((item) => item.name).includes(renamedItem.name + `_${fileIndex}`)
 			) {
