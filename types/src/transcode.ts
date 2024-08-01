@@ -13,12 +13,12 @@ export type TranscodeInfoType = {
 	averageFPS?: number;
 };
 
-export type TranscodeStatusType = {
+export type TranscodeStageType = {
 	stage: TranscodeStage;
 	info: TranscodeInfoType;
 };
 
 export type TranscodeStatusUpdateType = {
 	id: string;
-	status: TranscodeStatusType;
+	status: TranscodeStageType;
 };

@@ -1,5 +1,5 @@
 import { HandbrakePresetType } from './preset';
-import { TranscodeStatusType } from './transcode';
+import { TranscodeStage } from './transcode';
 
 export type QueueRequestType = {
 	input: string;
@@ -8,15 +8,26 @@ export type QueueRequestType = {
 };
 
 export type JobType = {
-	input: string;
-	output: string;
-	preset: HandbrakePresetType;
-	worker: string | null;
-	status: TranscodeStatusType;
-	time: {
-		started?: number;
-		finished?: number;
-	};
+	data: JobDataType;
+	status: JobStatusType;
+	order_index: number;
+};
+
+export type JobDataType = {
+	input_path: string;
+	output_path: string;
+	preset_id: string;
+	worker_id?: string;
+	time_started?: number;
+	time_finished?: number;
+};
+
+export type JobStatusType = {
+	transcode_stage?: TranscodeStage;
+	transcode_percentage?: number;
+	transcode_eta?: number;
+	transcode_fps_current?: number;
+	transcode_fps_average?: number;
 };
 
 export type QueueEntryType = {
