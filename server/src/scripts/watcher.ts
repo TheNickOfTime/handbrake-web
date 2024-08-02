@@ -116,7 +116,8 @@ function onWatcherDetectFileDelete(watcher: WatcherDefinitionType, filePath: str
 		const queue = GetQueue();
 		const jobsToDelete = Object.keys(queue).filter(
 			(key) =>
-				queue[key].input == filePath && queue[key].status.stage == TranscodeStage.Waiting
+				queue[key].data.input_path == filePath &&
+				queue[key].status.transcode_stage == TranscodeStage.Waiting
 		);
 		jobsToDelete.forEach((jobID) => {
 			console.log(

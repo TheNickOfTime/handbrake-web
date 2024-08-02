@@ -1,8 +1,7 @@
 import hash from 'object-hash';
-import { JobType, QueueEntryType, QueueRequestType, QueueStatus } from 'types/queue';
-// import { Worker } from 'types/socket';
+import { JobType, QueueRequestType, QueueStatus } from 'types/queue';
 import { Socket as Worker } from 'socket.io';
-import { TranscodeStage, TranscodeStatusUpdateType } from 'types/transcode';
+import { TranscodeStage } from 'types/transcode';
 import {
 	EmitToAllClients,
 	EmitToWorkerWithID,
@@ -15,10 +14,9 @@ import {
 	GetQueueFromDatabase,
 	InsertJobToDatabase,
 	RemoveJobFromDatabase,
-	UpdateJobInDatabase,
+	UpdateJobStatusInDatabase,
 } from './database/database-queue';
 import { GetStatusFromDatabase, UpdateStatusInDatabase } from './database/database-status';
-import { GetPresets } from './presets';
 
 // Init --------------------------------------------------------------------------------------------
 export function InitializeQueue() {
@@ -42,17 +40,19 @@ export function InitializeQueue() {
 		Object.keys(queue).forEach((jobID) => {
 			const job = queue[jobID];
 			if (
-				job.worker != null ||
-				job.status.stage == TranscodeStage.Scanning ||
-				job.status.stage == TranscodeStage.Transcoding
+				job.status.worker_id != null ||
+				job.status.transcode_stage == TranscodeStage.Scanning ||
+				job.status.transcode_stage == TranscodeStage.Transcoding
 			) {
-				job.worker = null;
-				job.status.stage = TranscodeStage.Stopped;
-				job.status.info = {
-					percentage: '0.00%',
-				};
+				UpdateJobStatusInDatabase(jobID, {
+					worker_id: null,
+					transcode_stage: TranscodeStage.Stopped,
+					transcode_percentage: 0,
+					transcode_eta: 0,
+					transcode_fps_current: 0,
+					transcode_fps_average: 0,
+				});
 
-				UpdateJobInDatabase(jobID, job);
 				console.log(
 					`[server] [queue] Job '${jobID}' was loaded from the database in an unfinished state. The job will be updated to 'Stopped'.`
 				);
@@ -65,8 +65,8 @@ export function InitializeQueue() {
 export function GetBusyWorkers() {
 	const busyWorkers = GetWorkers().filter((worker) => {
 		return Object.values(GetQueue())
-			.filter((job) => job.worker != null)
-			.map((job) => job.worker)
+			.filter((job) => job.status.worker_id != null)
+			.map((job) => job.status.worker_id)
 			.includes(GetWorkerID(worker));
 	});
 	return busyWorkers;
@@ -75,8 +75,8 @@ export function GetBusyWorkers() {
 export function GetAvailableWorkers() {
 	const availableWorkers = GetWorkers().filter((worker) => {
 		return !Object.values(GetQueue())
-			.filter((job) => job.worker != null)
-			.map((job) => job.worker)
+			.filter((job) => job.status.worker_id != null)
+			.map((job) => job.status.worker_id)
 			.includes(GetWorkerID(worker));
 	});
 	return availableWorkers;
@@ -85,7 +85,7 @@ export function GetAvailableWorkers() {
 export function GetAvailableJobs() {
 	const queue = GetQueue();
 	const availableJobs = Object.keys(queue).filter(
-		(key) => queue[key].status.stage == TranscodeStage.Waiting
+		(key) => queue[key].status.transcode_stage == TranscodeStage.Waiting
 	);
 	return availableJobs;
 }
@@ -152,16 +152,13 @@ export function WorkerForAvailableJobs(workerID: string) {
 
 export function StartJob(jobID: string, job: JobType, worker: Worker) {
 	const workerID = GetWorkerID(worker);
-	job.worker = workerID;
-	job.time = {
-		started: new Date().getTime(),
-	};
-	UpdateJobInDatabase(jobID, job);
-	const newJob: QueueEntryType = {
-		id: jobID,
-		job: job,
-	};
-	worker.emit('transcode', newJob);
+	job.status.worker_id = workerID;
+	job.status.time_started = new Date().getTime();
+	UpdateJobStatusInDatabase(jobID, {
+		worker_id: workerID,
+		time_started: new Date().getTime(),
+	});
+	worker.emit('start-transcode', jobID);
 }
 
 // Status ------------------------------------------------------------------------------------------
@@ -194,16 +191,7 @@ export function StartQueue(clientID: string) {
 					const selectedWorker = availableWorkers[i];
 					const selectedWorkerID = GetWorkerID(selectedWorker);
 
-					// Update Job
-					selectedJob.worker = selectedWorkerID;
-					UpdateJobInDatabase(selectedJobID, selectedJob);
-
-					//Send job to worker
-					const data: QueueEntryType = {
-						id: selectedJobID,
-						job: selectedJob,
-					};
-					selectedWorker.emit('transcode', data);
+					StartJob(selectedJobID, selectedJob, selectedWorker);
 
 					console.log(
 						`[server] [queue] Assigning worker '${selectedWorkerID}' to job '${selectedJobID}'.`
@@ -258,54 +246,17 @@ export function AddJob(data: QueueRequestType) {
 		new Date().getTime().toString() +
 		hash(data) +
 		(Math.random() * 9999).toString().padStart(4);
-	const newJob: JobType = {
-		input: data.input,
-		output: data.output,
-		preset: GetPresets()[data.preset],
-		worker: null,
-		status: {
-			stage: TranscodeStage.Waiting,
-			info: {
-				percentage: '0.00 %',
-			},
-		},
-		time: {},
-	};
 
-	InsertJobToDatabase(jobID, newJob);
+	InsertJobToDatabase(jobID, data);
 	UpdateQueue();
 	JobForAvailableWorkers(jobID);
-}
-
-export function UpdateJob(data: TranscodeStatusUpdateType) {
-	const job = GetJobFromDatabase(data.id);
-	if (job) {
-		switch (data.status.stage) {
-			case TranscodeStage.Waiting:
-				if (job.status.stage != TranscodeStage.Waiting) {
-					job.worker = null;
-				}
-				break;
-			case TranscodeStage.Finished:
-				job.worker = null;
-				job.time.finished = new Date().getTime();
-				break;
-			case TranscodeStage.Stopped:
-				job.worker = null;
-				job.time = {};
-				break;
-		}
-		job.status = data.status;
-		UpdateJobInDatabase(data.id.toString(), job);
-		UpdateQueue();
-	}
 }
 
 export function StopJob(id: string) {
 	const job = GetJobFromDatabase(id);
 	if (job) {
 		// Tell the worker to stop transcoding
-		const worker = job.worker;
+		const worker = job.status.worker_id;
 		if (worker) {
 			if (GetWorkerWithID(worker)) {
 				EmitToWorkerWithID(worker, 'stop-transcode', id);
@@ -313,13 +264,14 @@ export function StopJob(id: string) {
 		}
 
 		// Update Job in database
-		job.worker = null;
-		job.status.stage = TranscodeStage.Stopped;
-		job.status.info = {
-			percentage: '0.00 %',
-		};
-
-		UpdateJobInDatabase(id, job);
+		UpdateJobStatusInDatabase(id, {
+			worker_id: null,
+			transcode_stage: TranscodeStage.Stopped,
+			transcode_percentage: 0,
+			transcode_eta: 0,
+			transcode_fps_current: 0,
+			transcode_fps_average: 0,
+		});
 		UpdateQueue();
 	} else {
 		console.error(
@@ -332,17 +284,19 @@ export function ResetJob(id: string) {
 	const job = GetJobFromDatabase(id);
 	if (job) {
 		if (
-			job.status.stage == TranscodeStage.Stopped ||
-			job.status.stage == TranscodeStage.Finished
+			job.status.transcode_stage == TranscodeStage.Stopped ||
+			job.status.transcode_stage == TranscodeStage.Finished
 		) {
 			// Update Job in database
-			job.worker = null;
-			job.status.stage = TranscodeStage.Waiting;
-			job.status.info = {
-				percentage: '0.00 %',
-			};
+			UpdateJobStatusInDatabase(id, {
+				worker_id: null,
+				transcode_stage: TranscodeStage.Waiting,
+				transcode_percentage: 0,
+				transcode_eta: 0,
+				transcode_fps_current: 0,
+				transcode_fps_average: 0,
+			});
 
-			UpdateJobInDatabase(id, job);
 			UpdateQueue();
 			JobForAvailableWorkers(id);
 		} else {
@@ -380,7 +334,7 @@ export function ClearQueue(clientID: string, finishedOnly: boolean = false) {
 		for (const key of Object.keys(queue)) {
 			const job: JobType = queue[key];
 
-			switch (job.status.stage) {
+			switch (job.status.transcode_stage) {
 				case TranscodeStage.Waiting:
 					if (!finishedOnly) {
 						RemoveJobFromDatabase(key);

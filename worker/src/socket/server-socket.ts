@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client';
 import { QueueEntryType } from 'types/queue';
-import { StartTranscode, StopTranscode, getJobID } from '../scripts/transcode';
+import { StartTranscode, StopTranscode } from '../scripts/transcode';
 import { serverAddress } from '../worker';
 
 const workerID = process.env.WORKER_ID;
@@ -30,19 +30,13 @@ export default function ServerSocket(server: Socket) {
 		console.log(details);
 	});
 
-	server.on('transcode', (data: QueueEntryType) => {
-		console.log(`[worker] Request to transcode queue entry '${data.id}'.`);
-		StartTranscode(data, server);
+	server.on('start-transcode', (jobID: string) => {
+		console.log(`[worker] Request to transcode queue entry '${jobID}'.`);
+		StartTranscode(jobID, server);
 	});
 
 	server.on('stop-transcode', (id: string) => {
-		if (getJobID() == id) {
-			console.log(`[worker] Request to stop transcoding the current job with id '${id}'.`);
-			StopTranscode(server);
-		} else {
-			console.error(
-				`[worker] The id sent with the event 'stop-transcode' does not match the id of the current job.`
-			);
-		}
+		console.log(`[worker] Request to stop transcoding the current job with id '${id}'.`);
+		StopTranscode(id, server);
 	});
 }
