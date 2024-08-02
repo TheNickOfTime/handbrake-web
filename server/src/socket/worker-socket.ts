@@ -1,7 +1,11 @@
 import { Server } from 'socket.io';
 import { AddWorker, RemoveWorker } from 'scripts/connections';
-import { TranscodeStage, TranscodeStatusUpdateType } from 'types/transcode';
-import { GetQueue, StopJob, UpdateJob, WorkerForAvailableJobs } from 'scripts/queue';
+import { TranscodeStage } from 'types/transcode';
+import { GetQueue, StopJob, UpdateQueue, WorkerForAvailableJobs } from 'scripts/queue';
+import { JobDataType, JobStatusType } from 'types/queue';
+import { GetJobDataFromTable, UpdateJobStatusInDatabase } from 'scripts/database/database-queue';
+import { HandbrakePresetType } from 'types/preset';
+import { GetPresets } from 'scripts/presets';
 
 export default function WorkerSocket(io: Server) {
 	io.of('/worker').on('connection', (socket) => {
@@ -17,7 +21,7 @@ export default function WorkerSocket(io: Server) {
 			const queue = GetQueue();
 			if (queue) {
 				const workersJob = Object.keys(queue).find(
-					(jobID) => queue[jobID].worker == workerID
+					(jobID) => queue[jobID].status.worker_id == workerID
 				);
 				if (workersJob) {
 					StopJob(workersJob);
@@ -28,24 +32,42 @@ export default function WorkerSocket(io: Server) {
 			}
 		});
 
-		socket.on('transcode-stopped', (status: TranscodeStatusUpdateType) => {
+		socket.on(
+			'get-job-data',
+			(jobID: string, callback: (jobData: JobDataType | undefined) => void) => {
+				const jobData = GetJobDataFromTable(jobID);
+				callback(jobData);
+			}
+		);
+
+		socket.on(
+			'get-preset-data',
+			(presetID: string, callback: (presetData: HandbrakePresetType | undefined) => void) => {
+				const jobData = GetPresets()[presetID];
+				callback(jobData);
+			}
+		);
+
+		socket.on('transcode-stopped', (job_id: string, status: JobStatusType) => {
 			console.log(
 				`[server] Worker '${workerID}' with ID '${socket.id}' has stopped transcoding. The job will be reset.`
 			);
 
-			UpdateJob(status);
+			UpdateJobStatusInDatabase(job_id, status);
+			UpdateQueue();
 			WorkerForAvailableJobs(workerID);
 		});
 
-		socket.on('transcoding', (data: TranscodeStatusUpdateType) => {
-			console.log(
-				`[server] Worker '${workerID}' with ID '${socket.id}' is ${
-					TranscodeStage[data.status.stage]
-				}:\n percentage: ${data.status.info.percentage}`
-			);
+		socket.on('transcode-update', (job_id: string, status: JobStatusType) => {
+			// console.log(
+			// 	`[server] Worker '${workerID}' with ID '${socket.id}' is ${
+			// 		TranscodeStage[status.transcode_stage!]
+			// 	}:\n percentage: ${data.status.info.percentage}`
+			// );
 
-			UpdateJob(data);
-			if (data.status.stage == TranscodeStage.Finished) {
+			UpdateJobStatusInDatabase(job_id, status);
+			UpdateQueue();
+			if (status.transcode_stage == TranscodeStage.Finished) {
 				WorkerForAvailableJobs(workerID);
 			}
 		});

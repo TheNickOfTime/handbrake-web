@@ -119,8 +119,8 @@ export async function CheckFilenameCollision(existingDir: string, newItems: Dire
 
 		// Check for collisions against waiting jobs in the queue (files don't exist yet)
 		Object.values(GetQueue())
-			.filter((job) => job.status.stage == TranscodeStage.Waiting)
-			.map((job) => job.output)
+			.filter((job) => job.status.transcode_stage == TranscodeStage.Waiting)
+			.map((job) => job.data.output_path)
 			.forEach((waitingItem) => {
 				if (
 					waitingItem == newItem.path &&
@@ -148,8 +148,8 @@ export async function CheckFilenameCollision(existingDir: string, newItems: Dire
 					.map((existingItem) => existingItem.name + existingItem.extension)
 					.includes(renamedItem.name + `_${fileIndex}` + renamedItem.extension) ||
 				Object.values(GetQueue())
-					.filter((job) => job.status.stage == TranscodeStage.Waiting)
-					.map((job) => path.basename(job.output))
+					.filter((job) => job.status.transcode_stage == TranscodeStage.Waiting)
+					.map((job) => path.basename(job.data.output_path))
 					.includes(renamedItem.name + `_${fileIndex}` + renamedItem.extension) ||
 				renamedItems.map((item) => item.name).includes(renamedItem.name + `_${fileIndex}`)
 			) {

@@ -17,11 +17,14 @@ export default function WorkersSection() {
 	const { connections, queue } = useOutletContext<PrimaryOutletContextType>();
 
 	const workerInfo = connections.workers.reduce((prev: WorkerInfo, cur) => {
-		const job = Object.values(queue).find((job) => job.worker == cur.workerID);
+		const job = Object.values(queue).find((job) => job.status.worker_id == cur.workerID);
 		prev[cur.workerID] = {
 			status: job ? 'Working' : 'Idle',
-			job: job ? job.input : 'N/A',
-			progress: job ? job.status.info.percentage.replace(' %', '') : 'N/A',
+			job: job ? job.data.input_path : 'N/A',
+			progress:
+				job && job.status.transcode_percentage
+					? (job.status.transcode_percentage * 100).toFixed(2)
+					: 'N/A',
 		};
 
 		return prev;
