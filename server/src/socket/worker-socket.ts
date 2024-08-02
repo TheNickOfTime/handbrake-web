@@ -17,7 +17,7 @@ export default function WorkerSocket(io: Server) {
 			const queue = GetQueue();
 			if (queue) {
 				const workersJob = Object.keys(queue).find(
-					(jobID) => queue[jobID].worker == workerID
+					(jobID) => queue[jobID].status.worker_id == workerID
 				);
 				if (workersJob) {
 					StopJob(workersJob);
