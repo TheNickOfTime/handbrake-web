@@ -5,15 +5,15 @@ import path from 'path';
 import { Socket } from 'socket.io-client';
 import { setTimeout } from 'timers/promises';
 import { HandbrakeOutputType, Muxing, Scanning, WorkDone, Working } from 'types/handbrake';
-import { HandbrakePresetListType, HandbrakePresetType } from 'types/preset';
-import { JobDataType, JobStatusType, JobType, QueueEntryType } from 'types/queue';
-import { TranscodeStage, TranscodeStageType, TranscodeStatusUpdateType } from 'types/transcode';
+import { HandbrakePresetType } from 'types/preset';
+import { JobDataType, JobStatusType } from 'types/queue';
+import { TranscodeStage } from 'types/transcode';
 
 let handbrake: ChildProcess | null = null;
 export const isTranscoding = () => handbrake != null;
 
-let job: JobDataType | null = null;
-let jobID: string | null = null;
+let currentJob: JobDataType | null = null;
+export let currentJobID: string | null = null;
 let presetPath: string | undefined;
 
 const writePresetToFile = async (preset: HandbrakePresetType) => {
@@ -45,8 +45,8 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 	try {
 		// Get job data from db
 		const jobData: JobDataType = await socket.timeout(5000).emitWithAck('get-job-data', jobID);
-		job = jobData;
-		jobID = jobID;
+		currentJob = jobData;
+		currentJobID = jobID;
 
 		// Get preset data
 		const presetData: HandbrakePresetType = await socket
@@ -96,7 +96,7 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 									transcode_stage: TranscodeStage.Scanning,
 									transcode_percentage: scanning.Progress,
 								};
-								socket.emit('transcoding', scanningStatus);
+								socket.emit('transcode-update', jobID, scanningStatus);
 								console.log(
 									`[worker] [transcode] [scanning] ${(
 										scanning.Progress * 100
@@ -112,17 +112,20 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 									transcode_fps_current: working.Rate,
 									transcode_fps_average: working.RateAvg,
 								};
-								socket.emit('transcoding', workingStatus);
+								socket.emit('transcode-update', jobID, workingStatus);
 								console.log(
 									`[worker] [transcode] [processing] ${(
 										working.Progress * 100
 									).toFixed(2)} %`
 								);
-								// console.log(working);
 								break;
 							case 'MUXING':
 								const muxing: Muxing = outputJSON.Muxing!;
-
+								const muxingStatus: JobStatusType = {
+									transcode_stage: TranscodeStage.Transcoding,
+									transcode_percentage: muxing.Progress,
+								};
+								socket.emit('transcode-update', jobID, muxingStatus);
 								console.log(
 									`[worker] [transcode] [muxing] ${(
 										muxing.Progress * 100
@@ -157,7 +160,7 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 									}
 
 									TranscodeFileCleanup();
-									socket.emit('transcoding', doneStatus);
+									socket.emit('transcode-update', jobID, doneStatus);
 									console.log(`[worker] [transcode] [finished] 100.00%`);
 								} else {
 									console.log(
@@ -188,7 +191,7 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 
 export function StopTranscode(id: string, socket: Socket) {
 	if (handbrake) {
-		if (job && jobID == id) {
+		if (currentJob && currentJobID == id) {
 			if (socket.connected) {
 				const newStatus: JobStatusType = {
 					transcode_stage: TranscodeStage.Stopped,
@@ -196,7 +199,7 @@ export function StopTranscode(id: string, socket: Socket) {
 				};
 				TranscodeFileCleanup();
 				console.log(`[worker] Informing the server that job '${id}' has been stopped.`);
-				socket.emit('transcode-stopped', newStatus);
+				socket.emit('transcode-stopped', currentJobID, newStatus);
 			} else {
 				console.error(
 					"[worker] [error] Cannot send the event 'transcode-stopped' because the server socket is not connected."
@@ -220,8 +223,8 @@ async function TranscodeFileCleanup() {
 	await setTimeout(1000);
 
 	//Temp transcoding file
-	if (job) {
-		const tempOutputName = getTempOutputName(job.output_path);
+	if (currentJob) {
+		const tempOutputName = getTempOutputName(currentJob.output_path);
 		const tempFileExists = fs.existsSync(tempOutputName);
 		if (tempFileExists) {
 			fs.rm(tempOutputName, (err) => {
@@ -247,7 +250,7 @@ async function TranscodeFileCleanup() {
 	}
 
 	// Reset variables
-	job = null;
-	jobID = null;
+	currentJob = null;
+	currentJobID = null;
 	presetPath = undefined;
 }
