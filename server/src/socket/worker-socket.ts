@@ -1,7 +1,7 @@
 import { Server } from 'socket.io';
 import { AddWorker, RemoveWorker } from 'scripts/connections';
-import { TranscodeStage, TranscodeStatusUpdateType } from 'types/transcode';
-import { GetQueue, StopJob, UpdateJob, WorkerForAvailableJobs } from 'scripts/queue';
+import { TranscodeStage } from 'types/transcode';
+import { GetQueue, StopJob, UpdateQueue, WorkerForAvailableJobs } from 'scripts/queue';
 import { JobDataType, JobStatusType } from 'types/queue';
 import { GetJobDataFromTable, UpdateJobStatusInDatabase } from 'scripts/database/database-queue';
 import { HandbrakePresetType } from 'types/preset';
@@ -48,12 +48,13 @@ export default function WorkerSocket(io: Server) {
 			}
 		);
 
-		socket.on('transcode-stopped', (status: TranscodeStatusUpdateType) => {
+		socket.on('transcode-stopped', (job_id: string, status: JobStatusType) => {
 			console.log(
 				`[server] Worker '${workerID}' with ID '${socket.id}' has stopped transcoding. The job will be reset.`
 			);
 
-			UpdateJob(status);
+			UpdateJobStatusInDatabase(job_id, status);
+			UpdateQueue();
 			WorkerForAvailableJobs(workerID);
 		});
 
@@ -65,6 +66,7 @@ export default function WorkerSocket(io: Server) {
 			// );
 
 			UpdateJobStatusInDatabase(job_id, status);
+			UpdateQueue();
 			if (status.transcode_stage == TranscodeStage.Finished) {
 				WorkerForAvailableJobs(workerID);
 			}

@@ -2,7 +2,6 @@ import { Server } from 'socket.io';
 import {
 	CreateDirectoryRequestType,
 	DirectoryType,
-	DirectoryItemType,
 	DirectoryRequestType,
 	DirectoryItemsType,
 } from 'types/directory';
@@ -12,7 +11,7 @@ import { QueueRequestType } from 'types/queue';
 import { Socket as Client } from 'socket.io';
 import { AddClient, RemoveClient } from 'scripts/connections';
 import { CheckFilenameCollision, GetDirectoryItems, MakeDirectory } from 'scripts/files';
-import { AddPreset, GetPresetNames, GetPresets, RemovePreset } from 'scripts/presets';
+import { AddPreset, GetPresets, RemovePreset } from 'scripts/presets';
 import {
 	AddJob,
 	ClearQueue,
@@ -24,7 +23,6 @@ import {
 	StopJob,
 	StopQueue,
 } from 'scripts/queue';
-import { videoPath } from 'scripts/video';
 import { ConfigType, ConfigPropertyType } from 'types/config';
 import { GetConfig, GetPropertyFromConfig } from 'scripts/config';
 import { WatcherDefinitionType, WatcherDefinitionWithIDType } from 'types/watcher';

@@ -1,7 +1,7 @@
 import hash from 'object-hash';
 import { JobType, QueueRequestType, QueueStatus } from 'types/queue';
 import { Socket as Worker } from 'socket.io';
-import { TranscodeStage, TranscodeStatusUpdateType } from 'types/transcode';
+import { TranscodeStage } from 'types/transcode';
 import {
 	EmitToAllClients,
 	EmitToWorkerWithID,
@@ -250,33 +250,6 @@ export function AddJob(data: QueueRequestType) {
 	InsertJobToDatabase(jobID, data);
 	UpdateQueue();
 	JobForAvailableWorkers(jobID);
-}
-
-export function UpdateJob(data: TranscodeStatusUpdateType) {
-	const job = GetJobFromDatabase(data.id);
-	if (job) {
-		switch (data.status.stage) {
-			case TranscodeStage.Waiting:
-				if (job.status.transcode_stage != TranscodeStage.Waiting) {
-					UpdateJobStatusInDatabase(data.id, { worker_id: null });
-				}
-				break;
-			case TranscodeStage.Finished:
-				UpdateJobStatusInDatabase(data.id, {
-					worker_id: null,
-					time_finished: new Date().getTime(),
-				});
-				break;
-			case TranscodeStage.Stopped:
-				UpdateJobStatusInDatabase(data.id, {
-					worker_id: null,
-					time_started: 0,
-					time_finished: 0,
-				});
-				break;
-		}
-		UpdateQueue();
-	}
 }
 
 export function StopJob(id: string) {
