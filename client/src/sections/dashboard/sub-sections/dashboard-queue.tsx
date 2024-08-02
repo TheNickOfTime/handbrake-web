@@ -31,34 +31,43 @@ export default function DashboardQueue({ queue }: Params) {
 					<tbody>
 						{Object.keys(queue).map((key) => {
 							const job = queue[key];
-							const percentage = parseFloat(
-								job.status.info.percentage.replace(' %', '')
-							);
+							const percentage = job.status.transcode_percentage
+								? job.status.transcode_percentage * 100
+								: 0;
 
 							return (
 								<tr key={`queue-job-${key}`}>
-									<td className='input' title={job.input}>
-										{job.input.match(/[^/]+$/)}
-										<BadgeInfo info={job.input} />
+									<td className='input' title={job.data.input_path}>
+										{job.data.input_path.match(/[^/]+$/)}
+										<BadgeInfo info={job.data.input_path} />
 									</td>
-									<td className='output' title={job.output}>
-										{job.output.match(/[^/]+$/)}
-										<BadgeInfo info={job.output} />
+									<td className='output' title={job.data.output_path}>
+										{job.data.output_path.match(/[^/]+$/)}
+										<BadgeInfo info={job.data.output_path} />
 									</td>
 									<td
 										className={`status center ${
-											job.status.stage == TranscodeStage.Waiting
+											job.status.transcode_stage == TranscodeStage.Waiting
 												? 'color-yellow'
-												: job.status.stage == TranscodeStage.Scanning
+												: job.status.transcode_stage ==
+												  TranscodeStage.Scanning
 												? 'color-orange'
-												: job.status.stage == TranscodeStage.Transcoding
+												: job.status.transcode_stage ==
+												  TranscodeStage.Transcoding
 												? 'color-blue'
-												: job.status.stage == TranscodeStage.Finished
+												: job.status.transcode_stage ==
+												  TranscodeStage.Finished
 												? 'color-green'
 												: ''
 										}`}
 									>
-										{TranscodeStage[job.status.stage]}
+										{
+											TranscodeStage[
+												job.status.transcode_stage
+													? job.status.transcode_stage
+													: 0
+											]
+										}
 									</td>
 									<td className='progress'>
 										<ProgressBar percentage={percentage} />

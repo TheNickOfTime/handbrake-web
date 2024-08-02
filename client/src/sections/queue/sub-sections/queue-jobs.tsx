@@ -26,21 +26,27 @@ export default function QueueJobs({
 	const jobsInProgress: QueueType = Object.fromEntries(
 		Object.entries(queue).filter(
 			(entry) =>
-				entry[1].status.stage == TranscodeStage.Transcoding ||
-				entry[1].status.stage == TranscodeStage.Scanning
+				entry[1].status.transcode_stage == TranscodeStage.Transcoding ||
+				entry[1].status.transcode_stage == TranscodeStage.Scanning
 		)
 	);
 
 	const jobsWaiting: QueueType = Object.fromEntries(
-		Object.entries(queue).filter((entry) => entry[1].status.stage == TranscodeStage.Waiting)
+		Object.entries(queue).filter(
+			(entry) => entry[1].status.transcode_stage == TranscodeStage.Waiting
+		)
 	);
 
 	const jobsStopped: QueueType = Object.fromEntries(
-		Object.entries(queue).filter((entry) => entry[1].status.stage == TranscodeStage.Stopped)
+		Object.entries(queue).filter(
+			(entry) => entry[1].status.transcode_stage == TranscodeStage.Stopped
+		)
 	);
 
 	const jobsFinshed: QueueType = Object.fromEntries(
-		Object.entries(queue).filter((entry) => entry[1].status.stage == TranscodeStage.Finished)
+		Object.entries(queue).filter(
+			(entry) => entry[1].status.transcode_stage == TranscodeStage.Finished
+		)
 	);
 
 	const onlyFinished = Object.keys(queue).length == Object.keys(jobsFinshed).length;

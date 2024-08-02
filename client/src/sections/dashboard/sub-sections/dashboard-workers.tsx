@@ -29,7 +29,7 @@ export default function DashboardWorkers({ queue, workers }: Params) {
 					<tbody>
 						{workers.map((worker) => {
 							const status = Object.values(queue).find(
-								(job) => job.worker == worker.workerID
+								(job) => job.status.worker_id == worker.workerID
 							)
 								? 'Working'
 								: 'Idle';

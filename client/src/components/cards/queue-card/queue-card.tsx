@@ -20,18 +20,21 @@ export default function QueueCard({
 	handleResetJob,
 	handleRemoveJob,
 }: Params) {
-	const percentage = parseFloat(data.status.info.percentage.replace(' %', ''));
+	const percentage = data.status.transcode_percentage
+		? data.status.transcode_percentage * 100
+		: 0;
 
 	const canStop =
-		data.status.stage == TranscodeStage.Scanning ||
-		data.status.stage == TranscodeStage.Transcoding;
+		data.status.transcode_stage == TranscodeStage.Scanning ||
+		data.status.transcode_stage == TranscodeStage.Transcoding;
 	const canReset =
-		data.status.stage == TranscodeStage.Stopped || data.status.stage == TranscodeStage.Finished;
+		data.status.transcode_stage == TranscodeStage.Stopped ||
+		data.status.transcode_stage == TranscodeStage.Finished;
 	const canRemove =
-		data.status.stage == TranscodeStage.Waiting ||
-		data.status.stage == TranscodeStage.Finished ||
-		data.status.stage == TranscodeStage.Stopped ||
-		data.worker == null;
+		data.status.transcode_stage == TranscodeStage.Waiting ||
+		data.status.transcode_stage == TranscodeStage.Finished ||
+		data.status.transcode_stage == TranscodeStage.Stopped ||
+		data.status.worker_id == null;
 
 	const secondsToTime = (seconds: number) => {
 		const hours = Math.floor(seconds / 3600);
@@ -51,42 +54,44 @@ export default function QueueCard({
 			</div>
 			<div className='job-info'>
 				<div className='job-info-section'>
-					<QueueCardSection label='Input' title={data.input}>
-						{data.input.match(/[^/]+$/)}
+					<QueueCardSection label='Input' title={data.data.input_path}>
+						{data.data.input_path.match(/[^/]+$/)}
 					</QueueCardSection>
-					<QueueCardSection label='Output' title={data.output}>
-						{data.output.match(/[^/]+$/)}
+					<QueueCardSection label='Output' title={data.data.output_path}>
+						{data.data.output_path.match(/[^/]+$/)}
 					</QueueCardSection>
-					<QueueCardSection label='Preset'>
-						{data.preset.PresetList[0].PresetName}
-					</QueueCardSection>
+					<QueueCardSection label='Preset'>{data.data.preset_id}</QueueCardSection>
 					<QueueCardSection label='Worker'>
-						{data.worker ? data.worker : 'N/A'}
+						{data.status.worker_id ? data.status.worker_id : 'N/A'}
 					</QueueCardSection>
 					<QueueCardSection label='Status'>
-						{TranscodeStage[data.status.stage]}
+						{
+							TranscodeStage[
+								data.status.transcode_stage ? data.status.transcode_stage : 0
+							]
+						}
 					</QueueCardSection>
 				</div>
-				{(data.status.stage == TranscodeStage.Scanning ||
-					data.status.stage == TranscodeStage.Transcoding) && (
+				{(data.status.transcode_stage == TranscodeStage.Scanning ||
+					data.status.transcode_stage == TranscodeStage.Transcoding) && (
 					<div className='job-info-section'>
 						<QueueCardSection label='FPS'>
-							{data.status.info.currentFPS
-								? `${data.status.info.currentFPS.toFixed(1)}fps`
+							{data.status.transcode_fps_current
+								? `${data.status.transcode_fps_current.toFixed(1)}fps`
 								: 'N/A'}
 						</QueueCardSection>
 						<QueueCardSection label='Avg. FPS'>
-							{data.status.info.averageFPS
-								? `${data.status.info.averageFPS.toFixed(1)}fps`
+							{data.status.transcode_fps_average
+								? `${data.status.transcode_fps_average.toFixed(1)}fps`
 								: 'N/A'}
 						</QueueCardSection>
 						<QueueCardSection label='Time Elapsed'>
-							{data.time.started
-								? secondsToTime((Date.now() - data.time.started) / 1000)
+							{data.status.time_started
+								? secondsToTime((Date.now() - data.status.time_started) / 1000)
 								: 'N/A'}
 						</QueueCardSection>
 						<QueueCardSection label='Time Left'>
-							{data.status.info.eta ? data.status.info.eta : 'N/A'}
+							{data.status.transcode_eta ? data.status.transcode_eta : 'N/A'}
 						</QueueCardSection>
 						<QueueCardSection label='Progress'>
 							<ProgressBar percentage={percentage} />
