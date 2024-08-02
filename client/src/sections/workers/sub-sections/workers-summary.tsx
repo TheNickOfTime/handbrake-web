@@ -42,7 +42,7 @@ export default function WorkersSummary({ workerInfo, queue }: Params) {
 						{
 							Object.values(queue).filter(
 								(job) =>
-									job.status.stage !=
+									job.status.transcode_stage !=
 									(TranscodeStage.Finished || TranscodeStage.Transcoding)
 							).length
 						}
