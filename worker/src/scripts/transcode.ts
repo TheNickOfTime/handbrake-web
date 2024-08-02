@@ -1,40 +1,39 @@
 import { spawn, ChildProcessWithoutNullStreams as ChildProcess } from 'child_process';
 import fs from 'fs';
+import { mkdir, writeFile } from 'fs/promises';
 import path from 'path';
 import { Socket } from 'socket.io-client';
 import { setTimeout } from 'timers/promises';
 import { HandbrakeOutputType, Muxing, Scanning, WorkDone, Working } from 'types/handbrake';
-import { QueueEntryType } from 'types/queue';
-import { TranscodeStage, TranscodeStatusType, TranscodeStatusUpdateType } from 'types/transcode';
+import { HandbrakePresetListType, HandbrakePresetType } from 'types/preset';
+import { JobDataType, JobStatusType, JobType, QueueEntryType } from 'types/queue';
+import { TranscodeStage, TranscodeStageType, TranscodeStatusUpdateType } from 'types/transcode';
 
 let handbrake: ChildProcess | null = null;
 export const isTranscoding = () => handbrake != null;
 
-let job: QueueEntryType | null = null;
-export const getJobID = () => job?.id;
-export const getJobData = () => job?.job;
-
+let job: JobDataType | null = null;
+let jobID: string | null = null;
 let presetPath: string | undefined;
 
-const writePresetToFile = (preset: object) => {
-	const presetString = JSON.stringify(preset);
-	const presetDir = './temp';
-	const presetName = 'preset.json';
+const writePresetToFile = async (preset: HandbrakePresetType) => {
+	try {
+		const presetString = JSON.stringify(preset);
+		const presetDir = './temp';
+		const presetName = 'preset.json';
 
-	if (!fs.existsSync(presetDir)) {
-		fs.mkdirSync(presetDir);
-	}
-
-	presetPath = path.join(presetDir, presetName);
-
-	fs.writeFile(presetPath, presetString, (err) => {
-		if (err) {
-			console.error('[worker] Preset failed to write to file.');
-			console.error(err);
-		} else {
-			console.log('[worker] Sucessfully wrote preset to file.');
+		if (!fs.existsSync(presetDir)) {
+			mkdir(presetDir);
 		}
-	});
+
+		presetPath = path.join(presetDir, presetName);
+
+		await writeFile(presetPath, presetString);
+		console.log('[worker] Sucessfully wrote preset to file.');
+	} catch (err) {
+		console.error(`[worker] [error] Could not write preset to file at ${presetPath}.`);
+		console.error(err);
+	}
 };
 
 const getTempOutputName = (output: string) => {
@@ -42,178 +41,162 @@ const getTempOutputName = (output: string) => {
 	return path.join(outputParsed.dir, outputParsed.name + '.transcoding' + outputParsed.ext);
 };
 
-export function StartTranscode(queueEntry: QueueEntryType, socket: Socket) {
-	job = queueEntry;
-	writePresetToFile(queueEntry.job.preset);
+export async function StartTranscode(jobID: string, socket: Socket) {
+	try {
+		// Get job data from db
+		const jobData: JobDataType = await socket.timeout(5000).emitWithAck('get-job-data', jobID);
+		job = jobData;
+		jobID = jobID;
 
-	const presetName = queueEntry.job.preset.PresetList[0].PresetName;
-	const tempOutputName = getTempOutputName(queueEntry.job.output);
-	const fileCollision = fs.existsSync(queueEntry.job.output);
+		// Get preset data
+		const presetData: HandbrakePresetType = await socket
+			.timeout(5000)
+			.emitWithAck('get-preset-data', jobData.preset_id);
+		await writePresetToFile(presetData);
 
-	handbrake = spawn('HandBrakeCLI', [
-		'--preset-import-file',
-		'./temp/preset.json',
-		'--preset',
-		presetName,
-		'-i',
-		queueEntry.job.input,
-		'-o',
-		tempOutputName,
-		'--json',
-	]);
+		const tempOutputName = getTempOutputName(jobData.output_path);
+		const fileCollision = fs.existsSync(jobData.output_path);
 
-	const transcodeStatus: TranscodeStatusType = {
-		stage: TranscodeStage.Scanning,
-		info: {
-			percentage: '0.00 %',
-		},
-	};
-	const statusUpdate: TranscodeStatusUpdateType = {
-		id: job.id,
-		status: transcodeStatus,
-	};
+		handbrake = spawn('HandBrakeCLI', [
+			'--preset-import-file',
+			'./temp/preset.json',
+			'--preset',
+			jobData.preset_id,
+			'-i',
+			jobData.input_path,
+			'-o',
+			tempOutputName,
+			'--json',
+		]);
 
-	socket.emit('transcoding', statusUpdate);
+		const newStatus: JobStatusType = {
+			transcode_stage: TranscodeStage.Scanning,
+		};
 
-	handbrake.stdout.on('data', (data) => {
-		const outputString: string = data.toString();
-		const jsonRegex = /((^[A-Z][a-z]+):\s({(?:[\n\s+].+\n)+^}))+/gm;
-		const jsonOutputMatches = outputString.matchAll(jsonRegex);
+		socket.emit('transcode-update', jobID, newStatus);
 
-		for (const match of jsonOutputMatches) {
-			const outputKind = match[2];
-			const outputJSON: HandbrakeOutputType = JSON.parse(match[3]);
+		handbrake.stdout.on('data', (data) => {
+			const outputString: string = data.toString();
+			const jsonRegex = /((^[A-Z][a-z]+):\s({(?:[\n\s+].+\n)+^}))+/gm;
+			const jsonOutputMatches = outputString.matchAll(jsonRegex);
 
-			switch (outputKind) {
-				case 'Version':
-					console.log(`[worker] [transcode] [version]`, outputJSON);
-					break;
-				case 'Progress':
-					switch (outputJSON['State']) {
-						case 'SCANNING':
-							const scanning: Scanning = outputJSON.Scanning!;
-							transcodeStatus.stage = TranscodeStage.Scanning;
-							transcodeStatus.info = {
-								percentage: `${scanning.Progress.toFixed(2)} %`,
-							};
-							const scanningUpdate: TranscodeStatusUpdateType = {
-								id: queueEntry.id,
-								status: transcodeStatus,
-							};
-							socket.emit('transcoding', scanningUpdate);
-							console.log(
-								`[worker] [transcode] [scanning] ${(
-									scanning.Progress * 100
-								).toFixed(2)} %`
-							);
-							break;
-						case 'WORKING':
-							const working: Working = outputJSON.Working!;
-							transcodeStatus.stage = TranscodeStage.Transcoding;
-							transcodeStatus.info = {
-								percentage: `${(working.Progress * 100).toFixed(2)} %`,
-								eta: `${working.Hours > 0 ? working.Hours + 'h' : ''}${
-									working.Minutes > 0 ? working.Minutes + 'm' : ''
-								}${working.Seconds >= 0 ? working.Seconds + 's' : ''}`,
-								currentFPS: working.Rate,
-								averageFPS: working.RateAvg,
-							};
-							const workingUpdate: TranscodeStatusUpdateType = {
-								id: queueEntry.id,
-								status: transcodeStatus,
-							};
-							socket.emit('transcoding', workingUpdate);
-							console.log(
-								`[worker] [transcode] [processing] ${(
-									working.Progress * 100
-								).toFixed(2)} %`
-							);
-							// console.log(working);
-							break;
-						case 'MUXING':
-							const muxing: Muxing = outputJSON.Muxing!;
+			for (const match of jsonOutputMatches) {
+				const outputKind = match[2];
+				const outputJSON: HandbrakeOutputType = JSON.parse(match[3]);
 
-							console.log(
-								`[worker] [transcode] [muxing] ${(muxing.Progress * 100).toFixed(
-									2
-								)} %`
-							);
-							break;
-						case 'WORKDONE':
-							const workDone: WorkDone = outputJSON.WorkDone!;
-
-							if (workDone.Error == 0) {
-								transcodeStatus.stage = TranscodeStage.Finished;
-								transcodeStatus.info = {
-									percentage: `100.00 %`,
+				switch (outputKind) {
+					case 'Version':
+						console.log(`[worker] [transcode] [version]`, outputJSON);
+						break;
+					case 'Progress':
+						switch (outputJSON['State']) {
+							case 'SCANNING':
+								const scanning: Scanning = outputJSON.Scanning!;
+								const scanningStatus: JobStatusType = {
+									transcode_stage: TranscodeStage.Scanning,
+									transcode_percentage: scanning.Progress,
 								};
-								const finishedUpdate: TranscodeStatusUpdateType = {
-									id: queueEntry.id,
-									status: transcodeStatus,
-								};
-
-								// Remove original file if necessary, remove '.transoding' temp extension from the file
-								if (fileCollision) {
-									fs.rm(queueEntry.job.output, (err) => {
-										if (err) {
-											console.error(err);
-										} else {
-											console.log(
-												`[worker] [transcode] Overwriting '${path.basename(
-													queueEntry.job.output
-												)}' with the contents of the current job'.`
-											);
-											fs.renameSync(tempOutputName, queueEntry.job.output);
-										}
-									});
-								} else {
-									fs.renameSync(tempOutputName, queueEntry.job.output);
-								}
-
-								TranscodeFileCleanup();
-								socket.emit('transcoding', finishedUpdate);
-								console.log(`[worker] [transcode] [finished] 100.00%`);
-							} else {
+								socket.emit('transcoding', scanningStatus);
 								console.log(
-									`[worker] [transcode] [error] Finished with error ${workDone.Error}`
+									`[worker] [transcode] [scanning] ${(
+										scanning.Progress * 100
+									).toFixed(2)} %`
 								);
-							}
-							break;
-						default:
-							console.error(
-								'[worker] [transcode] [error] Unexpected json output:',
-								outputJSON
-							);
-							break;
-					}
+								break;
+							case 'WORKING':
+								const working: Working = outputJSON.Working!;
+								const workingStatus: JobStatusType = {
+									transcode_stage: TranscodeStage.Transcoding,
+									transcode_percentage: working.Progress,
+									transcode_eta: working.ETASeconds,
+									transcode_fps_current: working.Rate,
+									transcode_fps_average: working.RateAvg,
+								};
+								socket.emit('transcoding', workingStatus);
+								console.log(
+									`[worker] [transcode] [processing] ${(
+										working.Progress * 100
+									).toFixed(2)} %`
+								);
+								// console.log(working);
+								break;
+							case 'MUXING':
+								const muxing: Muxing = outputJSON.Muxing!;
+
+								console.log(
+									`[worker] [transcode] [muxing] ${(
+										muxing.Progress * 100
+									).toFixed(2)} %`
+								);
+								break;
+							case 'WORKDONE':
+								const workDone: WorkDone = outputJSON.WorkDone!;
+
+								if (workDone.Error == 0) {
+									const doneStatus: JobStatusType = {
+										transcode_stage: TranscodeStage.Finished,
+										transcode_percentage: 1,
+									};
+
+									// Remove original file if necessary, remove '.transoding' temp extension from the file
+									if (fileCollision) {
+										fs.rm(jobData.output_path, (err) => {
+											if (err) {
+												console.error(err);
+											} else {
+												console.log(
+													`[worker] [transcode] Overwriting '${path.basename(
+														jobData.output_path
+													)}' with the contents of the current job'.`
+												);
+												fs.renameSync(tempOutputName, jobData.output_path);
+											}
+										});
+									} else {
+										fs.renameSync(tempOutputName, jobData.output_path);
+									}
+
+									TranscodeFileCleanup();
+									socket.emit('transcoding', doneStatus);
+									console.log(`[worker] [transcode] [finished] 100.00%`);
+								} else {
+									console.log(
+										`[worker] [transcode] [error] Finished with error ${workDone.Error}`
+									);
+								}
+								break;
+							default:
+								console.error(
+									'[worker] [transcode] [error] Unexpected json output:',
+									outputJSON
+								);
+								break;
+						}
+				}
 			}
-		}
-	});
+		});
 
-	handbrake.stderr.on('data', (data) => {
-		const output: string = data.toString();
+		handbrake.stderr.on('data', (data) => {
+			const output: string = data.toString();
 
-		console.error('[worker] [error] ', output);
-	});
+			console.error('[worker] [error] ', output);
+		});
+	} catch (err) {
+		console.error(err);
+	}
 }
 
-export function StopTranscode(socket: Socket) {
+export function StopTranscode(id: string, socket: Socket) {
 	if (handbrake) {
-		if (job) {
+		if (job && jobID == id) {
 			if (socket.connected) {
-				const newStatus: TranscodeStatusType = {
-					stage: TranscodeStage.Stopped,
-					info: {
-						percentage: `${(0).toFixed(2)} %`,
-					},
-				};
-				const statusUpdate: TranscodeStatusUpdateType = {
-					id: job.id,
-					status: newStatus,
+				const newStatus: JobStatusType = {
+					transcode_stage: TranscodeStage.Stopped,
+					transcode_percentage: 0,
 				};
 				TranscodeFileCleanup();
-				socket.emit('transcode-stopped', statusUpdate);
-				console.log(`[worker] Informing the server that job '${job.id}' has been stopped.`);
+				console.log(`[worker] Informing the server that job '${id}' has been stopped.`);
+				socket.emit('transcode-stopped', newStatus);
 			} else {
 				console.error(
 					"[worker] [error] Cannot send the event 'transcode-stopped' because the server socket is not connected."
@@ -238,7 +221,7 @@ async function TranscodeFileCleanup() {
 
 	//Temp transcoding file
 	if (job) {
-		const tempOutputName = getTempOutputName(job.job.output);
+		const tempOutputName = getTempOutputName(job.output_path);
 		const tempFileExists = fs.existsSync(tempOutputName);
 		if (tempFileExists) {
 			fs.rm(tempOutputName, (err) => {
@@ -265,5 +248,6 @@ async function TranscodeFileCleanup() {
 
 	// Reset variables
 	job = null;
+	jobID = null;
 	presetPath = undefined;
 }

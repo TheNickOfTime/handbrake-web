@@ -158,7 +158,7 @@ export function StartJob(jobID: string, job: JobType, worker: Worker) {
 		worker_id: workerID,
 		time_started: new Date().getTime(),
 	});
-	worker.emit('transcode', jobID);
+	worker.emit('start-transcode', jobID);
 }
 
 // Status ------------------------------------------------------------------------------------------
