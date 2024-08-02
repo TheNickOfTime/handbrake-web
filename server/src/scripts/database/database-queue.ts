@@ -3,20 +3,10 @@ import {
 	JobOrderTableType,
 	JobsDataTableType,
 	JobsStatusTableType,
-	QueueTableType,
 } from 'types/database';
-import {
-	JobType,
-	QueueType,
-	QueueEntryType,
-	JobDataType,
-	JobStatusType,
-	QueueRequestType,
-} from 'types/queue';
+import { JobType, QueueType, JobDataType, JobStatusType, QueueRequestType } from 'types/queue';
 import { database } from './database';
-import { GetPresets } from 'scripts/presets';
 import { TranscodeStage } from 'types/transcode';
-import { string } from 'yaml/dist/schema/common/string';
 
 export const queueTableCreateStatements = [
 	'CREATE TABLE IF NOT EXISTS job_ids( \
@@ -26,18 +16,18 @@ export const queueTableCreateStatements = [
 		job_id TEXT NOT NULL REFERENCES job_ids(id) ON DELETE CASCADE, \
 		input_path TEXT NOT NULL, \
 		output_path TEXT NOT NULL, \
-		preset_id TEXT NOT NULL, \
-		worker_id TEXT, \
-		time_started INTEGER, \
-		time_finished INTEGER \
-	)',
+		preset_id TEXT NOT NULL \
+		)',
 	'CREATE TABLE IF NOT EXISTS jobs_status( \
 		job_id TEXT NOT NULL REFERENCES job_ids(id) ON DELETE CASCADE, \
+		worker_id TEXT, \
 		transcode_stage INTEGER DEFAULT 0, \
 		transcode_percentage REAL DEFAULT 0, \
-		transcode_eta INTEGER, \
-		transcode_fps_current REAL, \
-		transcode_fps_average REAL \
+		transcode_eta INTEGER DEFAULT 0, \
+		transcode_fps_current REAL DEFAULT 0, \
+		transcode_fps_average REAL DEFAULT 0, \
+		time_started INTEGER DEFAULT 0, \
+		time_finished INTEGER DEFAULT 0 \
 	)',
 	'CREATE TABLE IF NOT EXISTS jobs_order( \
 		job_id TEXT NOT NULL REFERENCES job_ids(id) ON DELETE CASCADE, \
@@ -53,16 +43,16 @@ const joinQueryToJob = (
 			input_path: query.input_path,
 			output_path: query.output_path,
 			preset_id: query.preset_id,
-			worker_id: query.worker_id || undefined,
-			time_started: query.time_started || undefined,
-			time_finished: query.time_finished || undefined,
 		},
 		status: {
+			worker_id: query.worker_id || undefined,
 			transcode_stage: (query.transcode_stage || 0) satisfies TranscodeStage,
 			transcode_percentage: query.transcode_percentage,
 			transcode_eta: query.transcode_eta,
 			transcode_fps_current: query.transcode_fps_current,
 			transcode_fps_average: query.transcode_fps_average,
+			time_started: query.time_started || undefined,
+			time_finished: query.time_finished || undefined,
 		},
 		order_index: query.order_index,
 	};
@@ -126,9 +116,6 @@ export function GetJobDataFromTable(id: string): JobDataType | undefined {
 				input_path: result.input_path,
 				output_path: result.output_path,
 				preset_id: result.preset_id,
-				worker_id: result.worker_id,
-				time_started: result.time_started,
-				time_finished: result.time_finished,
 			};
 			return data;
 		}
@@ -148,11 +135,14 @@ export function GetJobStatusFromTable(id: string): JobStatusType | undefined {
 		const result = statement.get({ id: id });
 		if (result) {
 			const status: JobStatusType = {
+				worker_id: result.worker_id || null,
 				transcode_stage: result.transcode_stage as TranscodeStage,
 				transcode_percentage: result.transcode_percentage,
 				transcode_eta: result.transcode_eta,
 				transcode_fps_current: result.transcode_fps_current,
 				transcode_fps_average: result.transcode_fps_average,
+				time_started: result.time_started,
+				time_finished: result.time_finished,
 			};
 			return status;
 		}
@@ -240,9 +230,10 @@ export function UpdateJobDataInDatabase(id: string, data: JobDataType) {
 
 export function UpdateJobStatusInDatabase(id: string, status: JobStatusType) {
 	try {
+		// console.log(status);
 		const updates = Object.entries(status)
-			.filter((entry) => entry[1] != undefined)
-			.map(([key, value]) => `${key} = ${value}`)
+			// .filter((entry) => entry[1] != undefined)
+			.map(([key, value]) => `${key} = ${typeof value == 'string' ? `'${value}'` : value}`)
 			.join(', ');
 		const statement = database.prepare<{ id: string }>(
 			`UPDATE jobs_status SET ${updates} WHERE job_id = $id`
@@ -252,7 +243,6 @@ export function UpdateJobStatusInDatabase(id: string, status: JobStatusType) {
 		});
 
 		return result;
-		// console.log(result);
 	} catch (err) {
 		console.error(`[server] [error] [database] Could not update job '${id}'s status.`);
 		console.error(err);
