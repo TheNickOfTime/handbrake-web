@@ -3,6 +3,7 @@ import ButtonInput from 'components/base/inputs/button/button-input';
 import SubSection from 'components/section/sub-section';
 import QueueJobsCategory from './queue-jobs-category';
 import { TranscodeStage } from 'types/transcode';
+import { useState } from 'react';
 
 type Params = {
 	queue: QueueType;
@@ -79,6 +80,7 @@ export default function QueueJobs({
 				<QueueJobsCategory
 					queue={jobsWaiting}
 					label='Pending'
+					showHandles={true}
 					handleStopJob={handleStopJob}
 					handleResetJob={handleResetJob}
 					handleRemoveJob={handleRemoveJob}

@@ -75,6 +75,12 @@
 					flex-flow: column nowrap;
 					gap: 1rem;
 				}
+
+				.drop-preview {
+					width: 100%;
+					// background-color: colors.$text-color-primary;
+					box-shadow: 0 0 1rem 0 colors.$text-color-primary;
+				}
 			}
 		}
 	}
