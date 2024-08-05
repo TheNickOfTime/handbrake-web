@@ -86,9 +86,9 @@ export function GetAvailableWorkers() {
 
 export function GetAvailableJobs() {
 	const queue = GetQueue();
-	const availableJobs = Object.keys(queue).filter(
-		(key) => queue[key].status.transcode_stage == TranscodeStage.Waiting
-	);
+	const availableJobs = Object.keys(queue)
+		.filter((key) => queue[key].status.transcode_stage == TranscodeStage.Waiting)
+		.sort((keyA, keyB) => queue[keyA].order_index - queue[keyB].order_index);
 	return availableJobs;
 }
 
