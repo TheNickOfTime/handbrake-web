@@ -73,7 +73,16 @@
 				.queue-jobs-category-cards {
 					display: flex;
 					flex-flow: column nowrap;
-					gap: 1rem;
+					margin: 0 -1rem;
+				}
+
+				.drop-preview {
+					flex-grow: 1;
+					padding: 0.5rem 1rem;
+
+					hr {
+						box-shadow: 0 0 1rem 0 colors.$text-color-primary;
+					}
 				}
 			}
 		}

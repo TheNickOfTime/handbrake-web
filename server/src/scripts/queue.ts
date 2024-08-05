@@ -12,8 +12,10 @@ import {
 import {
 	GetJobFromDatabase,
 	GetQueueFromDatabase,
-	InsertJobToDatabase,
+	InsertJobToJobsDataTable,
+	InsertJobToJobsOrderTable,
 	RemoveJobFromDatabase,
+	UpdateJobOrderIndexInDatabase,
 	UpdateJobStatusInDatabase,
 } from './database/database-queue';
 import { GetStatusFromDatabase, UpdateStatusInDatabase } from './database/database-status';
@@ -84,9 +86,9 @@ export function GetAvailableWorkers() {
 
 export function GetAvailableJobs() {
 	const queue = GetQueue();
-	const availableJobs = Object.keys(queue).filter(
-		(key) => queue[key].status.transcode_stage == TranscodeStage.Waiting
-	);
+	const availableJobs = Object.keys(queue)
+		.filter((key) => queue[key].status.transcode_stage == TranscodeStage.Waiting)
+		.sort((keyA, keyB) => queue[keyA].order_index - queue[keyB].order_index);
 	return availableJobs;
 }
 
@@ -247,7 +249,7 @@ export function AddJob(data: QueueRequestType) {
 		hash(data) +
 		(Math.random() * 9999).toString().padStart(4);
 
-	InsertJobToDatabase(jobID, data);
+	InsertJobToJobsDataTable(jobID, data);
 	UpdateQueue();
 	JobForAvailableWorkers(jobID);
 }
@@ -264,6 +266,7 @@ export function StopJob(id: string) {
 		}
 
 		// Update Job in database
+		UpdateJobOrderIndexInDatabase(id, 0);
 		UpdateJobStatusInDatabase(id, {
 			worker_id: null,
 			transcode_stage: TranscodeStage.Stopped,
@@ -288,6 +291,7 @@ export function ResetJob(id: string) {
 			job.status.transcode_stage == TranscodeStage.Finished
 		) {
 			// Update Job in database
+			InsertJobToJobsOrderTable(id);
 			UpdateJobStatusInDatabase(id, {
 				worker_id: null,
 				transcode_stage: TranscodeStage.Waiting,
