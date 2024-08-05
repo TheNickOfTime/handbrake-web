@@ -83,16 +83,6 @@ export default function ClientSocket(io: Server) {
 			ClearQueue(socket.id, finishedOnly);
 		});
 
-		socket.on('reorder-job', (id: string, newIndex: number) => {
-			console.log(
-				`Client is requesting job at order index ${GetJobOrderIndexFromTable(
-					id
-				)} be reordered to index ${newIndex}.`
-			);
-			UpdateJobOrderIndex(id, newIndex);
-			UpdateQueue();
-		});
-
 		// Jobs ------------------------------------------------------------------------------------
 		socket.on('stop-job', (id: string) => {
 			StopJob(id);
@@ -104,6 +94,16 @@ export default function ClientSocket(io: Server) {
 
 		socket.on('remove-job', (id: string) => {
 			RemoveJob(id);
+		});
+
+		socket.on('reorder-job', (id: string, newIndex: number) => {
+			console.log(
+				`[server] Client is requesting job at order index ${GetJobOrderIndexFromTable(
+					id
+				)} be reordered to index ${newIndex}.`
+			);
+			UpdateJobOrderIndex(id, newIndex);
+			UpdateQueue();
 		});
 
 		// Directory -------------------------------------------------------------------------------

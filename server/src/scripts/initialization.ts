@@ -19,38 +19,6 @@ export default async function Initialization(server: Server) {
 	InitializeQueue();
 	InitializeWatchers();
 
-	// InsertJobToDatabase('job one', {
-	// 	input: '/test/input/path',
-	// 	output: '/test/output/path',
-	// 	preset: 'Test Preset Name',
-	// });
-	// InsertJobToDatabase('job two', {
-	// 	input: '/test/input/path',
-	// 	output: '/test/output/path',
-	// 	preset: 'Test Preset Name',
-	// });
-	// InsertJobToDatabase('job three', {
-	// 	input: '/test/input/path',
-	// 	output: '/test/output/path',
-	// 	preset: 'Test Preset Name',
-	// });
-	// InsertJobToDatabase('job four', {
-	// 	input: '/test/input/path',
-	// 	output: '/test/output/path',
-	// 	preset: 'Test Preset Name',
-	// });
-	// InsertJobToDatabase('job five', {
-	// 	input: '/test/input/path',
-	// 	output: '/test/output/path',
-	// 	preset: 'Test Preset Name',
-	// });
-	// InsertJobToDatabase('job six', {
-	// 	input: '/test/input/path',
-	// 	output: '/test/output/path',
-	// 	preset: 'Test Preset Name',
-	// });
-	console.log(Object.keys(GetQueueFromDatabase()!));
-
 	// Start Server --------------------------------------------------------------------------------
 	const url = process.env.SERVER_URL || 'http://localhost';
 	const port = 9999;

@@ -263,9 +263,7 @@ export function UpdateJobOrderIndex(id: string, new_index: number) {
 	);
 	const reorderResult = jobsStatement.all({ id: id, new_index: new_index });
 	reorderResult.splice(new_index - 1, 0, { job_id: id, order_index: previous_index });
-	console.log(reorderResult);
 
-	// console.log(`Updating '${id}' from ${previous_index} to -1`);
 	orderUpdateStatement.run({ id: id, new_index: -1 });
 
 	const rowsToUpdate = reorderResult
@@ -273,11 +271,10 @@ export function UpdateJobOrderIndex(id: string, new_index: number) {
 		.filter((row) => row.order_index != row.new_index || row.job_id == id)
 		.sort((a, b) =>
 			new_index > previous_index ? a.new_index - b.new_index : b.new_index - a.new_index
-		)
-		.forEach((row) => {
-			// console.log(`Updating '${row.job_id}' from ${row.order_index} to ${row.new_index}`);
-			orderUpdateStatement.run({ id: row.job_id, new_index: row.new_index });
-		});
+		);
+	rowsToUpdate.forEach((row) => {
+		orderUpdateStatement.run({ id: row.job_id, new_index: row.new_index });
+	});
 }
 
 export function RemoveJobFromDatabase(id: string) {
