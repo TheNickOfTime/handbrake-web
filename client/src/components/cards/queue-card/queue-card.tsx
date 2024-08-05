@@ -15,8 +15,10 @@ type Params = {
 	handleStopJob: () => void;
 	handleResetJob: () => void;
 	handleRemoveJob: () => void;
-	setDropPreviewIndex: React.Dispatch<React.SetStateAction<number>>;
-	setDragIndex: React.Dispatch<React.SetStateAction<number>>;
+	setDraggedID: React.Dispatch<React.SetStateAction<string | undefined>>;
+	setDraggedInitialIndex: React.Dispatch<React.SetStateAction<number>>;
+	setDraggedDesiredIndex: React.Dispatch<React.SetStateAction<number>>;
+	handleDrop: () => void;
 };
 
 export default function QueueCard({
@@ -27,10 +29,11 @@ export default function QueueCard({
 	handleStopJob,
 	handleResetJob,
 	handleRemoveJob,
-	setDropPreviewIndex,
-	setDragIndex,
+	setDraggedID,
+	setDraggedInitialIndex,
+	setDraggedDesiredIndex,
+	handleDrop,
 }: Params) {
-	const { socket } = useOutletContext<PrimaryOutletContextType>();
 	const selfRef = useRef<HTMLDivElement | null>(null);
 
 	const [draggable, setDraggable] = useState(false);
@@ -51,7 +54,8 @@ export default function QueueCard({
 		job.status.worker_id == null;
 
 	const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-		setDragIndex(job.order_index);
+		setDraggedID(id);
+		setDraggedInitialIndex(job.order_index);
 		const data = {
 			id: id,
 			index: index,
@@ -61,8 +65,9 @@ export default function QueueCard({
 
 	const handleDragEnd = (_event: React.DragEvent<HTMLDivElement>) => {
 		setDraggable(false);
-		setDragIndex(-1);
-		setDropPreviewIndex(-1);
+		setDraggedID(undefined);
+		setDraggedInitialIndex(-1);
+		setDraggedDesiredIndex(-1);
 	};
 
 	const handleDragEnter = (_event: React.DragEvent<HTMLDivElement>) => {};
@@ -100,13 +105,14 @@ export default function QueueCard({
 		// );
 		const dropIndex = desiredIndex != draggedArrayIndex + indexOffset ? desiredIndex : -1;
 		setDropIndex(dropIndex);
-		setDropPreviewIndex(dropIndex);
+		setDraggedDesiredIndex(dropIndex);
 	};
 
-	const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-		const targetID = JSON.parse(event.dataTransfer.getData('text/plain')).id;
-		socket.emit('reorder-job', targetID, dropIndex);
-	};
+	// const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+	// 	// const targetID = JSON.parse(event.dataTransfer.getData('text/plain')).id;
+	// 	// socket.emit('reorder-job', targetID, dropIndex);
+	// 	handleDrop();
+	// };
 
 	const handleDragHandleMouseDown = (_event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		setDraggable(true);
@@ -129,7 +135,7 @@ export default function QueueCard({
 
 	return (
 		<div
-			className='queue-job'
+			className='queue-job-outer'
 			id={index.toString()}
 			draggable={draggable}
 			onDragStart={handleDragStart}
@@ -139,87 +145,90 @@ export default function QueueCard({
 			onDrop={handleDrop}
 			ref={selfRef}
 		>
-			{showDragHandles && (
-				<div
-					className='job-number'
-					onMouseDown={handleDragHandleMouseDown}
-					onMouseUp={handleDragHandleMouseUp}
-				>
-					<h3>{index + 1}</h3>
-				</div>
-			)}
-			<div className='job-info'>
-				<div className='job-info-section'>
-					<QueueCardSection label='Input' title={job.data.input_path}>
-						{job.data.input_path.match(/[^/]+$/)}
-					</QueueCardSection>
-					<QueueCardSection label='Output' title={job.data.output_path}>
-						{job.data.output_path.match(/[^/]+$/)}
-					</QueueCardSection>
-					<QueueCardSection label='Preset'>{job.data.preset_id}</QueueCardSection>
-					<QueueCardSection label='Worker'>
-						{job.status.worker_id ? job.status.worker_id : 'N/A'}
-					</QueueCardSection>
-					<QueueCardSection label='Status'>
-						{
-							TranscodeStage[
-								job.status.transcode_stage ? job.status.transcode_stage : 0
-							]
-						}
-					</QueueCardSection>
-				</div>
-				{(job.status.transcode_stage == TranscodeStage.Scanning ||
-					job.status.transcode_stage == TranscodeStage.Transcoding) && (
-					<div className='job-info-section'>
-						<QueueCardSection label='FPS'>
-							{job.status.transcode_fps_current
-								? `${job.status.transcode_fps_current.toFixed(1)}fps`
-								: 'N/A'}
-						</QueueCardSection>
-						<QueueCardSection label='Avg. FPS'>
-							{job.status.transcode_fps_average
-								? `${job.status.transcode_fps_average.toFixed(1)}fps`
-								: 'N/A'}
-						</QueueCardSection>
-						<QueueCardSection label='Time Elapsed'>
-							{job.status.time_started
-								? secondsToTime((Date.now() - job.status.time_started) / 1000)
-								: 'N/A'}
-						</QueueCardSection>
-						<QueueCardSection label='Time Left'>
-							{job.status.transcode_eta ? job.status.transcode_eta : 'N/A'}
-						</QueueCardSection>
-						<QueueCardSection label='Progress'>
-							<ProgressBar percentage={percentage} />
-						</QueueCardSection>
+			<div className='queue-job-inner'>
+				{showDragHandles && (
+					<div
+						className='job-number'
+						onMouseDown={handleDragHandleMouseDown}
+						onMouseUp={handleDragHandleMouseUp}
+					>
+						<h3 className='job-number-label'>{index + 1}</h3>
+						<i className='bi bi-list' />
 					</div>
 				)}
-			</div>
-			<div className='job-actions'>
-				<button
-					className='job-action-stop'
-					title='Stop Job'
-					onClick={() => handleStopJob()}
-					disabled={!canStop}
-				>
-					<i className='bi bi-stop-fill' />
-				</button>
-				<button
-					className='job-action-reset'
-					title='Reset Job'
-					onClick={() => handleResetJob()}
-					disabled={!canReset}
-				>
-					<i className='bi bi-arrow-counterclockwise' />
-				</button>
-				<button
-					className='job-action-reset'
-					title='Remove Job'
-					onClick={() => handleRemoveJob()}
-					disabled={!canRemove}
-				>
-					<i className='bi bi-x-lg' />
-				</button>
+				<div className='job-info'>
+					<div className='job-info-section'>
+						<QueueCardSection label='Input' title={job.data.input_path}>
+							{job.data.input_path.match(/[^/]+$/)}
+						</QueueCardSection>
+						<QueueCardSection label='Output' title={job.data.output_path}>
+							{job.data.output_path.match(/[^/]+$/)}
+						</QueueCardSection>
+						<QueueCardSection label='Preset'>{job.data.preset_id}</QueueCardSection>
+						<QueueCardSection label='Worker'>
+							{job.status.worker_id ? job.status.worker_id : 'N/A'}
+						</QueueCardSection>
+						<QueueCardSection label='Status'>
+							{
+								TranscodeStage[
+									job.status.transcode_stage ? job.status.transcode_stage : 0
+								]
+							}
+						</QueueCardSection>
+					</div>
+					{(job.status.transcode_stage == TranscodeStage.Scanning ||
+						job.status.transcode_stage == TranscodeStage.Transcoding) && (
+						<div className='job-info-section'>
+							<QueueCardSection label='FPS'>
+								{job.status.transcode_fps_current
+									? `${job.status.transcode_fps_current.toFixed(1)}fps`
+									: 'N/A'}
+							</QueueCardSection>
+							<QueueCardSection label='Avg. FPS'>
+								{job.status.transcode_fps_average
+									? `${job.status.transcode_fps_average.toFixed(1)}fps`
+									: 'N/A'}
+							</QueueCardSection>
+							<QueueCardSection label='Time Elapsed'>
+								{job.status.time_started
+									? secondsToTime((Date.now() - job.status.time_started) / 1000)
+									: 'N/A'}
+							</QueueCardSection>
+							<QueueCardSection label='Time Left'>
+								{job.status.transcode_eta ? job.status.transcode_eta : 'N/A'}
+							</QueueCardSection>
+							<QueueCardSection label='Progress'>
+								<ProgressBar percentage={percentage} />
+							</QueueCardSection>
+						</div>
+					)}
+				</div>
+				<div className='job-actions'>
+					<button
+						className='job-action-stop'
+						title='Stop Job'
+						onClick={() => handleStopJob()}
+						disabled={!canStop}
+					>
+						<i className='bi bi-stop-fill' />
+					</button>
+					<button
+						className='job-action-reset'
+						title='Reset Job'
+						onClick={() => handleResetJob()}
+						disabled={!canReset}
+					>
+						<i className='bi bi-arrow-counterclockwise' />
+					</button>
+					<button
+						className='job-action-reset'
+						title='Remove Job'
+						onClick={() => handleRemoveJob()}
+						disabled={!canRemove}
+					>
+						<i className='bi bi-x-lg' />
+					</button>
+				</div>
 			</div>
 		</div>
 	);

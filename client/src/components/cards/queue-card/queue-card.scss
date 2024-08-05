@@ -1,6 +1,10 @@
 @use 'src/style/modules/colors';
 
-.queue-job {
+.queue-job-outer {
+	padding: 0.5rem 1rem;
+}
+
+.queue-job-outer > .queue-job-inner {
 	display: flex;
 	flex-flow: row nowrap;
 	overflow: hidden;
@@ -15,9 +19,20 @@
 	.job-number {
 		padding: 0 1rem;
 		display: flex;
+		flex-flow: column nowrap;
 		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
 		background-color: colors.$transparent-light-primary;
 		cursor: grab;
+
+		h3 {
+			margin: 0;
+		}
+
+		i {
+			color: colors.$text-color-disabled;
+		}
 	}
 
 	.job-info {
