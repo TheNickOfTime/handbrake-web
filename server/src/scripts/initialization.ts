@@ -5,7 +5,6 @@ import { SetPresets, presetsPath } from './presets';
 import { InitializeQueue } from './queue';
 import { DatabaseConnect } from './database/database';
 import { InitializeWatchers } from './watcher';
-import { GetQueueFromDatabase, InsertJobToDatabase } from './database/database-queue';
 
 export default async function Initialization(server: Server) {
 	// JSON ----------------------------------------------------------------------------------------
