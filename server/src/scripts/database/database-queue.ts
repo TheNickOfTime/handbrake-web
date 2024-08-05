@@ -198,10 +198,12 @@ export function InsertJobToJobsDataTable(id: string, request: QueueRequestType) 
 			.prepare<[], { 'COUNT(*)': number }>('SELECT COUNT(*) FROM job_ids AS count')
 			.get()!['COUNT(*)'];
 
-		const orderStatement = database.prepare<JobOrderTableType>(
+		const statement = database.prepare<JobOrderTableType>(
 			'INSERT INTO jobs_order(job_id, order_index) VALUES($job_id, $order_index)'
 		);
-		orderStatement.run({ job_id: id, order_index: next_order_index });
+		const result = statement.run({ job_id: id, order_index: next_order_index });
+		console.log(`[server] [database] Inserting a new job with id '${id}' into the database.`);
+		return result;
 	} catch (err) {
 		console.error(`[server] [error] [database] Could not insert job '${id}' into queue table.`);
 		console.error(err);
@@ -218,8 +220,11 @@ export function InsertJobToJobsOrderTable(id: string) {
 		const statement = database.prepare<{ id: string; orderIndex: number }>(
 			'INSERT INTO jobs_order(job_id, order_index) VALUES($id, $orderIndex)'
 		);
-		console.log('inserting back into order at index', nextOrderIndex);
-		statement.run({ id: id, orderIndex: nextOrderIndex });
+		const result = statement.run({ id: id, orderIndex: nextOrderIndex });
+		console.log(
+			`[server] [database] Inserting existing job '${id}' back into the jobs_order table with order_index ${nextOrderIndex}.`
+		);
+		return result;
 	} catch (err) {
 		console.error(
 			`[server] [error] [database] Could not insert job '${id}' into the jobs_order table.`
@@ -320,7 +325,7 @@ export function RemoveJobFromDatabase(id: string) {
 		UpdateJobOrderIndexInDatabase(id, 0);
 		const removalStatement = database.prepare('DELETE FROM job_ids WHERE id = $id');
 		const removalResult = removalStatement.run({ id: id });
-		// console.log(`[server] [database] Successfully removed job '${id}' from the database.`);
+		console.log(`[server] [database] Removed job '${id}' from the database.`);
 		return removalResult;
 	} catch (err) {
 		console.error(`[server] [error] [database] Could not remove job '${id}'.`);
