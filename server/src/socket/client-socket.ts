@@ -29,7 +29,10 @@ import { GetConfig, GetPropertyFromConfig } from 'scripts/config';
 import { WatcherDefinitionType, WatcherDefinitionWithIDType } from 'types/watcher';
 import { GetWatchersFromDatabase } from 'scripts/database/database-watcher';
 import { AddWatcher, RemoveWatcher } from 'scripts/watcher';
-import { GetJobOrderIndexFromTable, UpdateJobOrderIndex } from 'scripts/database/database-queue';
+import {
+	GetJobOrderIndexFromTable,
+	UpdateJobOrderIndexInDatabase,
+} from 'scripts/database/database-queue';
 
 const initClient = (socket: Client) => {
 	const queue = GetQueue();
@@ -102,7 +105,7 @@ export default function ClientSocket(io: Server) {
 					id
 				)} be reordered to index ${newIndex}.`
 			);
-			UpdateJobOrderIndex(id, newIndex);
+			UpdateJobOrderIndexInDatabase(id, newIndex);
 			UpdateQueue();
 		});
 

@@ -66,14 +66,14 @@ export function GetQueueFromDatabase() {
 			JobIDsTableType & JobsDataTableType & JobsStatusTableType & JobOrderTableType
 		>(
 			'SELECT * FROM job_ids \
-			INNER JOIN jobs_data ON job_ids.id = jobs_data.job_id \
-			INNER JOIN jobs_status ON job_ids.id = jobs_status.job_id \
-			INNER JOIN jobs_order ON job_ids.id = jobs_order.job_id'
+			LEFT JOIN jobs_data ON job_ids.id = jobs_data.job_id \
+			LEFT JOIN jobs_status ON job_ids.id = jobs_status.job_id \
+			LEFT JOIN jobs_order ON job_ids.id = jobs_order.job_id'
 		);
 		const result: QueueType = Object.fromEntries(
 			statement.all().map((row) => {
 				const job = joinQueryToJob(row);
-				return [row.job_id, job];
+				return [row.id, job];
 			})
 		);
 		return result;
@@ -90,9 +90,9 @@ export function GetJobFromDatabase(id: string): JobType | undefined {
 			JobIDsTableType & JobsDataTableType & JobsStatusTableType & JobOrderTableType
 		>(
 			'SELECT * FROM job_ids \
-			INNER JOIN jobs_data ON job_ids.id = jobs_data.job_id \
-			INNER JOIN jobs_status ON job_ids.id = jobs_status.job_id \
-			INNER JOIN jobs_order ON job_ids.id = jobs_order.job_id \
+			LEFT JOIN jobs_data ON job_ids.id = jobs_data.job_id \
+			LEFT JOIN jobs_status ON job_ids.id = jobs_status.job_id \
+			LEFT JOIN jobs_order ON job_ids.id = jobs_order.job_id \
 			WHERE id = $id'
 		);
 		const result = statement.get({ id: id });
@@ -171,7 +171,7 @@ export function GetJobOrderIndexFromTable(id: string): number | undefined {
 	}
 }
 
-export function InsertJobToDatabase(id: string, request: QueueRequestType) {
+export function InsertJobToJobsDataTable(id: string, request: QueueRequestType) {
 	try {
 		const idStatement = database.prepare<JobIDsTableType>(
 			'INSERT INTO job_ids(id) VALUES($id)'
@@ -204,6 +204,26 @@ export function InsertJobToDatabase(id: string, request: QueueRequestType) {
 		orderStatement.run({ job_id: id, order_index: next_order_index });
 	} catch (err) {
 		console.error(`[server] [error] [database] Could not insert job '${id}' into queue table.`);
+		console.error(err);
+	}
+}
+
+export function InsertJobToJobsOrderTable(id: string) {
+	try {
+		const nextOrderIndex =
+			database
+				.prepare<[], { 'COUNT(*)': number }>('SELECT COUNT(*) FROM jobs_order AS count')
+				.get()!['COUNT(*)'] + 1;
+
+		const statement = database.prepare<{ id: string; orderIndex: number }>(
+			'INSERT INTO jobs_order(job_id, order_index) VALUES($id, $orderIndex)'
+		);
+		console.log('inserting back into order at index', nextOrderIndex);
+		statement.run({ id: id, orderIndex: nextOrderIndex });
+	} catch (err) {
+		console.error(
+			`[server] [error] [database] Could not insert job '${id}' into the jobs_order table.`
+		);
 		console.error(err);
 	}
 }
@@ -249,7 +269,13 @@ export function UpdateJobStatusInDatabase(id: string, status: JobStatusType) {
 	}
 }
 
-export function UpdateJobOrderIndex(id: string, new_index: number) {
+/**
+ *
+ * @param id
+ * @param new_index When 0, removes from order entirely
+ * @returns
+ */
+export function UpdateJobOrderIndexInDatabase(id: string, new_index: number) {
 	const previous_index = GetJobOrderIndexFromTable(id)!;
 
 	if (previous_index == new_index) return;
@@ -262,23 +288,36 @@ export function UpdateJobOrderIndex(id: string, new_index: number) {
 		'SELECT * FROM jobs_order WHERE job_id != $id ORDER BY order_index ASC'
 	);
 	const reorderResult = jobsStatement.all({ id: id, new_index: new_index });
-	reorderResult.splice(new_index - 1, 0, { job_id: id, order_index: previous_index });
 
-	orderUpdateStatement.run({ id: id, new_index: -1 });
+	if (new_index > 0) {
+		orderUpdateStatement.run({ id: id, new_index: -1 });
+		reorderResult.splice(new_index - 1, 0, { job_id: id, order_index: previous_index });
+	} else {
+		database.prepare('DELETE FROM jobs_order WHERE job_id = $id').run({ id: id });
+		console.log(
+			`[server] [database] Removing job with id '${id}' from the 'jobs_order' table.`
+		);
+	}
 
 	const rowsToUpdate = reorderResult
 		.map((row, index) => ({ ...row, new_index: index + 1 }))
 		.filter((row) => row.order_index != row.new_index || row.job_id == id)
 		.sort((a, b) =>
-			new_index > previous_index ? a.new_index - b.new_index : b.new_index - a.new_index
+			new_index > previous_index || new_index == 0
+				? a.new_index - b.new_index
+				: b.new_index - a.new_index
 		);
 	rowsToUpdate.forEach((row) => {
 		orderUpdateStatement.run({ id: row.job_id, new_index: row.new_index });
+		console.log(
+			`[server] [database] Updating job with id '${id}' from order index ${row.order_index} to ${row.new_index}`
+		);
 	});
 }
 
 export function RemoveJobFromDatabase(id: string) {
 	try {
+		UpdateJobOrderIndexInDatabase(id, 0);
 		const removalStatement = database.prepare('DELETE FROM job_ids WHERE id = $id');
 		const removalResult = removalStatement.run({ id: id });
 		// console.log(`[server] [database] Successfully removed job '${id}' from the database.`);
