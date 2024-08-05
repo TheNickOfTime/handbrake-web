@@ -71,6 +71,7 @@ export default function QueueJobs({
 			<div className='cards'>
 				<QueueJobsCategory
 					queue={jobsInProgress}
+					id='jobs-in-progress'
 					label='In Progress'
 					handleStopJob={handleStopJob}
 					handleResetJob={handleResetJob}
@@ -78,13 +79,16 @@ export default function QueueJobs({
 				/>
 				<QueueJobsCategory
 					queue={jobsWaiting}
+					id='jobs-pending'
 					label='Pending'
+					showHandles={true}
 					handleStopJob={handleStopJob}
 					handleResetJob={handleResetJob}
 					handleRemoveJob={handleRemoveJob}
 				/>
 				<QueueJobsCategory
 					queue={jobsStopped}
+					id='jobs-stopped'
 					label='Stopped'
 					collapsable={true}
 					startCollapsed={false}
@@ -94,6 +98,7 @@ export default function QueueJobs({
 				/>
 				<QueueJobsCategory
 					queue={jobsFinshed}
+					id='jobs-finished'
 					label='Finished'
 					collapsable={!onlyFinished}
 					startCollapsed={true}

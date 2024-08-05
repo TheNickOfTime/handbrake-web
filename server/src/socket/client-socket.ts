@@ -22,12 +22,17 @@ import {
 	StartQueue,
 	StopJob,
 	StopQueue,
+	UpdateQueue,
 } from 'scripts/queue';
 import { ConfigType, ConfigPropertyType } from 'types/config';
 import { GetConfig, GetPropertyFromConfig } from 'scripts/config';
 import { WatcherDefinitionType, WatcherDefinitionWithIDType } from 'types/watcher';
 import { GetWatchersFromDatabase } from 'scripts/database/database-watcher';
 import { AddWatcher, RemoveWatcher } from 'scripts/watcher';
+import {
+	GetJobOrderIndexFromTable,
+	UpdateJobOrderIndexInDatabase,
+} from 'scripts/database/database-queue';
 
 const initClient = (socket: Client) => {
 	const queue = GetQueue();
@@ -92,6 +97,16 @@ export default function ClientSocket(io: Server) {
 
 		socket.on('remove-job', (id: string) => {
 			RemoveJob(id);
+		});
+
+		socket.on('reorder-job', (id: string, newIndex: number) => {
+			console.log(
+				`[server] Client is requesting job at order index ${GetJobOrderIndexFromTable(
+					id
+				)} be reordered to index ${newIndex}.`
+			);
+			UpdateJobOrderIndexInDatabase(id, newIndex);
+			UpdateQueue();
 		});
 
 		// Directory -------------------------------------------------------------------------------

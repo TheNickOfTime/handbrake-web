@@ -3,7 +3,11 @@ import { AddWorker, RemoveWorker } from 'scripts/connections';
 import { TranscodeStage } from 'types/transcode';
 import { GetQueue, StopJob, UpdateQueue, WorkerForAvailableJobs } from 'scripts/queue';
 import { JobDataType, JobStatusType } from 'types/queue';
-import { GetJobDataFromTable, UpdateJobStatusInDatabase } from 'scripts/database/database-queue';
+import {
+	GetJobDataFromTable,
+	UpdateJobOrderIndexInDatabase,
+	UpdateJobStatusInDatabase,
+} from 'scripts/database/database-queue';
 import { HandbrakePresetType } from 'types/preset';
 import { GetPresets } from 'scripts/presets';
 
@@ -68,6 +72,7 @@ export default function WorkerSocket(io: Server) {
 			UpdateJobStatusInDatabase(job_id, status);
 			UpdateQueue();
 			if (status.transcode_stage == TranscodeStage.Finished) {
+				UpdateJobOrderIndexInDatabase(job_id, 0);
 				WorkerForAvailableJobs(workerID);
 			}
 		});
