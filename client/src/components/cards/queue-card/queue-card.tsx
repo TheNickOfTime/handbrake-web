@@ -1,8 +1,6 @@
 import { useRef, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
 import { JobType } from 'types/queue';
 import { TranscodeStage } from 'types/transcode';
-import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import ProgressBar from 'components/base/progress/progress-bar';
 import QueueCardSection from './components/queue-card-section';
 import './queue-card.scss';
@@ -11,6 +9,7 @@ type Params = {
 	id: string;
 	job: JobType;
 	index: number;
+	categoryID: string;
 	showDragHandles?: boolean;
 	handleStopJob: () => void;
 	handleResetJob: () => void;
@@ -25,6 +24,7 @@ export default function QueueCard({
 	id,
 	job,
 	index,
+	categoryID,
 	showDragHandles = false,
 	handleStopJob,
 	handleResetJob,
@@ -59,6 +59,7 @@ export default function QueueCard({
 		const data = {
 			id: id,
 			index: index,
+			category: categoryID,
 		};
 		event.dataTransfer.setData('text/plain', JSON.stringify(data));
 	};
@@ -70,42 +71,49 @@ export default function QueueCard({
 		setDraggedDesiredIndex(-1);
 	};
 
-	const handleDragEnter = (_event: React.DragEvent<HTMLDivElement>) => {};
-
 	const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-		event.preventDefault();
+		if (
+			showDragHandles &&
+			JSON.parse(event.dataTransfer.getData('text/plain')).category == categoryID
+		) {
+			event.preventDefault();
 
-		const thisJobIndex = job.order_index;
-		const thisArrayIndex = parseInt(event.currentTarget.id);
-		const draggedArrayIndex = JSON.parse(event.dataTransfer.getData('text/plain')).index;
-		const indexOffset = thisJobIndex - thisArrayIndex;
+			const thisJobIndex = job.order_index;
+			const thisArrayIndex = parseInt(event.currentTarget.id);
+			const draggedArrayIndex = JSON.parse(event.dataTransfer.getData('text/plain')).index;
+			const indexOffset = thisJobIndex - thisArrayIndex;
 
-		const thisPosition =
-			event.currentTarget.getBoundingClientRect().y +
-			event.currentTarget.getBoundingClientRect().height / 2;
-		const draggedPosition = event.clientY;
-		const isAboveThis = draggedPosition < thisPosition;
-		const moveDirection =
-			draggedArrayIndex == thisArrayIndex ? 0 : draggedArrayIndex > thisArrayIndex ? 1 : -1;
-		const desiredIndex =
-			moveDirection == 0
-				? draggedArrayIndex + indexOffset
-				: moveDirection > 0
-				? isAboveThis
-					? thisJobIndex
-					: thisJobIndex + moveDirection
-				: isAboveThis
-				? thisJobIndex + moveDirection
-				: thisJobIndex;
+			const thisPosition =
+				event.currentTarget.getBoundingClientRect().y +
+				event.currentTarget.getBoundingClientRect().height / 2;
+			const draggedPosition = event.clientY;
+			const isAboveThis = draggedPosition < thisPosition;
+			const moveDirection =
+				draggedArrayIndex == thisArrayIndex
+					? 0
+					: draggedArrayIndex > thisArrayIndex
+					? 1
+					: -1;
+			const desiredIndex =
+				moveDirection == 0
+					? draggedArrayIndex + indexOffset
+					: moveDirection > 0
+					? isAboveThis
+						? thisJobIndex
+						: thisJobIndex + moveDirection
+					: isAboveThis
+					? thisJobIndex + moveDirection
+					: thisJobIndex;
 
-		// console.log(
-		// 	`Move ${draggedArrayIndex + indexOffset} ${isAboveThis ? 'above' : 'below'} ${
-		// 		thisArrayIndex + indexOffset
-		// 	} at new index ${desiredIndex}`
-		// );
-		const dropIndex = desiredIndex != draggedArrayIndex + indexOffset ? desiredIndex : -1;
-		setDropIndex(dropIndex);
-		setDraggedDesiredIndex(dropIndex);
+			// console.log(
+			// 	`Move ${draggedArrayIndex + indexOffset} ${isAboveThis ? 'above' : 'below'} ${
+			// 		thisArrayIndex + indexOffset
+			// 	} at new index ${desiredIndex}`
+			// );
+			const dropIndex = desiredIndex != draggedArrayIndex + indexOffset ? desiredIndex : -1;
+			setDropIndex(dropIndex);
+			setDraggedDesiredIndex(dropIndex);
+		}
 	};
 
 	// const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -140,7 +148,6 @@ export default function QueueCard({
 			draggable={draggable}
 			onDragStart={handleDragStart}
 			onDragEnd={handleDragEnd}
-			onDragEnter={handleDragEnter}
 			onDragOver={handleDragOver}
 			onDrop={handleDrop}
 			ref={selfRef}

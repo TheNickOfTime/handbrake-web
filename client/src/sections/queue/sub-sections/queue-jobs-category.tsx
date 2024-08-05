@@ -7,6 +7,7 @@ import QueueJobPreview from './queue-job-preview';
 
 type Params = {
 	queue: QueueType;
+	id: string;
 	label: string;
 	showHandles?: boolean;
 	collapsable?: boolean;
@@ -18,6 +19,7 @@ type Params = {
 
 export default function QueueJobsCategory({
 	queue,
+	id,
 	label,
 	showHandles = false,
 	collapsable = false,
@@ -56,6 +58,7 @@ export default function QueueJobsCategory({
 					id={jobID}
 					job={job}
 					index={index}
+					categoryID={id}
 					showDragHandles={showHandles}
 					handleStopJob={() => handleStopJob(jobID)}
 					handleResetJob={() => handleResetJob(jobID)}
@@ -95,34 +98,7 @@ export default function QueueJobsCategory({
 					</h4>
 				</div>
 				{((collapsable && !isCollapsed) || !collapsable) && (
-					<div className='queue-jobs-category-cards'>
-						{
-							/* {Object.keys(queue)
-							.sort((a, b) => queue[a].order_index - queue[b].order_index)
-							.map((jobID, index) => {
-								const job = queue[jobID];
-
-								return (
-									<QueueCard
-										key={jobID}
-										id={jobID}
-										job={job}
-										index={index}
-										showDragHandles={showHandles}
-										handleStopJob={() => handleStopJob(jobID)}
-										handleResetJob={() => handleResetJob(jobID)}
-										handleRemoveJob={() => handleRemoveJob(jobID)}
-										setDraggedID={setDraggedID}
-										setDraggedDesiredIndex={setDraggedDesiredIndex}
-										setDraggedInitialIndex={setDraggedInitialIndex}
-										handleDrop={handleDrop}
-									/>
-								);
-							})
-							.splice(0, 0, <QueueJobPreview handleDrop={handleDrop} />)} */
-							jobCards
-						}
-					</div>
+					<div className='queue-jobs-category-cards'>{jobCards}</div>
 				)}
 			</div>
 		);
