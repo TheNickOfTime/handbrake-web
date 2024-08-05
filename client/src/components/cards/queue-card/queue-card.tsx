@@ -37,7 +37,6 @@ export default function QueueCard({
 	const selfRef = useRef<HTMLDivElement | null>(null);
 
 	const [draggable, setDraggable] = useState(false);
-	const [dropIndex, setDropIndex] = useState(-1);
 
 	const percentage = job.status.transcode_percentage ? job.status.transcode_percentage * 100 : 0;
 
@@ -111,7 +110,6 @@ export default function QueueCard({
 			// 	} at new index ${desiredIndex}`
 			// );
 			const dropIndex = desiredIndex != draggedArrayIndex + indexOffset ? desiredIndex : -1;
-			setDropIndex(dropIndex);
 			setDraggedDesiredIndex(dropIndex);
 		}
 	};

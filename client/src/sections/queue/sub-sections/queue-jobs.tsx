@@ -3,7 +3,6 @@ import ButtonInput from 'components/base/inputs/button/button-input';
 import SubSection from 'components/section/sub-section';
 import QueueJobsCategory from './queue-jobs-category';
 import { TranscodeStage } from 'types/transcode';
-import { useState } from 'react';
 
 type Params = {
 	queue: QueueType;
