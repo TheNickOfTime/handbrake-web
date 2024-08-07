@@ -15,7 +15,8 @@ export enum WatcherRuleFileInfoMethods {
 }
 
 export enum WatcherRuleMediaInfoMethods {
-	MediaResoluition,
+	MediaWidth,
+	MediaHeight,
 	MediaBitrate,
 	MediaContainer,
 	MediaEncoder,
@@ -40,24 +41,45 @@ export enum WatcherRuleNumberComparisonMethods {
 	GreaterThan,
 }
 
+export const WatcherRuleComparisonLookup: { [index: string]: number } = {
+	FileName: WatcherRuleComparisonMethods.String,
+	FileExtension: WatcherRuleComparisonMethods.String,
+	FileSize: WatcherRuleComparisonMethods.Number,
+	MediaWidth: WatcherRuleComparisonMethods.Number,
+	MediaHeight: WatcherRuleComparisonMethods.Number,
+	MediaBitrate: WatcherRuleComparisonMethods.Number,
+	MediaContainer: WatcherRuleComparisonMethods.String,
+	MediaEncoder: WatcherRuleComparisonMethods.String,
+};
+
 export type WatcherRuleDefinitionType = {
 	name: string;
 	mask: WatcherRuleMaskMethods;
 	base_rule_method: WatcherRuleBaseMethods;
 	rule_method: WatcherRuleFileInfoMethods | WatcherRuleMediaInfoMethods;
-	base_comparison_method: WatcherRuleComparisonMethods;
 	comparison_method: WatcherRuleStringComparisonMethods | WatcherRuleNumberComparisonMethods;
-	comparison: string | number;
+	comparison: string;
+};
+
+export type WatcherRuleDefinitionObjectType = {
+	[index: number]: WatcherRuleDefinitionType;
 };
 
 export type WatcherDefinitionType = {
 	watch_path: string;
-	output_path?: string;
+	output_path: string | null;
 	preset_id: string;
 	default_mask: WatcherRuleMaskMethods;
-	rules: WatcherRuleDefinitionType[];
+};
+
+export type WatcherDefinitionWithRulesType = WatcherDefinitionType & {
+	rules: WatcherRuleDefinitionObjectType;
+};
+
+export type WatcherDefinitionObjectType = {
+	[index: number]: WatcherDefinitionWithRulesType;
 };
 
 export type WatcherDefinitionWithIDType = {
-	rowid: number;
+	id: number;
 } & WatcherDefinitionType;
