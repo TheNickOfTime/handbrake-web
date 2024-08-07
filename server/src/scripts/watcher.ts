@@ -3,10 +3,18 @@ import mime from 'mime';
 import path from 'path';
 import {
 	GetWatchersFromDatabase,
+	InsertWatcherRuleToDatabase,
 	InsertWatcherToDatabase,
 	RemoveWatcherFromDatabase,
+	RemoveWatcherRuleFromDatabase,
+	UpdateWatcherRuleInDatabase,
 } from './database/database-watcher';
-import { WatcherDefinitionType, WatcherDefinitionWithIDType } from 'types/watcher';
+import {
+	WatcherDefinitionType,
+	WatcherDefinitionWithIDType,
+	WatcherDefinitionWithRulesType,
+	WatcherRuleDefinitionType,
+} from 'types/watcher';
 import { EmitToAllClients } from './connections';
 import { AddJob, GetQueue, RemoveJob } from './queue';
 import { QueueRequestType } from 'types/queue';
@@ -15,7 +23,7 @@ import { TranscodeStage } from 'types/transcode';
 
 const watchers: { [index: number]: chokidar.FSWatcher } = [];
 
-export function RegisterWatcher(watcher: WatcherDefinitionWithIDType) {
+export function RegisterWatcher(id: number, watcher: WatcherDefinitionWithRulesType) {
 	const newWatcher = chokidar.watch(watcher.watch_path, {
 		awaitWriteFinish: true,
 		ignoreInitial: true,
@@ -38,33 +46,34 @@ export function RegisterWatcher(watcher: WatcherDefinitionWithIDType) {
 		console.error(error);
 	});
 
-	watchers[watcher.rowid] = newWatcher;
+	watchers[id] = newWatcher;
 
 	console.log(`[server] [watcher] Registered watcher for '${watcher.watch_path}'.`);
 }
 
-export async function DeregisterWatcher(rowid: number) {
+export async function DeregisterWatcher(id: number) {
 	try {
-		const directory = Object.entries(watchers[rowid].getWatched())[0].join('/');
-		await watchers[rowid].close();
+		const directory = Object.entries(watchers[id].getWatched())[0].join('/');
+		await watchers[id].close();
 		console.log(`[server] [watcher] Deregistered watcher for '${directory}'.`);
 
-		delete watchers[rowid];
+		delete watchers[id];
 	} catch (error) {
 		console.error(
-			`[server] [watcher] [error] Could not deregister watcher with rowid '${rowid}'.`
+			`[server] [watcher] [error] Could not deregister watcher with rowid '${id}'.`
 		);
 		console.error(error);
 	}
 }
 
 export function InitializeWatchers() {
-	const watchers = GetWatchersFromDatabase();
-	if (watchers) {
-		watchers.forEach((watcher) => {
-			RegisterWatcher(watcher);
-		});
-	}
+	// const watchers = GetWatchersFromDatabase();
+	// if (watchers) {
+	// 	Object.keys(watchers).forEach((watcherID) => {
+	// 		const parsedWatcherID = parseInt(watcherID);
+	// 		RegisterWatcher(parsedWatcherID, watchers[parsedWatcherID]);
+	// 	});
+	// }
 }
 
 async function onWatcherDetectFileAdd(watcher: WatcherDefinitionType, filePath: string) {
@@ -144,10 +153,7 @@ export function UpdateWatchers() {
 export function AddWatcher(watcher: WatcherDefinitionType) {
 	const result = InsertWatcherToDatabase(watcher);
 	if (result) {
-		RegisterWatcher({
-			...watcher,
-			rowid: result.lastInsertRowid as number,
-		});
+		RegisterWatcher(result.lastInsertRowid as number, { ...watcher, rules: [] });
 		UpdateWatchers();
 	}
 }
@@ -156,6 +162,27 @@ export function RemoveWatcher(rowid: number) {
 	const result = RemoveWatcherFromDatabase(rowid);
 	if (result) {
 		DeregisterWatcher(rowid);
+		UpdateWatchers();
+	}
+}
+
+export function AddWatcherRule(id: number, rule: WatcherRuleDefinitionType) {
+	const result = InsertWatcherRuleToDatabase(id, rule);
+	if (result) {
+		UpdateWatchers();
+	}
+}
+
+export function UpdateWatcherRule(id: number, rule: WatcherRuleDefinitionType) {
+	const result = UpdateWatcherRuleInDatabase(id, rule);
+	if (result) {
+		UpdateWatchers();
+	}
+}
+
+export function RemoveWatcherRule(id: number) {
+	const result = RemoveWatcherRuleFromDatabase(id);
+	if (result) {
 		UpdateWatchers();
 	}
 }

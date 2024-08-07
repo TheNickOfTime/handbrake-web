@@ -26,9 +26,20 @@ import {
 } from 'scripts/queue';
 import { ConfigType, ConfigPropertyType } from 'types/config';
 import { GetConfig, GetPropertyFromConfig } from 'scripts/config';
-import { WatcherDefinitionType, WatcherDefinitionWithIDType } from 'types/watcher';
+import {
+	WatcherDefinitionObjectType,
+	WatcherDefinitionType,
+	WatcherDefinitionWithIDType,
+	WatcherRuleDefinitionType,
+} from 'types/watcher';
 import { GetWatchersFromDatabase } from 'scripts/database/database-watcher';
-import { AddWatcher, RemoveWatcher } from 'scripts/watcher';
+import {
+	AddWatcher,
+	AddWatcherRule,
+	RemoveWatcher,
+	RemoveWatcherRule,
+	UpdateWatcherRule,
+} from 'scripts/watcher';
 import {
 	GetJobOrderIndexFromTable,
 	UpdateJobOrderIndexInDatabase,
@@ -152,7 +163,7 @@ export default function ClientSocket(io: Server) {
 		// Watchers --------------------------------------------------------------------------------
 		socket.on(
 			'get-watchers',
-			(callback: (watchers: WatcherDefinitionWithIDType[] | undefined) => void) => {
+			(callback: (watchers: WatcherDefinitionObjectType | undefined) => void) => {
 				callback(GetWatchersFromDatabase());
 			}
 		);
@@ -161,8 +172,20 @@ export default function ClientSocket(io: Server) {
 			AddWatcher(watcher);
 		});
 
-		socket.on('remove-watcher', (rowid: number) => {
-			RemoveWatcher(rowid);
+		socket.on('remove-watcher', (id: number) => {
+			RemoveWatcher(id);
+		});
+
+		socket.on('add-watcher-rule', (watcherID: number, rule: WatcherRuleDefinitionType) => {
+			AddWatcherRule(watcherID, rule);
+		});
+
+		socket.on('update-watcher-rule', (ruleID: number, rule: WatcherRuleDefinitionType) => {
+			UpdateWatcherRule(ruleID, rule);
+		});
+
+		socket.on('remove-watcher-rule', (ruleID: number) => {
+			RemoveWatcherRule(ruleID);
 		});
 	});
 }
