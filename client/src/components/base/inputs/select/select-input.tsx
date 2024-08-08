@@ -4,8 +4,8 @@ import './select-input.scss';
 type Params = PropsWithChildren & {
 	id: string;
 	label?: string;
-	value: string | undefined;
-	setValue?: React.Dispatch<React.SetStateAction<string>>;
+	value: any;
+	setValue?: React.Dispatch<React.SetStateAction<any>>;
 	onChange?: (value: string) => void;
 };
 
