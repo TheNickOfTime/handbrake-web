@@ -59,7 +59,7 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 
 		handbrake = spawn('HandBrakeCLI', [
 			'--preset-import-file',
-			'./temp/preset.json',
+			presetPath!,
 			'--preset',
 			jobData.preset_id,
 			'-i',
