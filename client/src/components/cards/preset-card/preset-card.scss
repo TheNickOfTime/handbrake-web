@@ -1,5 +1,6 @@
 @use 'src/style/modules/colors';
 @use 'src/style/modules/font';
+@use 'src/style/modules/sizing';
 
 .preset-card {
 	padding: 1rem;
@@ -19,7 +20,6 @@
 			flex-grow: 1;
 			margin: 0;
 			padding: 0.5rem 0;
-			// border-bottom: 0.2rem solid hsla(0, 0%, 100%, 0.1);
 		}
 
 		.preset-buttons {
@@ -36,29 +36,58 @@
 
 	.preset-body {
 		.preset-tabs {
-			button {
-				padding: 0.5rem 1rem;
-				border: none;
-				border-radius: 0;
-				font-family: font.$font-family-primary;
-				font-size: 1.25rem;
-				background-color: colors.$transparent-light-tertiary;
-				color: colors.$text-color-tertiary;
+			display: flex;
+			flex-flow: row wrap;
 
-				&.current {
-					background-color: colors.$transparent-light-primary;
-					color: colors.$text-color-secondary;
+			.tab-button-container {
+				max-height: 2.75rem;
+
+				button {
+					height: 200%;
+					padding: 0.5rem 1rem;
+					border: none;
+					border-radius: 0;
+					font-family: font.$font-family-primary;
+					font-size: 1.25rem;
+					border-right: 0.2rem solid colors.$background-five;
+					border-radius: 1rem 1rem 0 0;
+					background-color: colors.$background-four;
+					color: colors.$text-color-tertiary;
+					display: inline-flex;
+
+					&.current {
+						background-color: colors.$background-five;
+						color: colors.$text-color-secondary;
+					}
+
+					&:hover {
+						background-color: colors.$background-five;
+						border-right: 0.2rem solid colors.$background-six;
+					}
+
+					.tab-button-label {
+						// max-height: 2.75rem;
+					}
 				}
+			}
 
-				&:hover {
-					background-color: colors.$transparent-light-secondary;
+			@media screen and (max-width: sizing.$small-max-width) {
+				.tab-button-container {
+					flex-grow: 1;
+					button {
+						width: 100%;
+						border-top: 0.2rem solid colors.$background-five;
+					}
 				}
 			}
 		}
 
 		.current-tab {
-			background-color: colors.$transparent-light-primary;
+			background-color: colors.$background-five;
 			padding: 1rem;
+			border-radius: 1rem;
+			position: relative;
+			z-index: 1;
 
 			.preset-card-section {
 				max-width: 100%;
