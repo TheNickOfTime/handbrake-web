@@ -37,6 +37,13 @@ const fileInfoLookup: { [key in WatcherRuleFileInfoMethods]: string } = {
 	[WatcherRuleFileInfoMethods.FileSize]: 'size',
 };
 
+const mediaInfoLookup: { [key in WatcherRuleMediaInfoMethods]: string } = {
+	[WatcherRuleMediaInfoMethods.MediaWidth]: 'width (pixels)',
+	[WatcherRuleMediaInfoMethods.MediaHeight]: 'height (pixels)',
+	[WatcherRuleMediaInfoMethods.MediaBitrate]: 'bitrate (kb/s)',
+	[WatcherRuleMediaInfoMethods.MediaEncoder]: 'encoder',
+};
+
 const stringComarisonLookup: { [key in WatcherRuleStringComparisonMethods]: string } = {
 	[WatcherRuleStringComparisonMethods.Contains]: 'contains',
 	[WatcherRuleStringComparisonMethods.EqualTo]: 'equals',
@@ -166,7 +173,7 @@ export default function WatcherCardRule({
 								.map((key) => parseInt(key) as WatcherRuleMediaInfoMethods)
 								.map((key) => (
 									<option value={key} key={`media-info-method-${key}`}>
-										{WatcherRuleMediaInfoMethods[key]}
+										{mediaInfoLookup[key]}
 									</option>
 								))
 						: null}
