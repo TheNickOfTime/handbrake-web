@@ -18,7 +18,6 @@ export enum WatcherRuleMediaInfoMethods {
 	MediaWidth,
 	MediaHeight,
 	MediaBitrate,
-	MediaContainer,
 	MediaEncoder,
 }
 

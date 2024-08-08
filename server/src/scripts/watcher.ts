@@ -1,7 +1,7 @@
 import chokidar from 'chokidar';
 import mime from 'mime';
 import path from 'path';
-import fs from 'fs';
+import fs from 'fs/promises';
 import {
 	GetWatcherIDFromRuleIDFromDatabase,
 	GetWatchersFromDatabase,
@@ -30,6 +30,7 @@ import { AddJob, GetQueue, RemoveJob } from './queue';
 import { QueueRequestType } from 'types/queue';
 import { CheckFilenameCollision } from './files';
 import { TranscodeStage } from 'types/transcode';
+import { ConvertBitsToKilobits, ConvertBytesToMegabytes, GetMediaInfo } from './media';
 
 const watchers: { [index: number]: chokidar.FSWatcher } = [];
 
@@ -131,7 +132,20 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, f
 		}' has detected the creation of the file '${path.basename(filePath)}'.`
 	);
 
-	const isValid = Object.values(watcher.rules).every((rule) => {
+	const asyncEvery = async (
+		values: WatcherRuleDefinitionType[],
+		predicate: (value: WatcherRuleDefinitionType) => Promise<boolean>
+	) => {
+		for (let value of values) {
+			const result = await predicate(value);
+			if (!result) {
+				return false;
+			}
+			return true;
+		}
+	};
+
+	const isValid = await asyncEvery(Object.values(watcher.rules), async (rule) => {
 		let comparisonMethod =
 			WatcherRuleComparisonLookup[
 				rule.base_rule_method == WatcherRuleBaseMethods.FileInfo
@@ -152,15 +166,32 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, f
 						input = path.parse(filePath).ext;
 						break;
 					case WatcherRuleFileInfoMethods.FileSize:
-						input = fs.statSync(filePath).size.toString();
+						input = ConvertBytesToMegabytes((await fs.stat(filePath)).size).toFixed(1);
 						break;
 				}
-			// case WatcherRuleBaseMethods.MediaInfo:
-			// 	switch(rule.rule_method) {
-			// 		case WatcherRuleMediaInfoMethods.MediaContainer:
-			// 		case WatcherRuleMediaInfoMethods.MediaEncoder:
-			// 	}
-			// 	break;
+				break;
+			case WatcherRuleBaseMethods.MediaInfo:
+				const mediaInfo = await GetMediaInfo(filePath);
+				const videoStream = mediaInfo.streams.find(
+					(stream) => stream.codec_type == 'video'
+				);
+				if (!videoStream) return false;
+
+				switch (rule.rule_method) {
+					case WatcherRuleMediaInfoMethods.MediaWidth:
+						input = videoStream.width!.toString();
+						break;
+					case WatcherRuleMediaInfoMethods.MediaHeight:
+						input = videoStream.height!.toString();
+						break;
+					case WatcherRuleMediaInfoMethods.MediaBitrate:
+						input = ConvertBitsToKilobits(videoStream.bit_rate!).toFixed(0);
+						break;
+					case WatcherRuleMediaInfoMethods.MediaEncoder:
+						input = videoStream.codec_long_name!.toString();
+						break;
+				}
+				break;
 		}
 
 		const result =
@@ -176,7 +207,7 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, f
 						rule.comparison_method as WatcherRuleNumberComparisonMethods,
 						rule.comparison
 				  )
-				: null;
+				: false;
 		return result;
 	});
 
@@ -272,6 +303,7 @@ export function RemoveWatcher(watcherID: number) {
 }
 
 export async function AddWatcherRule(watcherID: number, rule: WatcherRuleDefinitionType) {
+	await DeregisterWatcher(watcherID);
 	const result = InsertWatcherRuleToDatabase(watcherID, rule);
 	if (result) {
 		UpdateWatchers();
