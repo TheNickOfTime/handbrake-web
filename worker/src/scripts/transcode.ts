@@ -19,7 +19,7 @@ let presetPath: string | undefined;
 const writePresetToFile = async (preset: HandbrakePresetType) => {
 	try {
 		const presetString = JSON.stringify(preset);
-		const presetDir = './temp';
+		const presetDir = '/tmp';
 		const presetName = 'preset.json';
 
 		if (!fs.existsSync(presetDir)) {
@@ -59,7 +59,7 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 
 		handbrake = spawn('HandBrakeCLI', [
 			'--preset-import-file',
-			'./temp/preset.json',
+			presetPath!,
 			'--preset',
 			jobData.preset_id,
 			'-i',

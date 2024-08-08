@@ -27,6 +27,7 @@ services:
   handbrake-server:
     image: ghcr.io/thenickoftime/handbrake-web-server:latest
     container_name: handbrake-web-server
+    user: 1000:1000
     ports:
       - 9999:9999
     volumes:
@@ -36,6 +37,7 @@ services:
   handbrake-worker:
     image: ghcr.io/thenickoftime/handbrake-web-worker:latest
     container_name: handbrake-web-worker
+    user: 1000:1000
     environment:
       - WORKER_ID= #give your worker a unique name
       - SERVER_URL= #set to the url or ip of your server
