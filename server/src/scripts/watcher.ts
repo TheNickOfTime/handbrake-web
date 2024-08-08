@@ -14,13 +14,13 @@ import {
 } from './database/database-watcher';
 import {
 	WatcherDefinitionType,
-	WatcherDefinitionWithIDType,
 	WatcherDefinitionWithRulesType,
 	WatcherRuleBaseMethods,
 	WatcherRuleComparisonLookup,
 	WatcherRuleComparisonMethods,
 	WatcherRuleDefinitionType,
 	WatcherRuleFileInfoMethods,
+	WatcherRuleMaskMethods,
 	WatcherRuleMediaInfoMethods,
 	WatcherRuleNumberComparisonMethods,
 	WatcherRuleStringComparisonMethods,
@@ -71,9 +71,7 @@ export async function DeregisterWatcher(id: number) {
 
 		delete watchers[id];
 	} catch (error) {
-		console.error(
-			`[server] [watcher] [error] Could not deregister watcher with rowid '${id}'.`
-		);
+		console.error(`[server] [watcher] [error] Could not deregister watcher with id '${id}'.`);
 		console.error(error);
 	}
 }
@@ -204,7 +202,7 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, f
 				break;
 		}
 
-		const result =
+		let result =
 			comparisonMethod == WatcherRuleComparisonMethods.String
 				? WatcherRuleStringComparison(
 						input,
@@ -218,6 +216,11 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, f
 						rule.comparison
 				  )
 				: false;
+
+		if (rule.mask == WatcherRuleMaskMethods.Exclude) {
+			result = !result;
+		}
+
 		return result;
 	});
 
