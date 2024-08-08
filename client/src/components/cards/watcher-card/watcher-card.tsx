@@ -74,6 +74,11 @@ export default function WatcherCard({
 						/>
 					</div>
 					<div className='watcher-card-rule-cards'>
+						{Object.keys(watcher.rules).length == 0 && (
+							<div className='watcher-card-rule' style={{ textAlign: 'center' }}>
+								N/A
+							</div>
+						)}
 						{Object.keys(watcher.rules)
 							.map((ruleID) => parseInt(ruleID))
 							.map((ruleID, index) => (
