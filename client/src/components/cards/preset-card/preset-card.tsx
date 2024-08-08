@@ -50,13 +50,14 @@ export default function PresetCard({ preset, handleRemovePreset }: Params) {
 			<div className='preset-body'>
 				<div className='preset-tabs'>
 					{tabs.map((tab, index) => (
-						<button
-							className={index == currentTab ? 'current' : undefined}
-							key={tab}
-							onClick={() => setCurrentTab(index)}
-						>
-							{tab}
-						</button>
+						<div className='tab-button-container' key={tab}>
+							<button
+								className={index == currentTab ? 'current' : undefined}
+								onClick={() => setCurrentTab(index)}
+							>
+								<span className='tab-button-label'>{tab}</span>
+							</button>
+						</div>
 					))}
 				</div>
 				<div className='current-tab'>

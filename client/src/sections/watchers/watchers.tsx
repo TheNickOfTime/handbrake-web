@@ -51,10 +51,11 @@ export default function WatchersSection() {
 			</SubSection>
 			{watcherIDs.length > 0 && (
 				<SubSection title='Registered Watchers' id='registered-watchers'>
-					{watcherIDs.map((watcherID) => (
+					{watcherIDs.map((watcherID, index) => (
 						<WatcherCard
 							watcherID={watcherID}
 							watcher={watchers[watcherID]}
+							index={index}
 							handleRemoveWatcher={handleRemoveWatcher}
 							handleAddRule={handleAddRule}
 							handleUpdateRule={handleUpdateRule}
