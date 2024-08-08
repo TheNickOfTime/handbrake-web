@@ -93,19 +93,17 @@ export function GetWatcherWithIDFromDatabase(id: number) {
 			);
 
 			const rulesResult = Object.fromEntries(
-				ruleStatement
-					.all({ id: watcherResult.watcher_id })
-					.map((rule): [number, WatcherRuleDefinitionType] => [
-						rule.rule_id,
-						{
-							name: rule.name,
-							mask: rule.mask,
-							base_rule_method: rule.base_rule_method,
-							rule_method: rule.rule_method,
-							comparison_method: rule.comparison_method,
-							comparison: rule.comparison,
-						},
-					])
+				ruleStatement.all({ id: id }).map((rule): [number, WatcherRuleDefinitionType] => [
+					rule.rule_id,
+					{
+						name: rule.name,
+						mask: rule.mask,
+						base_rule_method: rule.base_rule_method,
+						rule_method: rule.rule_method,
+						comparison_method: rule.comparison_method,
+						comparison: rule.comparison,
+					},
+				])
 			);
 
 			if (rulesResult) {
@@ -114,7 +112,7 @@ export function GetWatcherWithIDFromDatabase(id: number) {
 					output_path: watcherResult.output_path,
 					preset_id: watcherResult.preset_id,
 					default_mask: watcherResult.default_mask as WatcherRuleMaskMethods,
-					rules: rulesResult[watcherResult.watcher_id],
+					rules: rulesResult,
 				};
 
 				return watchers;
