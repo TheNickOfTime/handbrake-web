@@ -3,7 +3,7 @@ import { QueueType, QueueStatus } from 'types/queue';
 import { ConnectionIDsType } from 'types/socket';
 import { HandbrakePresetListType } from 'types/preset';
 import { ConfigType } from 'types/config';
-import { WatcherDefinitionWithIDType } from 'types/watcher';
+import { WatcherDefinitionObjectType } from 'types/watcher';
 
 export type PrimaryOutletContextType = {
 	socket: Socket;
@@ -12,5 +12,5 @@ export type PrimaryOutletContextType = {
 	presets: HandbrakePresetListType;
 	connections: ConnectionIDsType;
 	config: ConfigType;
-	watchers: WatcherDefinitionWithIDType[];
+	watchers: WatcherDefinitionObjectType;
 };

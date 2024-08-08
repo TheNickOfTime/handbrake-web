@@ -1,4 +1,5 @@
 @use 'src/style/modules/colors';
+@use 'src/style/modules/font';
 
 .watcher-card {
 	padding: 1rem;
@@ -28,7 +29,156 @@
 			gap: 1rem;
 
 			* {
-				font-size: 1.75rem;
+				font-size: 1.25rem;
+			}
+		}
+	}
+
+	.watcher-card-info,
+	.watcher-card-rules {
+		margin-bottom: 1.5rem;
+
+		h5 {
+			margin: 0.5rem 0;
+			color: colors.$text-color-tertiary;
+		}
+	}
+
+	.watcher-card-info {
+	}
+
+	.watcher-card-rules {
+		.watcher-card-rule-cards {
+			display: flex;
+			flex-flow: column nowrap;
+			gap: 1rem;
+
+			.watcher-card-rule {
+				.watcher-card-rule-header {
+					display: flex;
+					flex-flow: row nowrap;
+					align-items: center;
+					gap: 1rem;
+
+					font-family: font.$font-family-secondary;
+					margin-bottom: 0.5rem;
+
+					#rule-name {
+						flex-grow: 1;
+						padding: 0 1rem;
+						border-radius: 1.75rem;
+						height: 2.5rem;
+
+						font-size: 1.5rem;
+						font-family: font.$font-family-secondary;
+
+						border: none;
+						background-color: transparent;
+						color: colors.$text-color-secondary;
+
+						&:hover,
+						&:focus {
+							background-color: colors.$background-five;
+						}
+					}
+
+					button {
+						padding: 0.5rem;
+						aspect-ratio: 1;
+						line-height: 1rem;
+						border: none;
+						border-radius: 0.5rem;
+						background-color: transparent;
+						font-size: 1.5rem;
+
+						.bi {
+							display: inline-block;
+							line-height: 1rem;
+						}
+
+						&:hover {
+							color: colors.$text-color-primary;
+						}
+
+						&:active {
+							color: colors.$background-tertiary;
+						}
+					}
+
+					.save-button {
+						// background-color: white;
+						color: colors.$handbrake-blue;
+
+						&:hover {
+							background-color: colors.$handbrake-blue;
+						}
+					}
+
+					.remove-button {
+						color: colors.$handbrake-red;
+
+						&:hover {
+							background-color: colors.$handbrake-red;
+						}
+					}
+				}
+
+				.watcher-card-rule-properties {
+					width: 100%;
+					// height: 2.5rem;
+					display: inline-flex;
+					flex-flow: row wrap;
+					align-items: center;
+					gap: 0.5rem;
+					background-color: colors.$transparent-light-primary;
+					border-radius: 1.75rem;
+
+					* {
+						height: 2.5rem;
+						display: inline;
+						vertical-align: middle;
+					}
+
+					span {
+						align-content: center;
+					}
+
+					input,
+					select {
+						flex-grow: 1;
+						border-radius: 1.75rem;
+						border: none;
+
+						font-size: 1.5rem;
+						font-family: font.$font-family-primary;
+
+						background-color: colors.$background-six;
+						color: colors.$text-color-primary;
+					}
+
+					input {
+						padding: 0 1rem;
+					}
+
+					select {
+						padding-left: 1rem;
+					}
+
+					#comparison {
+						min-width: 15rem;
+						flex-grow: 10;
+					}
+				}
+			}
+		}
+
+		.watcher-card-rule-buttons {
+			margin-top: 1.5rem;
+
+			.controlled-button {
+				* {
+					font-size: 1.25rem;
+				}
 			}
 		}
 	}

@@ -2,7 +2,7 @@
 @use 'src/style/modules/sizing';
 
 .select-input {
-	display: flex;
+	display: inline-flex;
 	align-items: center;
 
 	label {
@@ -21,7 +21,7 @@
 		gap: 0.5rem;
 
 		label {
-			width: 100%;
+			width: fit-content;
 		}
 	}
 }

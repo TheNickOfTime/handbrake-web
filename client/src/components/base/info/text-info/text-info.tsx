@@ -8,11 +8,9 @@ type Params = {
 
 export default function TextInfo({ label, children, vertical = false }: Params) {
 	return (
-		<div className='text-info'>
+		<div className={'text-info' + (vertical ? ' vertical' : '')}>
 			<span className='text-info-label'>{label}:</span>
-			<span className={'text-info-content' + vertical ? 'vertical' : undefined}>
-				{children}
-			</span>
+			<span className='text-info-content'>{children}</span>
 		</div>
 	);
 }
