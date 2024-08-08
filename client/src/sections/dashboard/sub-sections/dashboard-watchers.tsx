@@ -22,6 +22,7 @@ export default function DashboardWatchers({ watchers }: Params) {
 							<th>Watching Directory</th>
 							<th>Output Directory</th>
 							<th>Preset</th>
+							<th>Rules</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -35,6 +36,9 @@ export default function DashboardWatchers({ watchers }: Params) {
 										<td>{watcher.watch_path}</td>
 										<td className='center'>{watcher.output_path || 'N/A'}</td>
 										<td className='center'>{watcher.preset_id}</td>
+										<td className='center'>
+											{Object.keys(watcher.rules).length}
+										</td>
 									</tr>
 								);
 							})}
