@@ -19,7 +19,7 @@ let presetPath: string | undefined;
 const writePresetToFile = async (preset: HandbrakePresetType) => {
 	try {
 		const presetString = JSON.stringify(preset);
-		const presetDir = './temp';
+		const presetDir = '/tmp';
 		const presetName = 'preset.json';
 
 		if (!fs.existsSync(presetDir)) {
