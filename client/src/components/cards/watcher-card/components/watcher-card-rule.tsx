@@ -1,5 +1,3 @@
-import TextInfo from 'components/base/info/text-info/text-info';
-import TextInput from 'components/base/inputs/text/text-input';
 import { useState } from 'react';
 import {
 	WatcherRuleBaseMethods,

@@ -1,7 +1,6 @@
 import {
 	WatcherDefinitionWithRulesType,
 	WatcherRuleBaseMethods,
-	WatcherRuleComparisonMethods,
 	WatcherRuleDefinitionType,
 	WatcherRuleFileInfoMethods,
 	WatcherRuleMaskMethods,
