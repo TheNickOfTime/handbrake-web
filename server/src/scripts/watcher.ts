@@ -99,7 +99,17 @@ function WatcherRuleStringComparison(
 		case WatcherRuleStringComparisonMethods.EqualTo:
 			return input == value;
 		case WatcherRuleStringComparisonMethods.RegularExpression:
-			return false;
+			const splitRegex = value.match(
+				/\/((?![*+?])(?:[^\r\n\[/\\]|\\.|\[(?:[^\r\n\]\\]|\\.)*\])+)\/((?:g(?:im?|mi?)?|i(?:gm?|mg?)?|m(?:gi?|ig?)?)?)/
+			);
+			if (splitRegex) {
+				return input.match(new RegExp(splitRegex[1], splitRegex[2])) ? true : false;
+			} else {
+				console.log(
+					`[server] [watcher] [error] Could not detect a valid regex in the string '${value}'.`
+				);
+				return false;
+			}
 	}
 }
 
