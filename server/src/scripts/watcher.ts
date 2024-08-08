@@ -258,7 +258,7 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, f
 		console.log(
 			`[server] [watcher] Watcher for '${watcher.watch_path}' is requesting a new job be made for the video file '${parsedPath.base}'.`
 		);
-		// AddJob(newJobRequest);
+		AddJob(newJobRequest);
 	}
 }
 
