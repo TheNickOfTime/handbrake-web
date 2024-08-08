@@ -5,7 +5,7 @@ export enum WatcherRuleMaskMethods {
 
 export enum WatcherRuleBaseMethods {
 	FileInfo,
-	// MediaInfo,
+	MediaInfo,
 }
 
 export enum WatcherRuleFileInfoMethods {

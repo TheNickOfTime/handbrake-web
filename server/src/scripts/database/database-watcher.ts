@@ -80,6 +80,71 @@ export function GetWatchersFromDatabase() {
 	}
 }
 
+export function GetWatcherWithIDFromDatabase(id: number) {
+	try {
+		const watcherStatement = database.prepare<{ id: number }, WatcherTableType>(
+			'SELECT * FROM watchers WHERE watcher_id = $id'
+		);
+		const watcherResult = watcherStatement.get({ id: id });
+
+		if (watcherResult) {
+			const ruleStatement = database.prepare<{ id: number }, WatcherRuleTableType>(
+				'SELECT * FROM watcher_rules WHERE watcher_id = $id'
+			);
+
+			const rulesResult = Object.fromEntries(
+				ruleStatement
+					.all({ id: watcherResult.watcher_id })
+					.map((rule): [number, WatcherRuleDefinitionType] => [
+						rule.rule_id,
+						{
+							name: rule.name,
+							mask: rule.mask,
+							base_rule_method: rule.base_rule_method,
+							rule_method: rule.rule_method,
+							comparison_method: rule.comparison_method,
+							comparison: rule.comparison,
+						},
+					])
+			);
+
+			if (rulesResult) {
+				const watchers: WatcherDefinitionWithRulesType = {
+					watch_path: watcherResult.watch_path,
+					output_path: watcherResult.output_path,
+					preset_id: watcherResult.preset_id,
+					default_mask: watcherResult.default_mask as WatcherRuleMaskMethods,
+					rules: rulesResult[watcherResult.watcher_id],
+				};
+
+				return watchers;
+			}
+		}
+	} catch (err) {
+		console.error(
+			`[server] [database] [error] Could not get watcher with id '${id}' from the database.`
+		);
+		console.error(err);
+	}
+}
+
+export function GetWatcherIDFromRuleIDFromDatabase(id: number) {
+	try {
+		const idStatement = database.prepare<{ id: number }, { watcher_id: string }>(
+			'SELECT watcher_id FROM watcher_rules WHERE rule_id = $id'
+		);
+		const idResult = idStatement.get({ id: id });
+		if (idResult) {
+			return parseInt(idResult.watcher_id);
+		}
+	} catch (err) {
+		console.error(
+			`[server] [database] [error] Could not get a wacther_id from a rule with '${id}' from the database.`
+		);
+		console.error(err);
+	}
+}
+
 export function InsertWatcherToDatabase(watcher: WatcherDefinitionType) {
 	try {
 		const insertWatcherStatement = database.prepare<WatcherDefinitionType>(
