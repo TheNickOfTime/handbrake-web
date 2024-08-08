@@ -217,7 +217,7 @@ export function UpdateWatcherRuleInDatabase(ruleID: number, rule: WatcherRuleDef
 
 export function RemoveWatcherFromDatabase(id: number) {
 	try {
-		const removeStatement = database.prepare('DELETE FROM watchers WHERE id = $id');
+		const removeStatement = database.prepare('DELETE FROM watchers WHERE watcher_id = $id');
 		const removalResult = removeStatement.run({ id: id });
 		console.log(`[server] [database] Removed watcher with id '${id}' from the database.`);
 		return removalResult;
