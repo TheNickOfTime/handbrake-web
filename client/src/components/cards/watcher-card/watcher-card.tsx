@@ -20,11 +20,6 @@ type Params = {
 	handleRemoveRule: (ruleID: number) => void;
 };
 
-const defaultMaskLookup: { [index: string]: string } = {
-	Include: 'Watch All Files In Directory',
-	Exclude: 'Ignore All File In Directory',
-};
-
 export default function WatcherCard({
 	watcherID,
 	watcher,
@@ -61,9 +56,9 @@ export default function WatcherCard({
 				<TextInfo label='Watching Path'>{watcher.watch_path || 'N/A'}</TextInfo>
 				<TextInfo label='Output Path'>{watcher.output_path || 'N/A'}</TextInfo>
 				<TextInfo label='Preset'>{watcher.preset_id}</TextInfo>
-				<TextInfo label='Default Watch Behavior'>
+				{/* <TextInfo label='Default Watch Behavior'>
 					{defaultMaskLookup[WatcherRuleMaskMethods[watcher.default_mask]]}
-				</TextInfo>
+				</TextInfo> */}
 			</div>
 			<div className='watcher-card-rules'>
 				<h5>Rules</h5>

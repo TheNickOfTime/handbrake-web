@@ -15,8 +15,7 @@ export const watcherTableCreateStatements = [
 		watcher_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
 		watch_path TEXT NOT NULL, \
 		output_path TEXT, \
-		preset_id TEXT NOT NULL, \
-		default_mask INTEGER NOT NULL \
+		preset_id TEXT NOT NULL \
 	)',
 	'CREATE TABLE IF NOT EXISTS watcher_rules( \
 		watcher_id INT NOT NULL REFERENCES watchers(watcher_id) ON DELETE CASCADE, \
@@ -67,7 +66,7 @@ export function GetWatchersFromDatabase() {
 					watch_path: watcher.watch_path,
 					output_path: watcher.output_path,
 					preset_id: watcher.preset_id,
-					default_mask: watcher.default_mask as WatcherRuleMaskMethods,
+					// default_mask: watcher.default_mask as WatcherRuleMaskMethods,
 					rules: rules[watcher.watcher_id],
 				},
 			])
@@ -111,7 +110,7 @@ export function GetWatcherWithIDFromDatabase(id: number) {
 					watch_path: watcherResult.watch_path,
 					output_path: watcherResult.output_path,
 					preset_id: watcherResult.preset_id,
-					default_mask: watcherResult.default_mask as WatcherRuleMaskMethods,
+					// default_mask: watcherResult.default_mask as WatcherRuleMaskMethods,
 					rules: rulesResult,
 				};
 
@@ -146,13 +145,13 @@ export function GetWatcherIDFromRuleIDFromDatabase(id: number) {
 export function InsertWatcherToDatabase(watcher: WatcherDefinitionType) {
 	try {
 		const insertWatcherStatement = database.prepare<WatcherDefinitionType>(
-			'INSERT INTO watchers(watch_path, output_path, preset_id, default_mask) VALUES($watch_path, $output_path, $preset_id, $default_mask)'
+			'INSERT INTO watchers(watch_path, output_path, preset_id) VALUES($watch_path, $output_path, $preset_id)'
 		);
 		const insertWatcherResult = insertWatcherStatement.run({
 			watch_path: watcher.watch_path,
 			output_path: watcher.output_path,
 			preset_id: watcher.preset_id,
-			default_mask: watcher.default_mask,
+			// default_mask: watcher.default_mask,
 		});
 
 		console.log(

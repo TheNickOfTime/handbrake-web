@@ -44,7 +44,7 @@ export type WatcherTableType = {
 	watch_path: string;
 	output_path: string | null;
 	preset_id: string;
-	default_mask: number;
+	// default_mask: number;
 };
 
 export type WatcherRuleTableType = {
