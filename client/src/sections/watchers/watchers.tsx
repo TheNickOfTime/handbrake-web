@@ -7,6 +7,7 @@ import Section from 'components/section/section';
 import SubSection from 'components/section/sub-section';
 import WatcherCard from 'components/cards/watcher-card/watcher-card';
 import './watchers.scss';
+import { WatcherRuleDefinitionType } from 'types/watcher';
 
 export default function WatchersSection() {
 	const { socket, watchers } = useOutletContext<PrimaryOutletContextType>();
@@ -21,10 +22,26 @@ export default function WatchersSection() {
 		socket.emit('remove-watcher', rowid);
 	};
 
+	const handleAddRule = (id: number, rule: WatcherRuleDefinitionType) => {
+		socket.emit('add-watcher-rule', id, rule);
+	};
+
+	const handleUpdateRule = (id: number, rule: WatcherRuleDefinitionType) => {
+		socket.emit('update-watcher-rule', id, rule);
+	};
+
+	const handleRemoveRule = (id: number) => {
+		socket.emit('remove-watcher-rule', id);
+	};
+
+	const watcherIDs = Object.keys(watchers).map((id) => parseInt(id));
+
+	console.log(watchers);
+
 	return (
 		<Section title='Watchers' id='watchers'>
 			<SubSection id='watchers-status'>
-				<div className='watcher-count'>Watchers: {watchers.length}</div>
+				<div className='watcher-count'>Watchers: {watcherIDs.length}</div>
 				<ButtonInput
 					label='Register New Watcher'
 					icon='bi-plus-lg'
@@ -32,13 +49,17 @@ export default function WatchersSection() {
 					onClick={handleNewWatcher}
 				/>
 			</SubSection>
-			{watchers.length > 0 && (
+			{watcherIDs.length > 0 && (
 				<SubSection title='Registered Watchers' id='registered-watchers'>
-					{watchers.map((watcher) => (
+					{watcherIDs.map((watcherID) => (
 						<WatcherCard
-							watcher={watcher}
+							watcherID={watcherID}
+							watcher={watchers[watcherID]}
 							handleRemoveWatcher={handleRemoveWatcher}
-							key={`watcher-card-${watcher.rowid}`}
+							handleAddRule={handleAddRule}
+							handleUpdateRule={handleUpdateRule}
+							handleRemoveRule={handleRemoveRule}
+							key={`watcher-card-${watcherID}`}
 						/>
 					))}
 				</SubSection>

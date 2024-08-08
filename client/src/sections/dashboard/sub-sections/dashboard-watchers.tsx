@@ -1,10 +1,10 @@
 import SubSection from 'components/section/sub-section';
 import { NavLink } from 'react-router-dom';
-import { WatcherDefinitionWithIDType } from 'types/watcher';
+import { WatcherDefinitionObjectType } from 'types/watcher';
 import './dashboard-watchers.scss';
 
 type Params = {
-	watchers: WatcherDefinitionWithIDType[];
+	watchers: WatcherDefinitionObjectType;
 };
 
 export default function DashboardWatchers({ watchers }: Params) {
@@ -25,13 +25,19 @@ export default function DashboardWatchers({ watchers }: Params) {
 						</tr>
 					</thead>
 					<tbody>
-						{watchers.map((watcher) => (
-							<tr>
-								<td>{watcher.watch_path}</td>
-								<td className='center'>{watcher.output_path || 'N/A'}</td>
-								<td className='center'>{watcher.preset_id}</td>
-							</tr>
-						))}
+						{Object.keys(watchers)
+							.map((watcherID) => parseInt(watcherID))
+							.map((watcherID) => {
+								const watcher = watchers[watcherID];
+
+								return (
+									<tr key={watcherID}>
+										<td>{watcher.watch_path}</td>
+										<td className='center'>{watcher.output_path || 'N/A'}</td>
+										<td className='center'>{watcher.preset_id}</td>
+									</tr>
+								);
+							})}
 					</tbody>
 				</table>
 			</div>

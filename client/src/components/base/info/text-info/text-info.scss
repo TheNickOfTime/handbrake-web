@@ -1,13 +1,18 @@
 @use 'src/style/modules/colors';
 
 .text-info {
+	&.vertical > * {
+		display: block;
+	}
+
+	&:not(.vertical) {
+		.text-info-label {
+			margin-right: 1rem;
+		}
+	}
+
 	.text-info-label {
-		margin-right: 1rem;
 		font-size: 1.25rem;
 		color: colors.$text-color-tertiary;
 	}
-
-	// .text-info-content {
-	// 	display: flex;
-	// }
 }

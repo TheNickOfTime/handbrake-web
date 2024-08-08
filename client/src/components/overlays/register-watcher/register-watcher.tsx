@@ -34,7 +34,7 @@ export default function RegisterWatcher({ onClose }: Params) {
 	const handleSubmit = () => {
 		const newWatcher: WatcherDefinitionType = {
 			watch_path: watchPath,
-			output_path: outputPath,
+			output_path: outputPath ? outputPath : null,
 			preset_id: presetID,
 		};
 		socket.emit('add-watcher', newWatcher);
@@ -79,6 +79,24 @@ export default function RegisterWatcher({ onClose }: Params) {
 							</option>
 						))}
 					</SelectInput>
+					{/* <div className='inline'>
+						<SelectInput
+							id='watcher-mask-select'
+							label='Default Watch Behavior:'
+							value={defaultMask}
+							setValue={setDefaultMask}
+						>
+							<option value={WatcherRuleMaskMethods.Include}>
+								Watch All Files In Directory
+							</option>
+							<option value={WatcherRuleMaskMethods.Exclude}>
+								Ignore All Files In Directory
+							</option>
+						</SelectInput>
+						<BadgeInfo
+							info={`You can modify the default behavior with rules.\n\nexample: Set to 'Ignore All Files in Directory', and create rules with 'Watch' behavior to only watch specific files.`}
+						/>
+					</div> */}
 				</div>
 				<div className='buttons-section'>
 					<ButtonInput label='Cancel' color='red' onClick={handleCancel} />

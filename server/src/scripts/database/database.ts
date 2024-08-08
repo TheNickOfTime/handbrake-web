@@ -2,7 +2,7 @@ import Database, { Database as DatabaseType } from 'better-sqlite3';
 import path from 'path';
 
 import { dataPath } from '../data';
-import { watcherTableCreateStatement } from 'scripts/database/database-watcher';
+import { watcherTableCreateStatements } from 'scripts/database/database-watcher';
 import { queueTableCreateStatements } from './database-queue';
 
 const databasePath = path.join(dataPath, 'handbrake.db');
@@ -16,7 +16,7 @@ export function DatabaseConnect() {
 		const tableCreateStatements = [
 			...queueTableCreateStatements,
 			'CREATE TABLE IF NOT EXISTS status(id TEXT NOT NULL, state INTEGER NOT NULL, PRIMARY KEY (id))',
-			watcherTableCreateStatement,
+			...watcherTableCreateStatements,
 		]
 			.map((statement) => statement.replace(/\t/gm, ''))
 			.map((statement) => database.prepare(statement));

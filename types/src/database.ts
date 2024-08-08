@@ -37,3 +37,23 @@ export type StatusTableType = {
 	id: string;
 	state: number;
 };
+
+// Watchers ----------------------------------------------------------------------------------------
+export type WatcherTableType = {
+	watcher_id: number;
+	watch_path: string;
+	output_path: string | null;
+	preset_id: string;
+	// default_mask: number;
+};
+
+export type WatcherRuleTableType = {
+	watcher_id: number;
+	rule_id: number;
+	name: string;
+	mask: number;
+	base_rule_method: number;
+	rule_method: number;
+	comparison_method: number;
+	comparison: string;
+};

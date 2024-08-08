@@ -1,21 +1,40 @@
 import chokidar from 'chokidar';
 import mime from 'mime';
 import path from 'path';
+import fs from 'fs/promises';
 import {
+	GetWatcherIDFromRuleIDFromDatabase,
 	GetWatchersFromDatabase,
+	GetWatcherWithIDFromDatabase,
+	InsertWatcherRuleToDatabase,
 	InsertWatcherToDatabase,
 	RemoveWatcherFromDatabase,
+	RemoveWatcherRuleFromDatabase,
+	UpdateWatcherRuleInDatabase,
 } from './database/database-watcher';
-import { WatcherDefinitionType, WatcherDefinitionWithIDType } from 'types/watcher';
+import {
+	WatcherDefinitionType,
+	WatcherDefinitionWithRulesType,
+	WatcherRuleBaseMethods,
+	WatcherRuleComparisonLookup,
+	WatcherRuleComparisonMethods,
+	WatcherRuleDefinitionType,
+	WatcherRuleFileInfoMethods,
+	WatcherRuleMaskMethods,
+	WatcherRuleMediaInfoMethods,
+	WatcherRuleNumberComparisonMethods,
+	WatcherRuleStringComparisonMethods,
+} from 'types/watcher';
 import { EmitToAllClients } from './connections';
 import { AddJob, GetQueue, RemoveJob } from './queue';
 import { QueueRequestType } from 'types/queue';
 import { CheckFilenameCollision } from './files';
 import { TranscodeStage } from 'types/transcode';
+import { ConvertBitsToKilobits, ConvertBytesToMegabytes, GetMediaInfo } from './media';
 
 const watchers: { [index: number]: chokidar.FSWatcher } = [];
 
-export function RegisterWatcher(watcher: WatcherDefinitionWithIDType) {
+export function RegisterWatcher(id: number, watcher: WatcherDefinitionWithRulesType) {
 	const newWatcher = chokidar.watch(watcher.watch_path, {
 		awaitWriteFinish: true,
 		ignoreInitial: true,
@@ -38,22 +57,21 @@ export function RegisterWatcher(watcher: WatcherDefinitionWithIDType) {
 		console.error(error);
 	});
 
-	watchers[watcher.rowid] = newWatcher;
+	watchers[id] = newWatcher;
 
 	console.log(`[server] [watcher] Registered watcher for '${watcher.watch_path}'.`);
 }
 
-export async function DeregisterWatcher(rowid: number) {
+export async function DeregisterWatcher(id: number) {
 	try {
-		const directory = Object.entries(watchers[rowid].getWatched())[0].join('/');
-		await watchers[rowid].close();
+		// console.log(watchers);
+		const directory = Object.entries(watchers[id].getWatched())[0].join('/');
+		await watchers[id].close();
 		console.log(`[server] [watcher] Deregistered watcher for '${directory}'.`);
 
-		delete watchers[rowid];
+		delete watchers[id];
 	} catch (error) {
-		console.error(
-			`[server] [watcher] [error] Could not deregister watcher with rowid '${rowid}'.`
-		);
+		console.error(`[server] [watcher] [error] Could not deregister watcher with id '${id}'.`);
 		console.error(error);
 	}
 }
@@ -61,18 +79,159 @@ export async function DeregisterWatcher(rowid: number) {
 export function InitializeWatchers() {
 	const watchers = GetWatchersFromDatabase();
 	if (watchers) {
-		watchers.forEach((watcher) => {
-			RegisterWatcher(watcher);
+		Object.keys(watchers).forEach((watcherID) => {
+			const parsedWatcherID = parseInt(watcherID);
+			RegisterWatcher(parsedWatcherID, watchers[parsedWatcherID]);
 		});
 	}
 }
 
-async function onWatcherDetectFileAdd(watcher: WatcherDefinitionType, filePath: string) {
+function WatcherRuleStringComparison(
+	input: string,
+	method: WatcherRuleStringComparisonMethods,
+	value: string
+) {
+	switch (method) {
+		case WatcherRuleStringComparisonMethods.Contains:
+			return input.includes(value);
+		case WatcherRuleStringComparisonMethods.EqualTo:
+			return input == value;
+		case WatcherRuleStringComparisonMethods.RegularExpression:
+			const splitRegex = value.match(
+				/\/((?![*+?])(?:[^\r\n\[/\\]|\\.|\[(?:[^\r\n\]\\]|\\.)*\])+)\/((?:g(?:im?|mi?)?|i(?:gm?|mg?)?|m(?:gi?|ig?)?)?)/
+			);
+			if (splitRegex) {
+				return input.match(new RegExp(splitRegex[1], splitRegex[2])) ? true : false;
+			} else {
+				console.log(
+					`[server] [watcher] [error] Could not detect a valid regex in the string '${value}'.`
+				);
+				return false;
+			}
+	}
+}
+
+function WatcherRuleNumberComparison(
+	input: string,
+	method: WatcherRuleNumberComparisonMethods,
+	value: string
+) {
+	const inputNumber = parseFloat(input);
+	const valueNumber = parseFloat(value);
+
+	switch (method) {
+		case WatcherRuleNumberComparisonMethods.LessThan:
+			return inputNumber < valueNumber;
+		case WatcherRuleNumberComparisonMethods.LessThanOrEqualTo:
+			return inputNumber <= valueNumber;
+		case WatcherRuleNumberComparisonMethods.EqualTo:
+			return inputNumber == valueNumber;
+		case WatcherRuleNumberComparisonMethods.GreaterThan:
+			return inputNumber > valueNumber;
+		case WatcherRuleNumberComparisonMethods.GreaterThanOrEqualTo:
+			return inputNumber >= valueNumber;
+	}
+}
+
+async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, filePath: string) {
 	console.log(
 		`[server] [watcher] Watcher for '${
 			watcher.watch_path
 		}' has detected the creation of the file '${path.basename(filePath)}'.`
 	);
+
+	const asyncEvery = async (
+		values: WatcherRuleDefinitionType[],
+		predicate: (value: WatcherRuleDefinitionType) => Promise<boolean>
+	) => {
+		for (let value of values) {
+			const result = await predicate(value);
+			if (!result) {
+				return false;
+			}
+			return true;
+		}
+	};
+
+	const isValid = await asyncEvery(Object.values(watcher.rules), async (rule) => {
+		let comparisonMethod =
+			WatcherRuleComparisonLookup[
+				rule.base_rule_method == WatcherRuleBaseMethods.FileInfo
+					? WatcherRuleFileInfoMethods[rule.rule_method]
+					: rule.base_rule_method == WatcherRuleBaseMethods.MediaInfo
+					? WatcherRuleMediaInfoMethods[rule.rule_method]
+					: 0
+			];
+		let input = '';
+
+		switch (rule.base_rule_method) {
+			case WatcherRuleBaseMethods.FileInfo:
+				switch (rule.rule_method as WatcherRuleFileInfoMethods) {
+					case WatcherRuleFileInfoMethods.FileName:
+						input = path.parse(filePath).name;
+						break;
+					case WatcherRuleFileInfoMethods.FileExtension:
+						input = path.parse(filePath).ext;
+						break;
+					case WatcherRuleFileInfoMethods.FileSize:
+						input = ConvertBytesToMegabytes((await fs.stat(filePath)).size).toFixed(1);
+						break;
+				}
+				break;
+			case WatcherRuleBaseMethods.MediaInfo:
+				const mediaInfo = await GetMediaInfo(filePath);
+				const videoStream = mediaInfo.streams.find(
+					(stream) => stream.codec_type == 'video'
+				);
+				if (!videoStream) return false;
+
+				switch (rule.rule_method) {
+					case WatcherRuleMediaInfoMethods.MediaWidth:
+						input = videoStream.width!.toString();
+						break;
+					case WatcherRuleMediaInfoMethods.MediaHeight:
+						input = videoStream.height!.toString();
+						break;
+					case WatcherRuleMediaInfoMethods.MediaBitrate:
+						input = ConvertBitsToKilobits(videoStream.bit_rate!).toFixed(0);
+						break;
+					case WatcherRuleMediaInfoMethods.MediaEncoder:
+						input = videoStream.codec_long_name!.toString();
+						break;
+				}
+				break;
+		}
+
+		let result =
+			comparisonMethod == WatcherRuleComparisonMethods.String
+				? WatcherRuleStringComparison(
+						input,
+						rule.comparison_method as WatcherRuleStringComparisonMethods,
+						rule.comparison
+				  )
+				: comparisonMethod == WatcherRuleComparisonMethods.Number
+				? WatcherRuleNumberComparison(
+						input,
+						rule.comparison_method as WatcherRuleNumberComparisonMethods,
+						rule.comparison
+				  )
+				: false;
+
+		if (rule.mask == WatcherRuleMaskMethods.Exclude) {
+			result = !result;
+		}
+
+		return result;
+	});
+
+	if (!isValid) {
+		console.log(
+			`[server] [watcher] Watcher for '${watcher.watch_path}'s ${
+				Object.keys(watcher.rules).length
+			} rule conditions have not been met for file '${path.basename(filePath)}'`
+		);
+		return;
+	}
 
 	const isVideo = mime.getType(filePath);
 	if (isVideo && isVideo.includes('video')) {
@@ -91,7 +250,6 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionType, filePath: 
 				},
 			])
 		)[0].path;
-		console.log(checkedOutputPath);
 		const newJobRequest: QueueRequestType = {
 			input: filePath,
 			output: checkedOutputPath,
@@ -104,7 +262,7 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionType, filePath: 
 	}
 }
 
-function onWatcherDetectFileDelete(watcher: WatcherDefinitionType, filePath: string) {
+function onWatcherDetectFileDelete(watcher: WatcherDefinitionWithRulesType, filePath: string) {
 	console.log(
 		`[server] [watcher] Watcher for '${
 			watcher.watch_path
@@ -128,7 +286,7 @@ function onWatcherDetectFileDelete(watcher: WatcherDefinitionType, filePath: str
 	}
 }
 
-function onWatcherDetectFileChange(watcher: WatcherDefinitionType, filePath: string) {
+function onWatcherDetectFileChange(watcher: WatcherDefinitionWithRulesType, filePath: string) {
 	console.log(
 		`[server] [watcher] Watcher for '${
 			watcher.watch_path
@@ -144,18 +302,57 @@ export function UpdateWatchers() {
 export function AddWatcher(watcher: WatcherDefinitionType) {
 	const result = InsertWatcherToDatabase(watcher);
 	if (result) {
-		RegisterWatcher({
-			...watcher,
-			rowid: result.lastInsertRowid as number,
-		});
+		RegisterWatcher(result.lastInsertRowid as number, { ...watcher, rules: [] });
 		UpdateWatchers();
 	}
 }
 
-export function RemoveWatcher(rowid: number) {
-	const result = RemoveWatcherFromDatabase(rowid);
+export function RemoveWatcher(watcherID: number) {
+	const result = RemoveWatcherFromDatabase(watcherID);
 	if (result) {
-		DeregisterWatcher(rowid);
+		DeregisterWatcher(watcherID);
 		UpdateWatchers();
+	}
+}
+
+export async function AddWatcherRule(watcherID: number, rule: WatcherRuleDefinitionType) {
+	await DeregisterWatcher(watcherID);
+	const result = InsertWatcherRuleToDatabase(watcherID, rule);
+	if (result) {
+		UpdateWatchers();
+		const updatedWatcher = GetWatcherWithIDFromDatabase(watcherID);
+		if (updatedWatcher) {
+			RegisterWatcher(watcherID, updatedWatcher);
+		}
+	}
+}
+
+export async function UpdateWatcherRule(ruleID: number, rule: WatcherRuleDefinitionType) {
+	const watcherID = GetWatcherIDFromRuleIDFromDatabase(ruleID);
+	if (watcherID) {
+		await DeregisterWatcher(watcherID);
+		const result = UpdateWatcherRuleInDatabase(ruleID, rule);
+		if (result) {
+			UpdateWatchers();
+			const updatedWatcher = GetWatcherWithIDFromDatabase(watcherID);
+			if (updatedWatcher) {
+				RegisterWatcher(watcherID, updatedWatcher);
+			}
+		}
+	}
+}
+
+export async function RemoveWatcherRule(ruleID: number) {
+	const watcherID = GetWatcherIDFromRuleIDFromDatabase(ruleID);
+	if (watcherID) {
+		await DeregisterWatcher(watcherID);
+		const result = RemoveWatcherRuleFromDatabase(ruleID);
+		if (result) {
+			UpdateWatchers();
+			const updatedWatcher = GetWatcherWithIDFromDatabase(watcherID);
+			if (updatedWatcher) {
+				RegisterWatcher(watcherID, updatedWatcher);
+			}
+		}
 	}
 }

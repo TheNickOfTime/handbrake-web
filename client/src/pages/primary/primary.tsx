@@ -9,7 +9,7 @@ import { ConfigType } from 'types/config';
 import { HandbrakePresetListType } from 'types/preset';
 import { QueueType, QueueStatus } from 'types/queue';
 import { ConnectionIDsType } from 'types/socket';
-import { WatcherDefinitionWithIDType } from 'types/watcher';
+import { WatcherDefinitionObjectType } from 'types/watcher';
 
 import SideBar from 'components/modules/side-bar/side-bar';
 import NoConnection from 'sections/no-connection/no-connection';
@@ -33,7 +33,7 @@ export default function Primary() {
 		clients: [],
 		workers: [],
 	});
-	const [watchers, setWatchers] = useState<WatcherDefinitionWithIDType[]>([]);
+	const [watchers, setWatchers] = useState<WatcherDefinitionObjectType>([]);
 	const [showSidebar, setShowSidebar] = useState(false);
 
 	// Connect to server -------------------------------------------------------
@@ -103,7 +103,7 @@ export default function Primary() {
 		setConnections(data);
 	};
 
-	const onWatchersUpdate = (watchers: WatcherDefinitionWithIDType[]) => {
+	const onWatchersUpdate = (watchers: WatcherDefinitionObjectType) => {
 		console.log('[client] Watchers have been updated.');
 		setWatchers(watchers);
 	};
