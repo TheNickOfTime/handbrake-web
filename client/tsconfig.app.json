@@ -29,12 +29,12 @@
 			"components/*": ["./src/components/*"],
 			"pages/*": ["./src/pages/*"],
 			"sections/*": ["./src/sections/*"],
-			"types/*": ["../types/src/*"]
+			"types/*": ["../shared/types/*"]
 		}
 	},
 	"references": [
 		{
-			"path": "../types"
+			"path": "../shared"
 		}
 	],
 	"include": ["src"]
