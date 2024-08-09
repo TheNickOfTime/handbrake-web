@@ -1,8 +1,15 @@
 # HandBrake Web
 
-<p align='center'>
-    <img src='images/screenshots/screenshot-dashboard.png' width=540>
-</p>
+<div align='center'>
+    <img src='images/screenshots/screenshot-dashboard.png' width=70%>
+</div>
+<div align='center' width=100%>
+	<img src='images/screenshots/screenshot-queue.png' width=24.5%>
+	<img src='images/screenshots/screenshot-presets.png' width=24.5%>
+	<img src='images/screenshots/screenshot-watchers.png' width=24.5%>
+	<img src='images/screenshots/screenshot-workers.png' width=24.5%>
+</div>
+<br>
 
 HandBrake Web is a program for interfacing with handbrake across multiple machines via a web browser. It consists of two components: the **server** and one or more **worker**(s). **_Warning_** - This application is still under heavy development, use at your own risk, to learn more please see the [Known Issues & Limitations](#planned-features-not-yet-implemented) section.
 
@@ -13,14 +20,6 @@ The server component primarily acts as a coordinator for the workers. Additional
 ### Worker(s)
 
 The worker component does the heavy lifting via HandBrakeCLI. Jobs are sent to workers by the server, and the workers will process the provided media based on a provided HandBrake preset configuration. **The work done by the worker is very computationally expensive** - it is recommended that you **run a single worker instance per machine**, and that machine either have a high core-count CPU _or_ have GPU hardware transcoding features available to the worker.
-
-<div align='center'>
-	<!-- <img src='images/screenshots/screenshot-dashboard.png' width=33%> -->
-	<img src='images/screenshots/screenshot-queue.png' width=47.5%>
-	<img src='images/screenshots/screenshot-presets.png' width=47.5%>
-	<img src='images/screenshots/screenshot-watchers.png' width=47.5%>
-	<img src='images/screenshots/screenshot-workers.png' width=47.5%>
-</div>
 
 ## Setup
 
