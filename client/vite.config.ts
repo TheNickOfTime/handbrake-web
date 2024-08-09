@@ -15,7 +15,7 @@ export default defineConfig({
 			components: path.resolve(__dirname, './src/components'),
 			pages: path.resolve(__dirname, './src/pages'),
 			sections: path.resolve(__dirname, './src/sections'),
-			types: path.resolve(__dirname, '../types/src'),
+			types: path.resolve(__dirname, '../shared/types'),
 		},
 	},
 	server: {
