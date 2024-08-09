@@ -1,32 +1,18 @@
 # Build client -------------------------------------------------------------------------------------
 FROM node:alpine AS client-build
 COPY client /handbrake-web/client
-COPY types /handbrake-web/types
+COPY shared /handbrake-web/shared
 WORKDIR /handbrake-web/client
 
 RUN npm install
 RUN npm run build
 
-# Build server -------------------------------------------------------------------------------------
-# FROM node:alpine AS server-build
-# COPY /server /handbrake-web/server
-# COPY /types /handbrake-web/types
-# WORKDIR /handbrake-web/server
-
-# RUN npm install
-# RUN npm run build
-
 # Main ---------------------------------------------------------------------------------------------
 FROM node:alpine AS main
 
-# Copy project folder
-# COPY --from=client-build /handbrake-web/client/build /handbrake-web/client
-# COPY --from=server-build /handbrake-web/server/build /handbrake-web/server/package.json /handbrake-web/server/package-lock.json /handbrake-web
-# WORKDIR /handbrake-web
-
 COPY --from=client-build /handbrake-web/client/build /handbrake-web/client
 COPY server /handbrake-web/server
-COPY types /handbrake-web/types
+COPY shared /handbrake-web/shared
 WORKDIR /handbrake-web/server
 
 # Install node dependencies
