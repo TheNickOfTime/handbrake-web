@@ -81,9 +81,22 @@ Because of this, your server instance must be reachable outside of the machine i
 HandBrake Web currently uses presets configured in the desktop application of HandBrake and
 exported to .json files to configure transcoding jobs. Exported presets can then be uploaded via the web interface in the 'Presets' section.
 
-| Configure & Save Preset                          | Export Preset To File                              | Upload Preset File to HandBrake Web                |
-| ------------------------------------------------ | -------------------------------------------------- | -------------------------------------------------- |
-| ![image](./images/readme/readme-preset-save.png) | ![image](./images/readme/readme-preset-export.png) | ![image](./images/readme/readme-preset-upload.png) |
+<table>
+	<thead>
+		<tr>
+			<th width=33% align='center'>Configure & Save Preset</th>
+			<th width=33% align='center'>Export Preset To File</th>
+			<th width=33% align='center'>Upload Preset to HandBrake Web</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><img src='images/readme/readme-preset-save.png' width=100%></td>
+			<td><img src='images/readme/readme-preset-export.png' width=100%></td>
+			<td><img src='images/readme/readme-preset-upload.png' width=100%></td>
+		</tr>
+	</tbody>
+</table>
 
 ## Features
 
