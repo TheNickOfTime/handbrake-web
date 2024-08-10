@@ -7,6 +7,7 @@ import {
 } from 'dict/presets.dict';
 import { HandbrakePresetDataType } from 'types/preset';
 import './preset-card-summary.scss';
+import { LanguageCodeToName } from 'funcs/locale.funcs';
 
 type Params = {
 	preset: HandbrakePresetDataType;
@@ -75,7 +76,7 @@ export default function PresetCardSummary({ preset }: Params) {
 				{preset.SubtitleLanguageList.length > 0 ? (
 					preset.SubtitleLanguageList.map((language, index) => (
 						<div key={`summary-subtitle-language-${index}`}>
-							{new Intl.DisplayNames(['en'], { type: 'language' }).of(language)}
+							{LanguageCodeToName(language)}
 						</div>
 					))
 				) : (

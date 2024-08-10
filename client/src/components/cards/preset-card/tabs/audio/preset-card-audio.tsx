@@ -3,6 +3,7 @@ import { PresetAudioEncoderDict } from 'dict/presets.dict';
 import TextInfo from 'components/base/info/text-info/text-info';
 import './preset-card-audio.scss';
 import { FirstLetterUpperCase } from 'funcs/string.funcs';
+import { LanguageCodeToName } from 'funcs/locale.funcs';
 
 type Params = {
 	preset: HandbrakePresetDataType;
@@ -17,9 +18,9 @@ export default function PresetCardAudio({ preset }: Params) {
 					{FirstLetterUpperCase(preset.AudioTrackSelectionBehavior)}
 				</TextInfo>
 				<TextInfo label='Selected Languages'>
-					{preset.AudioLanguageList.map((language) =>
-						new Intl.DisplayNames(['en'], { type: 'language' }).of(language)
-					).join(', ')}
+					{preset.AudioLanguageList.map((language) => LanguageCodeToName(language)).join(
+						', '
+					)}
 				</TextInfo>
 			</div>
 			<div className='preset-card-subsection'>

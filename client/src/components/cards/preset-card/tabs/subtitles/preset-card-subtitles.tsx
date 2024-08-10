@@ -2,6 +2,7 @@ import TextInfo from 'components/base/info/text-info/text-info';
 import { HandbrakePresetDataType } from 'types/preset';
 import './preset-card-subtitles.scss';
 import { FirstLetterUpperCase } from 'funcs/string.funcs';
+import { LanguageCodeToName } from 'funcs/locale.funcs';
 
 type Params = {
 	preset: HandbrakePresetDataType;
@@ -17,7 +18,7 @@ export default function PresetCardSubtitles({ preset }: Params) {
 				</TextInfo>
 				<TextInfo label='Selected Languages'>
 					{preset.SubtitleLanguageList.map((language) =>
-						new Intl.DisplayNames(['en'], { type: 'language' }).of(language)
+						LanguageCodeToName(language)
 					).join(', ')}
 				</TextInfo>
 			</div>
