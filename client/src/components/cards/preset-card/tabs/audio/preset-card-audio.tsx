@@ -4,6 +4,7 @@ import TextInfo from 'components/base/info/text-info/text-info';
 import './preset-card-audio.scss';
 import { FirstLetterUpperCase } from 'funcs/string.funcs';
 import { LanguageCodeToName } from 'funcs/locale.funcs';
+import { BooleanToConfirmation } from 'funcs/string.funcs';
 
 type Params = {
 	preset: HandbrakePresetDataType;
@@ -33,7 +34,7 @@ export default function PresetCardAudio({ preset }: Params) {
 								label={PresetAudioEncoderDict[entry]}
 								key={`audio-passthru-${index}`}
 							>
-								{preset.AudioCopyMask.includes(entry) ? 'Yes' : 'No'}
+								{BooleanToConfirmation(preset.AudioCopyMask.includes(entry))}
 							</TextInfo>
 						))}
 				</div>

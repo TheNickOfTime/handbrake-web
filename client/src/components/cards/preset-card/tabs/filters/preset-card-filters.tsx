@@ -2,6 +2,7 @@ import { PresetPropertiesDict } from 'dict/presets.dict';
 import { HandbrakePresetDataType } from 'types/preset';
 import TextInfo from 'components/base/info/text-info/text-info';
 import './preset-card-filters.scss';
+import { BooleanToConfirmation } from 'funcs/string.funcs';
 
 type Params = {
 	preset: HandbrakePresetDataType;
@@ -96,7 +97,9 @@ export default function PresetCardFilters({ preset }: Params) {
 						` - '${preset.PictureColorspaceCustom}'`}
 				</TextInfo>
 
-				<TextInfo label='Grayscale'>{preset.VideoGrayScale ? 'Yes' : 'No'}</TextInfo>
+				<TextInfo label='Grayscale'>
+					{BooleanToConfirmation(preset.VideoGrayScale)}
+				</TextInfo>
 			</div>
 		</div>
 	);

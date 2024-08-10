@@ -1,7 +1,7 @@
 import TextInfo from 'components/base/info/text-info/text-info';
 import { HandbrakePresetDataType } from 'types/preset';
 import './preset-card-subtitles.scss';
-import { FirstLetterUpperCase } from 'funcs/string.funcs';
+import { FirstLetterUpperCase, BooleanToConfirmation } from 'funcs/string.funcs';
 import { LanguageCodeToName } from 'funcs/locale.funcs';
 
 type Params = {
@@ -25,10 +25,10 @@ export default function PresetCardSubtitles({ preset }: Params) {
 			<div className='preset-card-subsection'>
 				<div className='preset-card-subsection-header'>Options</div>
 				<TextInfo label='Add Closed Captioons when available'>
-					{preset.SubtitleAddCC ? 'Yes' : 'No'}
+					{BooleanToConfirmation(preset.SubtitleAddCC)}
 				</TextInfo>
 				<TextInfo label="Add 'Foreign Audio Scan'">
-					{preset.SubtitleAddForeignAudioSearch ? 'Yes' : 'No'}
+					{BooleanToConfirmation(preset.SubtitleAddForeignAudioSearch)}
 				</TextInfo>
 				<TextInfo label='Burn-In Behavior'>
 					{FirstLetterUpperCase(preset.SubtitleBurnBehavior)}

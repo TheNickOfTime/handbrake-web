@@ -8,6 +8,7 @@ import {
 import { HandbrakePresetDataType } from 'types/preset';
 import './preset-card-summary.scss';
 import { LanguageCodeToName } from 'funcs/locale.funcs';
+import { BooleanToConfirmation } from 'funcs/string.funcs';
 
 type Params = {
 	preset: HandbrakePresetDataType;
@@ -45,7 +46,7 @@ export default function PresetCardSummary({ preset }: Params) {
 				<div className='preset-card-subsection-header'>Format</div>
 				<TextInfo label='Format'>{PresetFormatDict[preset.FileFormat]}</TextInfo>
 				<TextInfo label='Passthru Common Metadata'>
-					{preset.MetadataPassthrough ? 'Yes' : 'No'}
+					{BooleanToConfirmation(preset.MetadataPassthrough)}
 				</TextInfo>
 			</div>
 			<div className='preset-card-subsection'>
@@ -59,7 +60,9 @@ export default function PresetCardSummary({ preset }: Params) {
 					{', '}
 					{preset.VideoFramerateMode.toUpperCase()}
 				</TextInfo>
-				<TextInfo label='Chaper Markers'>{preset.ChapterMarkers ? 'Yes' : 'No'}</TextInfo>
+				<TextInfo label='Chaper Markers'>
+					{BooleanToConfirmation(preset.ChapterMarkers)}
+				</TextInfo>
 			</div>
 			<div className='preset-card-subsection'>
 				<div className='preset-card-subsection-header'>Audio Tracks</div>

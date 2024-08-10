@@ -2,7 +2,7 @@ import TextInfo from 'components/base/info/text-info/text-info';
 import { HandbrakePresetDataType, VideoQualityType } from 'types/preset';
 import './preset-card-video.scss';
 import { PresetEncoderDict, PresetPropertiesDict } from 'dict/presets.dict';
-import { FirstLetterUpperCase } from 'funcs/string.funcs';
+import { BooleanToConfirmation, FirstLetterUpperCase } from 'funcs/string.funcs';
 
 type Params = {
 	preset: HandbrakePresetDataType;
@@ -29,10 +29,10 @@ export default function PresetCardVideo({ preset }: Params) {
 					<>
 						<TextInfo label='Average Bitrate (kbps)'>{preset.VideoAvgBitrate}</TextInfo>
 						<TextInfo label='Multi-Pass Encoding'>
-							{preset.VideoMultiPass ? 'Yes' : 'No'}
+							{BooleanToConfirmation(preset.VideoMultiPass)}
 						</TextInfo>
 						<TextInfo label='Turbo analysis pass'>
-							{preset.VideoTurboMultiPass ? 'Yes' : 'No'}
+							{BooleanToConfirmation(preset.VideoTurboMultiPass)}
 						</TextInfo>
 					</>
 				)}
