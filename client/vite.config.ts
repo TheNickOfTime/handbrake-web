@@ -16,6 +16,8 @@ export default defineConfig({
 			pages: path.resolve(__dirname, './src/pages'),
 			sections: path.resolve(__dirname, './src/sections'),
 			types: path.resolve(__dirname, '../shared/types'),
+			dict: path.resolve(__dirname, '../shared/dict'),
+			funcs: path.resolve(__dirname, '../shared/funcs'),
 		},
 	},
 	server: {

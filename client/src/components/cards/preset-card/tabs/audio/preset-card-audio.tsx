@@ -1,7 +1,10 @@
-import { AudioEncoderLookup } from '../../preset-lookups';
 import { HandbrakePresetDataType } from 'types/preset';
+import { PresetAudioEncoderDict } from 'dict/presets.dict';
 import TextInfo from 'components/base/info/text-info/text-info';
 import './preset-card-audio.scss';
+import { FirstLetterUpperCase } from 'funcs/string.funcs';
+import { LanguageCodeToName } from 'funcs/locale.funcs';
+import { BooleanToConfirmation } from 'funcs/string.funcs';
 
 type Params = {
 	preset: HandbrakePresetDataType;
@@ -13,23 +16,25 @@ export default function PresetCardAudio({ preset }: Params) {
 			<div className='preset-card-subsection'>
 				<div className='preset-card-subsection-header'>Source Track Selection</div>
 				<TextInfo label='Track Selection Behavior'>
-					{preset.AudioTrackSelectionBehavior}
+					{FirstLetterUpperCase(preset.AudioTrackSelectionBehavior)}
 				</TextInfo>
 				<TextInfo label='Selected Languages'>
-					{preset.AudioLanguageList.join(', ')}
+					{preset.AudioLanguageList.map((language) => LanguageCodeToName(language)).join(
+						', '
+					)}
 				</TextInfo>
 			</div>
 			<div className='preset-card-subsection'>
 				<div className='preset-card-subsection-header'>Auto Passthru Behavior</div>
 				<div className='side-by-side'>
-					{Object.keys(AudioEncoderLookup)
+					{Object.keys(PresetAudioEncoderDict)
 						.filter((entry) => entry.includes('copy:'))
 						.map((entry, index) => (
 							<TextInfo
-								label={AudioEncoderLookup[entry]}
+								label={PresetAudioEncoderDict[entry]}
 								key={`audio-passthru-${index}`}
 							>
-								{preset.AudioCopyMask.includes(entry) ? 'Yes' : 'No'}
+								{BooleanToConfirmation(preset.AudioCopyMask.includes(entry))}
 							</TextInfo>
 						))}
 				</div>
@@ -49,7 +54,7 @@ export default function PresetCardAudio({ preset }: Params) {
 									<tr key={`audio-encoder-${index}`}>
 										<td>
 											<TextInfo label='Encoder'>
-												{AudioEncoderLookup[entry.AudioEncoder]}
+												{PresetAudioEncoderDict[entry.AudioEncoder]}
 											</TextInfo>
 										</td>
 										{!entry.AudioEncoder.includes('copy') && (
