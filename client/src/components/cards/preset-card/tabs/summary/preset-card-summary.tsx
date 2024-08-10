@@ -1,5 +1,10 @@
 import TextInfo from 'components/base/info/text-info/text-info';
-import { AudioEncoderLookup } from '../../preset-lookups';
+import {
+	PresetAudioEncoderDict,
+	PresetEncoderDict,
+	PresetPropertiesDict,
+	PresetFormatDict,
+} from 'dict/presets.dict';
 import { HandbrakePresetDataType } from 'types/preset';
 import './preset-card-summary.scss';
 
@@ -9,28 +14,42 @@ type Params = {
 
 export default function PresetCardSummary({ preset }: Params) {
 	const filters = [
-		preset.PictureDetelecine != 'off' ? 'detelecine' : 'off',
-		preset.PictureDeinterlaceFilter,
-		preset.PictureDenoiseFilter,
-		preset.PictureChromaSmoothPreset != 'off' ? 'chroma smooth' : 'off',
-		preset.PictureSharpenFilter,
-		preset.PictureDeblockPreset != 'off' ? 'deblock' : 'off',
-		preset.PictureColorspacePreset,
-		preset.VideoGrayScale ? 'grayscale' : 'off',
-	].filter((filter) => filter != 'off');
+		preset.PictureDetelecine != 'off'
+			? `Detelecine (${PresetPropertiesDict[preset.PictureDetelecine]})`
+			: 'off',
+		preset.PictureDeinterlaceFilter != 'off'
+			? `Deinterlace (${PresetPropertiesDict[preset.PictureDeinterlaceFilter]})`
+			: 'off',
+		preset.PictureDenoiseFilter != 'off'
+			? `Denoise (${PresetPropertiesDict[preset.PictureDenoiseFilter]})`
+			: 'off',
+		preset.PictureChromaSmoothPreset != 'off'
+			? `Chroma Smooth (${PresetPropertiesDict[preset.PictureChromaSmoothPreset]})`
+			: 'off',
+		preset.PictureSharpenFilter != 'off'
+			? `Sharpen (${PresetPropertiesDict[preset.PictureSharpenFilter]})`
+			: 'off',
+		preset.PictureDeblockPreset != 'off'
+			? `Deblock (${PresetPropertiesDict[preset.PictureDeblockPreset]})`
+			: 'off',
+		preset.PictureColorspacePreset != 'off'
+			? `Colorspace (${PresetPropertiesDict[preset.PictureColorspacePreset]})`
+			: 'off',
+		preset.VideoGrayScale ? 'Grayscale' : undefined,
+	].filter((filter) => filter && filter.toLowerCase() != 'off');
 
 	return (
 		<div className='preset-card-section' id='summary'>
 			<div className='preset-card-subsection'>
 				<div className='preset-card-subsection-header'>Format</div>
-				<TextInfo label='Format'>{preset.FileFormat}</TextInfo>
+				<TextInfo label='Format'>{PresetFormatDict[preset.FileFormat]}</TextInfo>
 				<TextInfo label='Passthru Common Metadata'>
 					{preset.MetadataPassthrough ? 'Yes' : 'No'}
 				</TextInfo>
 			</div>
 			<div className='preset-card-subsection'>
 				<div className='preset-card-subsection-header'>Video Track</div>
-				<TextInfo label='Encoder'>{preset.VideoEncoder}</TextInfo>
+				<TextInfo label='Encoder'>{PresetEncoderDict[preset.VideoEncoder]}</TextInfo>
 				<TextInfo label='Resolution'>
 					{preset.PictureWidth}x{preset.PictureHeight}
 				</TextInfo>
@@ -45,8 +64,8 @@ export default function PresetCardSummary({ preset }: Params) {
 				<div className='preset-card-subsection-header'>Audio Tracks</div>
 				{preset.AudioList.map((track, index) => (
 					<div key={`summary-audio-track-${index}`}>
-						{AudioEncoderLookup[track.AudioEncoder]
-							? AudioEncoderLookup[track.AudioEncoder]
+						{[track.AudioEncoder]
+							? PresetAudioEncoderDict[track.AudioEncoder]
 							: track.AudioEncoder}
 					</div>
 				))}
@@ -55,7 +74,9 @@ export default function PresetCardSummary({ preset }: Params) {
 				<div className='preset-card-subsection-header'>Subtitles</div>
 				{preset.SubtitleLanguageList.length > 0 ? (
 					preset.SubtitleLanguageList.map((language, index) => (
-						<div key={`summary-subtitle-language-${index}`}>{language}</div>
+						<div key={`summary-subtitle-language-${index}`}>
+							{new Intl.DisplayNames(['en'], { type: 'language' }).of(language)}
+						</div>
 					))
 				) : (
 					<div>N/A</div>

@@ -1,4 +1,4 @@
-import { FilterLookup } from '../../preset-lookups';
+import { PresetPropertiesDict } from 'dict/presets.dict';
 import { HandbrakePresetDataType } from 'types/preset';
 import TextInfo from 'components/base/info/text-info/text-info';
 import './preset-card-filters.scss';
@@ -12,24 +12,25 @@ export default function PresetCardFilters({ preset }: Params) {
 		<div className='preset-card-section' id='filters'>
 			<div className='preset-card-subsection'>
 				<TextInfo label='Detelecine'>
-					{FilterLookup[preset.PictureDetelecine] || preset.PictureDetelecine}
+					{PresetPropertiesDict[preset.PictureDetelecine] || preset.PictureDetelecine}
 					{preset.PictureDetelecine == 'custom' &&
 						` - '${preset.PictureDetelecineCustom}'`}
 				</TextInfo>
 
 				<TextInfo label='Interlace Detection'>
-					{FilterLookup[preset.PictureCombDetectPreset] || preset.PictureCombDetectPreset}
+					{PresetPropertiesDict[preset.PictureCombDetectPreset] ||
+						preset.PictureCombDetectPreset}
 					{preset.PictureCombDetectPreset == 'custom' &&
 						` - '${preset.PictureCombDetectCustom}'`}
 				</TextInfo>
 
 				<TextInfo label='Deinterlace'>
-					{FilterLookup[preset.PictureDeinterlaceFilter] ||
+					{PresetPropertiesDict[preset.PictureDeinterlaceFilter] ||
 						preset.PictureDeinterlaceFilter}
 					{preset.PictureDeinterlaceFilter != 'off' &&
 						preset.PictureDeinterlacePreset != 'custom' &&
 						`, Preset - ${
-							FilterLookup[preset.PictureDeinterlacePreset] ||
+							PresetPropertiesDict[preset.PictureDeinterlacePreset] ||
 							preset.PictureDeinterlacePreset
 						}`}
 					{preset.PictureDeinterlacePreset == 'custom' &&
@@ -37,23 +38,25 @@ export default function PresetCardFilters({ preset }: Params) {
 				</TextInfo>
 
 				<TextInfo label='Denoise'>
-					{FilterLookup[preset.PictureDenoiseFilter] || preset.PictureDenoiseFilter}
+					{PresetPropertiesDict[preset.PictureDenoiseFilter] ||
+						preset.PictureDenoiseFilter}
 					{preset.PictureDenoiseFilter != 'off' &&
 						preset.PictureDenoisePreset != 'custom' &&
 						`, Preset - ${
-							FilterLookup[preset.PictureDenoisePreset] || preset.PictureDenoisePreset
+							PresetPropertiesDict[preset.PictureDenoisePreset] ||
+							preset.PictureDenoisePreset
 						}`}
 					{preset.PictureDenoisePreset == 'custom' &&
 						`, Custom - '${preset.PictureDenoiseCustom}'`}
 				</TextInfo>
 
 				<TextInfo label='Chroma Smooth'>
-					{FilterLookup[preset.PictureChromaSmoothPreset] ||
+					{PresetPropertiesDict[preset.PictureChromaSmoothPreset] ||
 						preset.PictureChromaSmoothPreset}
 					{preset.PictureChromaSmoothPreset != 'off' &&
 						preset.PictureChromaSmoothPreset != 'custom' &&
 						`, Tune - ${
-							FilterLookup[preset.PictureChromaSmoothTune] ||
+							PresetPropertiesDict[preset.PictureChromaSmoothTune] ||
 							preset.PictureChromaSmoothTune
 						}`}
 					{preset.PictureChromaSmoothPreset == 'custom' &&
@@ -61,29 +64,34 @@ export default function PresetCardFilters({ preset }: Params) {
 				</TextInfo>
 
 				<TextInfo label='Sharpen'>
-					{FilterLookup[preset.PictureSharpenFilter] || preset.PictureSharpenFilter}
+					{PresetPropertiesDict[preset.PictureSharpenFilter] ||
+						preset.PictureSharpenFilter}
 					{preset.PictureSharpenFilter != 'off' &&
 						preset.PictureSharpenPreset != 'custom' &&
 						`, Preset - ${
-							FilterLookup[preset.PictureSharpenPreset] || preset.PictureSharpenPreset
+							PresetPropertiesDict[preset.PictureSharpenPreset] ||
+							preset.PictureSharpenPreset
 						}`}
 					{preset.PictureSharpenPreset == 'custom' &&
 						`, Custom - '${preset.PictureSharpenCustom}'`}
 				</TextInfo>
 
 				<TextInfo label='Deblock'>
-					{FilterLookup[preset.PictureDeblockPreset] || preset.PictureDeblockPreset}
+					{PresetPropertiesDict[preset.PictureDeblockPreset] ||
+						preset.PictureDeblockPreset}
 					{preset.PictureDeblockPreset != 'off' &&
 						preset.PictureDeblockPreset != 'custom' &&
 						`, Tune - ${
-							FilterLookup[preset.PictureDeblockTune] || preset.PictureDeblockTune
+							PresetPropertiesDict[preset.PictureDeblockTune] ||
+							preset.PictureDeblockTune
 						}`}
 					{preset.PictureDeblockPreset == 'custom' &&
 						` - '${preset.PictureDeblockCustom}'`}
 				</TextInfo>
 
 				<TextInfo label='Colorspace'>
-					{FilterLookup[preset.PictureColorspacePreset] || preset.PictureColorspacePreset}
+					{PresetPropertiesDict[preset.PictureColorspacePreset] ||
+						preset.PictureColorspacePreset}
 					{preset.PictureColorspacePreset == 'custom' &&
 						` - '${preset.PictureColorspaceCustom}'`}
 				</TextInfo>

@@ -1,6 +1,7 @@
 import TextInfo from 'components/base/info/text-info/text-info';
 import { HandbrakePresetDataType } from 'types/preset';
 import './preset-card-subtitles.scss';
+import { FirstLetterUpperCase } from 'funcs/string.funcs';
 
 type Params = {
 	preset: HandbrakePresetDataType;
@@ -12,10 +13,12 @@ export default function PresetCardSubtitles({ preset }: Params) {
 			<div className='preset-card-subsection'>
 				<div className='preset-card-subsection-header'>Source Track Selection</div>
 				<TextInfo label='Track Selection Behavior'>
-					{preset.SubtitleTrackSelectionBehavior}
+					{FirstLetterUpperCase(preset.SubtitleTrackSelectionBehavior)}
 				</TextInfo>
 				<TextInfo label='Selected Languages'>
-					{preset.SubtitleLanguageList.join(', ')}
+					{preset.SubtitleLanguageList.map((language) =>
+						new Intl.DisplayNames(['en'], { type: 'language' }).of(language)
+					).join(', ')}
 				</TextInfo>
 			</div>
 			<div className='preset-card-subsection'>
@@ -26,7 +29,9 @@ export default function PresetCardSubtitles({ preset }: Params) {
 				<TextInfo label="Add 'Foreign Audio Scan'">
 					{preset.SubtitleAddForeignAudioSearch ? 'Yes' : 'No'}
 				</TextInfo>
-				<TextInfo label='Burn-In Behavior'>{preset.SubtitleBurnBehavior}</TextInfo>
+				<TextInfo label='Burn-In Behavior'>
+					{FirstLetterUpperCase(preset.SubtitleBurnBehavior)}
+				</TextInfo>
 			</div>
 		</div>
 	);

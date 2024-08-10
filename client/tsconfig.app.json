@@ -29,7 +29,9 @@
 			"components/*": ["./src/components/*"],
 			"pages/*": ["./src/pages/*"],
 			"sections/*": ["./src/sections/*"],
-			"types/*": ["../shared/types/*"]
+			"types/*": ["../shared/types/*"],
+			"dict/*": ["../shared/dict/*"],
+			"funcs/*": ["../shared/funcs/*"]
 		}
 	},
 	"references": [
