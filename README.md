@@ -1,6 +1,6 @@
 <div align='center'>
 	<strong>Disclaimer:</strong>
-	<em>This project is not related to or part of the official <a href='https://github.com/HandBrake/HandBrake'>HandBrake</a> development. It simply uses the CLI component of HandBrake under the hood.<em>
+	<em>This project is not related to or part of the official <a href='https://github.com/HandBrake/HandBrake'>HandBrake</a> development. It simply uses the CLI component of HandBrake under the hood.</em>
 </div>
 
 # HandBrake Web
