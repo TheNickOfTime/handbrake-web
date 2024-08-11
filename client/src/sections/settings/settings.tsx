@@ -48,8 +48,12 @@ export default function SettingsSection() {
 			</SubSection>
 			<div className='settings-sub-sections'>
 				<PresetPaths
-					paths={{ mediaPath: mediaPath, inputPath: inputPath, outputPath: outputPath }}
-					setPaths={{
+					settings={{
+						mediaPath: mediaPath,
+						inputPath: inputPath,
+						outputPath: outputPath,
+					}}
+					setSettings={{
 						setMediaPath: setMediaPath,
 						setInputPath: setInputPath,
 						setOutputPath: setOutputPath,

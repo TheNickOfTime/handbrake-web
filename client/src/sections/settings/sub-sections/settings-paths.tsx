@@ -3,19 +3,19 @@ import SubSection from 'components/section/sub-section';
 import { FileBrowserMode } from 'types/file-browser';
 
 type Params = {
-	paths: {
+	settings: {
 		mediaPath: string;
 		inputPath: string;
 		outputPath: string;
 	};
-	setPaths: {
+	setSettings: {
 		setMediaPath: React.Dispatch<React.SetStateAction<string>>;
 		setInputPath: React.Dispatch<React.SetStateAction<string>>;
 		setOutputPath: React.Dispatch<React.SetStateAction<string>>;
 	};
 };
 
-export default function PresetPaths({ paths, setPaths }: Params) {
+export default function PresetPaths({ settings, setSettings }: Params) {
 	return (
 		<SubSection title='Locations' id='paths'>
 			<PathInput
@@ -24,26 +24,26 @@ export default function PresetPaths({ paths, setPaths }: Params) {
 				path='/'
 				mode={FileBrowserMode.Directory}
 				allowCreate={false}
-				value={paths.mediaPath}
-				onConfirm={(item) => setPaths.setMediaPath(item.path)}
+				value={settings.mediaPath}
+				onConfirm={(item) => setSettings.setMediaPath(item.path)}
 			/>
 			<PathInput
 				id='input-path-selection'
 				label='Default Input Path'
-				path={paths.mediaPath}
+				path={settings.mediaPath}
 				mode={FileBrowserMode.Directory}
 				allowCreate={true}
-				value={paths.inputPath}
-				onConfirm={(item) => setPaths.setInputPath(item.path)}
+				value={settings.inputPath}
+				onConfirm={(item) => setSettings.setInputPath(item.path)}
 			/>
 			<PathInput
 				id='output-path-selection'
 				label='Default Output Path'
-				path={paths.mediaPath}
+				path={settings.mediaPath}
 				mode={FileBrowserMode.Directory}
 				allowCreate={true}
-				value={paths.outputPath}
-				onConfirm={(item) => setPaths.setOutputPath(item.path)}
+				value={settings.outputPath}
+				onConfirm={(item) => setSettings.setOutputPath(item.path)}
 			/>
 		</SubSection>
 	);
