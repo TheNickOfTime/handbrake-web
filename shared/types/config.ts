@@ -13,3 +13,12 @@ export type ConfigPresetsType = {
 	'show-default-presets': boolean;
 	'allow-preset-creator': boolean;
 };
+
+// export type ConfigValidationType = {
+// 	[Property in keyof ConfigType]: {
+// 		isValid: boolean;
+// 		children: {
+// 			[SubProperty in keyof ConfigType[Property]]: boolean;
+// 		};
+// 	};
+// };
