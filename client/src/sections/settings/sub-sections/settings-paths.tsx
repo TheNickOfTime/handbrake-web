@@ -1,21 +1,21 @@
 import PathInput from 'components/base/inputs/path/path-input';
 import SubSection from 'components/section/sub-section';
+import { ConfigPathsType, ConfigType } from 'types/config';
 import { FileBrowserMode } from 'types/file-browser';
 
 type Params = {
-	settings: {
-		mediaPath: string;
-		inputPath: string;
-		outputPath: string;
-	};
-	setSettings: {
-		setMediaPath: React.Dispatch<React.SetStateAction<string>>;
-		setInputPath: React.Dispatch<React.SetStateAction<string>>;
-		setOutputPath: React.Dispatch<React.SetStateAction<string>>;
-	};
+	config: ConfigType;
+	setConfig: React.Dispatch<React.SetStateAction<ConfigType>>;
 };
 
-export default function PresetPaths({ settings, setSettings }: Params) {
+export default function SettingsPaths({ config, setConfig }: Params) {
+	const updatePathProperty = <K extends keyof ConfigPathsType>(
+		key: K,
+		value: ConfigPathsType[K]
+	) => {
+		setConfig({ ...config, paths: { ...config.paths, [key]: value } });
+	};
+
 	return (
 		<SubSection title='Locations' id='paths'>
 			<PathInput
@@ -24,26 +24,26 @@ export default function PresetPaths({ settings, setSettings }: Params) {
 				path='/'
 				mode={FileBrowserMode.Directory}
 				allowCreate={false}
-				value={settings.mediaPath}
-				onConfirm={(item) => setSettings.setMediaPath(item.path)}
+				value={config.paths['media-path']}
+				onConfirm={(item) => updatePathProperty('media-path', item.path)}
 			/>
 			<PathInput
 				id='input-path-selection'
 				label='Default Input Path'
-				path={settings.mediaPath}
+				path={config.paths['media-path']}
 				mode={FileBrowserMode.Directory}
 				allowCreate={true}
-				value={settings.inputPath}
-				onConfirm={(item) => setSettings.setInputPath(item.path)}
+				value={config.paths['input-path']}
+				onConfirm={(item) => updatePathProperty('input-path', item.path)}
 			/>
 			<PathInput
 				id='output-path-selection'
 				label='Default Output Path'
-				path={settings.mediaPath}
+				path={config.paths['media-path']}
 				mode={FileBrowserMode.Directory}
 				allowCreate={true}
-				value={settings.outputPath}
-				onConfirm={(item) => setSettings.setOutputPath(item.path)}
+				value={config.paths['output-path']}
+				onConfirm={(item) => updatePathProperty('output-path', item.path)}
 			/>
 		</SubSection>
 	);

@@ -2,37 +2,21 @@ import Section from 'components/section/section';
 import './settings.scss';
 import { useOutletContext } from 'react-router-dom';
 import { PrimaryOutletContextType } from 'pages/primary/primary-context';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SubSection from 'components/section/sub-section';
 import ButtonInput from 'components/base/inputs/button/button-input';
-import { ConfigType } from 'types/config';
-import PresetPaths from './sub-sections/settings-paths';
+import SettingsPaths from './sub-sections/settings-paths';
 import SettingsPreset from './sub-sections/settings-presets';
 
 export default function SettingsSection() {
 	const { config } = useOutletContext<PrimaryOutletContextType>();
+	const [currentConfig, setCurrentConfig] = useState(config);
+	const [canSave, setCanSave] = useState(false);
 
-	const [mediaPath, setMediaPath] = useState(config.paths['media-path']);
-	const [inputPath, setInputPath] = useState(config.paths['input-path']);
-	const [outputPath, setOutputPath] = useState(config.paths['output-path']);
-
-	const [defaultPresets, setDefaultPresets] = useState(config.presets['show-default-presets']);
-	const [presetCreator, setPresetCreator] = useState(config.presets['allow-preset-creator']);
-
-	const newConfig: ConfigType = {
-		paths: {
-			'media-path': mediaPath,
-			'input-path': inputPath,
-			'output-path': outputPath,
-		},
-		presets: {
-			'show-default-presets': defaultPresets,
-			'allow-preset-creator': presetCreator,
-		},
-	};
-
-	const canSave = JSON.stringify(newConfig) != JSON.stringify(config);
-	console.log(config, newConfig, canSave);
+	useEffect(() => {
+		const configUpdated = JSON.stringify(config) != JSON.stringify(currentConfig);
+		setCanSave(configUpdated);
+	}, [currentConfig]);
 
 	return (
 		<Section title='Settings' id='settings-section'>
@@ -47,25 +31,8 @@ export default function SettingsSection() {
 				</div>
 			</SubSection>
 			<div className='settings-sub-sections'>
-				<PresetPaths
-					settings={{
-						mediaPath: mediaPath,
-						inputPath: inputPath,
-						outputPath: outputPath,
-					}}
-					setSettings={{
-						setMediaPath: setMediaPath,
-						setInputPath: setInputPath,
-						setOutputPath: setOutputPath,
-					}}
-				/>
-				<SettingsPreset
-					settings={{ defaultPresets: defaultPresets, presetCreator: presetCreator }}
-					setSettings={{
-						setDefaultPresets: setDefaultPresets,
-						setPresetCreator: setPresetCreator,
-					}}
-				/>
+				<SettingsPaths config={currentConfig} setConfig={setCurrentConfig} />
+				<SettingsPreset config={currentConfig} setConfig={setCurrentConfig} />
 			</div>
 		</Section>
 	);
