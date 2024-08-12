@@ -7,6 +7,7 @@
 
 		&.disabled {
 			color: colors.$text-color-disabled !important;
+			text-decoration: line-through;
 		}
 	}
 
