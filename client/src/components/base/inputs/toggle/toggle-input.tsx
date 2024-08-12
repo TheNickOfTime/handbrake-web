@@ -30,11 +30,14 @@ export default function ToggleInput({
 	return (
 		<div className='toggle-input' id={id}>
 			{label && (
-				<span className={'input-label toggle-input-label' + (disabled ? ' disabled' : '')}>
+				<label
+					className={'input-label toggle-input-label' + (disabled ? ' disabled' : '')}
+					htmlFor='toggle-input-checkbox'
+				>
 					{EndWithColon(label)}
-				</span>
+				</label>
 			)}
-			<label className='toggle-input-checkbox'>
+			<label className='toggle-input-checkbox' id='toggle-input-checkbox'>
 				<input
 					type='checkbox'
 					id='checkbox-input'
