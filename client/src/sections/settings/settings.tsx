@@ -9,14 +9,18 @@ import SettingsPaths from './sub-sections/settings-paths';
 import SettingsPreset from './sub-sections/settings-presets';
 
 export default function SettingsSection() {
-	const { config } = useOutletContext<PrimaryOutletContextType>();
+	const { config, socket } = useOutletContext<PrimaryOutletContextType>();
 	const [currentConfig, setCurrentConfig] = useState(config);
 	const [canSave, setCanSave] = useState(false);
 
 	useEffect(() => {
 		const configUpdated = JSON.stringify(config) != JSON.stringify(currentConfig);
 		setCanSave(configUpdated);
-	}, [currentConfig]);
+	}, [config, currentConfig]);
+
+	const handleSaveConfig = () => {
+		socket.emit('config-update', currentConfig);
+	};
 
 	return (
 		<Section title='Settings' id='settings-section'>
@@ -25,7 +29,7 @@ export default function SettingsSection() {
 					<ButtonInput
 						label='Save Configuration'
 						icon='bi-floppy2-fill'
-						onClick={() => {}}
+						onClick={handleSaveConfig}
 						disabled={!canSave}
 					/>
 				</div>
