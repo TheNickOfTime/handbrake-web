@@ -6,13 +6,24 @@ type Params = {
 	label?: string;
 	value: boolean;
 	setValue?: React.Dispatch<React.SetStateAction<boolean>>;
+	onChange?: (value: boolean) => void;
 	disabled?: boolean;
 };
 
-export default function ToggleInput({ id, label, value, setValue, disabled = false }: Params) {
+export default function ToggleInput({
+	id,
+	label,
+	value,
+	setValue,
+	onChange,
+	disabled = false,
+}: Params) {
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (setValue) {
 			setValue(event.target.checked);
+		}
+		if (onChange) {
+			onChange(event.target.checked);
 		}
 	};
 
