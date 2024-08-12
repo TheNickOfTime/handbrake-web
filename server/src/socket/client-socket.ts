@@ -9,7 +9,7 @@ import { HandbrakePresetType } from 'types/preset';
 import { QueueRequestType } from 'types/queue';
 // import { Client } from 'types/socket';
 import { Socket as Client } from 'socket.io';
-import { AddClient, RemoveClient } from 'scripts/connections';
+import { AddClient, EmitToAllClients, RemoveClient } from 'scripts/connections';
 import { CheckFilenameCollision, GetDirectoryItems, MakeDirectory } from 'scripts/files';
 import { AddPreset, GetPresets, RemovePreset } from 'scripts/presets';
 import {
@@ -25,7 +25,7 @@ import {
 	UpdateQueue,
 } from 'scripts/queue';
 import { ConfigType } from 'types/config';
-import { GetConfig } from 'scripts/config';
+import { GetConfig, WriteConfig } from 'scripts/config';
 import {
 	WatcherDefinitionObjectType,
 	WatcherDefinitionType,
@@ -47,6 +47,7 @@ import {
 
 const initClient = (socket: Client) => {
 	const queue = GetQueue();
+	socket.emit('config-update', GetConfig());
 	socket.emit('queue-update', queue);
 	socket.emit('presets-update', GetPresets());
 	socket.emit('queue-status-update', GetQueueStatus());
@@ -65,8 +66,8 @@ export default function ClientSocket(io: Server) {
 		});
 
 		// Config ----------------------------------------------------------------------------------
-		socket.on('get-config', (callback: (config: ConfigType) => void) => {
-			callback(GetConfig());
+		socket.on('config-update', async (config: ConfigType) => {
+			await WriteConfig(config);
 		});
 
 		// Queue -----------------------------------------------------------------------------------
