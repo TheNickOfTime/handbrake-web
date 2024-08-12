@@ -13,5 +13,3 @@ export type ConfigPresetsType = {
 	'show-default-presets': boolean;
 	'allow-preset-creator': boolean;
 };
-
-export type ConfigPropertyType = keyof ConfigType;

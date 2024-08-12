@@ -22,12 +22,8 @@ export function LoadConfig() {
 	config = configData;
 }
 
-function CreateConfig() {}
+export function ValidateConfig() {}
 
 export function GetConfig() {
 	return config;
-}
-
-export function GetPropertyFromConfig(property: ConfigPropertyType) {
-	return config[property];
 }

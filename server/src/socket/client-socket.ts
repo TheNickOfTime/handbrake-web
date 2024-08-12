@@ -24,8 +24,8 @@ import {
 	StopQueue,
 	UpdateQueue,
 } from 'scripts/queue';
-import { ConfigType, ConfigPropertyType } from 'types/config';
-import { GetConfig, GetPropertyFromConfig } from 'scripts/config';
+import { ConfigType } from 'types/config';
+import { GetConfig } from 'scripts/config';
 import {
 	WatcherDefinitionObjectType,
 	WatcherDefinitionType,
@@ -68,13 +68,6 @@ export default function ClientSocket(io: Server) {
 		socket.on('get-config', (callback: (config: ConfigType) => void) => {
 			callback(GetConfig());
 		});
-
-		socket.on(
-			'get-config-property',
-			(property: ConfigPropertyType, callback: (result: string) => void) => {
-				callback(GetPropertyFromConfig(property));
-			}
-		);
 
 		// Queue -----------------------------------------------------------------------------------
 		socket.on('add-to-queue', (data: QueueRequestType) => {
