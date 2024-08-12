@@ -5,8 +5,12 @@ import { SetPresets, presetsPath } from './presets';
 import { InitializeQueue } from './queue';
 import { DatabaseConnect } from './database/database';
 import { InitializeWatchers } from './watcher';
+import { LoadConfig } from './config';
 
 export default async function Initialization(server: Server) {
+	// Config---------------------------------------------------------------------------------------
+	await LoadConfig();
+
 	// JSON ----------------------------------------------------------------------------------------
 	const presets = await ReadDataFromFile(presetsPath);
 	if (presets) {

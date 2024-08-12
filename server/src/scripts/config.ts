@@ -1,8 +1,10 @@
 import fs from 'fs';
+import { writeFile, copyFile, readFile } from 'fs/promises';
 import path from 'path';
 import { parse, stringify } from 'yaml';
 import { ConfigType } from 'types/config';
 import { dataPath } from './data';
+import { EmitToAllClients } from './connections';
 
 const configPath = path.join(dataPath, 'config.yaml');
 const templateConfig: ConfigType = parse(
@@ -11,24 +13,38 @@ const templateConfig: ConfigType = parse(
 
 let config: ConfigType = templateConfig;
 
-export function LoadConfig() {
-	if (!fs.existsSync(configPath)) {
-		console.log(`[server] [config] No config file exists, copying the template config.yaml`);
-		fs.copyFileSync(path.resolve('src/template/config.yaml'), configPath);
-	}
+export async function LoadConfig() {
+	try {
+		if (!fs.existsSync(configPath)) {
+			console.log(
+				`[server] [config] No config file exists, copying the template config.yaml`
+			);
+			await copyFile(path.resolve('src/template/config.yaml'), configPath);
+		}
 
-	const configFile = fs.readFileSync(configPath, 'utf-8');
-	const configData = parse(configFile);
-	config = configData;
+		const configFile = await readFile(configPath, 'utf-8');
+		const configData = parse(configFile);
+		config = configData;
+		EmitToAllClients('config-update', GetConfig());
+		console.log(`[server] [config] The config file at '${configPath}' has been loaded.`);
+	} catch (error) {
+		console.error(
+			`[server] [config] [error] Could not load the config file from '${configPath}'.`
+		);
+		console.error(error);
+	}
 }
 
-export function WriteConfig(newConfig: ConfigType) {
-	const fileData = stringify(newConfig);
-	fs.writeFile(configPath, fileData, (err) => {
-		if (err) {
-			console.error(err);
-		}
-	});
+export async function WriteConfig(newConfig: ConfigType) {
+	try {
+		const fileData = stringify(newConfig);
+		await writeFile(configPath, fileData);
+		console.log(`[server] [config] The config file at '${configPath}' has been written.`);
+		LoadConfig();
+	} catch (error) {
+		console.error(`[server] [config] [error] Could not write new config to file.`);
+		console.error(error);
+	}
 }
 
 export function GetConfig() {
