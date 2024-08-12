@@ -1,13 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import { parse } from 'yaml';
-import { ConfigType, ConfigPropertyType } from 'types/config';
+import { ConfigType } from 'types/config';
 import { dataPath } from './data';
 
-let config: ConfigType = {
-	'input-path': '/video',
-	'output-path': '/video',
-};
+let config: ConfigType = JSON.parse(fs.readFileSync(path.resolve('template/config.yaml'), 'utf-8'));
 
 export function LoadConfig() {
 	const configPath = path.join(dataPath, 'config.yaml');
