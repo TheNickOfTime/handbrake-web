@@ -7,7 +7,7 @@ on:
     # branches: [main]
   push:
     paths:
-      - '.github/workflows/docker-publish.yaml'
+      - '.github/workflows/package-cleanup.yaml'
 
 jobs:
   cleanup-packages:
