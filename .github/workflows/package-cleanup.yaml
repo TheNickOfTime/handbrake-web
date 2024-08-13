@@ -1,0 +1,19 @@
+name: Package Cleanup
+
+on:
+  workflow_run: workflows
+    workflows: [Docker Publish]
+    types: [completed]
+    # branches: [main]
+
+jobs:
+  cleanup-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleanup Package Versions
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: 'handbrake-web'
+          package-type: 'container'
+          min-versions-to-keep: 10
+          delete-only-untagged-versions: true
