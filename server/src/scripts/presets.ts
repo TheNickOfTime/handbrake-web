@@ -41,7 +41,7 @@ export async function LoadPresets() {
 export async function WritePreset(fileName: string, preset: HandbrakePresetType) {
 	try {
 		const presetPath = path.join(presetsPath, fileName + '.json');
-		const presetData = JSON.stringify(preset);
+		const presetData = JSON.stringify(preset, null, 2);
 		await writeFile(presetPath, presetData);
 		console.log(`[server] [presets] Wrote preset '${fileName}' to '${presetPath}'.`);
 	} catch (error) {
