@@ -12,6 +12,8 @@ on:
 jobs:
   cleanup-packages:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - name: Cleanup Package Versions
         uses: actions/delete-package-versions@v5
