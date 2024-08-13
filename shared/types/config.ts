@@ -14,11 +14,14 @@ export type ConfigPresetsType = {
 	'allow-preset-creator': boolean;
 };
 
-// export type ConfigValidationType = {
-// 	[Property in keyof ConfigType]: {
-// 		isValid: boolean;
-// 		children: {
-// 			[SubProperty in keyof ConfigType[Property]]: boolean;
-// 		};
-// 	};
-// };
+export type ConfigValidationType = {
+	[Section in keyof ConfigType]: {
+		isValid: boolean;
+		properties: {
+			[Property in keyof ConfigType[Section]]: {
+				isValid: boolean;
+				value: ConfigType[Section][Property];
+			};
+		};
+	};
+};

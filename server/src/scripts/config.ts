@@ -2,9 +2,10 @@ import fs from 'fs';
 import { writeFile, copyFile, readFile } from 'fs/promises';
 import path from 'path';
 import { parse, stringify } from 'yaml';
-import { ConfigType } from 'types/config';
+import { ConfigPathsType, ConfigPresetsType, ConfigType } from 'types/config';
 import { dataPath } from './data';
 import { EmitToAllClients } from './connections';
+import Shutdown from './shutdown';
 
 const configPath = path.join(dataPath, 'config.yaml');
 const templateConfig: ConfigType = parse(
@@ -24,14 +25,19 @@ export async function LoadConfig() {
 
 		const configFile = await readFile(configPath, 'utf-8');
 		const configData = parse(configFile);
-		config = configData;
-		EmitToAllClients('config-update', GetConfig());
+		const validatedData = await ValidateConfig(configData, true);
+
+		config = validatedData;
+
+		EmitToAllClients('config-update', validatedData);
 		console.log(`[server] [config] The config file at '${configPath}' has been loaded.`);
+		console.log(config);
 	} catch (error) {
 		console.error(
-			`[server] [config] [error] Could not load the config file from '${configPath}'.`
+			`[server] [config] [error] Could not load the config file from '${configPath}'. The application will now shut down.`
 		);
 		console.error(error);
+		process.exit();
 	}
 }
 
@@ -39,8 +45,11 @@ export async function WriteConfig(newConfig: ConfigType) {
 	try {
 		const fileData = stringify(newConfig);
 		await writeFile(configPath, fileData);
+
+		config = newConfig;
+
+		EmitToAllClients('config-update', newConfig);
 		console.log(`[server] [config] The config file at '${configPath}' has been written.`);
-		LoadConfig();
 	} catch (error) {
 		console.error(`[server] [config] [error] Could not write new config to file.`);
 		console.error(error);
@@ -51,95 +60,115 @@ export function GetConfig() {
 	return config;
 }
 
-// export function ValidateConfig<
-// 	ConfigKey extends keyof ConfigType,
-// 	CurrentConfigKey extends ConfigType[ConfigKey],
-// 	ValidationKeys extends keyof ConfigValidationType,
-// 	ValidationSubKeys extends keyof ConfigValidationType[ValidationKeys],
-// 	CurrentValidationSubKey extends ConfigValidationType[ValidationKeys]
-// >(inputConfig: ConfigType, updateConfig?: boolean) {
-// 	const validationErrors = Object.keys(templateConfig)
-// 		.map((key) => key as ValidationKeys)
-// 		.reduce((object, key) => {
-// 			object[key] = {
-// 				isValid: true,
-// 				children: Object.keys(templateConfig[key])
-// 					.map((subKey) => subKey as ValidationSubKeys)
-// 					.reduce((subObject, subKey) => {
-// 						subObject[subKey] = true;
-// 						return subObject;
-// 					}, <{ [index in keyof CurrentValidationSubKey]: boolean }>{}),
-// 			};
-// 			return object;
-// 		}, <{ [index in keyof ConfigValidationType]: { isValid: boolean; children: { [index in keyof CurrentValidationSubKey]: boolean } } }>{});
+export async function ValidateConfig(inputConfig: ConfigType, fix: boolean = false) {
+	let validatedConfig: ConfigType = JSON.parse(JSON.stringify(inputConfig));
 
-// 	// Checks for null and undefined values in the config
-// 	const structureValidation =
-// 		Object.keys(templateConfig).every((key) => {
-// 			const value = Object.keys(inputConfig);
-// 			const result = value && value.includes(key);
+	validatedConfig = ValidateConfigSections(validatedConfig, fix);
+	validatedConfig = ValidateConfigProperties(validatedConfig, fix);
 
-// 			if (!result) {
-// 				validationErrors[key as keyof ConfigValidationType].isValid = false;
-// 			}
+	if (JSON.stringify(validatedConfig) == JSON.stringify(inputConfig)) {
+		console.log(`[server] [config] [validation] The config data has passed validation.`);
+	} else {
+		await WriteConfig(validatedConfig);
+		console.log(
+			`[server] [config] [validation] The config data has passed validation with fixes applied.`
+		);
+	}
 
-// 			return result;
-// 		}) &&
-// 		Object.keys(templateConfig).every((key) =>
-// 			Object.keys(templateConfig[key as keyof ConfigType]).every((subKey) => {
-// 				const value = Object.keys(inputConfig[key as keyof ConfigType]);
-// 				const result = value && value.includes(subKey);
+	return validatedConfig;
+}
 
-// 				if (!result) {
-// 					validationErrors[key as keyof ConfigValidationType].children[
-// 						subKey as keyof CurrentValidationSubKey
-// 					] = false;
-// 				}
+export function ValidateConfigSections(inputConfig: ConfigType, fix: boolean = false) {
+	// Find missing sections
+	Object.keys(templateConfig).forEach((section) => {
+		const value = inputConfig[section as keyof ConfigType];
+		const isValid = value != null && value != undefined;
 
-// 				return result;
-// 			})
-// 		);
+		if (!isValid) {
+			if (fix) {
+				inputConfig[section as keyof ConfigType] = templateConfig[
+					section as keyof ConfigType
+				] as typeof value;
+				console.log(
+					`[server] [config] [validation] Adding missing section '${section}' to the config with template defaults.`
+				);
+			} else {
+				throw new Error(
+					`[server] [config] [validation] [error] Config is missing section '${section}'.`
+				);
+			}
+		}
+	});
 
-// 	// Updates the config with missing values
-// 	if (updateConfig) {
-// 		Object.keys(validationErrors)
-// 			.map((key) => key as keyof ConfigType)
-// 			.forEach((key) => {
-// 				if (!validationErrors[key].isValid) {
-// 					inputConfig[key] = templateConfig[key] as keyof (
-// 						| ConfigPathsType
-// 						| ConfigPresetsType
-// 					);
-// 					console.log(
-// 						`[server] [config] Adding missing section '${key}' to the config file. `
-// 					);
+	//Finding undesired sections
+	Object.keys(inputConfig).forEach((section) => {
+		const isValid = Object.keys(templateConfig).includes(section);
 
-// 					validationErrors[key].isValid = true;
+		if (!isValid) {
+			if (fix) {
+				delete inputConfig[section as keyof ConfigType];
+				console.log(
+					`[server] [config] [validation] Removing undesired section '${section}' from the config.`
+				);
+			} else {
+				throw new Error(
+					`[server] [config] [validation] [error] Config has undesired section '${section}'.`
+				);
+			}
+		}
+	});
 
-// 					return;
-// 				}
-// 				Object.keys(validationErrors[key])
-// 					.filter(
-// 						(subKey) =>
-// 							validationErrors[key].children[subKey as keyof CurrentValidationSubKey]
-// 					)
-// 					.forEach((subKey) => {
-// 						console.log(
-// 							`[server] [config] Adding missing config key '${key}/${subKey}' to the config file.`
-// 						);
-// 						inputConfig[key as keyof ConfigType][
-// 							subKey as keyof (ConfigPathsType | ConfigPresetsType)
-// 						] =
-// 							templateConfig[key as keyof ConfigType][
-// 								subKey as keyof (ConfigPathsType | ConfigPresetsType)
-// 							];
+	return inputConfig;
+}
 
-// 						validationErrors[key].children[subKey as keyof CurrentValidationSubKey] =
-// 							true;
-// 					});
-// 			});
-// 		WriteConfig(inputConfig);
-// 	}
+export function ValidateConfigProperties(inputConfig: ConfigType, fix: boolean = false) {
+	// Add missing properties
+	Object.keys(templateConfig)
+		.map((section) => section as keyof ConfigType)
+		.forEach((section) => {
+			const value = templateConfig[section];
+			Object.keys(value)
+				.map((property) => property as keyof typeof value)
+				.forEach((property) => {
+					const subValue = inputConfig[section][property];
+					const isValid = subValue != null && subValue != undefined;
 
-// 	return validationErrors;
-// }
+					if (!isValid) {
+						if (fix) {
+							inputConfig[section][property] = templateConfig[section][property];
+							console.log(
+								`[server] [config] [validation] Adding missing property '${section}/${property}' to the config.`
+							);
+						} else {
+							`[server] [config] [validation] [error] The config is missing property '${section}/${property}'.`;
+						}
+					}
+				});
+		});
+
+	//Remove undesired properties
+	Object.keys(inputConfig)
+		.map((section) => section as keyof ConfigType)
+		.forEach((section) => {
+			const value = inputConfig[section];
+			const templateValue = templateConfig[section];
+			Object.keys(value).forEach((property) => {
+				const isValid = Object.keys(templateValue).includes(property);
+
+				if (!isValid) {
+					if (fix) {
+						delete inputConfig[section][property as keyof typeof value];
+						console.log(
+							`[server] [config] [validation] Removing undesired property '${section}/${property}' from the config.`
+						);
+					} else {
+						console.error(
+							`[server] [config] [validation] [error] Config has undesired property '${section}/${property}'.`
+						);
+					}
+				}
+			});
+		});
+
+	return inputConfig;
+}
