@@ -5,9 +5,9 @@ on:
     workflows: [Docker Publish]
     types: [completed]
     # branches: [main]
-  # push:
-  #   paths:
-  #     - '.github/workflows/package-cleanup.yaml'
+  push:
+    paths:
+      - '.github/workflows/package-cleanup.yaml'
 
 jobs:
   cleanup-packages:
