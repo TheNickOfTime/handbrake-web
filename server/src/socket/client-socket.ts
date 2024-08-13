@@ -11,7 +11,7 @@ import { QueueRequestType } from 'types/queue';
 import { Socket as Client } from 'socket.io';
 import { AddClient, EmitToAllClients, RemoveClient } from 'scripts/connections';
 import { CheckFilenameCollision, GetDirectoryItems, MakeDirectory } from 'scripts/files';
-import { AddPreset, GetPresets, RemovePreset } from 'scripts/presets';
+import { AddPreset, GetPresets, RemovePreset, RenamePreset } from 'scripts/presets';
 import {
 	AddJob,
 	ClearQueue,
@@ -148,6 +148,10 @@ export default function ClientSocket(io: Server) {
 		// Preset ----------------------------------------------------------------------------------
 		socket.on('add-preset', (preset: HandbrakePresetType) => {
 			AddPreset(preset);
+		});
+
+		socket.on('rename-preset', (oldName: string, newName: string) => {
+			RenamePreset(oldName, newName);
 		});
 
 		socket.on('remove-preset', (presetName: string) => {
