@@ -1,4 +1,5 @@
 // import { Server } from 'socket.io';
+import { existsSync } from 'fs';
 import { Server } from 'http';
 import { ReadDataFromFile } from './data';
 import { SetPresets, presetsPath } from './presets';
@@ -8,9 +9,11 @@ import { InitializeWatchers } from './watcher';
 
 export default async function Initialization(server: Server) {
 	// JSON ----------------------------------------------------------------------------------------
-	const presets = await ReadDataFromFile(presetsPath);
-	if (presets) {
-		SetPresets(presets);
+	if (existsSync(presetsPath)) {
+		const presets = await ReadDataFromFile(presetsPath);
+		if (presets) {
+			SetPresets(presets);
+		}
 	}
 
 	// Database ------------------------------------------------------------------------------------
