@@ -46,15 +46,6 @@ export default function Primary() {
 		};
 	}, []);
 
-	// Get config --------------------------------------------------------------
-	useEffect(() => {
-		const getConfig = async () => {
-			const newConfig = await socket.emitWithAck('get-config');
-			setConfig(newConfig);
-		};
-		getConfig();
-	}, []);
-
 	// Error event listeners ---------------------------------------------------
 	const onConnect = () => {
 		console.log(`[client] Connection established to '${server}'`);
@@ -82,6 +73,11 @@ export default function Primary() {
 	});
 
 	// Server event listeners --------------------------------------------------
+	const onConfigUpdate = (config: ConfigType) => {
+		console.log(`[client] The config has been updated.`);
+		setConfig(config);
+	};
+
 	const onQueueUpdate = (queue: QueueType) => {
 		console.log(`[client] The queue has been updated.`);
 		setQueue(queue);
@@ -109,6 +105,7 @@ export default function Primary() {
 	};
 
 	useEffect(() => {
+		socket.on('config-update', onConfigUpdate);
 		socket.on('queue-update', onQueueUpdate);
 		socket.on('queue-status-update', onQueueStatusUpdate);
 		socket.on('presets-update', onPresetsUpdate);
@@ -116,6 +113,7 @@ export default function Primary() {
 		socket.on('watchers-update', onWatchersUpdate);
 
 		return () => {
+			socket.off('config-update', onConfigUpdate);
 			socket.off('queue-update', onQueueUpdate);
 			socket.off('queue-status-update', onQueueStatusUpdate);
 			socket.off('presets-update', onPresetsUpdate);

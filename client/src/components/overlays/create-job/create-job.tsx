@@ -296,7 +296,7 @@ export default function CreateJob({ onClose }: Params) {
 					<PathInput
 						id='input-path'
 						label={jobFrom == JobFrom.FromFile ? 'File: ' : 'Directory: '}
-						path={config['input-path']}
+						path={config.paths['input-path']}
 						mode={
 							jobFrom == JobFrom.FromFile
 								? FileBrowserMode.SingleFile
@@ -321,7 +321,7 @@ export default function CreateJob({ onClose }: Params) {
 					<PathInput
 						id='output-path'
 						label='Directory: '
-						path={config['output-path']}
+						path={config.paths['output-path']}
 						mode={FileBrowserMode.Directory}
 						allowCreate={true}
 						value={outputPath}

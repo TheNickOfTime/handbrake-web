@@ -57,12 +57,12 @@ export default function SideBar({ showSidebar, setShowSidebar }: Params) {
 								Workers
 							</NavLink>
 						</li>
-						{/* <li>
-						<NavLink to='/workers'>Workers</NavLink>
-					</li>
-					<li>
-						<NavLink to='/presets'>Presets</NavLink>
-					</li> */}
+						<li>
+							<NavLink to='/settings' onClick={handleNavLinkClick}>
+								<i className='bi bi-gear-fill' />
+								Settings
+							</NavLink>
+						</li>
 					</ul>
 				</div>
 			</div>
