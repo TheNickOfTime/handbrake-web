@@ -10,17 +10,18 @@
 		}
 	}
 
+	.sub-section#buttons {
+		flex-flow: row wrap;
+		gap: 2rem;
+		align-items: center;
+		justify-content: space-between;
+	}
+
 	.settings-sub-sections {
 		.sub-section {
 			display: flex;
 			flex-flow: column nowrap;
 			gap: 1.25rem;
-
-			.input-label {
-				min-width: 100%;
-				font-size: 1.35rem;
-				color: colors.$text-color-tertiary;
-			}
 
 			.path-input {
 				.input-section {
@@ -30,5 +31,11 @@
 				}
 			}
 		}
+	}
+
+	.input-label {
+		min-width: 100%;
+		font-size: 1.35rem;
+		color: colors.$text-color-tertiary;
 	}
 }
