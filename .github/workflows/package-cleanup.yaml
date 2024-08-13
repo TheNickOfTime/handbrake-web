@@ -38,4 +38,5 @@ jobs:
         with:
           package-name: 'handbrake-web'
           package-type: 'container'
+          min-versions-to-keep: 0
           ignore-versions: '^v\d+\.\d+\.\d+$'
