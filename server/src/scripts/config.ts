@@ -14,7 +14,7 @@ export function LoadConfig() {
 
 	if (!fs.existsSync(configPath)) {
 		console.log(`[server] [config] No config file exists, copying the template config.yaml`);
-		fs.copyFileSync(path.resolve('template/config.yaml'), configPath);
+		fs.copyFileSync(path.resolve(__dirname, '../template/config.yaml'), configPath);
 	}
 
 	const configFile = fs.readFileSync(configPath, 'utf-8');
