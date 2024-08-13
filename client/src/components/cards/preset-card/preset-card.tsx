@@ -12,6 +12,7 @@ import PresetCardChapters from './tabs/chapters/preset-card-chapters';
 
 type Params = {
 	preset: HandbrakePresetType;
+	handleRenamePreset: (oldName: string, newName: string) => void;
 	handleRemovePreset: (preset: string) => void;
 };
 
@@ -25,8 +26,9 @@ enum PresetTabs {
 	Chapters,
 }
 
-export default function PresetCard({ preset, handleRemovePreset }: Params) {
+export default function PresetCard({ preset, handleRenamePreset, handleRemovePreset }: Params) {
 	const [currentTab, setCurrentTab] = useState(PresetTabs.Summary);
+	const [presetName, setPresetName] = useState(preset.PresetList[0].PresetName);
 
 	const presetData = preset.PresetList[0];
 	const tabs = ['Summary', 'Dimensions', 'Filters', 'Video', 'Audio', 'Subtitles', 'Chapters'];
@@ -47,10 +49,26 @@ export default function PresetCard({ preset, handleRemovePreset }: Params) {
 		URL.revokeObjectURL(presetURL);
 	};
 
+	const handleRenameInputSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (presetName != preset.PresetList[0].PresetName) {
+			handleRenamePreset(preset.PresetList[0].PresetName, presetName);
+		}
+	};
+
 	return (
 		<div className='preset-card'>
 			<div className='preset-header'>
-				<h3 className='preset-label'>{presetData.PresetName}</h3>
+				{/* <h3 className='preset-label'>{presetData.PresetName}</h3> */}
+				<form className='header-label-form' onSubmit={handleRenameInputSubmit}>
+					<input
+						type='text'
+						className='header-label-input'
+						value={presetName}
+						onChange={(event) => setPresetName(event.target.value)}
+						// onSubmit={handleRenameInputSubmit}
+					/>
+				</form>
 				<div className='preset-buttons'>
 					{/* <ButtonInput
 						icon='bi-pencil-square'

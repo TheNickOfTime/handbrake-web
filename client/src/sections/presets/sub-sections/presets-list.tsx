@@ -5,16 +5,22 @@ import './presets-list.scss';
 
 type Params = {
 	presets: HandbrakePresetListType;
+	handleRenamePreset: (oldName: string, newName: string) => void;
 	handleRemovePreset: (preset: string) => void;
 };
 
-export default function PresetsList({ presets, handleRemovePreset }: Params) {
+export default function PresetsList({ presets, handleRenamePreset, handleRemovePreset }: Params) {
 	return (
 		<SubSection title='List' id='list'>
 			{Object.keys(presets).map((key) => {
 				const preset = presets[key];
 				return (
-					<PresetCard preset={preset} handleRemovePreset={handleRemovePreset} key={key} />
+					<PresetCard
+						preset={preset}
+						handleRenamePreset={handleRenamePreset}
+						handleRemovePreset={handleRemovePreset}
+						key={key}
+					/>
 				);
 			})}
 		</SubSection>
