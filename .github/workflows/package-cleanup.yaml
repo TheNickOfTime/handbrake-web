@@ -36,6 +36,6 @@ jobs:
       - name: Cleanup Non-SemVer 'handbrake-web' Packages
         uses: actions/delete-package-versions@v5
         with:
-          package-name: 'handbrake-web-worker'
+          package-name: 'handbrake-web'
           package-type: 'container'
           ignore-versions: '^v\d+\.\d+\.\d+$'
