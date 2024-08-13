@@ -5,7 +5,7 @@ on:
     workflows: [Docker Publish]
     types: [completed]
   pull_request:
-    types: [closed]
+    # types: [closed]
   push:
     paths:
       - '.github/workflows/package-cleanup.yaml'
