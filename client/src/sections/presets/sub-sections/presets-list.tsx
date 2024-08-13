@@ -12,17 +12,19 @@ type Params = {
 export default function PresetsList({ presets, handleRenamePreset, handleRemovePreset }: Params) {
 	return (
 		<SubSection title='List' id='list'>
-			{Object.keys(presets).map((key) => {
-				const preset = presets[key];
-				return (
-					<PresetCard
-						preset={preset}
-						handleRenamePreset={handleRenamePreset}
-						handleRemovePreset={handleRemovePreset}
-						key={key}
-					/>
-				);
-			})}
+			{Object.keys(presets)
+				.sort((a, b) => (a.toLowerCase() > b.toLowerCase() ? 1 : -1))
+				.map((key) => {
+					const preset = presets[key];
+					return (
+						<PresetCard
+							preset={preset}
+							handleRenamePreset={handleRenamePreset}
+							handleRemovePreset={handleRemovePreset}
+							key={key}
+						/>
+					);
+				})}
 		</SubSection>
 	);
 }
