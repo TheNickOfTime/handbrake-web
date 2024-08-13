@@ -22,7 +22,9 @@ export default function PresetsSection() {
 		setShowUploadPreset(false);
 	};
 
-	// const handleEditPresetName = () => {};
+	const handleRenamePreset = (oldName: string, newName: string) => {
+		socket.emit('rename-preset', oldName, newName);
+	};
 
 	const handleRemovePreset = (preset: string) => {
 		socket.emit('remove-preset', preset);
@@ -37,12 +39,16 @@ export default function PresetsSection() {
 		>
 			<PresetsButtons presets={presets} handleOpenUploadPreset={handleOpenUploadPreset} />
 			{showPresetList && (
-				<PresetsList presets={presets} handleRemovePreset={handleRemovePreset} />
+				<PresetsList
+					presets={presets}
+					handleRenamePreset={handleRenamePreset}
+					handleRemovePreset={handleRemovePreset}
+				/>
 			)}
 			{showUploadPreset && (
 				<UploadPreset
 					socket={socket}
-					presets={Object.keys(presets)}
+					presets={Object.keys(presets).sort()}
 					handleClose={handleCloseUploadPreset}
 				/>
 			)}
