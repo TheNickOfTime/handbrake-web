@@ -9,7 +9,6 @@ import WorkerSocket from './socket/worker-socket';
 import Initialization from 'scripts/initialization';
 import ClientRoutes from './routes/client';
 import Shutdown from 'scripts/shutdown';
-import { LoadConfig } from 'scripts/config';
 
 // Server ------------------------------------------------------------------------------------------
 const app = express();
@@ -26,9 +25,6 @@ app.use(cors());
 console.log(`[server] [env] The server port is '${process.env.SERVER_PORT}'.`);
 console.log(`[server] [env] The data path is '${process.env.DATA_PATH}'.`);
 console.log(`[server] [env] The video path is '${process.env.VIDEO_PATH}'.`);
-
-// Config ------------------------------------------------------------------------------------------
-LoadConfig();
 
 // Routes ------------------------------------------------------------------------------------------
 ClientRoutes(app);

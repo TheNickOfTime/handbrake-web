@@ -1,2 +1,9 @@
-input-path: '/video/input'
-output-path: '/video/output'
+config:
+  auto-fix: true
+paths:
+  media-path: '/video'
+  input-path: '/video/input'
+  output-path: ''
+presets:
+  show-default-presets: true
+  allow-preset-creator: false

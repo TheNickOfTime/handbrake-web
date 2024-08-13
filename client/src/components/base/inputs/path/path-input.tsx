@@ -37,7 +37,7 @@ export default function PathInput({
 			<div className='input-section'>
 				{label && (
 					<label className='input-label' htmlFor={id}>
-						{label}
+						{label.replace(/[:\s]+$/, '') + ':'}
 					</label>
 				)}
 				<input
