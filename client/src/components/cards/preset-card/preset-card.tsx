@@ -49,7 +49,9 @@ export default function PresetCard({ preset, handleRenamePreset, handleRemovePre
 		URL.revokeObjectURL(presetURL);
 	};
 
-	const handleRenameInputSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	const handleRenameInputSubmit = (
+		event: React.FormEvent<HTMLFormElement | HTMLInputElement>
+	) => {
 		event.preventDefault();
 		if (presetName != preset.PresetList[0].PresetName) {
 			handleRenamePreset(preset.PresetList[0].PresetName, presetName);
@@ -66,6 +68,7 @@ export default function PresetCard({ preset, handleRenamePreset, handleRemovePre
 						className='header-label-input'
 						value={presetName}
 						onChange={(event) => setPresetName(event.target.value)}
+						onBlur={handleRenameInputSubmit}
 						// onSubmit={handleRenameInputSubmit}
 					/>
 				</form>
