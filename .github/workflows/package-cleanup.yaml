@@ -24,7 +24,6 @@ jobs:
           image-names: handbrake-web handbrake-web-server handbrake-web-worker
           tag-selection: untagged
           cut-off: 0s
-          dry-run: true
       - name: Clean 'sha256-*' Versions
         uses: snok/container-retention-policy@v3.0.0
         with:
@@ -34,7 +33,6 @@ jobs:
           tag-selection: tagged
           image-tags: 'sha256-*'
           cut-off: 0s
-          dry-run: true
       - name: Clean This PR's 'pr-*' Versions
         if: github.event_name == 'pull_request'
         uses: snok/container-retention-policy@v3.0.0
@@ -45,7 +43,6 @@ jobs:
           tag-selection: tagged
           image-tags: 'pr-${{github.event.number}}'
           cut-off: 0s
-          dry-run: true
       - name: Clean Old PR's 'pr-*' Versions
         uses: snok/container-retention-policy@v3.0.0
         with:
@@ -55,4 +52,3 @@ jobs:
           tag-selection: tagged
           image-tags: 'pr-*'
           cut-off: 2w
-          dry-run: true
