@@ -15,11 +15,21 @@ jobs:
     permissions:
       packages: write
     steps:
-      - name: Cleanup Package Versions
+      - name: Cleanup Untagged 'handbrake-web' Packages
         uses: actions/delete-package-versions@v5
         with:
           package-name: 'handbrake-web'
           package-type: 'container'
-          min-versions-to-keep: 10
           delete-only-untagged-versions: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Cleanup Untagged 'handbrake-web-server' Packages
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: 'handbrake-web-server'
+          package-type: 'container'
+          delete-only-untagged-versions: true
+      - name: Cleanup Untagged 'handbrake-web-worker' Packages
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: 'handbrake-web-worker'
+          package-type: 'container'
+          delete-only-untagged-versions: true
