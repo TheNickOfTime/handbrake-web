@@ -1,9 +1,9 @@
 name: Package Cleanup
 
 on:
-  workflow_run:
-    workflows: [Docker Publish]
-    types: [completed]
+  # workflow_run:
+  #   workflows: [Docker Publish]
+  #   types: [completed]
   pull_request:
     types: [closed]
   push:
