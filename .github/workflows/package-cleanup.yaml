@@ -5,9 +5,9 @@ on:
     workflows: [Docker Publish]
     types: [completed]
     # branches: [main]
-  push:
-    paths:
-      - '.github/workflows/package-cleanup.yaml'
+  # push:
+  #   paths:
+  #     - '.github/workflows/package-cleanup.yaml'
 
 jobs:
   cleanup-packages:
@@ -33,3 +33,9 @@ jobs:
           package-name: 'handbrake-web-worker'
           package-type: 'container'
           delete-only-untagged-versions: true
+      - name: Cleanup Non-SemVer 'handbrake-web' Packages
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: 'handbrake-web-worker'
+          package-type: 'container'
+          ignore-versions: '^v\d+\.\d+\.\d+$'
