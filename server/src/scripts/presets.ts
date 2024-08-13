@@ -82,14 +82,16 @@ export async function RemovePreset(presetName: string) {
 		console.log(`[server] [presets] Preset '${presetName}' has been removed.`);
 		EmitToAllClients('presets-update', presets);
 	} catch (error) {
-		console.error(`[server] [presets] [error] COuld not remove the preset '${presetName}'.`);
+		console.error(`[server] [presets] [error] Could not remove the preset '${presetName}'.`);
 		console.error(error);
 	}
 }
 
 export async function RenamePreset(oldName: string, newName: string) {
 	try {
-		presets[oldName].PresetList[0].PresetName = newName;
+		presets[newName] = presets[oldName];
+		presets[newName].PresetList[0].PresetName = newName;
+		delete presets[oldName];
 		const oldPath = path.join(presetsPath, oldName + '.json');
 		const newPath = path.join(presetsPath, newName + '.json');
 		await rename(oldPath, newPath);
@@ -102,5 +104,6 @@ export async function RenamePreset(oldName: string, newName: string) {
 		console.error(
 			`[server] [presets] [error] Could not rename the preset '${oldName}' to '${newName}'.`
 		);
+		console.error(error);
 	}
 }
