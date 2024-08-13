@@ -1,6 +1,11 @@
 export type ConfigType = {
+	config: ConfigMetaType;
 	paths: ConfigPathsType;
 	presets: ConfigPresetsType;
+};
+
+export type ConfigMetaType = {
+	'auto-fix': boolean;
 };
 
 export type ConfigPathsType = {

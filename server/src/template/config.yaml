@@ -1,3 +1,5 @@
+config:
+  auto-fix: true
 paths:
   media-path: '/video'
   input-path: '/video/input'

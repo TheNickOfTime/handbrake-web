@@ -25,19 +25,29 @@ export async function LoadConfig() {
 
 		const configFile = await readFile(configPath, 'utf-8');
 		const configData = parse(configFile);
-		const validatedData = await ValidateConfig(configData, true);
+
+		const autoFixInConfig = configData['config'] && configData['config']['auto-fix'];
+		const fixOnValidate = autoFixInConfig ? configData['config']['auto-fix'] : true;
+
+		if (!autoFixInConfig) {
+			console.log(
+				`[server] [config] Config is missing property 'config/auto-fix', which will now automatically be set to 'true' in order to prevent application shutdown.`
+			);
+		}
+
+		const validatedData = await ValidateConfig(configData, fixOnValidate);
 
 		config = validatedData;
 
 		EmitToAllClients('config-update', validatedData);
 		console.log(`[server] [config] The config file at '${configPath}' has been loaded.`);
-		console.log(config);
+		// console.log(config);
 	} catch (error) {
 		console.error(
 			`[server] [config] [error] Could not load the config file from '${configPath}'. The application will now shut down.`
 		);
 		console.error(error);
-		process.exit();
+		// process.exit();
 	}
 }
 
