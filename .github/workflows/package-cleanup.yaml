@@ -22,7 +22,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           image-names: handbrake-web
           tag-selection: untagged
-          dryrun: true
+          dry-run: true
       - name: Clean Non-SemVer Versions
         uses: snok/container-retention-policy@v3.0.0
         with:
@@ -31,4 +31,4 @@ jobs:
           image-names: handbrake-web
           tag-selection: tagged
           image-tags: '!v*.*.*'
-          dryrun: true
+          dry-run: true
