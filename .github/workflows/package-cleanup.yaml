@@ -15,28 +15,20 @@ jobs:
     permissions:
       packages: write
     steps:
-      - name: Cleanup Untagged 'handbrake-web' Packages
-        uses: actions/delete-package-versions@v5
+      - name: Clean Untagged Versions
+        uses: snok/container-retention-policy@v3.0.0
         with:
-          package-name: 'handbrake-web'
-          package-type: 'container'
-          delete-only-untagged-versions: true
-      - name: Cleanup Untagged 'handbrake-web-server' Packages
-        uses: actions/delete-package-versions@v5
+          account: user
+          token: ${{ secrets.GITHUB_TOKEN }}
+          image-names: handbrake-web
+          tag-selection: untagged
+          dryrun: true
+      - name: Clean Non-SemVer Versions
+        uses: snok/container-retention-policy@v3.0.0
         with:
-          package-name: 'handbrake-web-server'
-          package-type: 'container'
-          delete-only-untagged-versions: true
-      - name: Cleanup Untagged 'handbrake-web-worker' Packages
-        uses: actions/delete-package-versions@v5
-        with:
-          package-name: 'handbrake-web-worker'
-          package-type: 'container'
-          delete-only-untagged-versions: true
-      - name: Cleanup Non-SemVer 'handbrake-web' Packages
-        uses: actions/delete-package-versions@v5
-        with:
-          package-name: 'handbrake-web'
-          package-type: 'container'
-          min-versions-to-keep: 0
-          ignore-versions: '^v\\d+\\.\\d+\\.\\d+$'
+          account: user
+          token: ${{ secrets.GITHUB_TOKEN }}
+          image-names: handbrake-web
+          tag-selection: tagged
+          image-tags: '!v*.*.*'
+          dryrun: true
