@@ -7,8 +7,8 @@ type Params = {
 	label: string;
 	presets: HandbrakePresetCategoryType;
 	allowRename?: boolean;
-	handleRenamePreset: (oldName: string, newName: string) => void;
-	handleRemovePreset: (preset: string) => void;
+	handleRenamePreset: (oldName: string, newName: string, category: string) => void;
+	handleRemovePreset: (preset: string, category: string) => void;
 };
 
 export default function PresetsList({

@@ -21,13 +21,13 @@ export default function PresetsSection() {
 		setShowUploadPreset(false);
 	};
 
-	const handleRenamePreset = (oldName: string, newName: string) => {
-		socket.emit('rename-preset', oldName, newName);
+	const handleRenamePreset = (oldName: string, newName: string, category: string) => {
+		socket.emit('rename-preset', oldName, newName, category);
 	};
 
-	const handleRemovePreset = (preset: string) => {
-		socket.emit('remove-preset', preset);
-		console.log(`[client] Requesting the server remove preset '${preset}'`);
+	const handleRemovePreset = (preset: string, category: string) => {
+		socket.emit('remove-preset', preset, category);
+		console.log(`[client] Requesting the server remove preset '${category}/${preset}'`);
 	};
 
 	return (
@@ -58,7 +58,7 @@ export default function PresetsSection() {
 			{showUploadPreset && (
 				<UploadPreset
 					socket={socket}
-					presets={Object.keys(presets).sort()}
+					presets={presets}
 					handleClose={handleCloseUploadPreset}
 				/>
 			)}
