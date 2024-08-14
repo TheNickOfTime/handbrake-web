@@ -8,11 +8,9 @@ import PresetsList from './sub-sections/presets-list';
 import './presets.scss';
 
 export default function PresetsSection() {
-	const { presets, socket } = useOutletContext<PrimaryOutletContextType>();
+	const { presets, defaultPresets, socket } = useOutletContext<PrimaryOutletContextType>();
 
 	const [showUploadPreset, setShowUploadPreset] = useState(false);
-
-	const showPresetList = Object.keys(presets).length > 0;
 
 	const handleOpenUploadPreset = () => {
 		setShowUploadPreset(true);
@@ -38,13 +36,19 @@ export default function PresetsSection() {
 			className={showUploadPreset ? 'no-scroll-y' : undefined}
 		>
 			<PresetsButtons presets={presets} handleOpenUploadPreset={handleOpenUploadPreset} />
-			{showPresetList && (
-				<PresetsList
-					presets={presets}
-					handleRenamePreset={handleRenamePreset}
-					handleRemovePreset={handleRemovePreset}
-				/>
-			)}
+			<PresetsList
+				label='Presets'
+				presets={presets}
+				allowRename={true}
+				handleRenamePreset={handleRenamePreset}
+				handleRemovePreset={handleRemovePreset}
+			/>
+			<PresetsList
+				label='Default Presets'
+				presets={defaultPresets}
+				handleRenamePreset={handleRenamePreset}
+				handleRemovePreset={handleRemovePreset}
+			/>
 			{showUploadPreset && (
 				<UploadPreset
 					socket={socket}

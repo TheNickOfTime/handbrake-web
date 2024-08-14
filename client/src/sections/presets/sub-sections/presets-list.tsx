@@ -1,30 +1,42 @@
-import { HandbrakePresetListType } from 'types/preset';
+import { HandbrakePresetCategoryType } from 'types/preset';
+import { getPresetCount } from 'funcs/preset.funcs';
 import SubSection from 'components/section/sub-section';
-import PresetCard from 'components/cards/preset-card/preset-card';
-import './presets-list.scss';
+import PresetListCategory from './presets-list-category';
 
 type Params = {
-	presets: HandbrakePresetListType;
+	label: string;
+	presets: HandbrakePresetCategoryType;
+	allowRename?: boolean;
 	handleRenamePreset: (oldName: string, newName: string) => void;
 	handleRemovePreset: (preset: string) => void;
 };
 
-export default function PresetsList({ presets, handleRenamePreset, handleRemovePreset }: Params) {
+export default function PresetsList({
+	label,
+	presets,
+	allowRename = false,
+	handleRenamePreset,
+	handleRemovePreset,
+}: Params) {
+	if (getPresetCount(presets) == 0) return;
+
 	return (
-		<SubSection title='List' id='list'>
+		<SubSection title={label} id='list'>
 			{Object.keys(presets)
-				.sort((a, b) => (a.toLowerCase() > b.toLowerCase() ? 1 : -1))
-				.map((key) => {
-					const preset = presets[key];
-					return (
-						<PresetCard
-							preset={preset}
-							handleRenamePreset={handleRenamePreset}
-							handleRemovePreset={handleRemovePreset}
-							key={key}
-						/>
-					);
-				})}
+				.sort((a, b) =>
+					a.toLowerCase() > b.toLowerCase() || a == 'uncategorized' ? 1 : -1
+				)
+				.filter((categoryName) => Object.keys(presets[categoryName]).length != 0)
+				.map((categoryName) => (
+					<PresetListCategory
+						category={categoryName}
+						presets={presets[categoryName]}
+						allowRename={allowRename}
+						handleRenamePreset={handleRenamePreset}
+						handleRemovePreset={handleRemovePreset}
+						key={`preset-list-category-${categoryName}`}
+					/>
+				))}
 		</SubSection>
 	);
 }
