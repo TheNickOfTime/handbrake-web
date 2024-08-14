@@ -153,16 +153,16 @@ export default function ClientSocket(io: Server) {
 		);
 
 		// Preset ----------------------------------------------------------------------------------
-		socket.on('add-preset', (preset: HandbrakePresetType) => {
-			AddPreset(preset);
+		socket.on('add-preset', (preset: HandbrakePresetType, category: string) => {
+			AddPreset(preset, category);
 		});
 
-		socket.on('rename-preset', (oldName: string, newName: string) => {
-			RenamePreset(oldName, newName);
+		socket.on('remove-preset', (presetName: string, category: string) => {
+			RemovePreset(presetName, category);
 		});
 
-		socket.on('remove-preset', (presetName: string) => {
-			RemovePreset(presetName);
+		socket.on('rename-preset', (oldName: string, newName: string, category: string) => {
+			RenamePreset(oldName, newName, category);
 		});
 
 		// Watchers --------------------------------------------------------------------------------

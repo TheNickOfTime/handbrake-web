@@ -122,9 +122,19 @@ export async function LoadPresets() {
 	}
 }
 
-export async function WritePreset(fileName: string, preset: HandbrakePresetType) {
+export async function WritePreset(fileName: string, category: string, preset: HandbrakePresetType) {
 	try {
-		const presetPath = path.join(presetsPath, fileName + '.json');
+		const categoryPath = path.join(presetsPath, category);
+		try {
+			await access(categoryPath);
+		} catch {
+			await mkdir(categoryPath);
+			console.log(
+				`[server] [presets] Creating directory for category '${category}' at '${categoryPath}'.`
+			);
+		}
+
+		const presetPath = path.join(categoryPath, fileName + '.json');
 		const presetData = JSON.stringify(preset, null, 2);
 		await writeFile(presetPath, presetData);
 		console.log(`[server] [presets] Wrote preset '${fileName}' to '${presetPath}'.`);
@@ -142,11 +152,19 @@ export function GetPresets() {
 	return presets;
 }
 
-export async function AddPreset(newPreset: HandbrakePresetType) {
+export function GetDefaultPresets() {
+	return defaultPresets;
+}
+
+export async function AddPreset(newPreset: HandbrakePresetType, category: string) {
 	try {
+		if (!presets[category]) {
+			presets[category] = {};
+		}
+
 		const saveAs = newPreset.PresetList[0].PresetName;
-		presets[saveAs] = newPreset;
-		await WritePreset(saveAs, newPreset);
+		presets[category][saveAs] = newPreset;
+		await WritePreset(saveAs, category, newPreset);
 
 		console.log(`[server] [presets] Adding preset '${newPreset.PresetList[0].PresetName}'.`);
 		EmitToAllClients('presets-update', presets);
@@ -158,10 +176,11 @@ export async function AddPreset(newPreset: HandbrakePresetType) {
 	}
 }
 
-export async function RemovePreset(presetName: string) {
+export async function RemovePreset(presetName: string, category: string) {
 	try {
-		delete presets[presetName];
-		await rm(path.join(presetsPath, presetName + '.json'));
+		await rm(path.join(presetsPath, category, presetName + '.json'));
+
+		delete presets[category][presetName];
 
 		console.log(`[server] [presets] Preset '${presetName}' has been removed.`);
 		EmitToAllClients('presets-update', presets);
@@ -171,14 +190,24 @@ export async function RemovePreset(presetName: string) {
 	}
 }
 
-export async function RenamePreset(oldName: string, newName: string) {
+export async function RenamePreset(oldName: string, newName: string, category: string) {
 	try {
-		presets[newName] = presets[oldName];
-		presets[newName].PresetList[0].PresetName = newName;
-		delete presets[oldName];
-		const oldPath = path.join(presetsPath, oldName + '.json');
-		const newPath = path.join(presetsPath, newName + '.json');
-		await rename(oldPath, newPath);
+		presets[category][newName] = presets[category][oldName];
+		presets[category][newName].PresetList[0].PresetName = newName;
+		delete presets[category][oldName];
+
+		const oldPath = path.join(
+			presetsPath,
+			category != 'uncategorized' ? category : '',
+			oldName + '.json'
+		);
+		const newPath = path.join(
+			presetsPath,
+			category != 'uncategorized' ? category : '',
+			newName + '.json'
+		);
+		await rm(oldPath);
+		await writeFile(newPath, JSON.stringify(presets[category][newName], null, 2));
 
 		console.log(
 			`[server] [presets] The preset '${oldName}' has been renamed to '${newName}' at the path '${newPath}'`
