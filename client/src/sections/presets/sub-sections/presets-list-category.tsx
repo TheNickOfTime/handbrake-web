@@ -24,7 +24,9 @@ export default function PresetListCategory({
 		<div className='category-list'>
 			<div className='category-list-header' onClick={() => setIsExpanded(!isExpanded)}>
 				<i className={`bi ${isExpanded ? 'bi-folder2-open' : 'bi-folder2'}`} />
-				<span>{FirstLetterUpperCase(category)}</span>
+				<span>{`${FirstLetterUpperCase(category)}${
+					isExpanded ? '' : ` (${Object.keys(presets).length})`
+				}`}</span>
 				<i className={`bi ${isExpanded ? 'bi-caret-down-fill' : 'bi-caret-up-fill'}`} />
 			</div>
 			{isExpanded && (
