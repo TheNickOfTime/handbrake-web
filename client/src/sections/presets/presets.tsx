@@ -8,7 +8,8 @@ import PresetsList from './sub-sections/presets-list';
 import './presets.scss';
 
 export default function PresetsSection() {
-	const { presets, defaultPresets, socket } = useOutletContext<PrimaryOutletContextType>();
+	const { config, presets, defaultPresets, socket } =
+		useOutletContext<PrimaryOutletContextType>();
 
 	const [showUploadPreset, setShowUploadPreset] = useState(false);
 
@@ -43,12 +44,14 @@ export default function PresetsSection() {
 				handleRenamePreset={handleRenamePreset}
 				handleRemovePreset={handleRemovePreset}
 			/>
-			<PresetsList
-				label='Default Presets'
-				presets={defaultPresets}
-				handleRenamePreset={handleRenamePreset}
-				handleRemovePreset={handleRemovePreset}
-			/>
+			{config.presets['show-default-presets'] && (
+				<PresetsList
+					label='Default Presets'
+					presets={defaultPresets}
+					handleRenamePreset={handleRenamePreset}
+					handleRemovePreset={handleRemovePreset}
+				/>
+			)}
 			{showUploadPreset && (
 				<UploadPreset
 					socket={socket}

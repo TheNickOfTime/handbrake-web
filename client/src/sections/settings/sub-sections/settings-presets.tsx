@@ -22,7 +22,6 @@ export default function SettingsPreset({ config, setConfig }: Params) {
 				label='Show Default Presets'
 				value={config.presets['show-default-presets']}
 				onChange={(value) => updatePresetsConfigProperty('show-default-presets', value)}
-				disabled
 			/>
 			<ToggleInput
 				id='preset-creator-toggle'
