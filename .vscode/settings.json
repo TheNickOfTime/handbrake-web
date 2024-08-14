@@ -1,11 +1,11 @@
 {
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"editor.detectIndentation": false,
-	"editor.insertSpaces": false,
-	"editor.formatOnSave": true,
-	"editor.rulers": [100],
-	"editor.tabSize": 4,
-	"typescript.locale": "en",
-	"typescript.preferences.useAliasesForRenames": false,
-	"typescript.validate.enable": true
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.detectIndentation": true,
+  "editor.insertSpaces": false,
+  "editor.formatOnSave": true,
+  "editor.rulers": [100],
+  "editor.tabSize": 4,
+  "typescript.locale": "en",
+  "typescript.preferences.useAliasesForRenames": false,
+  "typescript.validate.enable": true
 }

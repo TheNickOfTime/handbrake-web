@@ -6,10 +6,10 @@
 	"printWidth": 100,
 	"overrides": [
 		{
-			"files": ["*.yaml", "*.yml"],
+			"files": ["*.json", "*.yaml", "*.yml"],
 			"options": {
 				"tabWidth": 2,
-				"useTabs": true
+				"useTabs": false
 			}
 		},
 		{
