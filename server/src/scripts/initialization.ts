@@ -1,7 +1,6 @@
 // import { Server } from 'socket.io';
 import { Server } from 'http';
-import { ReadDataFromFile } from './data';
-import { LoadPresets } from './presets';
+import { LoadDefaultPresets, LoadPresets } from './presets';
 import { InitializeQueue } from './queue';
 import { DatabaseConnect } from './database/database';
 import { InitializeWatchers } from './watcher';
@@ -12,6 +11,7 @@ export default async function Initialization(server: Server) {
 	await LoadConfig();
 
 	// Presets -------------------------------------------------------------------------------------
+	await LoadDefaultPresets();
 	await LoadPresets();
 
 	// Database ------------------------------------------------------------------------------------

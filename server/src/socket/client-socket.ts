@@ -11,7 +11,13 @@ import { QueueRequestType } from 'types/queue';
 import { Socket as Client } from 'socket.io';
 import { AddClient, EmitToAllClients, RemoveClient } from 'scripts/connections';
 import { CheckFilenameCollision, GetDirectoryItems, MakeDirectory } from 'scripts/files';
-import { AddPreset, GetPresets, RemovePreset, RenamePreset } from 'scripts/presets';
+import {
+	AddPreset,
+	GetDefaultPresets,
+	GetPresets,
+	RemovePreset,
+	RenamePreset,
+} from 'scripts/presets';
 import {
 	AddJob,
 	ClearQueue,
@@ -50,6 +56,7 @@ const initClient = (socket: Client) => {
 	socket.emit('config-update', GetConfig());
 	socket.emit('queue-update', queue);
 	socket.emit('presets-update', GetPresets());
+	socket.emit('default-presets-update', GetDefaultPresets());
 	socket.emit('queue-status-update', GetQueueStatus());
 	socket.emit('watchers-update', GetWatchersFromDatabase());
 };

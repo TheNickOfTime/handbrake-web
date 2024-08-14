@@ -1,11 +1,101 @@
 import { access, mkdir, readdir, readFile, writeFile, rename, rm } from 'fs/promises';
 import path from 'path';
-import { HandbrakePresetType, HandbrakePresetListType } from 'types/preset';
+import {
+	HandbrakePresetType,
+	HandbrakePresetCategoryType,
+	HandbrakeDefaultPresetsType,
+	HandbrakePresetListType,
+} from 'types/preset';
+import { getPresetCount } from 'funcs/preset.funcs';
 import { EmitToAllClients } from './connections';
-import { WriteDataToFile, dataPath } from './data';
+import { dataPath } from './data';
+import { json } from 'express';
 
+const defaultPresetsPath = path.resolve('src/template/default-presets.json');
 export const presetsPath = path.join(dataPath, '/presets');
-let presets: HandbrakePresetListType = {};
+
+let presets: HandbrakePresetCategoryType = {};
+let defaultPresets: HandbrakePresetCategoryType = {};
+
+const presetFileToPresetObject = async (path: string) => {
+	const presetData = await readFile(path, { encoding: 'utf-8' });
+	const presetObject: HandbrakePresetType = JSON.parse(presetData);
+
+	return presetObject;
+};
+
+const presetFilesToPresetObject = async (presetPath: string) => {
+	const newObject: HandbrakePresetCategoryType = {
+		uncategorized: {},
+	};
+	const files = await readdir(presetPath, {
+		encoding: 'utf-8',
+		withFileTypes: true,
+	});
+
+	for (let dir of files) {
+		if (dir.isDirectory()) {
+			newObject[dir.name] = {};
+			const categoryPath = path.join(dir.path, dir.name);
+			const categoryFiles = await readdir(categoryPath, {
+				encoding: 'utf-8',
+				withFileTypes: true,
+			});
+
+			const presetFiles = categoryFiles.filter((file) => file.isFile);
+			for (let preset of presetFiles) {
+				const presetPath = path.join(preset.path, preset.name);
+				const presetData = await presetFileToPresetObject(presetPath);
+				newObject[dir.name][path.parse(preset.name).name] = presetData;
+			}
+		} else {
+			const presetPath = path.join(dir.path, dir.name);
+			const uncategorizedPreset = await presetFileToPresetObject(presetPath);
+			newObject.uncategorized[dir.name] = uncategorizedPreset;
+		}
+	}
+
+	return newObject;
+};
+
+const defaultPresetsFileToPresetObject = async () => {
+	const newObject: HandbrakePresetCategoryType = {};
+
+	const defaultPresetsData: HandbrakeDefaultPresetsType = JSON.parse(
+		await readFile(defaultPresetsPath, { encoding: 'utf-8' })
+	);
+
+	for (let category of defaultPresetsData.PresetList) {
+		const categoryName = category.PresetName;
+		newObject[categoryName] = {};
+
+		for (let preset of category.ChildrenArray) {
+			const presetName = preset.PresetName;
+			const presetData: HandbrakePresetType = {
+				PresetList: [preset],
+				VersionMajor: defaultPresetsData.VersionMajor,
+				VersionMicro: defaultPresetsData.VersionMicro,
+				VersionMinor: defaultPresetsData.VersionMinor,
+			};
+			newObject[categoryName][presetName] = presetData;
+		}
+	}
+
+	return newObject;
+};
+
+export async function LoadDefaultPresets() {
+	try {
+		defaultPresets = await defaultPresetsFileToPresetObject();
+		console.log(
+			`[server] [presets] Default presets have been loaded from '${defaultPresetsPath}'.`
+		);
+	} catch (error) {
+		console.log(
+			`[server] [presets] [error] Could not load the default presets from '${defaultPresetsPath}'.`
+		);
+	}
+}
 
 export async function LoadPresets() {
 	try {
@@ -18,17 +108,11 @@ export async function LoadPresets() {
 			await mkdir(presetsPath);
 		}
 
-		const presetFiles = await readdir(presetsPath, { encoding: 'utf-8', recursive: false });
-		for (let presetFile of presetFiles) {
-			const presetData = await readFile(path.join(presetsPath, presetFile), {
-				encoding: 'utf-8',
-			});
-			const preset = JSON.parse(presetData) as HandbrakePresetType;
-			const presetName = preset.PresetList[0].PresetName;
-			presets[presetName] = preset;
-		}
+		presets = await presetFilesToPresetObject(presetsPath);
 		console.log(
-			`[server] [presets] ${presetFiles.length} presets have been loaded from '${presetsPath}'.`
+			`[server] [presets] ${getPresetCount(
+				presets
+			)} presets have been loaded from '${presetsPath}'.`
 		);
 	} catch (error) {
 		console.error(
