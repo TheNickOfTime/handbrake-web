@@ -1,3 +1,4 @@
+import { EndWithColon } from 'funcs/string.funcs';
 import './text-input.scss';
 
 type Params = {
@@ -36,7 +37,7 @@ export default function TextInput({
 
 	return (
 		<div className='text-input'>
-			{label && <label htmlFor={id}>{label.trimEnd()}</label>}
+			{label && <label htmlFor={id}>{EndWithColon(label)}</label>}
 			<input
 				className='form-item'
 				id={id}
