@@ -183,7 +183,7 @@ export function InsertJobToJobsDataTable(id: string, request: QueueRequestType) 
 
 		const dataStatement = database.prepare<JobsDataTableType>(
 			'INSERT INTO jobs_data(job_id, input_path, output_path, preset_category, preset_id) \
-			VALUES($job_id, $input_path, $output_path, $preset_category $preset_id)'
+			VALUES($job_id, $input_path, $output_path, $preset_category, $preset_id)'
 		);
 		dataStatement.run({
 			job_id: id,
