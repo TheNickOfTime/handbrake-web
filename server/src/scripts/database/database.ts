@@ -67,8 +67,12 @@ async function CheckDatabaseVersion(databaseExists: boolean) {
 				DatabaseMigrations(currentVersion);
 			} else if (currentVersion > databaseVersion) {
 				console.error(
-					`[server] [database] [error] The database's version is greater than the application's target version. The database cannot be downgraded and therefore cannot be loaded.`
+					`[server] [database] [error] The database's version (${currentVersion}) is greater than the application's target version (${databaseVersion}). The database cannot be downgraded and therefore cannot be loaded.`
 				);
+				console.error(
+					`[server] [database] [error] Please attempt recovery by copying a previous version of the database (${databaseVersion} or lower) from '${dataPath}/backups' to '${databasePath}'.`
+				);
+				process.exit();
 			}
 		} catch {
 			await DatabaseBackup(`database-version-0-backup`);
