@@ -152,8 +152,16 @@ export function GetPresets() {
 	return presets;
 }
 
+export function GetPresetByName(category: string, preset: string) {
+	return presets[category][preset];
+}
+
 export function GetDefaultPresets() {
 	return defaultPresets;
+}
+
+export function GetDefaultPresetByName(category: string, preset: string) {
+	return defaultPresets[category][preset];
 }
 
 export async function AddPreset(newPreset: HandbrakePresetType, category: string) {
