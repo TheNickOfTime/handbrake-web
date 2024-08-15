@@ -18,6 +18,7 @@ import {
 	RequestDirectory,
 } from './create-job-funcs';
 import './create-job.scss';
+import { FirstLetterUpperCase } from 'funcs/string.funcs';
 
 type Params = {
 	onClose: () => void;
@@ -29,7 +30,8 @@ enum JobFrom {
 }
 
 export default function CreateJob({ onClose }: Params) {
-	const { presets, socket, config } = useOutletContext<PrimaryOutletContextType>();
+	const { presets, defaultPresets, socket, config } =
+		useOutletContext<PrimaryOutletContextType>();
 	const [extensions] = useState<string[]>(Object.values(HandbrakeOutputExtensions));
 	const [jobFrom, setJobFrom] = useState(JobFrom.FromFile);
 
@@ -47,7 +49,9 @@ export default function CreateJob({ onClose }: Params) {
 	const [allowCollision, setAllowCollision] = useState(false);
 
 	// Preset ------------------------------------------------------------------
+	const [presetCategory, setPresetCategory] = useState('');
 	const [preset, setPreset] = useState('');
+	const [isDefaultPreset, setIsDefaultPreset] = useState(false);
 
 	// Results -----------------------------------------------------------------
 	const [seeMore, setSeeMore] = useState(false);
@@ -88,9 +92,10 @@ export default function CreateJob({ onClose }: Params) {
 			const newJob: QueueRequestType = {
 				input: file.path,
 				output: outputFile.path,
+				category: presetCategory,
 				preset: preset,
 			};
-			socket.emit('add-to-queue', newJob);
+			socket.emit('add-job', newJob);
 			console.log(`[client] New job sent to the server.\n${newJob}`);
 		});
 
@@ -266,6 +271,10 @@ export default function CreateJob({ onClose }: Params) {
 		}
 	};
 
+	const handlePresetCategoryChange = (category: string) => {
+		setIsDefaultPreset(category.includes('Default: '));
+	};
+
 	const handleSeeMore = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		event.preventDefault();
 		setSeeMore(!seeMore);
@@ -383,17 +392,58 @@ export default function CreateJob({ onClose }: Params) {
 				<fieldset>
 					<legend>Preset</legend>
 					<SelectInput
+						id='preset-category-select'
+						label='Preset Category'
+						value={presetCategory}
+						setValue={setPresetCategory}
+						onChange={handlePresetCategoryChange}
+					>
+						<option value=''>N/A</option>
+						{Object.keys(presets)
+							.filter((category) => Object.keys(presets[category]).length)
+							.sort((a, b) =>
+								a == 'uncategorized' || a.toLowerCase() > b.toLowerCase() ? 1 : -1
+							)
+							.map((category) => (
+								<option value={category} key={`preset-category-${category}`}>
+									{category == 'uncategorized'
+										? FirstLetterUpperCase(category)
+										: category}
+								</option>
+							))}
+						{config.presets['show-default-presets'] &&
+							Object.keys(defaultPresets).map((category) => (
+								<option
+									value={`Default: ${category}`}
+									key={`default-preset-category-${category}`}
+								>
+									Default: {category}
+								</option>
+							))}
+					</SelectInput>
+					<SelectInput
 						id='preset-select'
 						label='Selected Preset: '
 						value={preset}
 						setValue={setPreset}
 					>
 						<option value=''>N/A</option>
-						{Object.keys(presets).map((preset) => (
-							<option value={preset} key={preset}>
-								{preset}
-							</option>
-						))}
+						{isDefaultPreset &&
+							defaultPresets[presetCategory.replace(/^Default:\s/, '')] &&
+							Object.keys(
+								defaultPresets[presetCategory.replace(/^Default:\s/, '')]
+							).map((preset) => (
+								<option value={preset} key={`preset-${preset}`}>
+									{preset}
+								</option>
+							))}
+						{!isDefaultPreset &&
+							presets[presetCategory] &&
+							Object.keys(presets[presetCategory]).map((preset) => (
+								<option value={preset} key={`preset-${preset}`}>
+									{preset}
+								</option>
+							))}
 					</SelectInput>
 				</fieldset>
 				{inputFiles.length > 0 && outputFiles.length > 0 && (
