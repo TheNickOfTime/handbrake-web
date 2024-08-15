@@ -1,6 +1,6 @@
-import { createServer } from 'http';
+import { createServer, Server } from 'http';
 import express from 'express';
-import { Server } from 'socket.io';
+import { Server as SocketServer } from 'socket.io';
 import 'dotenv/config';
 import cors from 'cors';
 
@@ -13,10 +13,11 @@ import Shutdown from 'scripts/shutdown';
 // Server ------------------------------------------------------------------------------------------
 const app = express();
 const server = createServer(app);
-const io = new Server(server, {
+const socket = new SocketServer(server, {
 	cors: {
 		origin: '*',
 	},
+	pingTimeout: 5000,
 });
 
 app.use(cors());
@@ -30,9 +31,9 @@ console.log(`[server] [env] The video path is '${process.env.VIDEO_PATH}'.`);
 ClientRoutes(app);
 
 // Socket Listeners --------------------------------------------------------------------------------
-ClientSocket(io);
-WorkerSocket(io);
+ClientSocket(socket);
+WorkerSocket(socket);
 
 // Initialization & Shutdown -----------------------------------------------------------------------
-Initialization(server);
-Shutdown();
+Initialization(server, socket);
+Shutdown(socket);
