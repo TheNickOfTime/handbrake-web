@@ -47,6 +47,7 @@ export default function PresetsSection() {
 			<PresetsList
 				label='Presets'
 				presets={presets}
+				collapsed={false}
 				allowRename={true}
 				handleRenamePreset={handleRenamePreset}
 				handleRemovePreset={handleRemovePreset}

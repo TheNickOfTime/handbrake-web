@@ -6,6 +6,7 @@ import { HandbrakePresetListType } from 'types/preset';
 type Params = {
 	category: string;
 	presets: HandbrakePresetListType;
+	collapsed: boolean;
 	allowRename: boolean;
 	handleRenamePreset: (oldName: string, newName: string, category: string) => void;
 	handleRemovePreset: (preset: string, category: string) => void;
@@ -14,11 +15,12 @@ type Params = {
 export default function PresetListCategory({
 	category,
 	presets,
+	collapsed,
 	allowRename,
 	handleRenamePreset,
 	handleRemovePreset,
 }: Params) {
-	const [isExpanded, setIsExpanded] = useState(true);
+	const [isExpanded, setIsExpanded] = useState(!collapsed);
 
 	return (
 		<div className='category-list'>

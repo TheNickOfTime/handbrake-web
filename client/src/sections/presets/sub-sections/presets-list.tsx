@@ -6,6 +6,7 @@ import PresetListCategory from './presets-list-category';
 type Params = {
 	label: string;
 	presets: HandbrakePresetCategoryType;
+	collapsed?: boolean;
 	allowRename?: boolean;
 	handleRenamePreset: (oldName: string, newName: string, category: string) => void;
 	handleRemovePreset: (preset: string, category: string) => void;
@@ -14,6 +15,7 @@ type Params = {
 export default function PresetsList({
 	label,
 	presets,
+	collapsed = true,
 	allowRename = false,
 	handleRenamePreset,
 	handleRemovePreset,
@@ -31,6 +33,7 @@ export default function PresetsList({
 					<PresetListCategory
 						category={categoryName}
 						presets={presets[categoryName]}
+						collapsed={collapsed}
 						allowRename={allowRename}
 						handleRenamePreset={handleRenamePreset}
 						handleRemovePreset={handleRemovePreset}
