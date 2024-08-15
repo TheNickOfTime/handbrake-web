@@ -78,14 +78,6 @@ export default function ClientSocket(io: Server) {
 		});
 
 		// Queue -----------------------------------------------------------------------------------
-		socket.on('add-to-queue', (data: QueueRequestType) => {
-			console.log(
-				`[server] Client '${socket.id}' has requested to add a job for '${data.input}' to the queue.`
-			);
-			// console.log(data);
-			AddJob(data);
-		});
-
 		socket.on('start-queue', () => {
 			StartQueue(socket.id);
 		});
@@ -99,6 +91,13 @@ export default function ClientSocket(io: Server) {
 		});
 
 		// Jobs ------------------------------------------------------------------------------------
+		socket.on('add-job', (data: QueueRequestType) => {
+			console.log(
+				`[server] Client '${socket.id}' has requested to add a job for '${data.input}' to the queue.`
+			);
+			AddJob(data);
+		});
+
 		socket.on('stop-job', (id: string) => {
 			StopJob(id);
 		});
@@ -174,6 +173,7 @@ export default function ClientSocket(io: Server) {
 		);
 
 		socket.on('add-watcher', (watcher: WatcherDefinitionType) => {
+			console.log(watcher);
 			AddWatcher(watcher);
 		});
 
