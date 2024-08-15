@@ -44,6 +44,17 @@ export async function DatabaseConnect() {
 	}
 }
 
+export async function DatabaseDisconnect() {
+	try {
+		database.pragma('wal_checkpoint(full)');
+		database.close();
+		console.log(`[server] [database] The database has been disconnected.`);
+	} catch (error) {
+		console.error(`[server] [database] [error] Could not disconnect the database.`);
+		console.error(error);
+	}
+}
+
 async function CheckDatabaseVersion(databaseExists: boolean) {
 	const createVersionTableStatement = database.prepare(
 		'CREATE TABLE IF NOT EXISTS database_version(version INT NOT NULL PRIMARY KEY)'
