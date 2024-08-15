@@ -11,7 +11,13 @@ import { QueueRequestType } from 'types/queue';
 import { Socket as Client } from 'socket.io';
 import { AddClient, EmitToAllClients, RemoveClient } from 'scripts/connections';
 import { CheckFilenameCollision, GetDirectoryItems, MakeDirectory } from 'scripts/files';
-import { AddPreset, GetPresets, RemovePreset, RenamePreset } from 'scripts/presets';
+import {
+	AddPreset,
+	GetDefaultPresets,
+	GetPresets,
+	RemovePreset,
+	RenamePreset,
+} from 'scripts/presets';
 import {
 	AddJob,
 	ClearQueue,
@@ -50,6 +56,7 @@ const initClient = (socket: Client) => {
 	socket.emit('config-update', GetConfig());
 	socket.emit('queue-update', queue);
 	socket.emit('presets-update', GetPresets());
+	socket.emit('default-presets-update', GetDefaultPresets());
 	socket.emit('queue-status-update', GetQueueStatus());
 	socket.emit('watchers-update', GetWatchersFromDatabase());
 };
@@ -71,14 +78,6 @@ export default function ClientSocket(io: Server) {
 		});
 
 		// Queue -----------------------------------------------------------------------------------
-		socket.on('add-to-queue', (data: QueueRequestType) => {
-			console.log(
-				`[server] Client '${socket.id}' has requested to add a job for '${data.input}' to the queue.`
-			);
-			// console.log(data);
-			AddJob(data);
-		});
-
 		socket.on('start-queue', () => {
 			StartQueue(socket.id);
 		});
@@ -92,6 +91,13 @@ export default function ClientSocket(io: Server) {
 		});
 
 		// Jobs ------------------------------------------------------------------------------------
+		socket.on('add-job', (data: QueueRequestType) => {
+			console.log(
+				`[server] Client '${socket.id}' has requested to add a job for '${data.input}' to the queue.`
+			);
+			AddJob(data);
+		});
+
 		socket.on('stop-job', (id: string) => {
 			StopJob(id);
 		});
@@ -146,16 +152,16 @@ export default function ClientSocket(io: Server) {
 		);
 
 		// Preset ----------------------------------------------------------------------------------
-		socket.on('add-preset', (preset: HandbrakePresetType) => {
-			AddPreset(preset);
+		socket.on('add-preset', (preset: HandbrakePresetType, category: string) => {
+			AddPreset(preset, category);
 		});
 
-		socket.on('rename-preset', (oldName: string, newName: string) => {
-			RenamePreset(oldName, newName);
+		socket.on('remove-preset', (presetName: string, category: string) => {
+			RemovePreset(presetName, category);
 		});
 
-		socket.on('remove-preset', (presetName: string) => {
-			RemovePreset(presetName);
+		socket.on('rename-preset', (oldName: string, newName: string, category: string) => {
+			RenamePreset(oldName, newName, category);
 		});
 
 		// Watchers --------------------------------------------------------------------------------
@@ -167,6 +173,7 @@ export default function ClientSocket(io: Server) {
 		);
 
 		socket.on('add-watcher', (watcher: WatcherDefinitionType) => {
+			console.log(watcher);
 			AddWatcher(watcher);
 		});
 

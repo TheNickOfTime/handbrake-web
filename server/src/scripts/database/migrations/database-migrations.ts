@@ -1,7 +1,7 @@
 import { Database } from 'better-sqlite3';
 import { database, databaseVersion } from '../database';
 import DatabaseMigration0 from './database-migration-0';
-// import DatabaseMigration1 from './database-migration-1';
+import DatabaseMigration1 from './database-migration-1';
 
 export default function DatabaseMigrations(version: number) {
 	try {
@@ -28,9 +28,9 @@ function RunDatabaseMigration(version: number) {
 		case 0:
 			DatabaseMigration0(database);
 			break;
-		// case 1:
-		// 	DatabaseMigration1(database);
-		// 	break;
+		case 1:
+			DatabaseMigration1(database);
+			break;
 	}
 
 	const upgradeVersionStatement = database.prepare<{ version: number }>(

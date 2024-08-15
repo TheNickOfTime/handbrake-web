@@ -3,17 +3,18 @@ import { HandbrakePresetType } from 'types/preset';
 import ButtonInput from 'components/base/inputs/button/button-input';
 import PresetCardSummary from './tabs/summary/preset-card-summary';
 import PresetCardDimensions from './tabs/dimensions/preset-card-dimensions';
-import './preset-card.scss';
 import PresetCardFilters from './tabs/filters/preset-card-filters';
 import PresetCardVideo from './tabs/video/preset-card-video';
 import PresetCardAudio from './tabs/audio/preset-card-audio';
 import PresetCardSubtitles from './tabs/subtitles/preset-card-subtitles';
 import PresetCardChapters from './tabs/chapters/preset-card-chapters';
+import './preset-card.scss';
 
 type Params = {
 	preset: HandbrakePresetType;
-	handleRenamePreset: (oldName: string, newName: string) => void;
-	handleRemovePreset: (preset: string) => void;
+	category: string;
+	handleRenamePreset?: (oldName: string, newName: string, category: string) => void;
+	handleRemovePreset: (preset: string, category: string) => void;
 };
 
 enum PresetTabs {
@@ -26,7 +27,12 @@ enum PresetTabs {
 	Chapters,
 }
 
-export default function PresetCard({ preset, handleRenamePreset, handleRemovePreset }: Params) {
+export default function PresetCard({
+	preset,
+	category,
+	handleRenamePreset,
+	handleRemovePreset,
+}: Params) {
 	const [currentTab, setCurrentTab] = useState(PresetTabs.Summary);
 	const [presetName, setPresetName] = useState(preset.PresetList[0].PresetName);
 
@@ -54,24 +60,27 @@ export default function PresetCard({ preset, handleRenamePreset, handleRemovePre
 	) => {
 		event.preventDefault();
 		if (presetName != preset.PresetList[0].PresetName) {
-			handleRenamePreset(preset.PresetList[0].PresetName, presetName);
+			handleRenamePreset!(preset.PresetList[0].PresetName, presetName, category);
 		}
 	};
 
 	return (
 		<div className='preset-card'>
 			<div className='preset-header'>
-				{/* <h3 className='preset-label'>{presetData.PresetName}</h3> */}
-				<form className='header-label-form' onSubmit={handleRenameInputSubmit}>
-					<input
-						type='text'
-						className='header-label-input'
-						value={presetName}
-						onChange={(event) => setPresetName(event.target.value)}
-						onBlur={handleRenameInputSubmit}
-						// onSubmit={handleRenameInputSubmit}
-					/>
-				</form>
+				{handleRenamePreset ? (
+					<form className='header-label-form' onSubmit={handleRenameInputSubmit}>
+						<input
+							type='text'
+							className='header-label-input'
+							value={presetName}
+							onChange={(event) => setPresetName(event.target.value)}
+							onBlur={handleRenameInputSubmit}
+							// onSubmit={handleRenameInputSubmit}
+						/>
+					</form>
+				) : (
+					<h3 className='preset-label'>{presetName}</h3>
+				)}
 				<div className='preset-buttons'>
 					{/* <ButtonInput
 						icon='bi-pencil-square'
@@ -88,7 +97,7 @@ export default function PresetCard({ preset, handleRenamePreset, handleRemovePre
 						icon='bi-trash-fill'
 						color='red'
 						title='Remove Preset'
-						onClick={() => handleRemovePreset(presetData.PresetName)}
+						onClick={() => handleRemovePreset(presetData.PresetName, category)}
 					/>
 				</div>
 			</div>

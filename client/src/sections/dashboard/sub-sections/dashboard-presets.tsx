@@ -1,10 +1,12 @@
 import { NavLink } from 'react-router-dom';
-import { HandbrakePresetListType } from 'types/preset';
+import { HandbrakePresetCategoryType } from 'types/preset';
 import SubSection from 'components/section/sub-section';
 import './dashboard-presets.scss';
+import { FirstLetterUpperCase } from 'funcs/string.funcs';
+import { PresetEncoderDict, PresetFormatDict } from 'dict/presets.dict';
 
 type Params = {
-	presets: HandbrakePresetListType;
+	presets: HandbrakePresetCategoryType;
 };
 
 export default function DashboardPresets({ presets }: Params) {
@@ -19,6 +21,7 @@ export default function DashboardPresets({ presets }: Params) {
 				<table>
 					<thead>
 						<tr>
+							<th>Category</th>
 							<th>Name</th>
 							<th>Format</th>
 							<th>Resolution</th>
@@ -26,18 +29,25 @@ export default function DashboardPresets({ presets }: Params) {
 						</tr>
 					</thead>
 					<tbody>
-						{Object.values(presets).map((preset) => {
-							const info = preset.PresetList[0];
-							const resolution = `${info.PictureWidth}x${info.PictureHeight}`;
+						{Object.keys(presets).map((category) => {
+							return Object.values(presets[category]).map((preset) => {
+								const info = preset.PresetList[0];
+								const resolution = `${info.PictureWidth}x${info.PictureHeight}`;
 
-							return (
-								<tr key={`preset-${info.PresetName}`}>
-									<td>{info.PresetName}</td>
-									<td className='center'>{info.FileFormat}</td>
-									<td className='center'>{resolution}</td>
-									<td className='center'>{info.VideoEncoder}</td>
-								</tr>
-							);
+								return (
+									<tr key={`preset-${info.PresetName}`}>
+										<td className='center'>{FirstLetterUpperCase(category)}</td>
+										<td className='center'>{info.PresetName}</td>
+										<td className='center'>
+											{PresetFormatDict[info.FileFormat]}
+										</td>
+										<td className='center'>{resolution}</td>
+										<td className='center'>
+											{PresetEncoderDict[info.VideoEncoder]}
+										</td>
+									</tr>
+								);
+							});
 						})}
 					</tbody>
 				</table>

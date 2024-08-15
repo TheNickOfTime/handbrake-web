@@ -36,8 +36,6 @@ export default function WatchersSection() {
 
 	const watcherIDs = Object.keys(watchers).map((id) => parseInt(id));
 
-	console.log(watchers);
-
 	return (
 		<Section title='Watchers' id='watchers'>
 			<SubSection id='watchers-status'>

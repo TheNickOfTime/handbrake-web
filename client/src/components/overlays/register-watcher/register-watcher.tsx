@@ -9,17 +9,21 @@ import SelectInput from 'components/base/inputs/select/select-input';
 import SectionOverlay from 'components/section/section-overlay';
 import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import './register-watcher.scss';
+import { FirstLetterUpperCase } from 'funcs/string.funcs';
 
 type Params = {
 	onClose: () => void;
 };
 
 export default function RegisterWatcher({ onClose }: Params) {
-	const { config, presets, socket } = useOutletContext<PrimaryOutletContextType>();
+	const { config, presets, defaultPresets, socket } =
+		useOutletContext<PrimaryOutletContextType>();
 
 	const [watchPath, setWatchPath] = useState('');
 	const [outputPath, setOutputPath] = useState('');
+	const [presetCategory, setPresetCategory] = useState('');
 	const [presetID, setPresetID] = useState('');
+	const [isDefaultPreset, setIsDefaultPreset] = useState(false);
 
 	const canSubmit = watchPath && presetID;
 
@@ -31,10 +35,15 @@ export default function RegisterWatcher({ onClose }: Params) {
 		setOutputPath(item.path);
 	};
 
+	const handlePresetCategoryChange = (category: string) => {
+		setIsDefaultPreset(category.includes('Default: '));
+	};
+
 	const handleSubmit = () => {
 		const newWatcher: WatcherDefinitionType = {
 			watch_path: watchPath,
 			output_path: outputPath ? outputPath : null,
+			preset_category: presetCategory,
 			preset_id: presetID,
 		};
 		socket.emit('add-watcher', newWatcher);
@@ -67,17 +76,58 @@ export default function RegisterWatcher({ onClose }: Params) {
 						onConfirm={handleOutputPathConfirm}
 					/>
 					<SelectInput
+						id='watcher-preset-category-select'
+						label='Preset Category'
+						value={presetCategory}
+						setValue={setPresetCategory}
+						onChange={handlePresetCategoryChange}
+					>
+						<option value=''>N/A</option>
+						{Object.keys(presets)
+							.filter((category) => Object.keys(presets[category]).length)
+							.sort((a, b) =>
+								a == 'uncategorized' || a.toLowerCase() > b.toLowerCase() ? 1 : -1
+							)
+							.map((category) => (
+								<option value={category} key={`preset-category-${category}`}>
+									{category == 'uncategorized'
+										? FirstLetterUpperCase(category)
+										: category}
+								</option>
+							))}
+						{config.presets['show-default-presets'] &&
+							Object.keys(defaultPresets).map((category) => (
+								<option
+									value={`Default: ${category}`}
+									key={`default-preset-category-${category}`}
+								>
+									Default: {category}
+								</option>
+							))}
+					</SelectInput>
+					<SelectInput
 						id='watcher-preset-select'
 						label='Preset:'
 						value={presetID}
 						setValue={setPresetID}
 					>
 						<option value=''>N/A</option>
-						{Object.keys(presets).map((preset) => (
-							<option value={preset} key={preset}>
-								{preset}
-							</option>
-						))}
+						{isDefaultPreset &&
+							defaultPresets[presetCategory.replace(/^Default:\s/, '')] &&
+							Object.keys(
+								defaultPresets[presetCategory.replace(/^Default:\s/, '')]
+							).map((preset) => (
+								<option value={preset} key={`preset-${preset}`}>
+									{preset}
+								</option>
+							))}
+						{!isDefaultPreset &&
+							presets[presetCategory] &&
+							Object.keys(presets[presetCategory]).map((preset) => (
+								<option value={preset} key={`preset-${preset}`}>
+									{preset}
+								</option>
+							))}
 					</SelectInput>
 					{/* <div className='inline'>
 						<SelectInput
