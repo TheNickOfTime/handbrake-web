@@ -1,4 +1,5 @@
 import Database, { Database as DatabaseType } from 'better-sqlite3';
+import { access, mkdir } from 'fs/promises';
 import path from 'path';
 
 import { dataPath } from '../data';
@@ -14,7 +15,7 @@ export let database: DatabaseType = new Database(databasePath, {});
 database.pragma('journal_mode = WAL');
 database.pragma('foreign_keys = ON');
 
-export function DatabaseConnect() {
+export async function DatabaseConnect() {
 	try {
 		// Check if database tables exist ----------------------------------------------------------
 		const checkTablesStatement = database.prepare(
@@ -35,7 +36,7 @@ export function DatabaseConnect() {
 		tableCreateStatements.forEach((statement) => statement.run());
 
 		// Check database version ------------------------------------------------------------------
-		CheckDatabaseVersion(databaseExists);
+		await CheckDatabaseVersion(databaseExists);
 
 		console.log('[server] [database] The database connection has been initalized!');
 	} catch (err) {
@@ -43,7 +44,7 @@ export function DatabaseConnect() {
 	}
 }
 
-function CheckDatabaseVersion(databaseExists: boolean) {
+async function CheckDatabaseVersion(databaseExists: boolean) {
 	const createVersionTableStatement = database.prepare(
 		'CREATE TABLE IF NOT EXISTS database_version(version INT NOT NULL PRIMARY KEY)'
 	);
@@ -62,6 +63,7 @@ function CheckDatabaseVersion(databaseExists: boolean) {
 			const currentVersion = checkVersionResult.version;
 
 			if (currentVersion < databaseVersion) {
+				await DatabaseBackup(`database-version-${currentVersion}-backup`);
 				DatabaseMigrations(currentVersion);
 			} else if (currentVersion > databaseVersion) {
 				console.error(
@@ -69,6 +71,7 @@ function CheckDatabaseVersion(databaseExists: boolean) {
 				);
 			}
 		} catch {
+			await DatabaseBackup(`database-version-0-backup`);
 			DatabaseMigrations(0);
 		}
 	} else {
@@ -78,5 +81,28 @@ function CheckDatabaseVersion(databaseExists: boolean) {
 			'INSERT INTO database_version(version) VALUES($version)'
 		);
 		insertVersionStatement.run({ version: databaseVersion });
+	}
+}
+
+async function DatabaseBackup(name: string) {
+	const backupDir = path.join(dataPath, 'backup');
+	const backupName = name + '.db';
+	const backupPath = path.join(backupDir, backupName);
+
+	try {
+		try {
+			await access(backupDir);
+		} catch {
+			await mkdir(backupDir);
+		}
+
+		await database.backup(backupPath);
+
+		console.log(`[server] [database] [backup] Backed up the database to '${backupPath}'.`);
+	} catch (error) {
+		console.error(
+			`[server] [database] [backup] [error] Could not backup the database to '${backupPath}'.`
+		);
+		console.error(error);
 	}
 }

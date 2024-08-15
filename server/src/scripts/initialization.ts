@@ -15,7 +15,7 @@ export default async function Initialization(server: Server) {
 	await LoadPresets();
 
 	// Database ------------------------------------------------------------------------------------
-	DatabaseConnect();
+	await DatabaseConnect();
 	InitializeQueue();
 	InitializeWatchers();
 
