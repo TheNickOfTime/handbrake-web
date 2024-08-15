@@ -37,7 +37,11 @@ export default function PresetsSection() {
 			className={showUploadPreset ? 'no-scroll-y' : undefined}
 		>
 			<PresetsButtons
-				presets={{ ...presets, ...defaultPresets }}
+				presets={
+					config.presets['show-default-presets']
+						? { ...presets, ...defaultPresets }
+						: presets
+				}
 				handleOpenUploadPreset={handleOpenUploadPreset}
 			/>
 			<PresetsList
