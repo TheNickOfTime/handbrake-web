@@ -67,6 +67,7 @@ export type WatcherRuleDefinitionObjectType = {
 export type WatcherDefinitionType = {
 	watch_path: string;
 	output_path: string | null;
+	preset_category: string;
 	preset_id: string;
 	// default_mask: WatcherRuleMaskMethods;
 };

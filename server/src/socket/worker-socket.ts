@@ -9,7 +9,7 @@ import {
 	UpdateJobStatusInDatabase,
 } from 'scripts/database/database-queue';
 import { HandbrakePresetType } from 'types/preset';
-import { GetPresets } from 'scripts/presets';
+import { GetDefaultPresetByName, GetPresetByName, GetPresets } from 'scripts/presets';
 
 export default function WorkerSocket(io: Server) {
 	io.of('/worker').on('connection', (socket) => {
@@ -46,8 +46,15 @@ export default function WorkerSocket(io: Server) {
 
 		socket.on(
 			'get-preset-data',
-			(presetID: string, callback: (presetData: HandbrakePresetType | undefined) => void) => {
-				const jobData = GetPresets()[presetID];
+			(
+				presetCategory: string,
+				presetID: string,
+				callback: (presetData: HandbrakePresetType | undefined) => void
+			) => {
+				const isDefaultPreset = presetCategory.match(/^Default:\s/);
+				const jobData = isDefaultPreset
+					? GetDefaultPresetByName(presetCategory.replace(/Default:\s/, ''), presetID)
+					: GetPresetByName(presetCategory, presetID);
 				callback(jobData);
 			}
 		);

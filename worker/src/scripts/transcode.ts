@@ -51,7 +51,7 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 		// Get preset data
 		const presetData: HandbrakePresetType = await socket
 			.timeout(5000)
-			.emitWithAck('get-preset-data', jobData.preset_id);
+			.emitWithAck('get-preset-data', jobData.preset_category, jobData.preset_id);
 		await writePresetToFile(presetData);
 
 		const tempOutputName = getTempOutputName(jobData.output_path);

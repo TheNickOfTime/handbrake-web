@@ -1,5 +1,6 @@
 import { PropsWithChildren } from 'react';
 import './select-input.scss';
+import { EndWithColon } from 'funcs/string.funcs';
 
 type Params = PropsWithChildren & {
 	id: string;
@@ -21,7 +22,7 @@ export default function SelectInput({ id, label, value, setValue, onChange, chil
 
 	return (
 		<div className='select-input'>
-			{label && <label htmlFor={id}>{label.trimEnd()}</label>}
+			{label && <label htmlFor={id}>{EndWithColon(label)}</label>}
 			<select
 				className='form-item'
 				id={id}

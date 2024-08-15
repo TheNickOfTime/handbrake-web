@@ -7,6 +7,11 @@
 		flex-flow: column nowrap;
 		gap: 1rem;
 
+		label {
+			font-size: 1.25rem;
+			color: colors.$text-color-tertiary;
+		}
+
 		.file-section {
 			display: flex;
 			flex-flow: row nowrap;
@@ -16,53 +21,66 @@
 			.file-upload {
 				flex-grow: 1;
 
-				font-size: 1.75rem;
+				font-size: 1.5rem;
 				font-family: font.$font-family-primary;
 
-				border: 0.2rem solid hsla(0, 0%, 100%, 0.1);
+				border: 0.1rem solid colors.$text-color-primary;
 				border-radius: 0.75rem;
 				// background-color: white;
 
 				&::file-selector-button {
+					margin-right: 1rem;
 					padding: 0.5rem 1rem;
-					background-color: hsla(0, 0%, 100%, 0.1);
-					color: colors.$text-color-primary;
 					font-family: font.$font-family-primary;
 					border: none;
+					background-color: colors.$background-six;
+					color: colors.$text-color-secondary;
 				}
 
 				&::file-selector-button:hover {
-					background-color: hsla(0, 0%, 100%, 0.05);
+					background-color: colors.$background-five;
 				}
 			}
 		}
 
-		.preset-overwrite {
-			margin-bottom: 0.5rem;
-			text-align: center;
-			color: colors.$handbrake-red;
-
-			.bi {
-				margin-right: 0.5rem;
-			}
-		}
-
-		.preset-name-section {
+		.fields-section {
+			margin-top: 2rem;
 			display: flex;
-			flex-flow: row nowrap;
-			align-items: center;
+			flex-flow: column nowrap;
 			gap: 1rem;
 
-			#preset-name {
-				padding: 0.5rem 1rem;
-				flex-grow: 1;
-				font-size: 1.75rem;
-				font-family: font.$font-family-primary;
-				color: colors.$text-color-primary;
-				// border: 0.2rem solid hsla(0, 0%, 100%, 0.1);
-				border: none;
-				border-radius: 0.75rem;
-				background-color: hsla(0, 0%, 100%, 0.1);
+			h3 {
+				margin: 0;
+				color: colors.$text-color-secondary;
+			}
+
+			.preset-overwrite {
+				margin-bottom: 0.5rem;
+				text-align: center;
+				color: colors.$handbrake-red;
+
+				.bi {
+					margin-right: 0.5rem;
+				}
+			}
+
+			.preset-name-section {
+				display: flex;
+				flex-flow: row nowrap;
+				align-items: center;
+				gap: 1rem;
+
+				#preset-name {
+					padding: 0.5rem 1rem;
+					flex-grow: 1;
+					font-size: 1.75rem;
+					font-family: font.$font-family-primary;
+					color: colors.$text-color-primary;
+					// border: 0.2rem solid hsla(0, 0%, 100%, 0.1);
+					border: none;
+					border-radius: 0.75rem;
+					background-color: hsla(0, 0%, 100%, 0.1);
+				}
 			}
 		}
 

@@ -8,13 +8,13 @@ import {
 	WatcherRuleMaskMethods,
 	WatcherRuleDefinitionObjectType,
 } from 'types/watcher';
-import { watch } from 'chokidar';
 
 export const watcherTableCreateStatements = [
 	'CREATE TABLE IF NOT EXISTS watchers( \
 		watcher_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
 		watch_path TEXT NOT NULL, \
 		output_path TEXT, \
+		preset_category TEXT, \
 		preset_id TEXT NOT NULL \
 	)',
 	'CREATE TABLE IF NOT EXISTS watcher_rules( \
@@ -65,8 +65,8 @@ export function GetWatchersFromDatabase() {
 				{
 					watch_path: watcher.watch_path,
 					output_path: watcher.output_path,
+					preset_category: watcher.preset_category,
 					preset_id: watcher.preset_id,
-					// default_mask: watcher.default_mask as WatcherRuleMaskMethods,
 					rules: rules[watcher.watcher_id],
 				},
 			])
@@ -109,8 +109,8 @@ export function GetWatcherWithIDFromDatabase(id: number) {
 				const watchers: WatcherDefinitionWithRulesType = {
 					watch_path: watcherResult.watch_path,
 					output_path: watcherResult.output_path,
+					preset_category: watcherResult.preset_category,
 					preset_id: watcherResult.preset_id,
-					// default_mask: watcherResult.default_mask as WatcherRuleMaskMethods,
 					rules: rulesResult,
 				};
 
@@ -145,13 +145,13 @@ export function GetWatcherIDFromRuleIDFromDatabase(id: number) {
 export function InsertWatcherToDatabase(watcher: WatcherDefinitionType) {
 	try {
 		const insertWatcherStatement = database.prepare<WatcherDefinitionType>(
-			'INSERT INTO watchers(watch_path, output_path, preset_id) VALUES($watch_path, $output_path, $preset_id)'
+			'INSERT INTO watchers(watch_path, output_path, preset_category, preset_id) VALUES($watch_path, $output_path, $preset_category, $preset_id)'
 		);
 		const insertWatcherResult = insertWatcherStatement.run({
 			watch_path: watcher.watch_path,
 			output_path: watcher.output_path,
+			preset_category: watcher.preset_category,
 			preset_id: watcher.preset_id,
-			// default_mask: watcher.default_mask,
 		});
 
 		console.log(

@@ -16,6 +16,7 @@ export const queueTableCreateStatements = [
 		job_id TEXT NOT NULL REFERENCES job_ids(id) ON DELETE CASCADE, \
 		input_path TEXT NOT NULL, \
 		output_path TEXT NOT NULL, \
+		preset_category TEXT, \
 		preset_id TEXT NOT NULL \
 		)',
 	'CREATE TABLE IF NOT EXISTS jobs_status( \
@@ -42,6 +43,7 @@ const joinQueryToJob = (
 		data: {
 			input_path: query.input_path,
 			output_path: query.output_path,
+			preset_category: query.preset_category,
 			preset_id: query.preset_id,
 		},
 		status: {
@@ -115,6 +117,7 @@ export function GetJobDataFromTable(id: string): JobDataType | undefined {
 			const data: JobDataType = {
 				input_path: result.input_path,
 				output_path: result.output_path,
+				preset_category: result.preset_category,
 				preset_id: result.preset_id,
 			};
 			return data;
@@ -179,13 +182,14 @@ export function InsertJobToJobsDataTable(id: string, request: QueueRequestType) 
 		idStatement.run({ id: id });
 
 		const dataStatement = database.prepare<JobsDataTableType>(
-			'INSERT INTO jobs_data(job_id, input_path, output_path, preset_id) \
-			VALUES($job_id, $input_path, $output_path, $preset_id)'
+			'INSERT INTO jobs_data(job_id, input_path, output_path, preset_category, preset_id) \
+			VALUES($job_id, $input_path, $output_path, $preset_category, $preset_id)'
 		);
 		dataStatement.run({
 			job_id: id,
 			input_path: request.input,
 			output_path: request.output,
+			preset_category: request.category,
 			preset_id: request.preset,
 		});
 

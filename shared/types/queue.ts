@@ -4,6 +4,7 @@ import { TranscodeStage } from './transcode';
 export type QueueRequestType = {
 	input: string;
 	output: string;
+	category: string;
 	preset: string;
 };
 
@@ -16,6 +17,7 @@ export type JobType = {
 export type JobDataType = {
 	input_path: string;
 	output_path: string;
+	preset_category: string;
 	preset_id: string;
 };
 

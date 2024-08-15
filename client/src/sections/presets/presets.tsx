@@ -8,11 +8,10 @@ import PresetsList from './sub-sections/presets-list';
 import './presets.scss';
 
 export default function PresetsSection() {
-	const { presets, socket } = useOutletContext<PrimaryOutletContextType>();
+	const { config, presets, defaultPresets, socket } =
+		useOutletContext<PrimaryOutletContextType>();
 
 	const [showUploadPreset, setShowUploadPreset] = useState(false);
-
-	const showPresetList = Object.keys(presets).length > 0;
 
 	const handleOpenUploadPreset = () => {
 		setShowUploadPreset(true);
@@ -22,13 +21,13 @@ export default function PresetsSection() {
 		setShowUploadPreset(false);
 	};
 
-	const handleRenamePreset = (oldName: string, newName: string) => {
-		socket.emit('rename-preset', oldName, newName);
+	const handleRenamePreset = (oldName: string, newName: string, category: string) => {
+		socket.emit('rename-preset', oldName, newName, category);
 	};
 
-	const handleRemovePreset = (preset: string) => {
-		socket.emit('remove-preset', preset);
-		console.log(`[client] Requesting the server remove preset '${preset}'`);
+	const handleRemovePreset = (preset: string, category: string) => {
+		socket.emit('remove-preset', preset, category);
+		console.log(`[client] Requesting the server remove preset '${category}/${preset}'`);
 	};
 
 	return (
@@ -37,10 +36,26 @@ export default function PresetsSection() {
 			id='presets'
 			className={showUploadPreset ? 'no-scroll-y' : undefined}
 		>
-			<PresetsButtons presets={presets} handleOpenUploadPreset={handleOpenUploadPreset} />
-			{showPresetList && (
+			<PresetsButtons
+				presets={
+					config.presets['show-default-presets']
+						? { ...presets, ...defaultPresets }
+						: presets
+				}
+				handleOpenUploadPreset={handleOpenUploadPreset}
+			/>
+			<PresetsList
+				label='Presets'
+				presets={presets}
+				collapsed={false}
+				allowRename={true}
+				handleRenamePreset={handleRenamePreset}
+				handleRemovePreset={handleRemovePreset}
+			/>
+			{config.presets['show-default-presets'] && (
 				<PresetsList
-					presets={presets}
+					label='Default Presets'
+					presets={defaultPresets}
 					handleRenamePreset={handleRenamePreset}
 					handleRemovePreset={handleRemovePreset}
 				/>
@@ -48,7 +63,7 @@ export default function PresetsSection() {
 			{showUploadPreset && (
 				<UploadPreset
 					socket={socket}
-					presets={Object.keys(presets).sort()}
+					presets={presets}
 					handleClose={handleCloseUploadPreset}
 				/>
 			)}

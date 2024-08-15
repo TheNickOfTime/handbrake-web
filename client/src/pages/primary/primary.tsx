@@ -6,7 +6,7 @@ import { io } from 'socket.io-client';
 
 import { PrimaryOutletContextType } from './primary-context';
 import { ConfigType } from 'types/config';
-import { HandbrakePresetListType } from 'types/preset';
+import { HandbrakePresetCategoryType } from 'types/preset';
 import { QueueType, QueueStatus } from 'types/queue';
 import { ConnectionIDsType } from 'types/socket';
 import { WatcherDefinitionObjectType } from 'types/watcher';
@@ -28,7 +28,8 @@ export default function Primary() {
 	const [config, setConfig] = useState<ConfigType>();
 	const [queue, setQueue] = useState<QueueType>({});
 	const [queueStatus, setQueueStatus] = useState<QueueStatus>(QueueStatus.Idle);
-	const [presets, setPresets] = useState<HandbrakePresetListType>({});
+	const [presets, setPresets] = useState<HandbrakePresetCategoryType>({});
+	const [defaultPresets, setDefaultPresets] = useState<HandbrakePresetCategoryType>({});
 	const [connections, setConnections] = useState<ConnectionIDsType>({
 		clients: [],
 		workers: [],
@@ -89,9 +90,14 @@ export default function Primary() {
 		setQueueStatus(queueStatus);
 	};
 
-	const onPresetsUpdate = (presets: HandbrakePresetListType) => {
-		console.log('[client] Available presets have been updated.');
+	const onPresetsUpdate = (presets: HandbrakePresetCategoryType) => {
+		console.log('[client] Presets have been updated.');
 		setPresets(presets);
+	};
+
+	const onDefaultPresetsUpdate = (defaultPresets: HandbrakePresetCategoryType) => {
+		console.log('[client] Default presets have been updated.');
+		setDefaultPresets(defaultPresets);
 	};
 
 	const onConnectionsUpdate = (data: ConnectionIDsType) => {
@@ -109,6 +115,7 @@ export default function Primary() {
 		socket.on('queue-update', onQueueUpdate);
 		socket.on('queue-status-update', onQueueStatusUpdate);
 		socket.on('presets-update', onPresetsUpdate);
+		socket.on('default-presets-update', onDefaultPresetsUpdate);
 		socket.on('connections-update', onConnectionsUpdate);
 		socket.on('watchers-update', onWatchersUpdate);
 
@@ -117,6 +124,7 @@ export default function Primary() {
 			socket.off('queue-update', onQueueUpdate);
 			socket.off('queue-status-update', onQueueStatusUpdate);
 			socket.off('presets-update', onPresetsUpdate);
+			socket.off('default-presets-update', onDefaultPresetsUpdate);
 			socket.off('connections-update', onConnectionsUpdate);
 			socket.off('watchers-update', onWatchersUpdate);
 		};
@@ -145,6 +153,7 @@ export default function Primary() {
 									queue,
 									queueStatus,
 									presets,
+									defaultPresets,
 									connections,
 									config,
 									watchers,
