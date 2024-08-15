@@ -12,6 +12,7 @@ export type JobsDataTableType = {
 	job_id: string;
 	input_path: string;
 	output_path: string;
+	preset_category: string;
 	preset_id: string;
 };
 
@@ -43,6 +44,7 @@ export type WatcherTableType = {
 	watcher_id: number;
 	watch_path: string;
 	output_path: string | null;
+	preset_category: string;
 	preset_id: string;
 	// default_mask: number;
 };
