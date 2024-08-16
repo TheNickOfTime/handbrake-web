@@ -27,6 +27,7 @@
 		"socket.io": "^4.7.5",
 		"tsconfig-paths": "^4.2.0",
 		"tsx": "^4.16.2",
+		"winston": "^3.14.2",
 		"yaml": "^2.4.5"
 	},
 	"devDependencies": {
