@@ -39,7 +39,7 @@ services:
   handbrake-server:
     image: ghcr.io/thenickoftime/handbrake-web-server:latest
     container_name: handbrake-web-server
-    user: 1000:1000
+    user: 1000:1000 #edit to run as user (uuid:guid) with permissions to access your media. 0:0 to run as root.
     ports:
       - 9999:9999
     volumes:
@@ -49,10 +49,10 @@ services:
   handbrake-worker:
     image: ghcr.io/thenickoftime/handbrake-web-worker:latest
     container_name: handbrake-web-worker
-    user: 1000:1000
+    user: 1000:1000 #edit to run as user (uuid:guid) with permissions to access your media. 0:0 to run as root.
     environment:
       - WORKER_ID= #give your worker a unique name
-      - SERVER_URL= #set to the url or ip of your server
+      - SERVER_URL= #set to the url or ip of your server, prefix with http:// or https://
       - SERVER_PORT= #if using a reverse proxy, this may be different than what is set above
     volumes:
       - /path/to/your/media:/video #ensure this path is the same across all containers
@@ -62,6 +62,7 @@ services:
 
 2. Configure the following:
    - **Server Port Mapping**: 9999 by default (change the lefthand side of `9999:9999` if you have a conflict)
+   - **User Mapping**: 1000:1000 by default (change to run as a user that will have adequate permissions to access the media directories that you map). 0:0 or removing this line will run the container as root - this is generally not recommended but will almost guarantee no permission issues.
    - **Volume Mappings**: Importantly, the same media path must be mapped to `/video` across the server and _all_ worker instances.
    - **Worker Environment Variables**: Tell your worker where to connect to the server via the `SERVER_URL` and `SERVER_PORT` environment variables. Ensure the port is set to the external mapping you set earlier.
 3. Run `docker compose up`.
