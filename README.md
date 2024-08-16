@@ -62,6 +62,7 @@ services:
 
 2. Configure the following:
    - **Server Port Mapping**: 9999 by default (change the lefthand side of `9999:9999` if you have a conflict)
+   - **User Mapping**: 1000:1000 by default (change to run as a user that will have adequate permissions to access the media directories that you map). 0:0 or removing this line will run the container as root - this is generally not recommended but will almost guarantee no permission issues.
    - **Volume Mappings**: Importantly, the same media path must be mapped to `/video` across the server and _all_ worker instances.
    - **Worker Environment Variables**: Tell your worker where to connect to the server via the `SERVER_URL` and `SERVER_PORT` environment variables. Ensure the port is set to the external mapping you set earlier.
 3. Run `docker compose up`.
