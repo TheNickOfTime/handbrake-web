@@ -46,14 +46,7 @@ export function InitializeQueue() {
 				job.status.transcode_stage == TranscodeStage.Scanning ||
 				job.status.transcode_stage == TranscodeStage.Transcoding
 			) {
-				UpdateJobStatusInDatabase(jobID, {
-					worker_id: null,
-					transcode_stage: TranscodeStage.Stopped,
-					transcode_percentage: 0,
-					transcode_eta: 0,
-					transcode_fps_current: 0,
-					transcode_fps_average: 0,
-				});
+				StopJob(jobID);
 
 				console.log(
 					`[server] [queue] Job '${jobID}' was loaded from the database in an unfinished state. The job will be updated to 'Stopped'.`
@@ -101,6 +94,7 @@ export function JobForAvailableWorkers(jobID: string) {
 		if (availableWorkers.length > 0) {
 			const selectedWorker = availableWorkers[0];
 			const job = GetJobFromDatabase(jobID);
+			console.log(job);
 			if (job) {
 				StartJob(jobID, job, selectedWorker);
 				if (GetQueueStatus() != QueueStatus.Active) {
@@ -152,17 +146,6 @@ export function WorkerForAvailableJobs(workerID: string) {
 	}
 }
 
-export function StartJob(jobID: string, job: JobType, worker: Worker) {
-	const workerID = GetWorkerID(worker);
-	job.status.worker_id = workerID;
-	job.status.time_started = new Date().getTime();
-	UpdateJobStatusInDatabase(jobID, {
-		worker_id: workerID,
-		time_started: new Date().getTime(),
-	});
-	worker.emit('start-transcode', jobID);
-}
-
 // Status ------------------------------------------------------------------------------------------
 export function GetQueueStatus() {
 	const status = GetStatusFromDatabase('queue')?.state as QueueStatus;
@@ -189,15 +172,22 @@ export function StartQueue(clientID: string) {
 
 			if (maxConcurrent > 0) {
 				for (let i = 0; i < maxConcurrent; i++) {
-					const [selectedJobID, selectedJob] = Object.entries(GetQueue())[i];
+					const selectedJobID = availableJobs[i];
+					const selectedJob = GetJobFromDatabase(selectedJobID);
 					const selectedWorker = availableWorkers[i];
 					const selectedWorkerID = GetWorkerID(selectedWorker);
 
-					StartJob(selectedJobID, selectedJob, selectedWorker);
+					if (selectedJob) {
+						StartJob(selectedJobID, selectedJob, selectedWorker);
 
-					console.log(
-						`[server] [queue] Assigning worker '${selectedWorkerID}' to job '${selectedJobID}'.`
-					);
+						console.log(
+							`[server] [queue] Assigning worker '${selectedWorkerID}' to job '${selectedJobID}'.`
+						);
+					} else {
+						throw new Error(
+							`[server] [queue] Cannot find job with ID '${selectedJobID}' in the database.`
+						);
+					}
 				}
 				SetQueueStatus(QueueStatus.Active);
 			} else {
@@ -254,6 +244,17 @@ export function AddJob(data: QueueRequestType) {
 	JobForAvailableWorkers(jobID);
 }
 
+export function StartJob(jobID: string, job: JobType, worker: Worker) {
+	const workerID = GetWorkerID(worker);
+	job.status.worker_id = workerID;
+	job.status.time_started = new Date().getTime();
+	UpdateJobStatusInDatabase(jobID, {
+		worker_id: workerID,
+		time_started: new Date().getTime(),
+	});
+	worker.emit('start-transcode', jobID);
+}
+
 export function StopJob(id: string) {
 	const job = GetJobFromDatabase(id);
 	if (job) {
@@ -274,8 +275,13 @@ export function StopJob(id: string) {
 			transcode_eta: 0,
 			transcode_fps_current: 0,
 			transcode_fps_average: 0,
+			time_started: 0,
+			time_finished: Date.now(),
 		});
 		UpdateQueue();
+		if (worker) {
+			WorkerForAvailableJobs(worker);
+		}
 	} else {
 		console.error(
 			`[server] Job with id '${id}' does not exist, unable to stop the requested job.`
@@ -299,6 +305,8 @@ export function ResetJob(id: string) {
 				transcode_eta: 0,
 				transcode_fps_current: 0,
 				transcode_fps_average: 0,
+				time_started: 0,
+				time_finished: 0,
 			});
 
 			UpdateQueue();
