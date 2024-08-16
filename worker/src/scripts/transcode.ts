@@ -71,6 +71,7 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 
 		const newStatus: JobStatusType = {
 			transcode_stage: TranscodeStage.Scanning,
+			time_started: Date.now(),
 		};
 
 		socket.emit('transcode-update', jobID, newStatus);
@@ -137,8 +138,12 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 
 								if (workDone.Error == 0) {
 									const doneStatus: JobStatusType = {
+										worker_id: null,
 										transcode_stage: TranscodeStage.Finished,
 										transcode_percentage: 1,
+										transcode_eta: 0,
+										transcode_fps_current: 0,
+										time_finished: Date.now(),
 									};
 
 									// Remove original file if necessary, remove '.transoding' temp extension from the file
@@ -160,7 +165,7 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 									}
 
 									TranscodeFileCleanup();
-									socket.emit('transcode-update', jobID, doneStatus);
+									socket.emit('transcode-finished', jobID, doneStatus);
 									console.log(`[worker] [transcode] [finished] 100.00%`);
 								} else {
 									console.log(

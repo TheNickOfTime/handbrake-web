@@ -5,6 +5,7 @@ import { GetQueue, StopJob, UpdateQueue, WorkerForAvailableJobs } from 'scripts/
 import { JobDataType, JobStatusType } from 'types/queue';
 import {
 	GetJobDataFromTable,
+	GetJobStatusFromTable,
 	UpdateJobOrderIndexInDatabase,
 	UpdateJobStatusInDatabase,
 } from 'scripts/database/database-queue';
@@ -64,24 +65,19 @@ export default function WorkerSocket(io: Server) {
 				`[server] Worker '${workerID}' with ID '${socket.id}' has stopped transcoding. The job will be reset.`
 			);
 
-			UpdateJobStatusInDatabase(job_id, status);
-			UpdateQueue();
-			WorkerForAvailableJobs(workerID);
+			StopJob(job_id);
 		});
 
 		socket.on('transcode-update', (job_id: string, status: JobStatusType) => {
-			// console.log(
-			// 	`[server] Worker '${workerID}' with ID '${socket.id}' is ${
-			// 		TranscodeStage[status.transcode_stage!]
-			// 	}:\n percentage: ${data.status.info.percentage}`
-			// );
-
 			UpdateJobStatusInDatabase(job_id, status);
 			UpdateQueue();
-			if (status.transcode_stage == TranscodeStage.Finished) {
-				UpdateJobOrderIndexInDatabase(job_id, 0);
-				WorkerForAvailableJobs(workerID);
-			}
+		});
+
+		socket.on('transcode-finished', (job_id: string, status: JobStatusType) => {
+			UpdateJobStatusInDatabase(job_id, status);
+			UpdateJobOrderIndexInDatabase(job_id, 0);
+			UpdateQueue();
+			WorkerForAvailableJobs(workerID);
 		});
 	});
 }
