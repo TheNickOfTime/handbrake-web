@@ -1,6 +1,7 @@
 import Database, { Database as DatabaseType } from 'better-sqlite3';
 import { access, mkdir } from 'fs/promises';
 import path from 'path';
+import logger from 'logging';
 
 import { dataPath } from '../data';
 import { watcherTableCreateStatements } from 'scripts/database/database-watcher';
@@ -38,9 +39,9 @@ export async function DatabaseConnect() {
 		// Check database version ------------------------------------------------------------------
 		await CheckDatabaseVersion(databaseExists);
 
-		console.log('[server] [database] The database connection has been initalized!');
+		logger.info('[server] [database] The database connection has been initalized!');
 	} catch (err) {
-		console.error(err);
+		logger.error(err);
 	}
 }
 
@@ -48,10 +49,10 @@ export async function DatabaseDisconnect() {
 	try {
 		database.pragma('wal_checkpoint(full)');
 		database.close();
-		console.log(`[server] [database] The database has been disconnected.`);
+		logger.info(`[server] [database] The database has been disconnected.`);
 	} catch (error) {
-		console.error(`[server] [database] [error] Could not disconnect the database.`);
-		console.error(error);
+		logger.error(`[server] [database] [error] Could not disconnect the database.`);
+		logger.error(error);
 	}
 }
 
@@ -77,10 +78,10 @@ async function CheckDatabaseVersion(databaseExists: boolean) {
 				await DatabaseBackup(`database-version-${currentVersion}-backup`);
 				DatabaseMigrations(currentVersion);
 			} else if (currentVersion > databaseVersion) {
-				console.error(
+				logger.error(
 					`[server] [database] [error] The database's version (${currentVersion}) is greater than the application's target version (${databaseVersion}). The database cannot be downgraded and therefore cannot be loaded.`
 				);
-				console.error(
+				logger.error(
 					`[server] [database] [error] Please attempt recovery by copying a previous version of the database (${databaseVersion} or lower) from '${dataPath}/backups' to '${databasePath}'.`
 				);
 				process.exit();
@@ -113,11 +114,11 @@ async function DatabaseBackup(name: string) {
 
 		await database.backup(backupPath);
 
-		console.log(`[server] [database] [backup] Backed up the database to '${backupPath}'.`);
+		logger.info(`[server] [database] [backup] Backed up the database to '${backupPath}'.`);
 	} catch (error) {
-		console.error(
+		logger.error(
 			`[server] [database] [backup] [error] Could not backup the database to '${backupPath}'.`
 		);
-		console.error(error);
+		logger.error(error);
 	}
 }

@@ -2,6 +2,7 @@
 import { Server } from 'http';
 import { Server as SocketServer } from 'socket.io';
 
+import logger from 'logging';
 import { LoadDefaultPresets, LoadPresets } from './presets';
 import { InitializeQueue } from './queue';
 import { DatabaseConnect } from './database/database';
@@ -26,7 +27,7 @@ export default async function Initialization(server: Server, socket: SocketServe
 	const port = 9999;
 
 	server.listen(port, () => {
-		console.log(`[server] Available at http://${url}:${port}`);
+		logger.info(`[server] Available at http://${url}:${port}`);
 	});
 	socket.attach(server);
 }

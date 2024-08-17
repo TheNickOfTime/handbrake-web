@@ -1,3 +1,4 @@
+import { json } from 'express';
 import { access, mkdir, readdir, readFile, writeFile, rename, rm } from 'fs/promises';
 import path from 'path';
 import {
@@ -6,10 +7,10 @@ import {
 	HandbrakeDefaultPresetsType,
 	HandbrakePresetListType,
 } from 'types/preset';
+import logger from 'logging';
 import { getPresetCount } from 'funcs/preset.funcs';
 import { EmitToAllClients } from './connections';
 import { dataPath } from './data';
-import { json } from 'express';
 
 const defaultPresetsPath = path.resolve('src/template/default-presets.json');
 export const presetsPath = path.join(dataPath, '/presets');
@@ -87,11 +88,11 @@ const defaultPresetsFileToPresetObject = async () => {
 export async function LoadDefaultPresets() {
 	try {
 		defaultPresets = await defaultPresetsFileToPresetObject();
-		console.log(
+		logger.info(
 			`[server] [presets] Default presets have been loaded from '${defaultPresetsPath}'.`
 		);
 	} catch (error) {
-		console.log(
+		logger.info(
 			`[server] [presets] [error] Could not load the default presets from '${defaultPresetsPath}'.`
 		);
 	}
@@ -102,23 +103,23 @@ export async function LoadPresets() {
 		try {
 			await access(presetsPath);
 		} catch {
-			console.log(
+			logger.info(
 				`[server] [presets] The directory for preset storage at the path '${presetsPath}' does not exist, making the directory.`
 			);
 			await mkdir(presetsPath);
 		}
 
 		presets = await presetFilesToPresetObject(presetsPath);
-		console.log(
+		logger.info(
 			`[server] [presets] ${getPresetCount(
 				presets
 			)} presets have been loaded from '${presetsPath}'.`
 		);
 	} catch (error) {
-		console.error(
+		logger.error(
 			`[server] [presets] [error] Presets could not be loaded from '${presetsPath}'.`
 		);
-		console.error(error);
+		logger.error(error);
 	}
 }
 
@@ -129,7 +130,7 @@ export async function WritePreset(fileName: string, category: string, preset: Ha
 			await access(categoryPath);
 		} catch {
 			await mkdir(categoryPath);
-			console.log(
+			logger.info(
 				`[server] [presets] Creating directory for category '${category}' at '${categoryPath}'.`
 			);
 		}
@@ -137,10 +138,10 @@ export async function WritePreset(fileName: string, category: string, preset: Ha
 		const presetPath = path.join(categoryPath, fileName + '.json');
 		const presetData = JSON.stringify(preset, null, 2);
 		await writeFile(presetPath, presetData);
-		console.log(`[server] [presets] Wrote preset '${fileName}' to '${presetPath}'.`);
+		logger.info(`[server] [presets] Wrote preset '${fileName}' to '${presetPath}'.`);
 	} catch (error) {
-		console.error(`[server] [presets] [error] Cannot write preset to file.`);
-		console.error(error);
+		logger.error(`[server] [presets] [error] Cannot write preset to file.`);
+		logger.error(error);
 	}
 }
 
@@ -174,13 +175,13 @@ export async function AddPreset(newPreset: HandbrakePresetType, category: string
 		presets[category][saveAs] = newPreset;
 		await WritePreset(saveAs, category, newPreset);
 
-		console.log(`[server] [presets] Adding preset '${newPreset.PresetList[0].PresetName}'.`);
+		logger.info(`[server] [presets] Adding preset '${newPreset.PresetList[0].PresetName}'.`);
 		EmitToAllClients('presets-update', presets);
 	} catch (error) {
-		console.error(
+		logger.error(
 			`[server] [presets] [error] Could not add the preset '${newPreset.PresetList[0].PresetName}'.`
 		);
-		console.error(error);
+		logger.error(error);
 	}
 }
 
@@ -190,11 +191,11 @@ export async function RemovePreset(presetName: string, category: string) {
 
 		delete presets[category][presetName];
 
-		console.log(`[server] [presets] Preset '${presetName}' has been removed.`);
+		logger.info(`[server] [presets] Preset '${presetName}' has been removed.`);
 		EmitToAllClients('presets-update', presets);
 	} catch (error) {
-		console.error(`[server] [presets] [error] Could not remove the preset '${presetName}'.`);
-		console.error(error);
+		logger.error(`[server] [presets] [error] Could not remove the preset '${presetName}'.`);
+		logger.error(error);
 	}
 }
 
@@ -217,14 +218,14 @@ export async function RenamePreset(oldName: string, newName: string, category: s
 		await rm(oldPath);
 		await writeFile(newPath, JSON.stringify(presets[category][newName], null, 2));
 
-		console.log(
+		logger.info(
 			`[server] [presets] The preset '${oldName}' has been renamed to '${newName}' at the path '${newPath}'`
 		);
 		EmitToAllClients('presets-update', presets);
 	} catch (error) {
-		console.error(
+		logger.error(
 			`[server] [presets] [error] Could not rename the preset '${oldName}' to '${newName}'.`
 		);
-		console.error(error);
+		logger.error(error);
 	}
 }

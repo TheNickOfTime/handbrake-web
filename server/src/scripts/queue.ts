@@ -2,6 +2,7 @@ import hash from 'object-hash';
 import { JobType, QueueRequestType, QueueStatus } from 'types/queue';
 import { Socket as Worker } from 'socket.io';
 import { TranscodeStage } from 'types/transcode';
+import logger from 'logging';
 import {
 	EmitToAllClients,
 	EmitToWorkerWithID,
@@ -24,14 +25,14 @@ import { GetStatusFromDatabase, UpdateStatusInDatabase } from './database/databa
 export function InitializeQueue() {
 	// Queue Status
 	const status = GetQueueStatus();
-	if (status) {
-		console.log(
+	if (status != null || status != undefined) {
+		logger.info(
 			`[server] [queue] Existing queue status '${QueueStatus[status]}' retreived from the database.`
 		);
 		EmitToAllClients('queue-status-update', status);
 	} else {
 		SetQueueStatus(QueueStatus.Stopped);
-		console.error(
+		logger.error(
 			`[server] [queue] The queue status does not exist in the database, initializing to the state 'stopped'.`
 		);
 	}
@@ -48,7 +49,7 @@ export function InitializeQueue() {
 			) {
 				StopJob(jobID);
 
-				console.log(
+				logger.info(
 					`[server] [queue] Job '${jobID}' was loaded from the database in an unfinished state. The job will be updated to 'Stopped'.`
 				);
 			}
@@ -87,27 +88,27 @@ export function GetAvailableJobs() {
 
 export function JobForAvailableWorkers(jobID: string) {
 	if (GetQueueStatus() != QueueStatus.Stopped) {
-		console.log(
+		logger.info(
 			`[server] [queue] Job with ID '${jobID}' is available, checking for available workers...`
 		);
 		const availableWorkers = GetAvailableWorkers();
 		if (availableWorkers.length > 0) {
 			const selectedWorker = availableWorkers[0];
 			const job = GetJobFromDatabase(jobID);
-			console.log(job);
+			logger.info(job);
 			if (job) {
 				StartJob(jobID, job, selectedWorker);
 				if (GetQueueStatus() != QueueStatus.Active) {
 					SetQueueStatus(QueueStatus.Active);
 				}
-				console.log(
+				logger.info(
 					`[server] [queue] Found worker with ID '${GetWorkerID(
 						selectedWorker
 					)}' for job with ID '${jobID}`
 				);
 			}
 		} else {
-			console.log(
+			logger.info(
 				`[server] [queue] There are no workers available for job with ID '${jobID}'.`
 			);
 		}
@@ -116,7 +117,7 @@ export function JobForAvailableWorkers(jobID: string) {
 
 export function WorkerForAvailableJobs(workerID: string) {
 	if (GetQueueStatus() != QueueStatus.Stopped) {
-		console.log(
+		logger.info(
 			`[server] [queue] Worker with ID '${workerID}' is available, checking for available jobs...`
 		);
 		const availableJobs = GetAvailableJobs();
@@ -129,18 +130,18 @@ export function WorkerForAvailableJobs(workerID: string) {
 				if (GetQueueStatus() != QueueStatus.Active) {
 					SetQueueStatus(QueueStatus.Active);
 				}
-				console.log(
+				logger.info(
 					`[server] [queue] Found job with ID '${selectedJobID}' for worker with ID '${workerID}'.`
 				);
 			}
 		} else {
-			console.log(
+			logger.info(
 				`[server] [queue] There are no jobs available for worker with ID '${workerID}'.`
 			);
 			// Set queue to idle if there are no other busy workers
 			if (GetBusyWorkers().length == 0) {
 				SetQueueStatus(QueueStatus.Idle);
-				console.log("There are no active workers, setting queue to 'Idle'.");
+				logger.info("There are no active workers, setting queue to 'Idle'.");
 			}
 		}
 	}
@@ -164,7 +165,7 @@ export function StartQueue(clientID: string) {
 			const availableJobs = GetAvailableJobs();
 			const moreJobs = availableWorkers.length < availableJobs.length;
 			const maxConcurrent = moreJobs ? availableWorkers.length : availableJobs.length;
-			console.log(
+			logger.info(
 				`[server] [queue] There are more ${moreJobs ? 'jobs' : 'workers'} than ${
 					moreJobs ? 'workers' : 'jobs'
 				}, the max amount of concurrent jobs is ${maxConcurrent} job(s).`
@@ -180,7 +181,7 @@ export function StartQueue(clientID: string) {
 					if (selectedJob) {
 						StartJob(selectedJobID, selectedJob, selectedWorker);
 
-						console.log(
+						logger.info(
 							`[server] [queue] Assigning worker '${selectedWorkerID}' to job '${selectedJobID}'.`
 						);
 					} else {
@@ -191,7 +192,7 @@ export function StartQueue(clientID: string) {
 				}
 				SetQueueStatus(QueueStatus.Active);
 			} else {
-				console.log(
+				logger.info(
 					`[server] [queue] Setting the queue to idle because there are no ${
 						moreJobs ? 'workers' : 'jobs'
 					} available for ${moreJobs ? 'jobs' : 'workers'}.`
@@ -199,7 +200,7 @@ export function StartQueue(clientID: string) {
 				SetQueueStatus(QueueStatus.Idle);
 			}
 		} catch (err) {
-			console.error(err);
+			logger.error(err);
 		}
 	}
 }
@@ -211,7 +212,7 @@ export function StopQueue(clientID?: string) {
 
 		const stoppedBy = clientID ? `client '${clientID}'` : 'the server.';
 
-		console.log(`[server] The queue has been stopped by ${stoppedBy}.`);
+		logger.info(`[server] The queue has been stopped by ${stoppedBy}.`);
 	}
 }
 
@@ -283,7 +284,7 @@ export function StopJob(id: string) {
 			WorkerForAvailableJobs(worker);
 		}
 	} else {
-		console.error(
+		logger.error(
 			`[server] Job with id '${id}' does not exist, unable to stop the requested job.`
 		);
 	}
@@ -312,12 +313,12 @@ export function ResetJob(id: string) {
 			UpdateQueue();
 			JobForAvailableWorkers(id);
 		} else {
-			console.error(
+			logger.error(
 				`[server] [error] Job with id '${id}' cannot be reset because it is not in a stopped/finished state.`
 			);
 		}
 	} else {
-		console.error(
+		logger.error(
 			`[server] Job with id '${id}' does not exist, unable to reset the requested job.`
 		);
 	}
@@ -329,14 +330,14 @@ export function RemoveJob(id: string) {
 		RemoveJobFromDatabase(id);
 		UpdateQueue();
 	} else {
-		console.error(
+		logger.error(
 			`[server] Job with id '${id}' does not exist, unable to remove the requested job.`
 		);
 	}
 }
 
 export function ClearQueue(clientID: string, finishedOnly: boolean = false) {
-	console.log(
+	logger.info(
 		`[server] [queue] Client '${clientID}' has requested to clear ${
 			finishedOnly ? 'finished' : 'all'
 		} jobs from the queue.`
@@ -350,21 +351,21 @@ export function ClearQueue(clientID: string, finishedOnly: boolean = false) {
 				case TranscodeStage.Waiting:
 					if (!finishedOnly) {
 						RemoveJobFromDatabase(key);
-						console.log(
+						logger.info(
 							`[server] Removing job '${key}' from the queue due to being 'Waiting'.`
 						);
 					}
 					break;
 				case TranscodeStage.Finished:
 					RemoveJobFromDatabase(key);
-					console.log(
+					logger.info(
 						`[server] Removing job '${key}' from the queue due to being 'Finished'.`
 					);
 					break;
 				case TranscodeStage.Stopped:
 					if (!finishedOnly) {
 						RemoveJobFromDatabase(key);
-						console.log(
+						logger.info(
 							`[server] Removing job '${key}' from the queue due to being 'Stopped'.`
 						);
 					}

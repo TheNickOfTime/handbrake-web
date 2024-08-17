@@ -1,5 +1,4 @@
 import { WatcherRuleTableType, WatcherTableType } from 'types/database';
-import { database } from './database';
 import {
 	WatcherDefinitionType,
 	WatcherRuleDefinitionType,
@@ -8,6 +7,8 @@ import {
 	WatcherRuleMaskMethods,
 	WatcherRuleDefinitionObjectType,
 } from 'types/watcher';
+import logger from 'logging';
+import { database } from './database';
 
 export const watcherTableCreateStatements = [
 	'CREATE TABLE IF NOT EXISTS watchers( \
@@ -74,8 +75,8 @@ export function GetWatchersFromDatabase() {
 
 		return watchers;
 	} catch (err) {
-		console.error('[server] [database] [error] Could not get watchers from the database.');
-		console.error(err);
+		logger.error('[server] [database] [error] Could not get watchers from the database.');
+		logger.error(err);
 	}
 }
 
@@ -118,10 +119,10 @@ export function GetWatcherWithIDFromDatabase(id: number) {
 			}
 		}
 	} catch (err) {
-		console.error(
+		logger.error(
 			`[server] [database] [error] Could not get watcher with id '${id}' from the database.`
 		);
-		console.error(err);
+		logger.error(err);
 	}
 }
 
@@ -135,10 +136,10 @@ export function GetWatcherIDFromRuleIDFromDatabase(id: number) {
 			return parseInt(idResult.watcher_id);
 		}
 	} catch (err) {
-		console.error(
+		logger.error(
 			`[server] [database] [error] Could not get a wacther_id from a rule with '${id}' from the database.`
 		);
-		console.error(err);
+		logger.error(err);
 	}
 }
 
@@ -154,16 +155,16 @@ export function InsertWatcherToDatabase(watcher: WatcherDefinitionType) {
 			preset_id: watcher.preset_id,
 		});
 
-		console.log(
+		logger.info(
 			`[server] [database] Inserted watcher for '${watcher.watch_path}' into the database.`
 		);
 
 		return insertWatcherResult;
 	} catch (err) {
-		console.error(
+		logger.error(
 			`[server] [database] [error] Could not add a watcher for '${watcher.watch_path}' to the database.`
 		);
-		console.error(err);
+		logger.error(err);
 	}
 }
 
@@ -177,15 +178,15 @@ export function InsertWatcherRuleToDatabase(watcherID: number, rule: WatcherRule
 			rule_id: 0,
 			...rule,
 		});
-		console.log(
+		logger.info(
 			`[server] [database] Inserted a new rule '${rule.name}' for watcher '${watcherID}' into the database with id '${insertRuleResult.lastInsertRowid}'.`
 		);
 		return insertRuleResult;
 	} catch (err) {
-		console.error(
+		logger.error(
 			`[server] [database] Could not insert a new rule '${rule.name}' for watcher '${watcherID}' into the database.`
 		);
-		console.error(err);
+		logger.error(err);
 	}
 }
 
@@ -202,15 +203,15 @@ export function UpdateWatcherRuleInDatabase(ruleID: number, rule: WatcherRuleDef
 			WHERE rule_id = $id'
 		);
 		const updateResult = updateStatement.run({ id: ruleID, ...rule });
-		console.log(
+		logger.info(
 			`[server] [database] Updated rule '${rule.name}' with id '${ruleID}' in the database.`
 		);
 		return updateResult;
 	} catch (err) {
-		console.error(
+		logger.error(
 			`[server] [database] Could not update rule '${rule.name}' with id '${ruleID}' in the database.`
 		);
-		console.error(err);
+		logger.error(err);
 	}
 }
 
@@ -218,13 +219,13 @@ export function RemoveWatcherFromDatabase(id: number) {
 	try {
 		const removeStatement = database.prepare('DELETE FROM watchers WHERE watcher_id = $id');
 		const removalResult = removeStatement.run({ id: id });
-		console.log(`[server] [database] Removed watcher with id '${id}' from the database.`);
+		logger.info(`[server] [database] Removed watcher with id '${id}' from the database.`);
 		return removalResult;
 	} catch (err) {
-		console.error(
+		logger.error(
 			`[server] [database] [error] Could not remove a watcher with the id '${id}' from the database.`
 		);
-		console.error(err);
+		logger.error(err);
 	}
 }
 
@@ -232,12 +233,12 @@ export function RemoveWatcherRuleFromDatabase(id: number) {
 	try {
 		const removeStatement = database.prepare('DELETE FROM watcher_rules WHERE rule_id = $id');
 		const removalResult = removeStatement.run({ id: id });
-		console.log(`[server] [database] Removed rule with id '${id}' from the database.`);
+		logger.info(`[server] [database] Removed rule with id '${id}' from the database.`);
 		return removalResult;
 	} catch (err) {
-		console.error(
+		logger.error(
 			`[server] [database] [error] Could not remove a watcher rule with the id '${id}' from the database.`
 		);
-		console.error(err);
+		logger.error(err);
 	}
 }
