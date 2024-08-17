@@ -1,10 +1,10 @@
 import path from 'path';
 import { createLogger, format, transports } from 'winston';
-import { Logger, Logform, LeveledLogMethod } from 'winston';
+import { Logger, LeveledLogMethod } from 'winston';
 import { dataPath } from './data';
 
 interface CustomLeveledLogMethod extends LeveledLogMethod {
-	(message: string, meta: { tags: string[] }): Logger;
+	(message: string, tags: string[]): Logger;
 }
 
 interface CustomLogger extends Logger {
@@ -12,7 +12,7 @@ interface CustomLogger extends Logger {
 }
 
 const formatInfo = format((info) => {
-	info.label = `[${info.label}]`;
+	// info.label = `[${info.label}]`;
 
 	if (info.timestamp) {
 		info.timestamp = new Date(info.timestamp).toLocaleTimeString('en-US', {
@@ -20,8 +20,16 @@ const formatInfo = format((info) => {
 		});
 	}
 
-	if (info.tags) {
-		info.tags = (info.tags as string[]).map((tag) => `[${tag}]`).join(' ');
+	const tagRegex = /\[[\w\d]+\]\s?/g;
+	const tags = (info.message as string).match(tagRegex);
+	if (tags) {
+		const newMessage = (info.message as string).replaceAll(tagRegex, '');
+		info.message = newMessage;
+
+		if (info.label && !tags.some((tag) => tag.match(new RegExp(`\\[${info.label}\\]`, 'g')))) {
+			tags.splice(0, 0, `[${info.label}]`);
+		}
+		info.tags = tags.map((tag) => tag.trim()).join(' ');
 	}
 
 	return info;
@@ -51,7 +59,7 @@ const consoleFormatter = (label: string) =>
 		formatInfo(),
 		formatCustomColorize(),
 		format.printf((info) => {
-			return `${info.timestamp} ${info.label} ${info.tags} ${info.message}`;
+			return `${info.timestamp} ${info.tags} ${info.message}`;
 		})
 	);
 
@@ -61,11 +69,11 @@ const fileFormatter = (label: string) =>
 		format.label({ label: label }),
 		formatInfo(),
 		format.printf((info) => {
-			return `${info.timestamp} ${info.label} ${info.tags} [${info.level}] ${info.message}`;
+			return `${info.timestamp} ${info.tags} [${info.level}] ${info.message}`;
 		})
 	);
 
-export function CreateCustomLogger(label: string): CustomLogger {
+function CreateCustomLogger(label: string): CustomLogger {
 	return createLogger({
 		level: 'info',
 		transports: [
@@ -77,3 +85,5 @@ export function CreateCustomLogger(label: string): CustomLogger {
 		],
 	});
 }
+
+export const logger = CreateCustomLogger('server');
