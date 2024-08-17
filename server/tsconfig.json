@@ -32,6 +32,7 @@
     // "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
     "paths": {
       "routes/*": ["./src/routes/*"],
+      "logging": ["./src/scripts/logging"],
       "scripts/*": ["./src/scripts/*"],
       "socket/*": ["./src/socket/*"],
       "types/*": ["../shared/types/*"],

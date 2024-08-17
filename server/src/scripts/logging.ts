@@ -86,4 +86,6 @@ function CreateCustomLogger(label: string): CustomLogger {
 	});
 }
 
-export const logger = CreateCustomLogger('server');
+const logger = CreateCustomLogger('server');
+
+export default logger;
