@@ -17,8 +17,11 @@ if (!workerID) {
 
 // Setup the server ------------------------------------------------------------
 const serverURL = process.env.SERVER_URL;
+const serverURLPrefix = serverURL?.match(/^https?:\/\//);
 const serverPort = process.env.SERVER_PORT;
-export const serverAddress = `${serverURL}:${serverPort}/worker`;
+export const serverAddress = `${
+	serverURLPrefix ? serverURL : 'http://' + serverURL
+}:${serverPort}/worker`;
 
 const canConnect = serverURL != undefined && serverPort != undefined;
 const server = io(serverAddress, {
