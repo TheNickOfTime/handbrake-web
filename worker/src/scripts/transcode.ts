@@ -8,7 +8,7 @@ import { HandbrakeOutputType, Muxing, Scanning, WorkDone, Working } from 'types/
 import { HandbrakePresetType } from 'types/preset';
 import { JobDataType, JobStatusType } from 'types/queue';
 import { TranscodeStage } from 'types/transcode';
-import logger, { newJobTransport } from 'logging';
+import logger, { createJobLogger, formatJSON } from 'logging';
 
 let handbrake: ChildProcess | null = null;
 export const isTranscoding = () => handbrake != null;
@@ -59,8 +59,9 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 		const fileCollision = fs.existsSync(jobData.output_path);
 
 		// Add file transport to the logger
-		const fileTransport = newJobTransport(jobID);
-		logger.add(fileTransport);
+		// const fileTransport = newJobTransport(jobID);
+		// logger.add(fileTransport);
+		const jobLogger = createJobLogger(jobID);
 
 		handbrake = spawn('HandBrakeCLI', [
 			'--preset-import-file',
@@ -92,7 +93,11 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 
 				switch (outputKind) {
 					case 'Version':
-						logger.info(`[worker] [transcode] [version]`, outputJSON);
+						jobLogger.info(
+							`[transcode] [version] ${formatJSON(
+								JSON.stringify(outputJSON, null, 2)
+							)}`
+						);
 						break;
 					case 'Progress':
 						switch (outputJSON['State']) {
@@ -103,10 +108,10 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 									transcode_percentage: scanning.Progress,
 								};
 								socket.emit('transcode-update', jobID, scanningStatus);
-								logger.info(
-									`[worker] [transcode] [scanning] ${(
-										scanning.Progress * 100
-									).toFixed(2)} %`
+								jobLogger.info(
+									`[transcode] [scanning] ${(scanning.Progress * 100).toFixed(
+										2
+									)} %`
 								);
 								break;
 							case 'WORKING':
@@ -119,10 +124,10 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 									transcode_fps_average: working.RateAvg,
 								};
 								socket.emit('transcode-update', jobID, workingStatus);
-								logger.info(
-									`[worker] [transcode] [processing] ${(
-										working.Progress * 100
-									).toFixed(2)} %`
+								jobLogger.info(
+									`[transcode] [processing] ${(working.Progress * 100).toFixed(
+										2
+									)} %`
 								);
 								break;
 							case 'MUXING':
@@ -132,10 +137,8 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 									transcode_percentage: muxing.Progress,
 								};
 								socket.emit('transcode-update', jobID, muxingStatus);
-								logger.info(
-									`[worker] [transcode] [muxing] ${(
-										muxing.Progress * 100
-									).toFixed(2)} %`
+								jobLogger.info(
+									`[transcode] [muxing] ${(muxing.Progress * 100).toFixed(2)} %`
 								);
 								break;
 							case 'WORKDONE':
@@ -155,10 +158,10 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 									if (fileCollision) {
 										fs.rm(jobData.output_path, (err) => {
 											if (err) {
-												logger.error(err);
+												jobLogger.error(err);
 											} else {
-												logger.info(
-													`[worker] [transcode] Overwriting '${path.basename(
+												jobLogger.info(
+													`[transcode] Overwriting '${path.basename(
 														jobData.output_path
 													)}' with the contents of the current job'.`
 												);
@@ -171,17 +174,16 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 
 									TranscodeFileCleanup();
 									socket.emit('transcode-finished', jobID, doneStatus);
-									logger.info(`[worker] [transcode] [finished] 100.00%`);
+									jobLogger.info(`[transcode] [finished] 100.00%`);
 								} else {
-									logger.info(
-										`[worker] [transcode] [error] Finished with error ${workDone.Error}`
+									jobLogger.error(
+										`[transcode] [error] Finished with error ${workDone.Error}`
 									);
 								}
 								break;
 							default:
-								logger.error(
-									'[worker] [transcode] [error] Unexpected json output:',
-									outputJSON
+								jobLogger.error(
+									`[transcode] [error] Unexpected json output:\n${outputJSON}`
 								);
 								break;
 						}
@@ -192,12 +194,10 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 		handbrake.stderr.on('data', (data) => {
 			const output: string = data.toString();
 
-			logger.error('[worker] [error] ', output);
+			jobLogger.error(`[transcode] \n${output}`);
 		});
 
-		handbrake.on('exit', () => {
-			logger.remove(fileTransport);
-		});
+		handbrake.on('exit', () => {});
 	} catch (err) {
 		logger.error(err);
 	}
@@ -212,22 +212,22 @@ export function StopTranscode(id: string, socket: Socket) {
 					transcode_percentage: 0,
 				};
 				TranscodeFileCleanup();
-				logger.info(`[worker] Informing the server that job '${id}' has been stopped.`);
+				logger.info(`[transcode] Informing the server that job '${id}' has been stopped.`);
 				socket.emit('transcode-stopped', currentJobID, newStatus);
 			} else {
 				logger.error(
-					"[worker] [error] Cannot send the event 'transcode-stopped' because the server socket is not connected."
+					"[transcode] Cannot send the event 'transcode-stopped' because the server socket is not connected."
 				);
 			}
 		} else {
 			logger.error(
-				"[worker] [error] Cannot send the event 'transcode-stopped' because the current job is null."
+				"[transcode] Cannot send the event 'transcode-stopped' because the current job is null."
 			);
 		}
 		handbrake.kill();
 	} else {
 		logger.info(
-			`[worker] The worker is not transcoding anything, there is no transcode to stop.`
+			`[transcode] The worker is not transcoding anything, there is no transcode to stop.`
 		);
 	}
 }
@@ -245,7 +245,7 @@ async function TranscodeFileCleanup() {
 				if (err) {
 					logger.error(err);
 				} else {
-					logger.info(`[worker] [transcode] Cleaned up temp file '${tempOutputName}'.`);
+					logger.info(`[transcode] Cleaned up temp file '${tempOutputName}'.`);
 				}
 			});
 		}
