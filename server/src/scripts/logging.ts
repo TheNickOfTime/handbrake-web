@@ -11,16 +11,34 @@ const formatInfo = format((info) => {
 		});
 	}
 
-	const tagRegex = /\[[\w\d]+\]\s?/g;
-	const tags = (info.message as string).match(tagRegex);
-	if (tags) {
-		const newMessage = (info.message as string).replaceAll(tagRegex, '');
-		info.message = newMessage;
+	switch (typeof info.message) {
+		case 'string':
+			const tagRegex = /\[[\w\d-]+\]\s?/g;
+			const tags = (info.message as string).match(tagRegex);
+			if (tags) {
+				const newMessage = (info.message as string).replaceAll(tagRegex, '');
+				info.message = newMessage;
 
-		if (info.label && !tags.some((tag) => tag.match(new RegExp(`\\[${info.label}\\]`, 'g')))) {
-			tags.splice(0, 0, `[${info.label}]`);
-		}
-		info.tags = tags.map((tag) => tag.trim()).join(' ');
+				if (
+					info.label &&
+					!tags.some((tag) => tag.match(new RegExp(`\\[${info.label}\\]`, 'g')))
+				) {
+					tags.splice(0, 0, `[${info.label}]`);
+				}
+				info.tags = tags.map((tag) => tag.trim()).join(' ');
+			} else {
+				info.tags = `[${info.label}]`;
+			}
+			break;
+		case 'object':
+			info.tags = `[${info.label}]`;
+			info.message = JSON.stringify(info.message, null, 2)
+				.replace(/"([^"]+)":/g, '$1:')
+				.replace(/:\s"([^"]+)"/g, ": '$1'");
+			break;
+		default:
+			info.tags = `[${info.label}]`;
+			break;
 	}
 
 	return info;
@@ -40,8 +58,24 @@ const formatCustomColorize = format((info) => {
 		info.tags = `${color}${info.tags}\x1B[39m`;
 	}
 
+	if (typeof info.message == 'string' && info.message.match(/{[\s\n\r][^":]+:[\s\n\r]({|')/g)) {
+		info.message = info.message.replaceAll(/:\s('.+')/g, ': \x1b[32m$1\x1B[39m');
+	}
 	return info;
 });
+
+const formatFinal = (transport: string) => {
+	switch (transport) {
+		case 'console':
+			return format.printf((info) => `${info.timestamp} ${info.tags} ${info.message}`);
+		case 'file':
+			return format.printf(
+				(info) => `${info.timestamp} ${info.tags} [${info.level}] ${info.message}`
+			);
+		default:
+			return format.simple();
+	}
+};
 
 const consoleFormatter = (label: string) =>
 	format.combine(
@@ -49,9 +83,7 @@ const consoleFormatter = (label: string) =>
 		format.label({ label: label }),
 		formatInfo(),
 		formatCustomColorize(),
-		format.printf((info) => {
-			return `${info.timestamp} ${info.tags} ${info.message}`;
-		})
+		formatFinal('console')
 	);
 
 const fileFormatter = (label: string) =>
@@ -59,9 +91,7 @@ const fileFormatter = (label: string) =>
 		format.timestamp(),
 		format.label({ label: label }),
 		formatInfo(),
-		format.printf((info) => {
-			return `${info.timestamp} ${info.tags} [${info.level}] ${info.message}`;
-		})
+		formatFinal('file')
 	);
 
 function CreateCustomLogger(label: string) {
