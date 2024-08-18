@@ -22,11 +22,6 @@ const socket = new SocketServer(server, {
 
 app.use(cors());
 
-// Environment -------------------------------------------------------------------------------------
-console.log(`[server] [env] The server port is '${process.env.SERVER_PORT}'.`);
-console.log(`[server] [env] The data path is '${process.env.DATA_PATH}'.`);
-console.log(`[server] [env] The video path is '${process.env.VIDEO_PATH}'.`);
-
 // Routes ------------------------------------------------------------------------------------------
 ClientRoutes(app);
 

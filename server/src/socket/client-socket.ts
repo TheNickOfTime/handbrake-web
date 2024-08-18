@@ -50,6 +50,7 @@ import {
 	GetJobOrderIndexFromTable,
 	UpdateJobOrderIndexInDatabase,
 } from 'scripts/database/database-queue';
+import logger from 'logging';
 
 const initClient = (socket: Client) => {
 	const queue = GetQueue();
@@ -63,12 +64,12 @@ const initClient = (socket: Client) => {
 
 export default function ClientSocket(io: Server) {
 	io.of('/client').on('connection', (socket) => {
-		console.log(`[server] Client '${socket.id}' has connected.`);
+		logger.info(`[socket] Client '${socket.id}' has connected.`);
 		AddClient(socket);
 		initClient(socket);
 
 		socket.on('disconnect', () => {
-			console.log(`[server] Client '${socket.id}' has disconnected.`);
+			logger.info(`[socket] Client '${socket.id}' has disconnected.`);
 			RemoveClient(socket);
 		});
 
@@ -92,8 +93,8 @@ export default function ClientSocket(io: Server) {
 
 		// Jobs ------------------------------------------------------------------------------------
 		socket.on('add-job', (data: QueueRequestType) => {
-			console.log(
-				`[server] Client '${socket.id}' has requested to add a job for '${data.input}' to the queue.`
+			logger.info(
+				`[socket] Client '${socket.id}' has requested to add a job for '${data.input}' to the queue.`
 			);
 			AddJob(data);
 		});
@@ -111,8 +112,8 @@ export default function ClientSocket(io: Server) {
 		});
 
 		socket.on('reorder-job', (id: string, newIndex: number) => {
-			console.log(
-				`[server] Client is requesting job at order index ${GetJobOrderIndexFromTable(
+			logger.info(
+				`[socket] Client is requesting job at order index ${GetJobOrderIndexFromTable(
 					id
 				)} be reordered to index ${newIndex}.`
 			);
@@ -173,7 +174,7 @@ export default function ClientSocket(io: Server) {
 		);
 
 		socket.on('add-watcher', (watcher: WatcherDefinitionType) => {
-			console.log(watcher);
+			logger.info(watcher);
 			AddWatcher(watcher);
 		});
 

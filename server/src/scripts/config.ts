@@ -2,10 +2,10 @@ import fs from 'fs';
 import { writeFile, copyFile, readFile } from 'fs/promises';
 import path from 'path';
 import { parse, stringify } from 'yaml';
-import { ConfigPathsType, ConfigPresetsType, ConfigType } from 'types/config';
+import { ConfigType } from 'types/config';
+import logger from 'logging';
 import { dataPath } from './data';
 import { EmitToAllClients } from './connections';
-import Shutdown from './shutdown';
 
 const configPath = path.join(dataPath, 'config.yaml');
 const templateConfig: ConfigType = parse(
@@ -17,7 +17,7 @@ let config: ConfigType = templateConfig;
 export async function LoadConfig() {
 	try {
 		if (!fs.existsSync(configPath)) {
-			console.log(
+			logger.info(
 				`[server] [config] No config file exists, copying the template config.yaml`
 			);
 			await copyFile(path.resolve('src/template/config.yaml'), configPath);
@@ -29,8 +29,8 @@ export async function LoadConfig() {
 		const autoFixInConfig = configData['config'] && configData['config']['auto-fix'];
 		const fixOnValidate = autoFixInConfig ? configData['config']['auto-fix'] : true;
 
-		if (!autoFixInConfig) {
-			console.log(
+		if (autoFixInConfig == null || autoFixInConfig == undefined) {
+			logger.warn(
 				`[server] [config] Config is missing property 'config/auto-fix', which will now automatically be set to 'true' in order to prevent application shutdown.`
 			);
 		}
@@ -40,13 +40,12 @@ export async function LoadConfig() {
 		config = validatedData;
 
 		EmitToAllClients('config-update', validatedData);
-		console.log(`[server] [config] The config file at '${configPath}' has been loaded.`);
-		// console.log(config);
+		logger.info(`[server] [config] The config file at '${configPath}' has been loaded.`);
 	} catch (error) {
-		console.error(
+		logger.error(
 			`[server] [config] [error] Could not load the config file from '${configPath}'. The application will now shut down.`
 		);
-		console.error(error);
+		logger.error(error);
 		// process.exit();
 	}
 }
@@ -59,10 +58,10 @@ export async function WriteConfig(newConfig: ConfigType) {
 		config = newConfig;
 
 		EmitToAllClients('config-update', newConfig);
-		console.log(`[server] [config] The config file at '${configPath}' has been written.`);
+		logger.info(`[server] [config] The config file at '${configPath}' has been written.`);
 	} catch (error) {
-		console.error(`[server] [config] [error] Could not write new config to file.`);
-		console.error(error);
+		logger.error(`[server] [config] [error] Could not write new config to file.`);
+		logger.error(error);
 	}
 }
 
@@ -77,10 +76,10 @@ export async function ValidateConfig(inputConfig: ConfigType, fix: boolean = fal
 	validatedConfig = ValidateConfigProperties(validatedConfig, fix);
 
 	if (JSON.stringify(validatedConfig) == JSON.stringify(inputConfig)) {
-		console.log(`[server] [config] [validation] The config data has passed validation.`);
+		logger.info(`[server] [config] [validation] The config data has passed validation.`);
 	} else {
 		await WriteConfig(validatedConfig);
-		console.log(
+		logger.info(
 			`[server] [config] [validation] The config data has passed validation with fixes applied.`
 		);
 	}
@@ -99,7 +98,7 @@ export function ValidateConfigSections(inputConfig: ConfigType, fix: boolean = f
 				inputConfig[section as keyof ConfigType] = templateConfig[
 					section as keyof ConfigType
 				] as typeof value;
-				console.log(
+				logger.info(
 					`[server] [config] [validation] Adding missing section '${section}' to the config with template defaults.`
 				);
 			} else {
@@ -117,7 +116,7 @@ export function ValidateConfigSections(inputConfig: ConfigType, fix: boolean = f
 		if (!isValid) {
 			if (fix) {
 				delete inputConfig[section as keyof ConfigType];
-				console.log(
+				logger.info(
 					`[server] [config] [validation] Removing undesired section '${section}' from the config.`
 				);
 			} else {
@@ -146,7 +145,7 @@ export function ValidateConfigProperties(inputConfig: ConfigType, fix: boolean =
 					if (!isValid) {
 						if (fix) {
 							inputConfig[section][property] = templateConfig[section][property];
-							console.log(
+							logger.info(
 								`[server] [config] [validation] Adding missing property '${section}/${property}' to the config.`
 							);
 						} else {
@@ -168,11 +167,11 @@ export function ValidateConfigProperties(inputConfig: ConfigType, fix: boolean =
 				if (!isValid) {
 					if (fix) {
 						delete inputConfig[section][property as keyof typeof value];
-						console.log(
+						logger.info(
 							`[server] [config] [validation] Removing undesired property '${section}/${property}' from the config.`
 						);
 					} else {
-						console.error(
+						logger.error(
 							`[server] [config] [validation] [error] Config has undesired property '${section}/${property}'.`
 						);
 					}

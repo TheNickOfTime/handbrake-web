@@ -1,7 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { DirectoryType, DirectoryItemType, DirectoryItemsType } from 'types/directory';
-import { GetQueue, JobForAvailableWorkers } from './queue';
+import logger from 'logging';
+import { GetQueue } from './queue';
 import { TranscodeStage } from 'types/transcode';
 
 export async function GetDirectoryItems(absolutePath: string, recursive: boolean = false) {
@@ -48,10 +49,10 @@ export async function GetDirectoryItems(absolutePath: string, recursive: boolean
 			current: currentItem,
 			items: items,
 		};
-		// console.log(result);
+		// logger.info(result);
 		return result;
 	} catch (err) {
-		console.error(err);
+		logger.error(err);
 	}
 }
 
@@ -68,7 +69,7 @@ export async function MakeDirectory(directoryPath: string, directoryName: string
 		await fs.mkdir(fullPath, { mode: parentMode, recursive: false });
 		return true;
 	} catch (err) {
-		console.error(err);
+		logger.error(err);
 		return false;
 	}
 }
@@ -86,7 +87,7 @@ export async function CheckFilenameCollision(existingDir: string, newItems: Dire
 		existingItems.forEach((existingItem) => {
 			if (newItem.name + newItem.extension == existingItem.name + existingItem.extension) {
 				fileCollisions[newItem.name].push(newItemIndex);
-				console.log(
+				logger.info(
 					`[server] [files] '${
 						newItem.name + newItem.extension
 					}' collides with existing file '${
@@ -106,7 +107,7 @@ export async function CheckFilenameCollision(existingDir: string, newItems: Dire
 					!fileCollisions[newItem.name].includes(newItemIndex)
 				) {
 					fileCollisions[newItem.name].push(newItemIndex);
-					console.log(
+					logger.info(
 						`[server] [files] '${
 							newItem.name + newItem.extension
 						}' collides with another output '${
@@ -127,7 +128,7 @@ export async function CheckFilenameCollision(existingDir: string, newItems: Dire
 					!fileCollisions[newItem.name].includes(newItemIndex)
 				) {
 					fileCollisions[newItem.name].push(newItemIndex);
-					console.log(
+					logger.info(
 						`[server] [files] '${
 							newItem.name + newItem.extension
 						}' collides with a pending job '${path.basename(waitingItem)}'`
