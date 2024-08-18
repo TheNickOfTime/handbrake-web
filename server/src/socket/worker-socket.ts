@@ -17,12 +17,12 @@ export default function WorkerSocket(io: Server) {
 	io.of('/worker').on('connection', (socket) => {
 		const workerID = socket.handshake.query['workerID'] as string;
 
-		logger.info(`[server] Worker '${workerID}' has connected with ID '${socket.id}'.`);
+		logger.info(`[socket] Worker '${workerID}' has connected with ID '${socket.id}'.`);
 		AddWorker(socket);
 		WorkerForAvailableJobs(workerID);
 
 		socket.on('disconnect', () => {
-			logger.info(`[server] Worker '${workerID}' with ID '${socket.id}' has disconnected.`);
+			logger.info(`[socket] Worker '${workerID}' with ID '${socket.id}' has disconnected.`);
 			RemoveWorker(socket);
 			const queue = GetQueue();
 			if (queue) {
@@ -32,7 +32,7 @@ export default function WorkerSocket(io: Server) {
 				if (workersJob) {
 					StopJob(workersJob);
 					logger.info(
-						`[server] Disconnected worker '${workerID}' was working on job '${workersJob}' when disconnected - setting job to stopped.`
+						`[socket] Disconnected worker '${workerID}' was working on job '${workersJob}' when disconnected - setting job to stopped.`
 					);
 				}
 			}
@@ -63,7 +63,7 @@ export default function WorkerSocket(io: Server) {
 
 		socket.on('transcode-stopped', (job_id: string, status: JobStatusType) => {
 			logger.info(
-				`[server] Worker '${workerID}' with ID '${socket.id}' has stopped transcoding. The job will be reset.`
+				`[socket] Worker '${workerID}' with ID '${socket.id}' has stopped transcoding. The job will be reset.`
 			);
 
 			StopJob(job_id);

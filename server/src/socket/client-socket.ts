@@ -64,12 +64,12 @@ const initClient = (socket: Client) => {
 
 export default function ClientSocket(io: Server) {
 	io.of('/client').on('connection', (socket) => {
-		logger.info(`[server] Client '${socket.id}' has connected.`);
+		logger.info(`[socket] Client '${socket.id}' has connected.`);
 		AddClient(socket);
 		initClient(socket);
 
 		socket.on('disconnect', () => {
-			logger.info(`[server] Client '${socket.id}' has disconnected.`);
+			logger.info(`[socket] Client '${socket.id}' has disconnected.`);
 			RemoveClient(socket);
 		});
 
@@ -94,7 +94,7 @@ export default function ClientSocket(io: Server) {
 		// Jobs ------------------------------------------------------------------------------------
 		socket.on('add-job', (data: QueueRequestType) => {
 			logger.info(
-				`[server] Client '${socket.id}' has requested to add a job for '${data.input}' to the queue.`
+				`[socket] Client '${socket.id}' has requested to add a job for '${data.input}' to the queue.`
 			);
 			AddJob(data);
 		});
@@ -113,7 +113,7 @@ export default function ClientSocket(io: Server) {
 
 		socket.on('reorder-job', (id: string, newIndex: number) => {
 			logger.info(
-				`[server] Client is requesting job at order index ${GetJobOrderIndexFromTable(
+				`[socket] Client is requesting job at order index ${GetJobOrderIndexFromTable(
 					id
 				)} be reordered to index ${newIndex}.`
 			);

@@ -141,7 +141,7 @@ export function WorkerForAvailableJobs(workerID: string) {
 			// Set queue to idle if there are no other busy workers
 			if (GetBusyWorkers().length == 0) {
 				SetQueueStatus(QueueStatus.Idle);
-				logger.info("There are no active workers, setting queue to 'Idle'.");
+				logger.info("[queue] There are no active workers, setting queue to 'Idle'.");
 			}
 		}
 	}
