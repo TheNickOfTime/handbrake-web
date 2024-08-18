@@ -1,6 +1,7 @@
 import path from 'path';
 import { createLogger, format, transports } from 'winston';
 import { Logger, LeveledLogMethod } from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
 import { dataPath } from './data';
 
 interface CustomLeveledLogMethod extends LeveledLogMethod {
@@ -78,8 +79,12 @@ function CreateCustomLogger(label: string): CustomLogger {
 		level: 'info',
 		transports: [
 			new transports.Console({ format: consoleFormatter(label) }),
-			new transports.File({
-				filename: path.join(dataPath, 'log/server.log'),
+			new DailyRotateFile({
+				dirname: path.join(dataPath, 'log'),
+				filename: 'server-%DATE%',
+				extension: '.log',
+				datePattern: 'YYYY-MM-DD',
+				maxFiles: 5,
 				format: fileFormatter(label),
 			}),
 		],
