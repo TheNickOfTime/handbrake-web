@@ -1,26 +1,27 @@
 import { Database } from 'better-sqlite3';
+import logger from 'logging';
 import { database, databaseVersion } from '../database';
 import DatabaseMigration0 from './database-migration-0';
 import DatabaseMigration1 from './database-migration-1';
 
 export default function DatabaseMigrations(version: number) {
 	try {
-		console.log(
+		logger.info(
 			`[server] [database] [migration] The database_version is out of date, performing migrations...`
 		);
 		for (let i = version; i <= databaseVersion; i++) {
 			RunDatabaseMigration(i);
 		}
-		console.log(
+		logger.info(
 			`[server] [database] [migrations] Database migrations have completed, the database_version is up to date.`
 		);
 	} catch (error) {
-		console.error(error);
+		logger.error(error);
 	}
 }
 
 function RunDatabaseMigration(version: number) {
-	console.log(
+	logger.info(
 		`[server] [database] [migration] Running migration script for database_version ${version}...`
 	);
 
@@ -37,7 +38,7 @@ function RunDatabaseMigration(version: number) {
 		'UPDATE database_version SET version = $version'
 	);
 	upgradeVersionStatement.run({ version: version });
-	// console.log(
+	// logger.info(
 	// 	`[server] [database] [migration] The database_version has been upgraded to version ${version}.`
 	// );
 }

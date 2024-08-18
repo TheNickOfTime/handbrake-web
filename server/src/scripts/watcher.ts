@@ -25,6 +25,7 @@ import {
 	WatcherRuleNumberComparisonMethods,
 	WatcherRuleStringComparisonMethods,
 } from 'types/watcher';
+import logger from 'logging';
 import { EmitToAllClients } from './connections';
 import { AddJob, GetQueue, RemoveJob } from './queue';
 import { QueueRequestType } from 'types/queue';
@@ -54,25 +55,25 @@ export function RegisterWatcher(id: number, watcher: WatcherDefinitionWithRulesT
 	});
 
 	newWatcher.on('error', (error) => {
-		console.error(error);
+		logger.error(error);
 	});
 
 	watchers[id] = newWatcher;
 
-	console.log(`[server] [watcher] Registered watcher for '${watcher.watch_path}'.`);
+	logger.info(`[server] [watcher] Registered watcher for '${watcher.watch_path}'.`);
 }
 
 export async function DeregisterWatcher(id: number) {
 	try {
-		// console.log(watchers);
+		// logger.info(watchers);
 		const directory = Object.entries(watchers[id].getWatched())[0].join('/');
 		await watchers[id].close();
-		console.log(`[server] [watcher] Deregistered watcher for '${directory}'.`);
+		logger.info(`[server] [watcher] Deregistered watcher for '${directory}'.`);
 
 		delete watchers[id];
 	} catch (error) {
-		console.error(`[server] [watcher] [error] Could not deregister watcher with id '${id}'.`);
-		console.error(error);
+		logger.error(`[server] [watcher] [error] Could not deregister watcher with id '${id}'.`);
+		logger.error(error);
 	}
 }
 
@@ -103,7 +104,7 @@ function WatcherRuleStringComparison(
 			if (splitRegex) {
 				return input.match(new RegExp(splitRegex[1], splitRegex[2])) ? true : false;
 			} else {
-				console.log(
+				logger.info(
 					`[server] [watcher] [error] Could not detect a valid regex in the string '${value}'.`
 				);
 				return false;
@@ -134,7 +135,7 @@ function WatcherRuleNumberComparison(
 }
 
 async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, filePath: string) {
-	console.log(
+	logger.info(
 		`[server] [watcher] Watcher for '${
 			watcher.watch_path
 		}' has detected the creation of the file '${path.basename(filePath)}'.`
@@ -225,7 +226,7 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, f
 	});
 
 	if (!isValid) {
-		console.log(
+		logger.info(
 			`[server] [watcher] Watcher for '${watcher.watch_path}'s ${
 				Object.keys(watcher.rules).length
 			} rule conditions have not been met for file '${path.basename(filePath)}'`
@@ -253,9 +254,10 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, f
 		const newJobRequest: QueueRequestType = {
 			input: filePath,
 			output: checkedOutputPath,
+			category: watcher.preset_category,
 			preset: watcher.preset_id,
 		};
-		console.log(
+		logger.info(
 			`[server] [watcher] Watcher for '${watcher.watch_path}' is requesting a new job be made for the video file '${parsedPath.base}'.`
 		);
 		AddJob(newJobRequest);
@@ -263,7 +265,7 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, f
 }
 
 function onWatcherDetectFileDelete(watcher: WatcherDefinitionWithRulesType, filePath: string) {
-	console.log(
+	logger.info(
 		`[server] [watcher] Watcher for '${
 			watcher.watch_path
 		}' has detected the removal of the file/directory '${path.basename(filePath)}'.`
@@ -278,7 +280,7 @@ function onWatcherDetectFileDelete(watcher: WatcherDefinitionWithRulesType, file
 				queue[key].status.transcode_stage == TranscodeStage.Waiting
 		);
 		jobsToDelete.forEach((jobID) => {
-			console.log(
+			logger.info(
 				`[server] [watcher] Watcher for '${watcher.watch_path}' is requesting removal of job '${jobID}' because the input file '${filePath}' has been deleted.`
 			);
 			RemoveJob(jobID);
@@ -287,7 +289,7 @@ function onWatcherDetectFileDelete(watcher: WatcherDefinitionWithRulesType, file
 }
 
 function onWatcherDetectFileChange(watcher: WatcherDefinitionWithRulesType, filePath: string) {
-	console.log(
+	logger.info(
 		`[server] [watcher] Watcher for '${
 			watcher.watch_path
 		}' has detected a change in the file '${path.basename(filePath)}'.`

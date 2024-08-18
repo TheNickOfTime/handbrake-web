@@ -5,6 +5,7 @@ import {
 	JobsStatusTableType,
 } from 'types/database';
 import { JobType, QueueType, JobDataType, JobStatusType, QueueRequestType } from 'types/queue';
+import logger from 'logging';
 import { database } from './database';
 import { TranscodeStage } from 'types/transcode';
 
@@ -80,8 +81,8 @@ export function GetQueueFromDatabase() {
 		);
 		return result;
 	} catch (err) {
-		console.error(`[database] [error] Could not get jobs from the queue table.`);
-		console.error(err);
+		logger.error(`[database] [error] Could not get jobs from the queue table.`);
+		logger.error(err);
 	}
 }
 
@@ -102,8 +103,8 @@ export function GetJobFromDatabase(id: string): JobType | undefined {
 			return joinQueryToJob(result);
 		}
 	} catch (err) {
-		console.error(`[database] [error] Could not get get the job '${id}' from the database.`);
-		console.error(err);
+		logger.error(`[database] [error] Could not get get the job '${id}' from the database.`);
+		logger.error(err);
 	}
 }
 
@@ -123,10 +124,8 @@ export function GetJobDataFromTable(id: string): JobDataType | undefined {
 			return data;
 		}
 	} catch (err) {
-		console.error(
-			`[database] [error] Could not get data for '${id}' from the jobs_data table.`
-		);
-		console.error(err);
+		logger.error(`[database] [error] Could not get data for '${id}' from the jobs_data table.`);
+		logger.error(err);
 	}
 }
 
@@ -150,10 +149,10 @@ export function GetJobStatusFromTable(id: string): JobStatusType | undefined {
 			return status;
 		}
 	} catch (err) {
-		console.error(
+		logger.error(
 			`[database] [error] Could not get the status for '${id}' from the jobs_status table.`
 		);
-		console.error(err);
+		logger.error(err);
 	}
 }
 
@@ -167,10 +166,10 @@ export function GetJobOrderIndexFromTable(id: string): number | undefined {
 			return result.order_index;
 		}
 	} catch (err) {
-		console.error(
+		logger.error(
 			`[database] [error] Could not get the order_index for '${id}' from the jobs_order table.`
 		);
-		console.error(err);
+		logger.error(err);
 	}
 }
 
@@ -206,11 +205,11 @@ export function InsertJobToJobsDataTable(id: string, request: QueueRequestType) 
 			'INSERT INTO jobs_order(job_id, order_index) VALUES($job_id, $order_index)'
 		);
 		const result = statement.run({ job_id: id, order_index: next_order_index });
-		console.log(`[server] [database] Inserting a new job with id '${id}' into the database.`);
+		logger.info(`[server] [database] Inserting a new job with id '${id}' into the database.`);
 		return result;
 	} catch (err) {
-		console.error(`[server] [error] [database] Could not insert job '${id}' into queue table.`);
-		console.error(err);
+		logger.error(`[server] [error] [database] Could not insert job '${id}' into queue table.`);
+		logger.error(err);
 	}
 }
 
@@ -225,15 +224,15 @@ export function InsertJobToJobsOrderTable(id: string) {
 			'INSERT INTO jobs_order(job_id, order_index) VALUES($id, $orderIndex)'
 		);
 		const result = statement.run({ id: id, orderIndex: nextOrderIndex });
-		console.log(
+		logger.info(
 			`[server] [database] Inserting existing job '${id}' back into the jobs_order table with order_index ${nextOrderIndex}.`
 		);
 		return result;
 	} catch (err) {
-		console.error(
+		logger.error(
 			`[server] [error] [database] Could not insert job '${id}' into the jobs_order table.`
 		);
-		console.error(err);
+		logger.error(err);
 	}
 }
 
@@ -252,14 +251,14 @@ export function UpdateJobDataInDatabase(id: string, data: JobDataType) {
 
 		return result;
 	} catch (err) {
-		console.error(`[server] [error] [database] Could not update job '${id}'s data.`);
-		console.error(err);
+		logger.error(`[server] [error] [database] Could not update job '${id}'s data.`);
+		logger.error(err);
 	}
 }
 
 export function UpdateJobStatusInDatabase(id: string, status: JobStatusType) {
 	try {
-		// console.log(status);
+		// logger.info(status);
 		const updates = Object.entries(status)
 			// .filter((entry) => entry[1] != undefined)
 			.map(([key, value]) => `${key} = ${typeof value == 'string' ? `'${value}'` : value}`)
@@ -273,8 +272,8 @@ export function UpdateJobStatusInDatabase(id: string, status: JobStatusType) {
 
 		return result;
 	} catch (err) {
-		console.error(`[server] [error] [database] Could not update job '${id}'s status.`);
-		console.error(err);
+		logger.error(`[server] [error] [database] Could not update job '${id}'s status.`);
+		logger.error(err);
 	}
 }
 
@@ -303,7 +302,7 @@ export function UpdateJobOrderIndexInDatabase(id: string, new_index: number) {
 		reorderResult.splice(new_index - 1, 0, { job_id: id, order_index: previous_index });
 	} else {
 		database.prepare('DELETE FROM jobs_order WHERE job_id = $id').run({ id: id });
-		console.log(
+		logger.info(
 			`[server] [database] Removing job with id '${id}' from the 'jobs_order' table.`
 		);
 	}
@@ -318,7 +317,7 @@ export function UpdateJobOrderIndexInDatabase(id: string, new_index: number) {
 		);
 	rowsToUpdate.forEach((row) => {
 		orderUpdateStatement.run({ id: row.job_id, new_index: row.new_index });
-		console.log(
+		logger.info(
 			`[server] [database] Updating job with id '${id}' from order index ${row.order_index} to ${row.new_index}`
 		);
 	});
@@ -329,10 +328,10 @@ export function RemoveJobFromDatabase(id: string) {
 		UpdateJobOrderIndexInDatabase(id, 0);
 		const removalStatement = database.prepare('DELETE FROM job_ids WHERE id = $id');
 		const removalResult = removalStatement.run({ id: id });
-		console.log(`[server] [database] Removed job '${id}' from the database.`);
+		logger.info(`[server] [database] Removed job '${id}' from the database.`);
 		return removalResult;
 	} catch (err) {
-		console.error(`[server] [error] [database] Could not remove job '${id}'.`);
-		console.error(err);
+		logger.error(`[server] [error] [database] Could not remove job '${id}'.`);
+		logger.error(err);
 	}
 }

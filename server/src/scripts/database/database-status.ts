@@ -1,4 +1,5 @@
 import { StatusTableType } from 'types/database';
+import logger from 'logging';
 import { database } from './database';
 
 // export function InitializeStatus() {
@@ -13,8 +14,8 @@ export function GetStatusFromDatabase(id: string) {
 		const statusQuery = statusStatement.get({ id: id });
 		return statusQuery;
 	} catch (err) {
-		console.error(`[server] [database] [error] Could not get the status of '${id}'.`);
-		console.error(err);
+		logger.error(`[server] [database] [error] Could not get the status of '${id}'.`);
+		logger.error(err);
 	}
 }
 
@@ -24,9 +25,9 @@ export function UpdateStatusInDatabase(id: string, state: number) {
 			'INSERT INTO status (id, state) VALUES ($id, $state) ON CONFLICT (id) DO UPDATE SET state = $state'
 		);
 		updateStatement.run({ id: id, state: state });
-		// console.log(`[server] [database] Sucessfully updated the status of '${id}' to '${state}'.`);
+		// logger.info(`[server] [database] Sucessfully updated the status of '${id}' to '${state}'.`);
 	} catch (err) {
-		console.error(`[server] [database] [error] Could not update the status of '${id}'.`);
-		console.error(err);
+		logger.error(`[server] [database] [error] Could not update the status of '${id}'.`);
+		logger.error(err);
 	}
 }

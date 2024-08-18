@@ -1,5 +1,5 @@
+import logger from 'logging';
 import { Socket } from 'socket.io';
-// import { Client, Connections, Worker } from 'types/socket';
 
 type Client = Socket;
 
@@ -68,7 +68,7 @@ export function EmitToWorkerWithID(workerID: string, event: string, data?: any) 
 	if (worker) {
 		worker.emit(event, data);
 	} else {
-		console.error(
+		logger.error(
 			`[server] [error] Could not find a worker with id '${workerID}'. Could not emit event '${event}'.`
 		);
 	}
@@ -80,7 +80,7 @@ export function EmitToAllConnections(event: string, data?: any) {
 }
 
 const updateConnections = () => {
-	// console.log(connections);
+	// logger.info(connections);
 	const clients = connections.clients.map((client) => client.id);
 	const workers = connections.workers.map((worker) => ({
 		workerID: GetWorkerID(worker),
