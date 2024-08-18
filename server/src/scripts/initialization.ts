@@ -27,7 +27,9 @@ export default async function Initialization(server: Server, socket: SocketServe
 	const port = 9999;
 
 	server.listen(port, () => {
-		logger.info(`[server] Available at http://${url}:${port}`);
+		const hasPrefix = url.match(/^https?:\/\//);
+		const serverAddress = `${hasPrefix ? url : 'http://' + url}:${port}`;
+		logger.info(`[server] Available at '${serverAddress}'.`);
 	});
 	socket.attach(server);
 }
