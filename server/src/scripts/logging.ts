@@ -4,17 +4,7 @@ import { Logger, LeveledLogMethod } from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import { dataPath } from './data';
 
-interface CustomLeveledLogMethod extends LeveledLogMethod {
-	(message: string, tags: string[]): Logger;
-}
-
-interface CustomLogger extends Logger {
-	info: CustomLeveledLogMethod;
-}
-
 const formatInfo = format((info) => {
-	// info.label = `[${info.label}]`;
-
 	if (info.timestamp) {
 		info.timestamp = new Date(info.timestamp).toLocaleTimeString('en-US', {
 			hour12: false,
@@ -74,7 +64,7 @@ const fileFormatter = (label: string) =>
 		})
 	);
 
-function CreateCustomLogger(label: string): CustomLogger {
+function CreateCustomLogger(label: string) {
 	return createLogger({
 		level: 'info',
 		transports: [
