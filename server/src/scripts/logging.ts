@@ -4,6 +4,10 @@ import { Logger, LeveledLogMethod } from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import { dataPath } from './data';
 
+export const formatJSON = (json: string) => {
+	return json.replace(/"([^"]+)":/g, '$1:').replace(/:\s"([^"]+)"/g, ": '$1'");
+};
+
 const formatInfo = format((info) => {
 	if (info.timestamp) {
 		info.timestamp = new Date(info.timestamp).toLocaleTimeString('en-US', {
@@ -14,7 +18,8 @@ const formatInfo = format((info) => {
 	switch (typeof info.message) {
 		case 'string':
 			const tagRegex = /\[[\w\d-]+\]\s?/g;
-			const tags = (info.message as string).match(tagRegex);
+			const message = (info.message as string).match(/[^\n]+/);
+			const tags = (message ? message[0] : (info.message as string)).match(tagRegex);
 			if (tags) {
 				const newMessage = (info.message as string).replaceAll(tagRegex, '');
 				info.message = newMessage;
@@ -29,17 +34,22 @@ const formatInfo = format((info) => {
 			} else {
 				info.tags = `[${info.label}]`;
 			}
+
+			const timeTagRegex = /\[\d{2}:\d{2}:\d{2}\]\s/g;
+			if (info.message.match(timeTagRegex)) {
+				info.message = (info.message as string).replaceAll(timeTagRegex, '');
+			}
 			break;
 		case 'object':
 			info.tags = `[${info.label}]`;
-			info.message = JSON.stringify(info.message, null, 2)
-				.replace(/"([^"]+)":/g, '$1:')
-				.replace(/:\s"([^"]+)"/g, ": '$1'");
+			info.message = formatJSON(JSON.stringify(info.message, null, 2));
 			break;
 		default:
 			info.tags = `[${info.label}]`;
 			break;
 	}
+
+	// console.log(info.tags);
 
 	return info;
 });
