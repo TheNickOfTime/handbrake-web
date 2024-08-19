@@ -7,7 +7,7 @@ import DatabaseMigration1 from './database-migration-1';
 export default function DatabaseMigrations(version: number) {
 	try {
 		logger.info(
-			`[server] [database] [migration] The database_version is out of date, performing migrations...`
+			`[server] [database] [migration] The database_version is out of date, performing migrations for versions ${version} - ${databaseVersion}...`
 		);
 		for (let i = version + 1; i <= databaseVersion; i++) {
 			RunDatabaseMigration(i);
@@ -16,6 +16,7 @@ export default function DatabaseMigrations(version: number) {
 			`[server] [database] [migrations] Database migrations have completed, the database_version is up to date.`
 		);
 	} catch (error) {
+		logger.error(`[database] [migrations] Could not complete migrations.`);
 		logger.error(error);
 	}
 }
