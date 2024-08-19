@@ -1,34 +1,12 @@
-import { createServer, Server } from 'http';
-import express from 'express';
-import { Server as SocketServer } from 'socket.io';
-import 'dotenv/config';
-import cors from 'cors';
+import { CheckDataDirectoryPermissions } from 'scripts/data';
 
-import ClientSocket from './socket/client-socket';
-import WorkerSocket from './socket/worker-socket';
-import Initialization from 'scripts/initialization';
-import ClientRoutes from './routes/client';
-import Shutdown from 'scripts/shutdown';
+async function Server() {
+	// Check critical permissions
+	await CheckDataDirectoryPermissions();
 
-// Server ------------------------------------------------------------------------------------------
-const app = express();
-const server = createServer(app);
-const socket = new SocketServer(server, {
-	cors: {
-		origin: '*',
-	},
-	pingTimeout: 5000,
-});
+	// Startup only occurs if the previous functions ever finish
+	const startup = await import('./server-startup');
+	startup.default();
+}
 
-app.use(cors());
-
-// Routes ------------------------------------------------------------------------------------------
-ClientRoutes(app);
-
-// Socket Listeners --------------------------------------------------------------------------------
-ClientSocket(socket);
-WorkerSocket(socket);
-
-// Initialization & Shutdown -----------------------------------------------------------------------
-Initialization(server, socket);
-Shutdown(socket);
+Server();
