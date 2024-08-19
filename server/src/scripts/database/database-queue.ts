@@ -1,8 +1,9 @@
 import {
-	JobIDsTableType,
 	JobOrderTableType,
-	JobsDataTableType,
+	JobsTableType,
 	JobsStatusTableType,
+	JobInsertType,
+	JobStatusInsertType,
 } from 'types/database';
 import { JobType, QueueType, JobDataType, JobStatusType, QueueRequestType } from 'types/queue';
 import logger from 'logging';
@@ -34,9 +35,7 @@ export const queueTableCreateStatements = [
 	)',
 ];
 
-const joinQueryToJob = (
-	query: JobIDsTableType & JobsDataTableType & JobsStatusTableType & JobOrderTableType
-) => {
+const joinQueryToJob = (query: JobsTableType & JobsStatusTableType & JobOrderTableType) => {
 	const job: JobType = {
 		data: {
 			input_path: query.input_path,
@@ -63,54 +62,62 @@ export function GetQueueFromDatabase() {
 	try {
 		const statement = database.prepare<
 			[],
-			JobIDsTableType & JobsDataTableType & JobsStatusTableType & JobOrderTableType
+			JobsTableType & JobsStatusTableType & JobOrderTableType
 		>(
-			'SELECT * FROM job_ids \
-			LEFT JOIN jobs_data ON job_ids.id = jobs_data.job_id \
-			LEFT JOIN jobs_status ON job_ids.id = jobs_status.job_id \
-			LEFT JOIN jobs_order ON job_ids.id = jobs_order.job_id'
+			'SELECT j.job_id, j.input_path, j.output_path, j.preset_category, j.preset_id, \
+				s.worker_id, s.transcode_stage, s.transcode_percentage, s.transcode_eta, s.transcode_fps_current, \
+				s.transcode_fps_average, s.time_started, s.time_finished, \
+				o.order_index \
+			FROM jobs j \
+			LEFT JOIN jobs_status s ON j.job_id = s.job_id \
+			LEFT JOIN jobs_order o ON j.job_id = o.job_id'
 		);
-		const result: QueueType = Object.fromEntries(
-			statement.all().map((row) => {
+		const result = statement.all();
+		const queue: QueueType = Object.fromEntries(
+			result.map((row) => {
 				const job = joinQueryToJob(row);
-				return [row.id, job];
+				const result = [row.job_id, job];
+				return result;
 			})
 		);
-		return result;
+		return queue;
 	} catch (err) {
 		logger.error(`[database] [error] Could not get jobs from the queue table.`);
-		logger.error(err);
+		console.error(err);
 	}
 }
 
-export function GetJobFromDatabase(id: string): JobType | undefined {
+export function GetJobFromDatabase(job_id: number): JobType | undefined {
 	try {
 		const statement = database.prepare<
-			{ id: string },
-			JobIDsTableType & JobsDataTableType & JobsStatusTableType & JobOrderTableType
+			{ job_id: number },
+			JobsTableType & JobsStatusTableType & JobOrderTableType
 		>(
-			'SELECT * FROM job_ids \
-			LEFT JOIN jobs_data ON job_ids.id = jobs_data.job_id \
-			LEFT JOIN jobs_status ON job_ids.id = jobs_status.job_id \
-			LEFT JOIN jobs_order ON job_ids.id = jobs_order.job_id \
-			WHERE id = $id'
+			'SELECT j.job_id, j.input_path, j.output_path, j.preset_category, j.preset_id, \
+				s.worker_id, s.transcode_stage, s.transcode_percentage, s.transcode_eta, s.transcode_fps_current, \
+				s.transcode_fps_average, s.time_started, s.time_finished, \
+				o.order_index \
+			FROM jobs j \
+			LEFT JOIN jobs_status s ON j.job_id = s.job_id \
+			LEFT JOIN jobs_order o ON j.job_id = o.job_id \
+			WHERE j.job_id = $job_id'
 		);
-		const result = statement.get({ id: id });
+		const result = statement.get({ job_id: job_id });
 		if (result) {
 			return joinQueryToJob(result);
 		}
 	} catch (err) {
-		logger.error(`[database] [error] Could not get get the job '${id}' from the database.`);
-		logger.error(err);
+		logger.error(`[database] [error] Could not get get the job '${job_id}' from the database.`);
+		console.error(err);
 	}
 }
 
-export function GetJobDataFromTable(id: string): JobDataType | undefined {
+export function GetJobDataFromTable(job_id: number): JobDataType | undefined {
 	try {
-		const statement = database.prepare<JobIDsTableType, JobsDataTableType>(
-			'SELECT * FROM jobs_data WHERE job_id = $id'
+		const statement = database.prepare<{ job_id: number }, JobsTableType>(
+			'SELECT * FROM jobs WHERE job_id = $job_id'
 		);
-		const result = statement.get({ id: id });
+		const result = statement.get({ job_id: job_id });
 		if (result) {
 			const data: JobDataType = {
 				input_path: result.input_path,
@@ -121,17 +128,19 @@ export function GetJobDataFromTable(id: string): JobDataType | undefined {
 			return data;
 		}
 	} catch (err) {
-		logger.error(`[database] [error] Could not get data for '${id}' from the jobs_data table.`);
-		logger.error(err);
+		logger.error(
+			`[database] [error] Could not get data for '${job_id}' from the jobs_data table.`
+		);
+		console.error(err);
 	}
 }
 
-export function GetJobStatusFromTable(id: string): JobStatusType | undefined {
+export function GetJobStatusFromTable(job_id: number): JobStatusType | undefined {
 	try {
-		const statement = database.prepare<JobIDsTableType, JobsStatusTableType>(
-			'SELECT * FROM jobs_status WHERE job_id = $id'
+		const statement = database.prepare<{ job_id: number }, JobsStatusTableType>(
+			'SELECT * FROM jobs_status WHERE job_id = $job_id'
 		);
-		const result = statement.get({ id: id });
+		const result = statement.get({ job_id: job_id });
 		if (result) {
 			const status: JobStatusType = {
 				worker_id: result.worker_id || null,
@@ -147,52 +156,52 @@ export function GetJobStatusFromTable(id: string): JobStatusType | undefined {
 		}
 	} catch (err) {
 		logger.error(
-			`[database] [error] Could not get the status for '${id}' from the jobs_status table.`
+			`[database] [error] Could not get the status for '${job_id}' from the jobs_status table.`
 		);
-		logger.error(err);
+		console.error(err);
 	}
 }
 
-export function GetJobOrderIndexFromTable(id: string): number | undefined {
+export function GetJobOrderIndexFromTable(job_id: number): number | undefined {
 	try {
-		const statement = database.prepare<JobIDsTableType, JobOrderTableType>(
-			'SELECT order_index FROM jobs_order WHERE job_id = $id'
+		const statement = database.prepare<{ job_id: number }, JobOrderTableType>(
+			'SELECT order_index FROM jobs_order WHERE job_id = $job_id'
 		);
-		const result = statement.get({ id: id });
+		const result = statement.get({ job_id: job_id });
 		if (result) {
 			return result.order_index;
 		}
 	} catch (err) {
 		logger.error(
-			`[database] [error] Could not get the order_index for '${id}' from the jobs_order table.`
+			`[database] [error] Could not get the order_index for '${job_id}' from the jobs_order table.`
 		);
-		logger.error(err);
+		console.error(err);
 	}
 }
 
-export function InsertJobToJobsDataTable(id: string, request: QueueRequestType) {
+export function InsertJobToDatabase(request: QueueRequestType) {
 	try {
-		const idStatement = database.prepare<JobIDsTableType>(
-			'INSERT INTO job_ids(id) VALUES($id)'
+		const dataStatement = database.prepare<JobInsertType>(
+			'INSERT INTO jobs(input_path, output_path, preset_category, preset_id) \
+			VALUES($input_path, $output_path, $preset_category, $preset_id)'
 		);
-		idStatement.run({ id: id });
-
-		const dataStatement = database.prepare<JobsDataTableType>(
-			'INSERT INTO jobs_data(job_id, input_path, output_path, preset_category, preset_id) \
-			VALUES($job_id, $input_path, $output_path, $preset_category, $preset_id)'
-		);
-		dataStatement.run({
-			job_id: id,
+		const dataResult = dataStatement.run({
 			input_path: request.input,
 			output_path: request.output,
 			preset_category: request.category,
 			preset_id: request.preset,
 		});
 
-		const statusStatement = database.prepare<JobsStatusTableType>(
+		const job_id = database
+			.prepare<{ rowid: number }, { rowid: number }>(
+				'SELECT job_id FROM jobs WHERE row_id = $rowid'
+			)
+			.get({ rowid: dataResult.lastInsertRowid as number })!.rowid;
+
+		const statusStatement = database.prepare<JobStatusInsertType>(
 			'INSERT INTO jobs_status(job_id) VALUES($job_id)'
 		);
-		statusStatement.run({ job_id: id });
+		statusStatement.run({ job_id: job_id });
 
 		const next_order_index = database
 			.prepare<[], { 'COUNT(*)': number }>('SELECT COUNT(*) FROM job_ids AS count')
@@ -201,112 +210,116 @@ export function InsertJobToJobsDataTable(id: string, request: QueueRequestType) 
 		const statement = database.prepare<JobOrderTableType>(
 			'INSERT INTO jobs_order(job_id, order_index) VALUES($job_id, $order_index)'
 		);
-		const result = statement.run({ job_id: id, order_index: next_order_index });
-		logger.info(`[server] [database] Inserting a new job with id '${id}' into the database.`);
-		return result;
+		const result = statement.run({ job_id: job_id, order_index: next_order_index });
+		logger.info(
+			`[server] [database] Inserting a new job with id '${job_id}' into the database.`
+		);
+		return job_id;
 	} catch (err) {
-		logger.error(`[server] [error] [database] Could not insert job '${id}' into queue table.`);
-		logger.error(err);
+		logger.error(
+			`[server] [error] [database] Could not insert job with input file '${request.input}' into jobs table.`
+		);
+		console.error(err);
 	}
 }
 
-export function InsertJobToJobsOrderTable(id: string) {
+export function InsertJobToJobsOrderTable(job_id: number) {
 	try {
 		const nextOrderIndex =
 			database
 				.prepare<[], { 'COUNT(*)': number }>('SELECT COUNT(*) FROM jobs_order AS count')
 				.get()!['COUNT(*)'] + 1;
 
-		const statement = database.prepare<{ id: string; orderIndex: number }>(
-			'INSERT INTO jobs_order(job_id, order_index) VALUES($id, $orderIndex)'
+		const statement = database.prepare<{ job_id: number; orderIndex: number }>(
+			'INSERT INTO jobs_order(job_id, order_index) VALUES($job_id, $orderIndex)'
 		);
-		const result = statement.run({ id: id, orderIndex: nextOrderIndex });
+		const result = statement.run({ job_id: job_id, orderIndex: nextOrderIndex });
 		logger.info(
-			`[server] [database] Inserting existing job '${id}' back into the jobs_order table with order_index ${nextOrderIndex}.`
+			`[server] [database] Inserting existing job '${job_id}' back into the jobs_order table with order_index ${nextOrderIndex}.`
 		);
 		return result;
 	} catch (err) {
 		logger.error(
-			`[server] [error] [database] Could not insert job '${id}' into the jobs_order table.`
+			`[server] [error] [database] Could not insert job '${job_id}' into the jobs_order table.`
 		);
-		logger.error(err);
+		console.error(err);
 	}
 }
 
-export function UpdateJobDataInDatabase(id: string, data: JobDataType) {
+export function UpdateJobDataInDatabase(job_id: number, data: JobDataType) {
 	try {
 		const updates = Object.entries(data)
 			.filter((entry) => entry[1] != undefined)
 			.map(([key, value]) => `${key} = ${typeof value == 'string' ? `'${value}'` : value}`)
 			.join(', ');
-		const statement = database.prepare<{ id: string }>(
-			`UPDATE jobs_data SET ${updates} WHERE job_id = $id`
+		const statement = database.prepare<{ job_id: number }>(
+			`UPDATE jobs_data SET ${updates} WHERE job_id = $job_id`
 		);
 		const result = statement.run({
-			id: id,
+			job_id: job_id,
 		});
 
 		return result;
 	} catch (err) {
-		logger.error(`[server] [error] [database] Could not update job '${id}'s data.`);
-		logger.error(err);
+		logger.error(`[server] [error] [database] Could not update job '${job_id}'s data.`);
+		console.error(err);
 	}
 }
 
-export function UpdateJobStatusInDatabase(id: string, status: JobStatusType) {
+export function UpdateJobStatusInDatabase(job_id: number, status: JobStatusType) {
 	try {
 		// logger.info(status);
 		const updates = Object.entries(status)
 			// .filter((entry) => entry[1] != undefined)
 			.map(([key, value]) => `${key} = ${typeof value == 'string' ? `'${value}'` : value}`)
 			.join(', ');
-		const statement = database.prepare<{ id: string }>(
-			`UPDATE jobs_status SET ${updates} WHERE job_id = $id`
+		const statement = database.prepare<{ job_id: number }>(
+			`UPDATE jobs_status SET ${updates} WHERE job_id = $job_id`
 		);
 		const result = statement.run({
-			id: id,
+			job_id: job_id,
 		});
 
 		return result;
 	} catch (err) {
-		logger.error(`[server] [error] [database] Could not update job '${id}'s status.`);
-		logger.error(err);
+		logger.error(`[server] [error] [database] Could not update job '${job_id}'s status.`);
+		console.error(err);
 	}
 }
 
 /**
  *
- * @param id
+ * @param job_id
  * @param new_index When 0, removes from order entirely
  * @returns
  */
-export function UpdateJobOrderIndexInDatabase(id: string, new_index: number) {
-	const previous_index = GetJobOrderIndexFromTable(id)!;
+export function UpdateJobOrderIndexInDatabase(job_id: number, new_index: number) {
+	const previous_index = GetJobOrderIndexFromTable(job_id)!;
 
 	if (previous_index == new_index) return;
 
-	const orderUpdateStatement = database.prepare<{ id: string; new_index: number }>(
+	const orderUpdateStatement = database.prepare<{ id: number; new_index: number }>(
 		'UPDATE jobs_order SET order_index = $new_index WHERE job_id = $id'
 	);
 
-	const jobsStatement = database.prepare<{ id: string; new_index: number }, JobOrderTableType>(
+	const jobsStatement = database.prepare<{ id: number; new_index: number }, JobOrderTableType>(
 		'SELECT * FROM jobs_order WHERE job_id != $id ORDER BY order_index ASC'
 	);
-	const reorderResult = jobsStatement.all({ id: id, new_index: new_index });
+	const reorderResult = jobsStatement.all({ id: job_id, new_index: new_index });
 
 	if (new_index > 0) {
-		orderUpdateStatement.run({ id: id, new_index: -1 });
-		reorderResult.splice(new_index - 1, 0, { job_id: id, order_index: previous_index });
+		orderUpdateStatement.run({ id: job_id, new_index: -1 });
+		reorderResult.splice(new_index - 1, 0, { job_id: job_id, order_index: previous_index });
 	} else {
-		database.prepare('DELETE FROM jobs_order WHERE job_id = $id').run({ id: id });
+		database.prepare('DELETE FROM jobs_order WHERE job_id = $id').run({ id: job_id });
 		logger.info(
-			`[server] [database] Removing job with id '${id}' from the 'jobs_order' table.`
+			`[server] [database] Removing job with id '${job_id}' from the 'jobs_order' table.`
 		);
 	}
 
 	const rowsToUpdate = reorderResult
 		.map((row, index) => ({ ...row, new_index: index + 1 }))
-		.filter((row) => row.order_index != row.new_index || row.job_id == id)
+		.filter((row) => row.order_index != row.new_index || row.job_id == job_id)
 		.sort((a, b) =>
 			new_index > previous_index || new_index == 0
 				? a.new_index - b.new_index
@@ -315,20 +328,20 @@ export function UpdateJobOrderIndexInDatabase(id: string, new_index: number) {
 	rowsToUpdate.forEach((row) => {
 		orderUpdateStatement.run({ id: row.job_id, new_index: row.new_index });
 		logger.info(
-			`[server] [database] Updating job with id '${id}' from order index ${row.order_index} to ${row.new_index}`
+			`[server] [database] Updating job with id '${job_id}' from order index ${row.order_index} to ${row.new_index}`
 		);
 	});
 }
 
-export function RemoveJobFromDatabase(id: string) {
+export function RemoveJobFromDatabase(job_id: number) {
 	try {
-		UpdateJobOrderIndexInDatabase(id, 0);
-		const removalStatement = database.prepare('DELETE FROM job_ids WHERE id = $id');
-		const removalResult = removalStatement.run({ id: id });
-		logger.info(`[server] [database] Removed job '${id}' from the database.`);
+		UpdateJobOrderIndexInDatabase(job_id, 0);
+		const removalStatement = database.prepare('DELETE FROM jobs WHERE job_id = $job_id');
+		const removalResult = removalStatement.run({ job_id: job_id });
+		logger.info(`[server] [database] Removed job '${job_id}' from the database.`);
 		return removalResult;
 	} catch (err) {
-		logger.error(`[server] [error] [database] Could not remove job '${id}'.`);
-		logger.error(err);
+		logger.error(`[server] [error] [database] Could not remove job '${job_id}'.`);
+		console.error(err);
 	}
 }
