@@ -10,18 +10,15 @@ import { database } from './database';
 import { TranscodeStage } from 'types/transcode';
 
 export const queueTableCreateStatements = [
-	'CREATE TABLE IF NOT EXISTS job_ids( \
-		id TEXT NOT NULL PRIMARY KEY \
-	)',
-	'CREATE TABLE IF NOT EXISTS jobs_data(\
-		job_id TEXT NOT NULL REFERENCES job_ids(id) ON DELETE CASCADE, \
+	'CREATE TABLE IF NOT EXISTS jobs(\
+		job_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
 		input_path TEXT NOT NULL, \
 		output_path TEXT NOT NULL, \
 		preset_category TEXT, \
 		preset_id TEXT NOT NULL \
 		)',
 	'CREATE TABLE IF NOT EXISTS jobs_status( \
-		job_id TEXT NOT NULL REFERENCES job_ids(id) ON DELETE CASCADE, \
+		job_id INTEGER NOT NULL REFERENCES jobs(job_id) ON DELETE CASCADE, \
 		worker_id TEXT, \
 		transcode_stage INTEGER DEFAULT 0, \
 		transcode_percentage REAL DEFAULT 0, \
@@ -32,7 +29,7 @@ export const queueTableCreateStatements = [
 		time_finished INTEGER DEFAULT 0 \
 	)',
 	'CREATE TABLE IF NOT EXISTS jobs_order( \
-		job_id TEXT NOT NULL REFERENCES job_ids(id) ON DELETE CASCADE, \
+		job_id INTEGER NOT NULL REFERENCES job_ids(job_id) ON DELETE CASCADE, \
 		order_index INTEGER NOT NULL UNIQUE \
 	)',
 ];

@@ -9,7 +9,7 @@ export default function DatabaseMigrations(version: number) {
 		logger.info(
 			`[server] [database] [migration] The database_version is out of date, performing migrations...`
 		);
-		for (let i = version; i <= databaseVersion; i++) {
+		for (let i = version + 1; i <= databaseVersion; i++) {
 			RunDatabaseMigration(i);
 		}
 		logger.info(
