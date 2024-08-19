@@ -4,7 +4,6 @@ import {
 	WatcherRuleDefinitionType,
 	WatcherDefinitionWithRulesType,
 	WatcherDefinitionObjectType,
-	WatcherRuleMaskMethods,
 	WatcherRuleDefinitionObjectType,
 } from 'types/watcher';
 import logger from 'logging';

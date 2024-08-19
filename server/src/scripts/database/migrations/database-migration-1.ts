@@ -1,8 +1,5 @@
 import { Database } from 'better-sqlite3';
-import { GetQueue } from 'scripts/queue';
-import { queueTableCreateStatements } from '../database-queue';
 import logger from 'logging';
-import { error, info } from 'winston';
 
 export default function DatabaseMigration1(database: Database) {
 	const migrationTransaction = database.transaction(() => {
@@ -131,7 +128,6 @@ export default function DatabaseMigration1(database: Database) {
 						}>(
 							'INSERT OR IGNORE INTO jobs_order(job_id, order_index) SELECT $new_id, order_index FROM jobs_order_old WHERE job_id = $old_id'
 						);
-						console.log('here');
 						const insertOrderResult = insertOrderStatement.run({
 							old_id: id,
 							new_id: newID,

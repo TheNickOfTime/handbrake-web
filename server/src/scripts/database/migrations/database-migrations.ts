@@ -1,4 +1,3 @@
-import { Database } from 'better-sqlite3';
 import logger from 'logging';
 import { database, databaseVersion } from '../database';
 import DatabaseMigration0 from './database-migration-0';
