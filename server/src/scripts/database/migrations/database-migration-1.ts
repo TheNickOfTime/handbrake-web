@@ -168,7 +168,7 @@ export default function DatabaseMigration1(database: Database) {
 					`ALTER TABLE watchers ADD COLUMN preset_category TEXT DEFAULT 'uncategorized'`
 				);
 				watcherPresetCategoryStatement.run();
-				console.log(
+				logger.info(
 					`[database] [migration-1] Added column 'preset_category' to table 'watchers' with a default value of 'uncategorized'.`
 				);
 
