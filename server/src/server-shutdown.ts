@@ -1,26 +1,26 @@
 import { Server } from 'node:http';
 import { Server as SocketServer } from 'socket.io';
 
-import { DatabaseDisconnect } from './database/database';
+import { DatabaseDisconnect } from 'scripts/database/database';
 import logger from 'logging';
 
-export default function Shutdown(socket: SocketServer) {
+export function RegisterExitListeners(socket: SocketServer) {
 	process.on('SIGINT', () => {
 		logger.info(
 			`[server] [shutdown] The process has been interrupted, HandBrake Web will now begin to shutdown...`
 		);
-		OnShutdown(socket);
+		Shutdown(socket);
 	});
 
 	process.on('SIGTERM', () => {
 		logger.info(
 			`[server] [shutdown] The process has been terminated, HandBrake Web will now begin to shutdown...`
 		);
-		OnShutdown(socket);
+		Shutdown(socket);
 	});
 }
 
-async function OnShutdown(socket: SocketServer) {
+export default async function Shutdown(socket: SocketServer) {
 	try {
 		// Shutdown the socket server
 		await new Promise<void>((resolve) => {
