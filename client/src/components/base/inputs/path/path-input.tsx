@@ -7,7 +7,8 @@ import './path-input.scss';
 type Params = {
 	id: string;
 	label: string;
-	path: string;
+	startPath: string;
+	rootPath: string;
 	mode: FileBrowserMode;
 	allowCreate?: boolean;
 	value: string | undefined;
@@ -17,7 +18,8 @@ type Params = {
 export default function PathInput({
 	id,
 	label,
-	path,
+	startPath,
+	rootPath,
 	mode,
 	allowCreate = false,
 	value,
@@ -65,7 +67,8 @@ export default function PathInput({
 			{showFileBrowser && (
 				<div className='browser-section'>
 					<FileBrowser
-						basePath={path}
+						startPath={startPath}
+						rootPath={rootPath}
 						mode={mode}
 						allowCreate={allowCreate}
 						onConfirm={handleConfirm}

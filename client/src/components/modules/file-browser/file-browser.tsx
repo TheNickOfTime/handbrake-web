@@ -15,16 +15,17 @@ import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import './file-browser.scss';
 
 type Params = {
-	basePath: string;
+	startPath: string;
+	rootPath: string;
 	mode: FileBrowserMode;
 	allowCreate: boolean;
 	onConfirm: (item: DirectoryItemType) => void;
 };
 
-export default function FileBrowser({ basePath, mode, allowCreate, onConfirm }: Params) {
+export default function FileBrowser({ startPath, rootPath, mode, allowCreate, onConfirm }: Params) {
 	const { socket } = useOutletContext<PrimaryOutletContextType>();
 
-	const [currentPath, setCurrentPath] = useState(basePath);
+	const [currentPath, setCurrentPath] = useState(startPath);
 	const [selectedItem, setSelectedItem] = useState<DirectoryItemType>();
 	const [directory, setDirectory] = useState<DirectoryType | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
@@ -122,7 +123,7 @@ export default function FileBrowser({ basePath, mode, allowCreate, onConfirm }: 
 				<div className='file-browser-body'>
 					<FileBrowserBody
 						mode={mode}
-						basePath={basePath}
+						rootPath={rootPath}
 						directory={directory}
 						updateDirectory={handleUpdateDirectory}
 						selectedItem={selectedItem}

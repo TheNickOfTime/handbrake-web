@@ -2,7 +2,7 @@ config:
   auto-fix: true
 paths:
   media-path: '/video'
-  input-path: '/video/input'
+  input-path: '/video'
   output-path: ''
 presets:
   show-default-presets: true

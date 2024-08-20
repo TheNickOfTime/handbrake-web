@@ -115,12 +115,15 @@ export default function CreateJob({ onClose }: Params) {
 
 		// Set the output variables if the path is not set
 		if (!outputPath || !outputChanged) {
-			const parentPath = item.path.replace(item.name + item.extension, '');
-			setOutputPath(parentPath);
+			// const parentPath = item.path.replace(item.name + item.extension, '');
+			const newOutputPath = config.paths['output-path']
+				? config.paths['output-path']
+				: item.path.replace(`/${item.name}${item.extension}`, '');
+			setOutputPath(newOutputPath);
 
 			const newOutputFiles: DirectoryItemsType = [
 				{
-					path: parentPath + item.name + outputExtension,
+					path: `${newOutputPath}/${item.name}${outputExtension}`,
 					name: item.name,
 					extension: outputExtension,
 					isDirectory: false,
@@ -128,7 +131,7 @@ export default function CreateJob({ onClose }: Params) {
 			];
 			const dedupedOutputFiles = await socket.emitWithAck(
 				'check-name-collision',
-				parentPath,
+				newOutputPath,
 				newOutputFiles
 			);
 			setOutputFiles(dedupedOutputFiles);
@@ -141,10 +144,14 @@ export default function CreateJob({ onClose }: Params) {
 			(await RequestDirectory(socket, item.path, isRecursive)).items
 		);
 
-		const newOutputPath = outputChanged ? outputPath : item.path;
+		const newOutputPath = outputChanged
+			? outputPath
+			: config.paths['output-path']
+			? config.paths['output-path']
+			: item.path;
 		const newOutputFiles: DirectoryItemsType = inputPathItems.map((inputItem) => {
 			return {
-				path: newOutputPath + '/' + inputItem.name + inputItem.extension,
+				path: `${newOutputPath}/${inputItem.name}${outputExtension}`,
 				name: inputItem.name,
 				extension: outputExtension,
 				isDirectory: inputItem.isDirectory,
@@ -152,7 +159,7 @@ export default function CreateJob({ onClose }: Params) {
 		});
 		const dedupedOutputFiles = await socket.emitWithAck(
 			'check-name-collision',
-			item.path,
+			newOutputPath,
 			newOutputFiles
 		);
 
@@ -305,7 +312,8 @@ export default function CreateJob({ onClose }: Params) {
 					<PathInput
 						id='input-path'
 						label={jobFrom == JobFrom.FromFile ? 'File: ' : 'Directory: '}
-						path={config.paths['input-path']}
+						startPath={config.paths['input-path']}
+						rootPath={config.paths['media-path']}
 						mode={
 							jobFrom == JobFrom.FromFile
 								? FileBrowserMode.SingleFile
@@ -330,7 +338,12 @@ export default function CreateJob({ onClose }: Params) {
 					<PathInput
 						id='output-path'
 						label='Directory: '
-						path={config.paths['output-path']}
+						startPath={
+							config.paths['output-path']
+								? config.paths['output-path']
+								: config.paths['input-path']
+						}
+						rootPath={config.paths['media-path']}
 						mode={FileBrowserMode.Directory}
 						allowCreate={true}
 						value={outputPath}
