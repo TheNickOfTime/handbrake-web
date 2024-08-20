@@ -13,6 +13,8 @@ export default function SideBar({ showSidebar, setShowSidebar }: Params) {
 		}
 	};
 
+	console.log(import.meta);
+
 	return (
 		<div className={`side-bar ${showSidebar ? 'expanded' : ''}`}>
 			<div className='side-bar-background' />
@@ -65,6 +67,7 @@ export default function SideBar({ showSidebar, setShowSidebar }: Params) {
 						</li>
 					</ul>
 				</div>
+				<div className='side-bar-application-version'>v{APP_VERSION}</div>
 			</div>
 		</div>
 	);
