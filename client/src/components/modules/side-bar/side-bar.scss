@@ -46,61 +46,74 @@
 		height: 100%;
 		min-width: sizing.$sidebar-width;
 		max-width: sizing.$sidebar-width;
+
+		display: flex;
+		flex-flow: column nowrap;
+
 		background-color: colors.$background-secondary;
-	}
 
-	.side-bar-header {
-		width: 100%;
-		text-align: center;
-		padding-top: 2.5rem;
+		.side-bar-header {
+			width: 100%;
+			text-align: center;
+			padding-top: 2.5rem;
 
-		border-bottom: 0.2rem solid colors.$background-primary;
+			border-bottom: 0.2rem solid colors.$background-primary;
 
-		img {
-			width: 25%;
+			img {
+				width: 25%;
+			}
+
+			h2 {
+				color: colors.$text-color-secondary;
+			}
 		}
 
-		h2 {
-			color: colors.$text-color-secondary;
-		}
-	}
+		.side-bar-nav {
+			width: 100%;
+			flex-grow: 1;
 
-	.side-bar-nav {
-		width: 100%;
+			ul {
+				list-style: none;
+				margin: 0;
+				padding: 0;
 
-		ul {
-			list-style: none;
-			margin: 0;
-			padding: 0;
+				li {
+					// width: 100%;
+					font-size: 1.75rem;
+					border-bottom: 0.2rem solid colors.$background-primary;
 
-			li {
-				// width: 100%;
-				font-size: 1.75rem;
-				border-bottom: 0.2rem solid colors.$background-primary;
+					a {
+						width: 100%;
+						padding: 1rem 2rem;
 
-				a {
-					width: 100%;
-					padding: 1rem 2rem;
+						display: block;
+						color: colors.$text-color-secondary;
+						text-decoration: none;
 
-					display: block;
-					color: colors.$text-color-secondary;
-					text-decoration: none;
+						.bi {
+							margin-right: 1.5rem;
+						}
+					}
 
-					.bi {
-						margin-right: 1.5rem;
+					a.active {
+						color: colors.$text-color-primary;
+						font-weight: bold;
+						text-decoration: underline;
+					}
+
+					a:hover {
+						background-color: colors.$background-tertiary;
 					}
 				}
-
-				a.active {
-					color: colors.$text-color-primary;
-					font-weight: bold;
-					text-decoration: underline;
-				}
-
-				a:hover {
-					background-color: colors.$background-tertiary;
-				}
 			}
+		}
+
+		.side-bar-application-version {
+			padding: 0.5rem;
+			border-top: 0.1rem solid colors.$background-four;
+			text-align: center;
+			font-size: 1.25rem;
+			color: colors.$text-color-tertiary;
 		}
 	}
 }
