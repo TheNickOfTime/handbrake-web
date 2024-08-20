@@ -1,6 +1,6 @@
 {
 	"name": "handbrake-web-client",
-	"version": "0.0.0",
+  "version": "0.7.0",
 	"description": "HandBrake Web",
 	"type": "module",
 	"scripts": {
