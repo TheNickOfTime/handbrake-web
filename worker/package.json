@@ -1,26 +1,26 @@
 {
-	"name": "handbrake-web",
-	"version": "0.0.0",
-	"description": "HandBrake Web",
-	"scripts": {
-		"dev": "tsx watch src/worker.ts",
-		"prod": "tsx src/worker.ts",
-		"build": "tsc --project ./tsconfig.json"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
-	},
-	"dependencies": {
-		"dotenv": "^16.4.5",
-		"socket.io-client": "^4.7.5",
-		"tsconfig-paths": "^4.2.0",
-		"tsx": "^4.16.2",
-		"winston": "^3.14.2"
-	},
-	"devDependencies": {
-		"@types/node": "^22.0.0",
-		"eslint": "^8.57.0",
-		"typescript": "^5.4.5"
-	}
+  "name": "handbrake-web",
+  "version": "0.7.0",
+  "description": "HandBrake Web",
+  "scripts": {
+    "dev": "tsx watch src/worker.ts",
+    "prod": "tsx src/worker.ts",
+    "build": "tsc --project ./tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "socket.io-client": "^4.7.5",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.16.2",
+    "winston": "^3.14.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.5"
+  }
 }
