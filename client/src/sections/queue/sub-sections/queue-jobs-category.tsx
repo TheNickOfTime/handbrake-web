@@ -12,9 +12,9 @@ type Params = {
 	showHandles?: boolean;
 	collapsable?: boolean;
 	startCollapsed?: boolean;
-	handleStopJob: (id: string) => void;
-	handleResetJob: (id: string) => void;
-	handleRemoveJob: (id: string) => void;
+	handleStopJob: (id: number) => void;
+	handleResetJob: (id: number) => void;
+	handleRemoveJob: (id: number) => void;
 };
 
 export default function QueueJobsCategory({
@@ -32,9 +32,9 @@ export default function QueueJobsCategory({
 
 	const [isCollapsed, setIsCollapsed] = useState(startCollapsed);
 
-	const orderedJobs = Object.keys(queue).sort(
-		(a, b) => queue[a].order_index - queue[b].order_index
-	);
+	const orderedJobs = Object.keys(queue)
+		.map((key) => parseInt(key))
+		.sort((a, b) => queue[a].order_index - queue[b].order_index);
 
 	// Drag n' drop related stuff
 	const [draggedID, setDraggedID] = useState<string>();
@@ -55,7 +55,7 @@ export default function QueueJobsCategory({
 			return (
 				<QueueCard
 					key={jobID}
-					id={jobID}
+					id={`job-id-${jobID}`}
 					job={job}
 					index={index}
 					categoryID={id}

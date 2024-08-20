@@ -33,12 +33,12 @@ export type JobStatusType = {
 };
 
 export type QueueEntryType = {
-	id: string;
+	id: number;
 	job: JobType;
 };
 
 export type QueueType = {
-	[index: string]: JobType;
+	[index: number]: JobType;
 };
 
 export enum QueueStatus {

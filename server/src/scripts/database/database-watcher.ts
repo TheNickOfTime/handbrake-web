@@ -4,7 +4,6 @@ import {
 	WatcherRuleDefinitionType,
 	WatcherDefinitionWithRulesType,
 	WatcherDefinitionObjectType,
-	WatcherRuleMaskMethods,
 	WatcherRuleDefinitionObjectType,
 } from 'types/watcher';
 import logger from 'logging';
@@ -15,7 +14,7 @@ export const watcherTableCreateStatements = [
 		watcher_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
 		watch_path TEXT NOT NULL, \
 		output_path TEXT, \
-		preset_category TEXT, \
+		preset_category TEXT NOT NULL, \
 		preset_id TEXT NOT NULL \
 	)',
 	'CREATE TABLE IF NOT EXISTS watcher_rules( \

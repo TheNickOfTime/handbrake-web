@@ -9,9 +9,9 @@ type Params = {
 	handleAddNewJob: () => void;
 	handleClearAllJobs: () => void;
 	handleClearFinishedJobs: () => void;
-	handleStopJob: (id: string) => void;
-	handleResetJob: (id: string) => void;
-	handleRemoveJob: (id: string) => void;
+	handleStopJob: (id: number) => void;
+	handleResetJob: (id: number) => void;
+	handleRemoveJob: (id: number) => void;
 };
 
 export default function QueueJobs({
