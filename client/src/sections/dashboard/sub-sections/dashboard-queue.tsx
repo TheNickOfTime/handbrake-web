@@ -39,6 +39,7 @@ export default function DashboardQueue({ queue }: Params) {
 					</thead>
 					<tbody>
 						{Object.keys(queue)
+							.map((key) => parseInt(key))
 							.sort(
 								(a, b) => {
 									const stageA = queue[a].status.transcode_stage;
