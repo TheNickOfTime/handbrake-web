@@ -2,6 +2,7 @@ export type ConfigType = {
 	config: ConfigMetaType;
 	paths: ConfigPathsType;
 	presets: ConfigPresetsType;
+	version: ConfigVersionType;
 };
 
 export type ConfigMetaType = {
@@ -17,6 +18,10 @@ export type ConfigPathsType = {
 export type ConfigPresetsType = {
 	'show-default-presets': boolean;
 	'allow-preset-creator': boolean;
+};
+
+export type ConfigVersionType = {
+	'check-interval': number;
 };
 
 export type ConfigValidationType = {

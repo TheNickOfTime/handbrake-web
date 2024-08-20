@@ -7,3 +7,5 @@ paths:
 presets:
   show-default-presets: true
   allow-preset-creator: false
+version:
+  check-interval: 12
