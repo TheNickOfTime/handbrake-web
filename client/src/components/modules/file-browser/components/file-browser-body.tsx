@@ -4,7 +4,7 @@ import { DirectoryType, DirectoryItemType } from 'types/directory';
 
 type Params = {
 	mode: FileBrowserMode;
-	basePath: string;
+	rootPath: string;
 	directory: DirectoryType | null;
 	updateDirectory: (newPath: string) => void;
 	selectedItem: DirectoryItemType | undefined;
@@ -13,7 +13,7 @@ type Params = {
 
 export default function FileBrowserBody({
 	mode,
-	basePath,
+	rootPath,
 	directory,
 	updateDirectory,
 	selectedItem,
@@ -58,13 +58,16 @@ export default function FileBrowserBody({
 
 	const onDoubleClickFolder = (item: DirectoryItemType) => {
 		updateDirectory(item.path);
+		if (mode == FileBrowserMode.Directory) {
+			setSelectedItem(item);
+		}
 		console.log(`[client] [file-browser] Current path set to '${item.path}'.`);
 	};
 
 	return (
 		<>
 			{/* Show directory up button if  */}
-			{directory && basePath != directory.current.path && directory.parent && (
+			{directory && rootPath != directory.current.path && directory.parent && (
 				<button
 					className='directory-item'
 					onClick={(event) => event.preventDefault()}
