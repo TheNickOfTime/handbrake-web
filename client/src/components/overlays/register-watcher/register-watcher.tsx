@@ -62,7 +62,8 @@ export default function RegisterWatcher({ onClose }: Params) {
 					<PathInput
 						id='watcher-watch-path'
 						label='Directory to Watch:'
-						path={config.paths['input-path']}
+						startPath={config.paths['input-path']}
+						rootPath={config.paths['media-path']}
 						mode={FileBrowserMode.Directory}
 						value={watchPath}
 						onConfirm={handleWatchPathConfirm}
@@ -70,7 +71,8 @@ export default function RegisterWatcher({ onClose }: Params) {
 					<PathInput
 						id='watcher-output-path'
 						label='Output Directory:'
-						path={config.paths['output-path']}
+						startPath={config.paths['output-path'] || config.paths['media-path']}
+						rootPath={config.paths['media-path']}
 						mode={FileBrowserMode.Directory}
 						value={outputPath}
 						onConfirm={handleOutputPathConfirm}

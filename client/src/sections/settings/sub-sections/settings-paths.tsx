@@ -21,7 +21,8 @@ export default function SettingsPaths({ config, setConfig }: Params) {
 			<PathInput
 				id='media-path-selection'
 				label='Root Media Path'
-				path='/'
+				startPath='/'
+				rootPath='/'
 				mode={FileBrowserMode.Directory}
 				allowCreate={false}
 				value={config.paths['media-path']}
@@ -30,7 +31,8 @@ export default function SettingsPaths({ config, setConfig }: Params) {
 			<PathInput
 				id='input-path-selection'
 				label='Default Input Path'
-				path={config.paths['media-path']}
+				startPath={config.paths['input-path']}
+				rootPath={config.paths['media-path']}
 				mode={FileBrowserMode.Directory}
 				allowCreate={true}
 				value={config.paths['input-path']}
@@ -39,7 +41,8 @@ export default function SettingsPaths({ config, setConfig }: Params) {
 			<PathInput
 				id='output-path-selection'
 				label='Default Output Path'
-				path={config.paths['media-path']}
+				startPath={config.paths['output-path'] || config.paths['media-path']}
+				rootPath={config.paths['media-path']}
 				mode={FileBrowserMode.Directory}
 				allowCreate={true}
 				value={config.paths['output-path']}
