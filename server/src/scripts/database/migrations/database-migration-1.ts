@@ -198,6 +198,10 @@ export default function DatabaseMigration1(database: Database) {
 				logger.info(
 					`[database] [migration-1] Reinserted ${insertResult.changes} rows into the recreated 'watchers' table.`
 				);
+
+				const dropStatement = database.prepare('DROP TABLE watchers_old');
+				dropStatement.run();
+				logger.info(`[database] [migration-1] Dropped table 'watchers_old'.`);
 			});
 
 			transaction();
