@@ -1,35 +1,41 @@
 export type QueueTableType = {
-	id: string;
+	id: number;
 	job: string;
 };
 
 // Jobs --------------------------------------------------------------------------------------------
-export type JobIDsTableType = {
-	id: string;
-};
-
-export type JobsDataTableType = {
-	job_id: string;
+export type JobsTableType = {
+	job_id: number;
 	input_path: string;
 	output_path: string;
 	preset_category: string;
 	preset_id: string;
 };
 
+export type JobInsertType = {
+	[Property in Exclude<keyof JobsTableType, 'job_id'>]: JobsTableType[Property];
+};
+
 export type JobsStatusTableType = {
-	job_id: string;
-	worker_id?: string | null;
-	transcode_stage?: number;
-	transcode_percentage?: number;
-	transcode_eta?: number;
-	transcode_fps_current?: number;
-	transcode_fps_average?: number;
-	time_started?: number;
-	time_finished?: number;
+	job_id: number;
+	worker_id: string | null;
+	transcode_stage: number;
+	transcode_percentage: number;
+	transcode_eta: number;
+	transcode_fps_current: number;
+	transcode_fps_average: number;
+	time_started: number;
+	time_finished: number;
+};
+
+export type JobStatusInsertType = {
+	job_id: number;
+} & {
+	[Property in Exclude<keyof JobsStatusTableType, 'job_id'>]?: JobsStatusTableType[Property];
 };
 
 export type JobOrderTableType = {
-	job_id: string;
+	job_id: number;
 	order_index: number;
 };
 

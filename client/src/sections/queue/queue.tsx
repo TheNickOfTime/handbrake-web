@@ -32,15 +32,15 @@ export default function QueueSection() {
 		setShowCreateJob(true);
 	};
 
-	const handleStopJob = (id: string) => {
+	const handleStopJob = (id: number) => {
 		socket.emit('stop-job', id);
 	};
 
-	const handleResetJob = (id: string) => {
+	const handleResetJob = (id: number) => {
 		socket.emit('reset-job', id);
 	};
 
-	const handleRemoveJob = (id: string) => {
+	const handleRemoveJob = (id: number) => {
 		socket.emit('remove-job', id);
 	};
 

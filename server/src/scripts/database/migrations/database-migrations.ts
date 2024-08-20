@@ -1,4 +1,3 @@
-import { Database } from 'better-sqlite3';
 import logger from 'logging';
 import { database, databaseVersion } from '../database';
 import DatabaseMigration0 from './database-migration-0';
@@ -6,22 +5,23 @@ import DatabaseMigration1 from './database-migration-1';
 
 export default function DatabaseMigrations(version: number) {
 	try {
-		logger.info(
-			`[server] [database] [migration] The database_version is out of date, performing migrations...`
+		logger.warn(
+			`[server] [database] [migration] The database_version is out of date, performing migrations for versions ${version} - ${databaseVersion}...`
 		);
-		for (let i = version; i <= databaseVersion; i++) {
+		for (let i = version + 1; i <= databaseVersion; i++) {
 			RunDatabaseMigration(i);
 		}
 		logger.info(
-			`[server] [database] [migrations] Database migrations have completed, the database_version is up to date.`
+			`[server] [database] [migration] Database migrations have completed, the database_version is up to date.`
 		);
 	} catch (error) {
+		logger.error(`[database] [migration] Could not complete migrations.`);
 		logger.error(error);
 	}
 }
 
 function RunDatabaseMigration(version: number) {
-	logger.info(
+	logger.warn(
 		`[server] [database] [migration] Running migration script for database_version ${version}...`
 	);
 

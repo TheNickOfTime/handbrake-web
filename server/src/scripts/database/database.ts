@@ -88,7 +88,7 @@ async function CheckDatabaseVersion(databaseExists: boolean) {
 			}
 		} catch {
 			await DatabaseBackup(`database-version-0-backup`);
-			DatabaseMigrations(0);
+			DatabaseMigrations(-1);
 		}
 	} else {
 		createVersionTableStatement.run();
