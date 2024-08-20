@@ -109,6 +109,53 @@ export async function LoadPresets() {
 			await mkdir(presetsPath);
 		}
 
+		// account for old presets
+		try {
+			const oldPresetsPath = path.join(dataPath, 'presets.json');
+
+			await access(oldPresetsPath);
+
+			logger.warn(
+				`[presets] [migration] There are presets stored at the old presets path ${oldPresetsPath}.`
+			);
+			logger.info(
+				`[presets] [migration] Migrating presets stored in 'presets.json' to individual files at '${
+					presetsPath + '/*'
+				}'.`
+			);
+
+			try {
+				const oldPresets = JSON.parse(
+					await readFile(oldPresetsPath, { encoding: 'utf-8' })
+				) as HandbrakePresetListType;
+				for (let preset of Object.values(oldPresets)) {
+					const presetPath = path.join(
+						presetsPath,
+						preset.PresetList[0].PresetName + '.json'
+					);
+					const presetData = JSON.stringify(preset, null, 2);
+					await writeFile(presetPath, presetData);
+					logger.info(
+						`[presets] [migration] Migrated preset '${preset.PresetList[0].PresetName}' from the old preset at '${oldPresetsPath}' file to '${presetPath}'.`
+					);
+				}
+				logger.info(
+					`[presets] [migration] ${
+						Object.keys(oldPresets).length
+					} presets where migrated.`
+				);
+				await rm(oldPresetsPath);
+				logger.info(
+					`[presets] [migration] Removed the old presets file '${oldPresetsPath}'.`
+				);
+			} catch (err) {
+				logger.error(`[presets] Migration of old presets at '' has failed.`);
+				console.error(err);
+			}
+		} catch {
+			//Nothing happens if the accessing the file fails - that is a good thing.
+		}
+
 		presets = await presetFilesToPresetObject(presetsPath);
 		logger.info(
 			`[server] [presets] ${getPresetCount(
