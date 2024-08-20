@@ -17,6 +17,7 @@
     "@types/object-hash": "^3.0.6",
     "better-sqlite3": "^11.0.0",
     "chokidar": "^3.6.0",
+    "compare-versions": "^6.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
