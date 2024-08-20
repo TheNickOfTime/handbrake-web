@@ -15,7 +15,7 @@ export const queueTableCreateStatements = [
 		job_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
 		input_path TEXT NOT NULL, \
 		output_path TEXT NOT NULL, \
-		preset_category TEXT, \
+		preset_category TEXT NOT NULL, \
 		preset_id TEXT NOT NULL \
 		)',
 	'CREATE TABLE IF NOT EXISTS jobs_status( \

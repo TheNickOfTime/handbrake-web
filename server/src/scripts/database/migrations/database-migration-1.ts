@@ -57,7 +57,7 @@ export default function DatabaseMigration1(database: Database) {
 						job_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
 						input_path TEXT NOT NULL, \
 						output_path TEXT NOT NULL, \
-						preset_category TEXT, \
+						preset_category TEXT NOT NULL, \
 						preset_id TEXT NOT NULL \
 					)',
 					'CREATE TABLE IF NOT EXISTS jobs_status( \
@@ -111,8 +111,8 @@ export default function DatabaseMigration1(database: Database) {
 							old_id: string;
 						}>(
 							'INSERT INTO jobs_status(job_id, worker_id, transcode_stage, transcode_percentage, transcode_eta, transcode_fps_current, transcode_fps_average, time_started, time_finished) \
-						SELECT $new_id, worker_id, transcode_stage, transcode_percentage, transcode_eta, transcode_fps_current, transcode_fps_average, time_started, time_finished \
-						FROM jobs_status_old WHERE job_id = $old_id'
+							SELECT $new_id, worker_id, transcode_stage, transcode_percentage, transcode_eta, transcode_fps_current, transcode_fps_average, time_started, time_finished \
+							FROM jobs_status_old WHERE job_id = $old_id'
 						);
 						const insertStatusResult = insertStatusStatment.run({
 							old_id: id,
@@ -173,14 +173,14 @@ export default function DatabaseMigration1(database: Database) {
 				);
 
 				// Recreate table
-				const renameWatcherTableStatement = database.prepare(
-					'ALTER TABLE watchers RENAME TO watchers_old'
-				);
-				renameWatcherTableStatement.run();
-				logger.info(`[database] [migration-1] Renamed table 'watchers' to 'watchers_old'.`);
+				// const renameWatcherTableStatement = database.prepare(
+				// 	'ALTER TABLE watchers RENAME TO watchers_old'
+				// );
+				// renameWatcherTableStatement.run();
+				// logger.info(`[database] [migration-1] Renamed table 'watchers' to 'watchers_old'.`);
 
 				const recreateWatcherTableStatment = database.prepare(
-					'CREATE TABLE IF NOT EXISTS watchers( \
+					'CREATE TABLE IF NOT EXISTS watchers_new( \
 					watcher_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
 					watch_path TEXT NOT NULL, \
 					output_path TEXT, \
@@ -189,19 +189,27 @@ export default function DatabaseMigration1(database: Database) {
 				)'
 				);
 				recreateWatcherTableStatment.run();
-				logger.info(`[database] [migration-1] Recreated table 'watchers' with new schema.`);
+				logger.info(
+					`[database] [migration-1] Created table 'watchers_new' with new schema.`
+				);
 
 				const insertStatement = database.prepare(
-					'INSERT INTO watchers(watcher_id, watch_path, output_path, preset_category, preset_id) SELECT watcher_id, watch_path, output_path, preset_category, preset_id FROM watchers_old'
+					'INSERT INTO watchers_new(watcher_id, watch_path, output_path, preset_category, preset_id) SELECT watcher_id, watch_path, output_path, preset_category, preset_id FROM watchers'
 				);
 				const insertResult = insertStatement.run();
 				logger.info(
-					`[database] [migration-1] Reinserted ${insertResult.changes} rows into the recreated 'watchers' table.`
+					`[database] [migration-1] Copied ${insertResult.changes} rows from the table 'watchers' to the table 'watchers_new'.`
 				);
 
-				const dropStatement = database.prepare('DROP TABLE watchers_old');
+				const dropStatement = database.prepare('DROP TABLE watchers');
 				dropStatement.run();
-				logger.info(`[database] [migration-1] Dropped table 'watchers_old'.`);
+				logger.info(`[database] [migration-1] Dropped table 'watchers'.`);
+
+				const renameStatement = database.prepare(
+					'ALTER TABLE watchers_new RENAME TO watchers'
+				);
+				renameStatement.run();
+				logger.info(`[database] [migration-1] Renamed 'watchers_new' to 'watchers'.`);
 			});
 
 			transaction();
