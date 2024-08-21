@@ -21,7 +21,9 @@ export default function ServerSocket(server: Socket) {
 
 	server.on('disconnect', (reason, details) => {
 		logger.info(`[socket] Disconnected from the server with reason '${reason}'.`);
-		logger.info(details);
+		if (details) {
+			logger.info(details);
+		}
 	});
 
 	server.on('start-transcode', (jobID: string) => {

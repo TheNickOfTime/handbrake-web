@@ -2,14 +2,14 @@ import 'dotenv/config';
 import { io } from 'socket.io-client';
 import logger from 'logging';
 import ServerSocket from 'socket/server-socket';
-import Shutdown from 'scripts/shutdown';
+import { RegisterExitListeners } from 'scripts/shutdown';
 
 // Setup -------------------------------------------------------------------------------------------
 
 // Get worker ID from env variable, exit process if it is not set --------------
 const workerID = process.env.WORKER_ID;
 if (!workerID) {
-	console.error(
+	logger.error(
 		"No 'WORKER_ID' envrionment variable is set - this worker will not be set up. Please set this via your docker-compose environment section."
 	);
 	process.exit();
@@ -31,7 +31,7 @@ const server = io(serverAddress, {
 
 // Event listeners ---------------------------------------------------------------------------------
 ServerSocket(server);
-Shutdown(server);
+RegisterExitListeners(server);
 
 // Worker Start ------------------------------------------------------------------------------------
 if (canConnect) {

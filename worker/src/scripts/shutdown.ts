@@ -2,22 +2,31 @@ import { Socket } from 'socket.io-client';
 import logger from 'logging';
 import { currentJobID, StopTranscode } from './transcode';
 
-export default function Shutdown(socket: Socket) {
-	process.on('SIGINT', (signal) => {
-		if (currentJobID) {
-			StopTranscode(currentJobID, socket);
-		}
-
+export function RegisterExitListeners(socket: Socket) {
+	process.on('SIGINT', () => {
 		logger.info('The process has been interrupted, HandBrake Web will now shutdown...');
-		process.exit(0);
+		Shutdown(socket);
 	});
 
-	process.on('SIGTERM', (signal) => {
+	process.on('SIGTERM', () => {
+		logger.info('The process has been terminated, HandBrake Web will now shutdown...');
+		Shutdown(socket);
+	});
+}
+
+export default async function Shutdown(socket: Socket) {
+	try {
 		if (currentJobID) {
 			StopTranscode(currentJobID, socket);
 		}
 
-		logger.info('The process has been terminated, HandBrake Web will now shutdown...');
-		process.exit(0);
-	});
+		socket.disconnect();
+
+		logger.info(`[shutdown] Shutdown steps have completed.`);
+	} catch (error) {
+		logger.error(`[shutdown] Could not complete shutdown steps.`);
+		console.error(error);
+	}
+
+	process.exit(0);
 }
