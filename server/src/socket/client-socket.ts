@@ -7,9 +7,8 @@ import {
 } from 'types/directory';
 import { HandbrakePresetType } from 'types/preset';
 import { QueueRequestType } from 'types/queue';
-// import { Client } from 'types/socket';
 import { Socket as Client } from 'socket.io';
-import { AddClient, EmitToAllClients, RemoveClient } from 'scripts/connections';
+import { AddClient, RemoveClient } from 'scripts/connections';
 import { CheckFilenameCollision, GetDirectoryItems, MakeDirectory } from 'scripts/files';
 import {
 	AddPreset,
@@ -35,7 +34,6 @@ import { GetConfig, WriteConfig } from 'scripts/config';
 import {
 	WatcherDefinitionObjectType,
 	WatcherDefinitionType,
-	WatcherDefinitionWithIDType,
 	WatcherRuleDefinitionType,
 } from 'types/watcher';
 import { GetWatchersFromDatabase } from 'scripts/database/database-watcher';
@@ -51,11 +49,7 @@ import {
 	UpdateJobOrderIndexInDatabase,
 } from 'scripts/database/database-queue';
 import logger from 'logging';
-import {
-	CheckForVersionUpdate,
-	GetCurrentReleaseInfo,
-	GetLatestReleaseInfo,
-} from 'scripts/version';
+import { GetCurrentReleaseInfo, GetLatestReleaseInfo } from 'scripts/version';
 import { GithubReleaseResponseType } from 'types/version';
 
 const initClient = async (socket: Client) => {
@@ -105,25 +99,25 @@ export default function ClientSocket(io: Server) {
 			AddJob(data);
 		});
 
-		socket.on('stop-job', (id: string) => {
-			StopJob(id);
+		socket.on('stop-job', (jobID: number) => {
+			StopJob(jobID);
 		});
 
-		socket.on('reset-job', (id: string) => {
-			ResetJob(id);
+		socket.on('reset-job', (jobID: number) => {
+			ResetJob(jobID);
 		});
 
-		socket.on('remove-job', (id: string) => {
-			RemoveJob(id);
+		socket.on('remove-job', (jobID: number) => {
+			RemoveJob(jobID);
 		});
 
-		socket.on('reorder-job', (id: string, newIndex: number) => {
+		socket.on('reorder-job', (jobID: number, newOrderIndex: number) => {
 			logger.info(
 				`[socket] Client is requesting job at order index ${GetJobOrderIndexFromTable(
-					id
-				)} be reordered to index ${newIndex}.`
+					jobID
+				)} be reordered to index ${newOrderIndex}.`
 			);
-			UpdateJobOrderIndexInDatabase(id, newIndex);
+			UpdateJobOrderIndexInDatabase(jobID, newOrderIndex);
 			UpdateQueue();
 		});
 
