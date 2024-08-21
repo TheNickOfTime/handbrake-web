@@ -32,5 +32,5 @@ export default async function Shutdown(socket: Socket) {
 		console.error(error);
 	}
 
-	process.exit(0);
+	// process.exit(0);
 }
