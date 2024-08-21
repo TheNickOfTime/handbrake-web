@@ -24,6 +24,11 @@ export async function CheckForVersionUpdate() {
 	}
 
 	const checkIntervalHours = GetConfig().version['check-interval'];
+	if (checkIntervalHours == 0) {
+		logger.info(`[version] The check-interval is set to 0, update checking is disabled.`);
+		return;
+	}
+
 	const lastCheck = GetStatusFromDatabase('last-version-update-check')?.state || 0;
 	const now = Date.now();
 	const timeSinceLastCheck = now - lastCheck;
@@ -52,7 +57,7 @@ export async function CheckForVersionUpdate() {
 	}
 
 	try {
-		logger.info(`[server] [version] Checking if there is an application update...`);
+		logger.info(`[version] Checking if there is an application update...`);
 
 		const latestReleaseURL =
 			'https://api.github.com/repos/thenickoftime/handbrake-web/releases/latest';
@@ -71,21 +76,21 @@ export async function CheckForVersionUpdate() {
 
 		if (isValidRelease && versionComparison) {
 			logger.warn(
-				`[server] [version] An application update is available to '${latestVersion}' (current version is '${currentVersion}').`
+				`[version] An application update is available to '${latestVersion}' (current version is '${currentVersion}').`
 			);
 			logger.warn(
-				`[server] [version] See the release notes for '${latestVersion}' at '${response.html_url}'.`
+				`[version] See the release notes for '${latestVersion}' at '${response.html_url}'.`
 			);
 			latestReleaseInfo = response;
 			await WriteReleaseInfo(latestReleaseInfoPath, response);
 		} else {
-			logger.info(`[server] [version] The application is up to date.`);
+			logger.info(`[version] The application is up to date.`);
 			await RemoveReleaseInfo(latestReleaseInfoPath);
 		}
 
 		UpdateStatusInDatabase('last-version-update-check', Date.now());
 	} catch (error) {
-		logger.error(`[server] [version] An error occurred while checking for the latest version.`);
+		logger.error(`[version] An error occurred while checking for the latest version.`);
 		console.error(error);
 	}
 }
@@ -116,13 +121,13 @@ export async function GetCurrentReleaseInfo() {
 			return currentReleaseInfo;
 		} else {
 			logger.info(
-				`[server] [version] Release information about the current version is outdated. Fetching information about '${currentVersion}' from GitHub.`
+				`[version] Release information about the current version is outdated. Fetching information about '${currentVersion}' from GitHub.`
 			);
 		}
 	} catch (error) {
 		const parsedPath = path.parse(currentReleaseInfoPath);
 		logger.info(
-			`[server] [version] The file '${parsedPath}' does not exist. Fetching the information about '${currentVersion}' from github...`
+			`[version] The file '${parsedPath}' does not exist. Fetching the information about '${currentVersion}' from github...`
 		);
 	}
 
@@ -142,16 +147,14 @@ export async function GetCurrentReleaseInfo() {
 			return null;
 		}
 
-		logger.info(`[server] [version] Fetched information about the current release.`);
+		logger.info(`[version] Fetched information about the current release.`);
 
 		const response: GithubReleaseResponseType = await request.json();
 		currentReleaseInfo = response;
 
 		WriteReleaseInfo(currentReleaseInfoPath, response);
 	} catch (error) {
-		logger.error(
-			`[server] [version] An error occurred while fetching the current release information`
-		);
+		logger.error(`[version] An error occurred while fetching the current release information`);
 		console.error(error);
 	}
 
@@ -172,7 +175,7 @@ async function ReadReleaseInfo(infoPath: string) {
 		return releaseInfoData;
 	} catch (error) {
 		logger.error(
-			`[server] [version] An error occurred while reading release information from '${infoPath}'.`
+			`[version] An error occurred while reading release information from '${infoPath}'.`
 		);
 		throw error;
 	}
@@ -182,12 +185,10 @@ async function WriteReleaseInfo(infoPath: string, info: GithubReleaseResponseTyp
 	try {
 		const data = JSON.stringify(info, null, 2);
 		await writeFile(infoPath, data, { encoding: 'utf-8' });
-		logger.info(
-			`[server] [version] Wrote information about the current release to '${infoPath}'.`
-		);
+		logger.info(`[version] Wrote information about the current release to '${infoPath}'.`);
 	} catch (error) {
 		logger.error(
-			`[server] [version] An error occurred while writing current release information to '${infoPath}'.`
+			`[version] An error occurred while writing current release information to '${infoPath}'.`
 		);
 		throw error;
 	}
