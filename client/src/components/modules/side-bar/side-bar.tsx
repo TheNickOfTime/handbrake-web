@@ -1,19 +1,22 @@
 import { NavLink } from 'react-router-dom';
+import { Socket } from 'socket.io-client';
+import { ConfigType } from 'types/config';
+import VersionInfo from '../version-info/version-info';
 import './side-bar.scss';
 
 type Params = {
 	showSidebar: boolean;
 	setShowSidebar: React.Dispatch<React.SetStateAction<boolean>>;
+	socket: Socket;
+	config: ConfigType | undefined;
 };
 
-export default function SideBar({ showSidebar, setShowSidebar }: Params) {
+export default function SideBar({ showSidebar, setShowSidebar, socket, config }: Params) {
 	const handleNavLinkClick = () => {
 		if (showSidebar) {
 			setShowSidebar(false);
 		}
 	};
-
-	console.log(import.meta);
 
 	return (
 		<div className={`side-bar ${showSidebar ? 'expanded' : ''}`}>
@@ -67,7 +70,9 @@ export default function SideBar({ showSidebar, setShowSidebar }: Params) {
 						</li>
 					</ul>
 				</div>
-				<div className='side-bar-application-version'>v{APP_VERSION}</div>
+				<div className='side-bar-application-version'>
+					<VersionInfo socket={socket} config={config} />
+				</div>
 			</div>
 		</div>
 	);

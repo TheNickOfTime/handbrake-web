@@ -14,6 +14,7 @@ import ClientRoutes from 'routes/client';
 import ClientSocket from 'socket/client-socket';
 import WorkerSocket from 'socket/worker-socket';
 import { RegisterExitListeners } from './server-shutdown';
+import { CheckForVersionUpdate } from 'scripts/version';
 
 export default async function ServerStartup() {
 	// Config---------------------------------------------------------------------------------------
@@ -54,10 +55,16 @@ export default async function ServerStartup() {
 	const url = process.env.SERVER_URL || 'http://localhost';
 	const port = 9999;
 
-	server.listen(port, () => {
-		const hasPrefix = url.match(/^https?:\/\//);
-		const serverAddress = `${hasPrefix ? url : 'http://' + url}:${port}`;
-		logger.info(`[server] Available at '${serverAddress}'.`);
+	await new Promise<void>((resolve) => {
+		server.listen(port, () => {
+			const hasPrefix = url.match(/^https?:\/\//);
+			const serverAddress = `${hasPrefix ? url : 'http://' + url}:${port}`;
+			logger.info(`[server] Available at '${serverAddress}'.`);
+			resolve();
+		});
+		socket.attach(server);
 	});
-	socket.attach(server);
+
+	// Check Version -------------------------------------------------------------------------------
+	await CheckForVersionUpdate();
 }

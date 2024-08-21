@@ -1,0 +1,18 @@
+@use 'src/style/modules/sizing';
+
+.number-input {
+	display: flex;
+	align-items: center;
+	flex-flow: row wrap;
+	row-gap: 0.5rem;
+	column-gap: 1rem;
+
+	label {
+		white-space: nowrap;
+	}
+
+	input[type='number'] {
+		text-align: center;
+		flex-grow: 1;
+	}
+}
