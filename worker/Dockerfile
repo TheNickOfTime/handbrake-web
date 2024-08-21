@@ -18,4 +18,4 @@ ENV DATA_PATH=/data
 ENV VIDEO_PATH=/video
 
 # Start application
-CMD exec npm run prod
+CMD ["npm", "run", "prod"]
