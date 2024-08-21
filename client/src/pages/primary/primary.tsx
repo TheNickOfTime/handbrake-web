@@ -132,7 +132,12 @@ export default function Primary() {
 
 	return (
 		<div id='primary'>
-			<SideBar showSidebar={showSidebar} setShowSidebar={setShowSidebar} socket={socket} />
+			<SideBar
+				showSidebar={showSidebar}
+				setShowSidebar={setShowSidebar}
+				socket={socket}
+				config={config}
+			/>
 			<div className={`dark-overlay ${showSidebar ? 'visible' : 'hidden'}`} />
 			<div className='primary-section'>
 				<div className='mobile-toolbar'>

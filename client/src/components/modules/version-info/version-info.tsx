@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { GithubReleaseResponseType } from 'types/version';
 import './version-info.scss';
+import { ConfigType } from 'types/config';
 
 type Params = {
 	socket: Socket;
+	config: ConfigType | undefined;
 };
 
-export default function VersionInfo({ socket }: Params) {
+export default function VersionInfo({ socket, config }: Params) {
 	const [currentVersion, setCurrentVersion] = useState<GithubReleaseResponseType | null>(null);
 	const [latestVersion, setLatestVersion] = useState<GithubReleaseResponseType | null>(null);
 
@@ -31,7 +33,10 @@ export default function VersionInfo({ socket }: Params) {
 		(async () => {
 			if (socket.connected) {
 				await getCurrentVersionInfo();
-				await getLatestVersionInfo();
+
+				if (config && config.version['check-interval'] != 0) {
+					await getLatestVersionInfo();
+				}
 			}
 		})();
 	}, [socket.connected]);
