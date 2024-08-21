@@ -1,15 +1,19 @@
 import { Socket } from 'socket.io-client';
 import logger from 'logging';
-import { currentJobID, StopTranscode } from './transcode';
+import { currentJobID, StopTranscode } from 'scripts/transcode';
 
 export function RegisterExitListeners(socket: Socket) {
 	process.on('SIGINT', () => {
-		logger.info('The process has been interrupted, HandBrake Web will now shutdown...');
+		logger.info(
+			`[shutdown] The process has been interrupted, HandBrake Web will now begin to shutdown...`
+		);
 		Shutdown(socket);
 	});
 
 	process.on('SIGTERM', () => {
-		logger.info('The process has been terminated, HandBrake Web will now shutdown...');
+		logger.info(
+			`[shutdown] The process has been terminated, HandBrake Web will now begin to shutdown...`
+		);
 		Shutdown(socket);
 	});
 }
