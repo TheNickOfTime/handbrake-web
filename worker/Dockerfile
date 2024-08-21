@@ -18,4 +18,5 @@ ENV DATA_PATH=/data
 ENV VIDEO_PATH=/video
 
 # Start application
-ENTRYPOINT ["npm run dev"]
+STOPSIGNAL SIGTERM
+CMD npm run prod
