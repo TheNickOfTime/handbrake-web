@@ -17,7 +17,5 @@ ENV HANDBRAKE_MODE=worker
 ENV DATA_PATH=/data
 ENV VIDEO_PATH=/video
 
-# ENTRYPOINT bash
-
 # Start application
-CMD npm run prod
+ENTRYPOINT ["npm run dev"]
