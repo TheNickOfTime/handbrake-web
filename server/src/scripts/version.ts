@@ -16,6 +16,7 @@ let currentReleaseInfo: GithubReleaseResponseType | null = null;
 let latestReleaseInfo: GithubReleaseResponseType | null = null;
 
 export async function CheckForVersionUpdate() {
+	logger.warn(process.env.NODE_ENV);
 	if ((process.env.NODE_ENV = 'development' || process.env.NODE_ENV == undefined)) {
 		logger.info(
 			`[version] The environment is set to development, skipping lastest release info query.`
