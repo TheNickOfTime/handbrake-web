@@ -18,5 +18,4 @@ ENV DATA_PATH=/data
 ENV VIDEO_PATH=/video
 
 # Start application
-ENTRYPOINT /user/local/bin/node
 CMD exec npm run prod
