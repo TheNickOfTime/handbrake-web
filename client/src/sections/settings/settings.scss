@@ -24,6 +24,10 @@
 			gap: 1.25rem;
 
 			.path-input {
+				.input-label {
+					min-width: 100%;
+				}
+
 				.input-section {
 					flex-flow: row wrap;
 					row-gap: 0.5rem;
@@ -34,7 +38,6 @@
 	}
 
 	.input-label {
-		min-width: 100%;
 		font-size: 1.35rem;
 		color: colors.$text-color-tertiary;
 	}
