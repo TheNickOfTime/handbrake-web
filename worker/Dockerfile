@@ -17,7 +17,9 @@ ENV HANDBRAKE_MODE=worker
 ENV DATA_PATH=/data
 ENV VIDEO_PATH=/video
 
-# ENTRYPOINT bash
+# Dumb init
+RUN apt install dumb-init
 
 # Start application
-CMD npm run prod
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["npm", "run", "prod"]
