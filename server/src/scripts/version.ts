@@ -16,11 +16,10 @@ let currentReleaseInfo: GithubReleaseResponseType | null = null;
 let latestReleaseInfo: GithubReleaseResponseType | null = null;
 
 export async function CheckForVersionUpdate() {
-	logger.warn(process.env.NODE_ENV);
-	if ((process.env.NODE_ENV = 'development' || process.env.NODE_ENV == undefined)) {
-		logger.info(
-			`[version] The environment is set to development, skipping lastest release info query.`
-		);
+	if (process.env.NODE_ENV == undefined || process.env.NODE_ENV == 'development') {
+		// logger.info(
+		// 	`[version] The environment is set to development, skipping lastest release info query.`
+		// );
 		return;
 	}
 
@@ -102,10 +101,10 @@ export async function GetLatestReleaseInfo() {
 }
 
 export async function GetCurrentReleaseInfo() {
-	if ((process.env.NODE_ENV = 'development' || process.env.NODE_ENV == undefined)) {
-		logger.info(
-			`[version] The environment is set to development, skipping current release info query.`
-		);
+	if (process.env.NODE_ENV == undefined || process.env.NODE_ENV == 'development') {
+		// logger.info(
+		// 	`[version] The environment is set to development, skipping current release info query.`
+		// );
 		await RemoveReleaseInfo(currentReleaseInfoPath);
 		return null;
 	}
