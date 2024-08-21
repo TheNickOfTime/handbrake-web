@@ -17,11 +17,9 @@ ENV HANDBRAKE_MODE=worker
 ENV DATA_PATH=/data
 ENV VIDEO_PATH=/video
 
-# Tini
-ENV TINI_VERSION v0.19.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
-ENTRYPOINT ["/tini", "--"]
+# Dumb init
+RUN apt install dumb-init
 
 # Start application
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["npm", "run", "prod"]
