@@ -19,4 +19,4 @@ ENV VIDEO_PATH=/video
 
 # Start application
 ENTRYPOINT /user/local/bin/node
-CMD npm run prod
+CMD exec npm run prod
