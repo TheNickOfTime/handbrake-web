@@ -8,7 +8,7 @@ RUN npm install
 RUN npm run build
 
 # Main ---------------------------------------------------------------------------------------------
-FROM node:alpine AS main
+FROM node:alpine3.20 AS main
 
 COPY --from=client-build /handbrake-web/client/build /handbrake-web/client
 COPY server /handbrake-web/server
@@ -25,5 +25,9 @@ ENV HANDBRAKE_MODE=server
 ENV DATA_PATH=/data
 ENV VIDEO_PATH=/video
 
+# Dumb-init
+RUN apk add dumb-init
+
 # Start application
-CMD npm run prod
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["npm", "run", "prod"]
