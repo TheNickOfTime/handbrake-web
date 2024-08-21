@@ -51,8 +51,14 @@ import {
 	UpdateJobOrderIndexInDatabase,
 } from 'scripts/database/database-queue';
 import logger from 'logging';
+import {
+	CheckForVersionUpdate,
+	GetCurrentReleaseInfo,
+	GetLatestReleaseInfo,
+} from 'scripts/version';
+import { GithubReleaseResponseType } from 'types/version';
 
-const initClient = (socket: Client) => {
+const initClient = async (socket: Client) => {
 	const queue = GetQueue();
 	socket.emit('config-update', GetConfig());
 	socket.emit('queue-update', queue);
@@ -164,6 +170,23 @@ export default function ClientSocket(io: Server) {
 		socket.on('rename-preset', (oldName: string, newName: string, category: string) => {
 			RenamePreset(oldName, newName, category);
 		});
+
+		// Version ---------------------------------------------------------------------------------
+		socket.on(
+			'get-current-version-info',
+			async (callback: (info: GithubReleaseResponseType | null) => void) => {
+				const info = await GetCurrentReleaseInfo();
+				callback(info);
+			}
+		);
+
+		socket.on(
+			'get-latest-version-info',
+			async (callback: (info: GithubReleaseResponseType | null) => void) => {
+				const info = await GetLatestReleaseInfo();
+				callback(info);
+			}
+		);
 
 		// Watchers --------------------------------------------------------------------------------
 		socket.on(
