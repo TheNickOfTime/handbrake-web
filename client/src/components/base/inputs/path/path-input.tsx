@@ -10,8 +10,10 @@ type Params = {
 	startPath: string;
 	rootPath: string;
 	mode: FileBrowserMode;
+	allowClear?: boolean;
 	allowCreate?: boolean;
-	value: string | undefined;
+	value: string;
+	setValue?: (value: string) => void;
 	onConfirm?: (item: DirectoryItemType) => void;
 };
 
@@ -21,11 +23,25 @@ export default function PathInput({
 	startPath,
 	rootPath,
 	mode,
+	allowClear = false,
 	allowCreate = false,
 	value,
+	setValue,
 	onConfirm,
 }: Params) {
 	const [showFileBrowser, setShowFileBrowser] = useState(false);
+
+	const handleClear = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		event.preventDefault();
+		if (setValue) {
+			setValue('');
+			setShowFileBrowser(false);
+		} else {
+			console.error(
+				`[client] Cannot reset path-input with id '${id}' because the 'setValue' parameter has not been set.`
+			);
+		}
+	};
 
 	const handleConfirm = (item: DirectoryItemType) => {
 		if (onConfirm) {
@@ -42,27 +58,41 @@ export default function PathInput({
 						{label.replace(/[:\s]+$/, '') + ':'}
 					</label>
 				)}
-				<input
-					className='input-path-text form-item'
-					id={id}
-					type='text'
-					value={value ? value : 'N/A'}
-					size={1}
-					disabled
-				/>
-				<button
-					className='controlled-button blue'
-					type='button'
-					onClick={(event) => {
-						event.preventDefault();
-						setShowFileBrowser(!showFileBrowser);
-					}}
-					onKeyDown={(event) => {
-						event.preventDefault();
-					}}
-				>
-					<span className='button-label'>{showFileBrowser ? 'Cancel' : 'Browse'}</span>
-				</button>
+				<div className='inputs'>
+					<input
+						className='input-path-text form-item'
+						id={id}
+						type='text'
+						value={value ? value : 'N/A'}
+						size={1}
+						disabled
+					/>
+					{allowClear && value && (
+						<button
+							className='controlled-button yellow reset'
+							type='button'
+							onClick={handleClear}
+							title='Clear Path'
+						>
+							<i className='bi bi-eraser-fill' />
+						</button>
+					)}
+					<button
+						className='controlled-button blue'
+						type='button'
+						onClick={(event) => {
+							event.preventDefault();
+							setShowFileBrowser(!showFileBrowser);
+						}}
+						onKeyDown={(event) => {
+							event.preventDefault();
+						}}
+					>
+						<span className='button-label'>
+							{showFileBrowser ? 'Cancel' : 'Browse'}
+						</span>
+					</button>
+				</div>
 			</div>
 			{showFileBrowser && (
 				<div className='browser-section'>
