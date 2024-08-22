@@ -199,9 +199,10 @@ export function InsertJobToDatabase(request: QueueRequestType) {
 		);
 		statusStatement.run({ job_id: job_id });
 
-		const next_order_index = database
-			.prepare<[], { 'COUNT(*)': number }>('SELECT COUNT(*) FROM job_ids AS count')
-			.get()!['COUNT(*)'];
+		const next_order_index =
+			database
+				.prepare<[], { 'COUNT(*)': number }>('SELECT COUNT(*) FROM jobs_order AS count')
+				.get()!['COUNT(*)'] + 1;
 
 		const statement = database.prepare<JobOrderTableType>(
 			'INSERT INTO jobs_order(job_id, order_index) VALUES($job_id, $order_index)'
