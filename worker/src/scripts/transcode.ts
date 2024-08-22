@@ -33,7 +33,7 @@ const writePresetToFile = async (preset: HandbrakePresetType) => {
 		logger.info('[worker] Sucessfully wrote preset to file.');
 	} catch (err) {
 		logger.error(`[worker] [error] Could not write preset to file at ${presetPath}.`);
-		logger.error(err);
+		console.error(err);
 	}
 };
 
@@ -199,7 +199,7 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 
 		handbrake.on('exit', () => {});
 	} catch (err) {
-		logger.error(err);
+		console.error(err);
 	}
 }
 
