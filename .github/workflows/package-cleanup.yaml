@@ -1,9 +1,9 @@
 name: Package Cleanup
 
 on:
-  # workflow_run:
-  #   workflows: [Docker Publish]
-  #   types: [completed]
+  workflow_run:
+    workflows: [Docker Publish]
+    types: [completed]
   pull_request:
     types: [closed]
   push:
@@ -17,6 +17,7 @@ jobs:
       packages: write
     steps:
       - name: Clean Untagged Versions
+        if: github.event_name == 'workflow_run' || github.event_name == 'push'
         uses: snok/container-retention-policy@v3.0.0
         with:
           account: user
@@ -25,6 +26,7 @@ jobs:
           tag-selection: untagged
           cut-off: 0s
       - name: Clean 'sha256-*' Versions
+        if: github.event_name == 'workflow_run' || github.event_name == 'push'
         uses: snok/container-retention-policy@v3.0.0
         with:
           account: user
@@ -33,6 +35,16 @@ jobs:
           tag-selection: tagged
           image-tags: 'sha256-*'
           cut-off: 0s
+      - name: Clean Old PR's 'pr-*' Versions
+        if: github.event_name == 'workflow_run' || github.event_name == 'push'
+        uses: snok/container-retention-policy@v3.0.0
+        with:
+          account: user
+          token: ${{ secrets.GITHUB_TOKEN }}
+          image-names: handbrake-web handbrake-web-server handbrake-web-worker
+          tag-selection: tagged
+          image-tags: 'pr-*'
+          cut-off: 1w
       - name: Clean This PR's 'pr-*' Versions
         if: github.event_name == 'pull_request'
         uses: snok/container-retention-policy@v3.0.0
@@ -43,12 +55,3 @@ jobs:
           tag-selection: tagged
           image-tags: 'pr-${{github.event.number}}'
           cut-off: 0s
-      - name: Clean Old PR's 'pr-*' Versions
-        uses: snok/container-retention-policy@v3.0.0
-        with:
-          account: user
-          token: ${{ secrets.GITHUB_TOKEN }}
-          image-names: handbrake-web handbrake-web-server handbrake-web-worker
-          tag-selection: tagged
-          image-tags: 'pr-*'
-          cut-off: 2w
