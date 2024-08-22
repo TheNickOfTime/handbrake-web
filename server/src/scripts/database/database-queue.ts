@@ -192,11 +192,7 @@ export function InsertJobToDatabase(request: QueueRequestType) {
 			preset_id: request.preset,
 		});
 
-		const job_id = database
-			.prepare<{ rowid: number }, { rowid: number }>(
-				'SELECT job_id FROM jobs WHERE rowid = $rowid'
-			)
-			.get({ rowid: dataResult.lastInsertRowid as number })!.rowid;
+		const job_id = dataResult.lastInsertRowid as number;
 
 		const statusStatement = database.prepare<JobStatusInsertType>(
 			'INSERT INTO jobs_status(job_id) VALUES($job_id)'
