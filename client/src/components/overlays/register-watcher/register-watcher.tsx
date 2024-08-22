@@ -74,7 +74,10 @@ export default function RegisterWatcher({ onClose }: Params) {
 						startPath={config.paths['output-path'] || config.paths['media-path']}
 						rootPath={config.paths['media-path']}
 						mode={FileBrowserMode.Directory}
+						allowClear
+						allowCreate
 						value={outputPath}
+						setValue={(value) => setOutputPath(value)}
 						onConfirm={handleOutputPathConfirm}
 					/>
 					<SelectInput
