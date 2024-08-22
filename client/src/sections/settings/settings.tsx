@@ -14,11 +14,12 @@ export default function SettingsSection() {
 	const { config, socket } = useOutletContext<PrimaryOutletContextType>();
 	const [currentConfig, setCurrentConfig] = useState(config);
 	const [canSave, setCanSave] = useState(false);
+	const [pathsValid, setPathsValid] = useState(true);
 
 	useEffect(() => {
 		const configUpdated = JSON.stringify(config) != JSON.stringify(currentConfig);
-		setCanSave(configUpdated);
-	}, [config, currentConfig]);
+		setCanSave(configUpdated && pathsValid);
+	}, [config, currentConfig, pathsValid]);
 
 	const handleSaveConfig = () => {
 		socket.emit('config-update', currentConfig);
@@ -50,7 +51,11 @@ export default function SettingsSection() {
 				/>
 			</SubSection>
 			<div className='settings-sub-sections'>
-				<SettingsPaths config={currentConfig} setConfig={setCurrentConfig} />
+				<SettingsPaths
+					config={currentConfig}
+					setConfig={setCurrentConfig}
+					setValid={setPathsValid}
+				/>
 				<SettingsPreset config={currentConfig} setConfig={setCurrentConfig} />
 				<SettingsApplication config={currentConfig} setConfig={setCurrentConfig} />
 			</div>

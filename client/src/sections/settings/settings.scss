@@ -23,6 +23,18 @@
 			flex-flow: column nowrap;
 			gap: 1.25rem;
 
+			.path-invalid-warning {
+				margin-top: 0.5rem;
+				margin-bottom: -1.25rem;
+				text-align: center;
+				font-size: 1.25rem;
+				color: colors.$handbrake-red;
+
+				.bi {
+					margin-right: 0.5rem;
+				}
+			}
+
 			.path-input {
 				.input-label {
 					min-width: 100%;
