@@ -30,7 +30,7 @@ export const queueTableCreateStatements = [
 		time_finished INTEGER DEFAULT 0 \
 	)',
 	'CREATE TABLE IF NOT EXISTS jobs_order( \
-		job_id INTEGER NOT NULL REFERENCES job_ids(job_id) ON DELETE CASCADE, \
+		job_id INTEGER NOT NULL REFERENCES jobs(job_id) ON DELETE CASCADE, \
 		order_index INTEGER NOT NULL UNIQUE \
 	)',
 ];
