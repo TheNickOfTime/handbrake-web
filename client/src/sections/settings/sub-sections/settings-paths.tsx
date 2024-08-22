@@ -44,8 +44,10 @@ export default function SettingsPaths({ config, setConfig }: Params) {
 				startPath={config.paths['output-path'] || config.paths['media-path']}
 				rootPath={config.paths['media-path']}
 				mode={FileBrowserMode.Directory}
+				allowClear={true}
 				allowCreate={true}
 				value={config.paths['output-path']}
+				setValue={(value) => updatePathProperty('output-path', value)}
 				onConfirm={(item) => updatePathProperty('output-path', item.path)}
 			/>
 		</SubSection>
