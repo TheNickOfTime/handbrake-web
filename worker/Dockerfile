@@ -3,7 +3,7 @@ FROM node:bookworm-slim AS main
 
 # Install external dependencies
 RUN apt update && apt install -y handbrake-cli
-RUN apt install intel-mediasdk -y
+RUN add-apt-repository non-free && apt update && apt install -y libmfx1 libigfxcmrt7 libva-drm2 libva-x11-2 && apt install -y intel-media-va-driver-non-free
 
 COPY worker /handbrake-web/worker
 COPY shared /handbrake-web/shared
