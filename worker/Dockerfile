@@ -1,8 +1,23 @@
 # Node ---------------------------------------------------------------------------------------------
 FROM node:bookworm-slim AS main
 
-# Install external dependencies
-RUN apt update && apt install -y handbrake-cli
+# Configure apt (referenced from the immich project at 'https://github.com/immich-app/base-images/tree/main')
+RUN sed -i -e's/ main/ main contrib non-free non-free-firmware/g' /etc/apt/sources.list.d/debian.sources
+# RUN sed -i -e's/ bookworm-updates/ bookworm-updates sid/g' /etc/apt/sources.list.d/debian.sources
+# RUN touch /etc/apt/preferences.d/prferences && \
+# 	echo "Package: *" >> /etc/apt/preferences.d/prferences && \
+# 	echo "Pin: release a=unstable" >> /etc/apt/preferences.d/prferences && \
+# 	echo "Pin-Priority: 450" >> /etc/apt/preferences.d/prferences
+RUN apt update
+
+# Install mesa drivers
+RUN apt install -y mesa-utils mesa-va-drivers mesa-vulkan-drivers vainfo
+# Install intel media divers
+RUN apt install -y intel-media-va-driver-non-free
+# Install handbrake
+RUN apt install -y handbrake-cli
+# Install dumb-init
+RUN apt install -y dumb-init
 
 COPY worker /handbrake-web/worker
 COPY shared /handbrake-web/shared
@@ -16,9 +31,6 @@ RUN npm install
 ENV HANDBRAKE_MODE=worker
 ENV DATA_PATH=/data
 ENV VIDEO_PATH=/video
-
-# Dumb init
-RUN apt install dumb-init
 
 # Start application
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
