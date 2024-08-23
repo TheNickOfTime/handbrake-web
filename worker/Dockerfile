@@ -2,8 +2,10 @@
 FROM node:bookworm-slim AS main
 
 # Install external dependencies
-RUN apt update && apt install -y handbrake-cli
-RUN apt install -y libmfx1 libigfxcmrt7 libva-drm2 libva-x11-2
+RUN sed -i "s/Components: main/Components: main non-free non-free-firmware/" /etc/apt/sources.list.d/debian.sources && apt update
+RUN apt install -y libmfx1 libigfxcmrt7 libva-drm2 libva-x11-2 intel-media-va-driver-non-free
+RUN apt install -y handbrake-cli
+RUN apt install -y dumb-init
 
 COPY worker /handbrake-web/worker
 COPY shared /handbrake-web/shared
@@ -19,7 +21,6 @@ ENV DATA_PATH=/data
 ENV VIDEO_PATH=/video
 
 # Dumb init
-RUN apt install dumb-init -y
 
 # Start application
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
