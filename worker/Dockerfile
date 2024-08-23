@@ -4,6 +4,8 @@ FROM node:bookworm-slim AS main
 # Configure apt
 RUN sed -i -e's/ main/ main contrib non-free non-free-firmware/g' /etc/apt/sources.list.d/debian.sources
 RUN sed -i -e's/ bookworm-updates/ bookworm-updates sid/g' /etc/apt/sources.list.d/debian.sources
+RUN touch /etc/apt/preferences.d/prferences && echo "Package: *" >> /etc/apt/preferences.d/prferences && echo "Pin: release a=unstable" >> /etc/apt/preferences.d/prferences && echo "Pin-Priority: 450" >> /etc/apt/preferences.d/prferences
+RUN apt update
 
 # Install mesa drivers
 RUN apt install -y mesa-utils mesa-va-drivers mesa-vulkan-drivers
