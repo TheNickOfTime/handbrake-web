@@ -2,12 +2,12 @@
 FROM node:bookworm-slim AS main
 
 # Configure apt
-RUN sed -i "s/Components: main/Components: main contrib non-free non-free-firmware/" /etc/apt/sources.list.d/debian.sources
-RUN cat > /etc/apt/preferences.d/preferences << EOL \
+RUN sed -i -e's/ main/ main contrib non-free non-free-firmware/g' /etc/apt/sources.list.d/debian.sources
+RUN sed -i -e's/ bookworm-updates/ bookworm-updates sid/g' /etc/apt/sources.list.d/debian.sources
+RUN cat > /etc/apt/preferences.d/preferences << \
 Package: * \
 Pin: release a=unstable \
-Pin-Priority: 450 \
-EOL
+Pin-Priority: 450
 
 # Install mesa drivers
 RUN apt install -y mesa-utils mesa-va-drivers mesa-vulkan-drivers
@@ -30,8 +30,6 @@ RUN npm install
 ENV HANDBRAKE_MODE=worker
 ENV DATA_PATH=/data
 ENV VIDEO_PATH=/video
-
-# Dumb init
 
 # Start application
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
