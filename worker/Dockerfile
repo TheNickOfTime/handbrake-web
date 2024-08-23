@@ -8,7 +8,7 @@ RUN sed -i -e's/ bookworm-updates/ bookworm-updates sid/g' /etc/apt/sources.list
 # Install mesa drivers
 RUN apt install -y mesa-utils mesa-va-drivers mesa-vulkan-drivers
 # Install intel media divers
-RUN apt install -t unstable -y intel-media-va-driver-non-free
+RUN apt install -y intel-media-va-driver-non-free
 # Install handbrake
 RUN apt install -y handbrake-cli
 # Install dumb-init
