@@ -1,8 +1,14 @@
 # Node ---------------------------------------------------------------------------------------------
 FROM node:bookworm-slim AS main
 
-# Install external dependencies
-RUN sed -i "s/Components: main/Components: main contrib non-free non-free-firmware/" /etc/apt/sources.list.d/debian.sources && apt update
+# Configure apt
+RUN sed -i "s/Components: main/Components: main contrib non-free non-free-firmware/" /etc/apt/sources.list.d/debian.sources
+RUN cat > /etc/apt/preferences.d/preferences << EOL \
+Package: * \
+Pin: release a=unstable \
+Pin-Priority: 450 \
+EOL
+
 # Install mesa drivers
 RUN apt install -y mesa-utils mesa-va-drivers mesa-vulkan-drivers
 # Install intel media divers
