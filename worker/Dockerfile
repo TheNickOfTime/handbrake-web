@@ -3,7 +3,8 @@ FROM node:bookworm-slim AS main
 
 # Install external dependencies
 RUN sed -i "s/Components: main/Components: main non-free non-free-firmware/" /etc/apt/sources.list.d/debian.sources && apt update
-RUN apt install -y libmfx1 libigfxcmrt7 libva-drm2 libva-x11-2 intel-media-va-driver-non-free mesa-utils vainfo
+RUN apt install -y mesa-vulkan-drivers libgl1-mesa-dri libglx-mesa0 vainfo
+RUN apt install -y libmfx1 libigfxcmrt7 libva-drm2 libva-x11-2 intel-media-va-driver-non-free
 RUN apt install -y handbrake-cli
 RUN apt install -y dumb-init
 
