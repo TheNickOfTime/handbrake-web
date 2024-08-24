@@ -14,7 +14,7 @@ let handbrake: ChildProcess | null = null;
 export const isTranscoding = () => handbrake != null;
 
 let currentJob: JobDataType | null = null;
-export let currentJobID: string | null = null;
+export let currentJobID: number | null = null;
 let presetPath: string | undefined;
 
 const writePresetToFile = async (preset: HandbrakePresetType) => {
@@ -42,7 +42,7 @@ const getTempOutputName = (output: string) => {
 	return path.join(outputParsed.dir, outputParsed.name + '.transcoding' + outputParsed.ext);
 };
 
-export async function StartTranscode(jobID: string, socket: Socket) {
+export async function StartTranscode(jobID: number, socket: Socket) {
 	try {
 		// Get job data from db
 		const jobData: JobDataType = await socket.timeout(5000).emitWithAck('get-job-data', jobID);
@@ -179,6 +179,7 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 									jobLogger.error(
 										`[transcode] [error] Finished with error ${workDone.Error}`
 									);
+									socket.emit('transcode-error', jobID);
 								}
 								break;
 							default:
@@ -203,7 +204,7 @@ export async function StartTranscode(jobID: string, socket: Socket) {
 	}
 }
 
-export function StopTranscode(id: string, socket: Socket) {
+export function StopTranscode(id: number, socket: Socket) {
 	if (handbrake) {
 		if (currentJob && currentJobID == id) {
 			if (socket.connected) {
