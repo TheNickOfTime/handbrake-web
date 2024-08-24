@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client';
 import { StartTranscode, StopTranscode } from '../scripts/transcode';
-import { serverAddress } from '../worker';
+import { serverAddress } from '../worker-startup';
 import logger from 'logging';
 
 const workerID = process.env.WORKER_ID;
