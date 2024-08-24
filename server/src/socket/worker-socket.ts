@@ -26,9 +26,9 @@ export default function WorkerSocket(io: Server) {
 			RemoveWorker(socket);
 			const queue = GetQueue();
 			if (queue) {
-				const workersJob = Object.keys(queue).find(
-					(jobID) => queue[jobID].status.worker_id == workerID
-				);
+				const workersJob = Object.keys(queue)
+					.map((key) => parseInt(key))
+					.find((jobID) => queue[jobID].status.worker_id == workerID);
 				if (workersJob) {
 					StopJob(workersJob);
 					logger.info(
@@ -40,7 +40,7 @@ export default function WorkerSocket(io: Server) {
 
 		socket.on(
 			'get-job-data',
-			(jobID: string, callback: (jobData: JobDataType | undefined) => void) => {
+			(jobID: number, callback: (jobData: JobDataType | undefined) => void) => {
 				const jobData = GetJobDataFromTable(jobID);
 				callback(jobData);
 			}
@@ -61,20 +61,28 @@ export default function WorkerSocket(io: Server) {
 			}
 		);
 
-		socket.on('transcode-stopped', (job_id: string, status: JobStatusType) => {
+		socket.on('transcode-stopped', (job_id: number, status: JobStatusType) => {
 			logger.info(
-				`[socket] Worker '${workerID}' with ID '${socket.id}' has stopped transcoding. The job will be reset.`
+				`[socket] Worker '${workerID}' with ID '${socket.id}' has stopped transcoding.`
 			);
 
-			StopJob(job_id);
+			// StopJob(job_id);
 		});
 
-		socket.on('transcode-update', (job_id: string, status: JobStatusType) => {
+		socket.on('transcode-update', (job_id: number, status: JobStatusType) => {
 			UpdateJobStatusInDatabase(job_id, status);
 			UpdateQueue();
 		});
 
-		socket.on('transcode-finished', (job_id: string, status: JobStatusType) => {
+		socket.on('transcode-error', (job_id: number) => {
+			logger.error(
+				`[socket] An error has occurred with job '${job_id}'. The job will be stopped and it's state set to 'Error'.`
+			);
+
+			StopJob(job_id, true);
+		});
+
+		socket.on('transcode-finished', (job_id: number, status: JobStatusType) => {
 			UpdateJobStatusInDatabase(job_id, status);
 			UpdateJobOrderIndexInDatabase(job_id, 0);
 			UpdateQueue();
