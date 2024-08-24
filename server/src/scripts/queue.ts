@@ -256,7 +256,7 @@ export function StartJob(jobID: number, job: JobType, worker: Worker) {
 	worker.emit('start-transcode', jobID);
 }
 
-export function StopJob(job_id: number) {
+export function StopJob(job_id: number, isError: boolean = false) {
 	const job = GetJobFromDatabase(job_id);
 	if (job) {
 		// Tell the worker to stop transcoding
@@ -267,11 +267,13 @@ export function StopJob(job_id: number) {
 			}
 		}
 
+		const newStage = isError ? TranscodeStage.Error : TranscodeStage.Stopped;
+
 		// Update Job in database
 		UpdateJobOrderIndexInDatabase(job_id, 0);
 		UpdateJobStatusInDatabase(job_id, {
 			worker_id: null,
-			transcode_stage: TranscodeStage.Stopped,
+			transcode_stage: newStage,
 			transcode_percentage: 0,
 			transcode_eta: 0,
 			transcode_fps_current: 0,

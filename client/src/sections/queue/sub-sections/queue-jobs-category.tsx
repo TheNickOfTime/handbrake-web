@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
+import { QueueType } from 'types/queue';
+import { statusSorting } from 'dict/queue.dict';
 import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import QueueCard from 'components/cards/queue-card/queue-card';
-import { QueueType } from 'types/queue';
 import QueueJobPreview from './queue-job-preview';
 
 type Params = {
@@ -34,7 +35,35 @@ export default function QueueJobsCategory({
 
 	const orderedJobs = Object.keys(queue)
 		.map((key) => parseInt(key))
-		.sort((a, b) => queue[a].order_index - queue[b].order_index);
+		.sort((a, b) => {
+			const stageA = queue[a].status.transcode_stage;
+			const stageB = queue[b].status.transcode_stage;
+			if (stageA != undefined && stageB != undefined) {
+				// return (
+				// 	statusSorting[queue[a].status.transcode_stage] -
+				// 	statusSorting[queue[b].status.transcode_stage]
+				// );
+				const orderA = queue[a].order_index;
+				const orderB = queue[b].order_index;
+
+				const finishedA = queue[a].status.time_finished || 0;
+				const finishedB = queue[b].status.time_finished || 0;
+
+				return stageA == stageB
+					? orderA != null && orderB != null
+						? orderA - orderB
+						: finishedA
+						? finishedB
+							? finishedB - finishedA
+							: 1
+						: finishedB
+						? -1
+						: 0
+					: statusSorting[stageA] - statusSorting[stageB];
+			}
+
+			return 0;
+		});
 
 	// Drag n' drop related stuff
 	const [draggedID, setDraggedID] = useState<string>();

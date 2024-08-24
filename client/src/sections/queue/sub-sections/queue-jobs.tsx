@@ -39,9 +39,13 @@ export default function QueueJobs({
 
 	const jobsStopped: QueueType = Object.fromEntries(
 		Object.entries(queue).filter(
-			(entry) => entry[1].status.transcode_stage == TranscodeStage.Stopped
+			(entry) =>
+				entry[1].status.transcode_stage == TranscodeStage.Stopped ||
+				entry[1].status.transcode_stage == TranscodeStage.Error
 		)
 	);
+
+	console.log(jobsStopped);
 
 	const jobsFinshed: QueueType = Object.fromEntries(
 		Object.entries(queue).filter(

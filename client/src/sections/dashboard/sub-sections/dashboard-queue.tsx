@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { QueueType } from 'types/queue';
 import { TranscodeStage } from 'types/transcode';
+import { statusSorting } from 'dict/queue.dict';
 import ProgressBar from 'components/base/progress/progress-bar';
 import SubSection from 'components/section/sub-section';
 import './dashboard-queue.scss';
@@ -8,14 +9,6 @@ import BadgeInfo from 'components/base/info/badge-info/badge-info';
 
 type Params = {
 	queue: QueueType;
-};
-
-const statusSorting: { [key in TranscodeStage]: number } = {
-	[TranscodeStage.Transcoding]: 1,
-	[TranscodeStage.Scanning]: 2,
-	[TranscodeStage.Waiting]: 3,
-	[TranscodeStage.Stopped]: 4,
-	[TranscodeStage.Finished]: 5,
 };
 
 export default function DashboardQueue({ queue }: Params) {

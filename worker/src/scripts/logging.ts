@@ -112,7 +112,7 @@ const logger = CreateCustomLogger(process.env.WORKER_ID!);
 
 export default logger;
 
-export const createJobLogger = (jobID: string) => {
+export const createJobLogger = (jobID: number) => {
 	const workerID = process.env.WORKER_ID!;
 	const logPath = path.join(process.env.DATA_PATH!, 'log');
 

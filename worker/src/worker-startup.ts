@@ -4,6 +4,8 @@ import logger from 'logging';
 import ServerSocket from 'socket/server-socket';
 import { RegisterExitListeners } from './worker-shutdown';
 
+export let serverAddress = '';
+
 export default async function WorkerStartup() {
 	// Setup -------------------------------------------------------------------------------------------
 
@@ -20,9 +22,7 @@ export default async function WorkerStartup() {
 	const serverURL = process.env.SERVER_URL;
 	const serverURLPrefix = serverURL?.match(/^https?:\/\//);
 	const serverPort = process.env.SERVER_PORT;
-	const serverAddress = `${
-		serverURLPrefix ? serverURL : 'http://' + serverURL
-	}:${serverPort}/worker`;
+	serverAddress = `${serverURLPrefix ? serverURL : 'http://' + serverURL}:${serverPort}/worker`;
 
 	const canConnect = serverURL != undefined && serverPort != undefined;
 	const server = io(serverAddress, {
