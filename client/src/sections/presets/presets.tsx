@@ -48,7 +48,7 @@ export default function PresetsSection() {
 				label='Presets'
 				presets={presets}
 				collapsed={false}
-				allowRename={true}
+				canModify={true}
 				handleRenamePreset={handleRenamePreset}
 				handleRemovePreset={handleRemovePreset}
 			/>

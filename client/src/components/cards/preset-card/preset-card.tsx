@@ -13,6 +13,7 @@ import './preset-card.scss';
 type Params = {
 	preset: HandbrakePresetType;
 	category: string;
+	canModify?: boolean;
 	handleRenamePreset?: (oldName: string, newName: string, category: string) => void;
 	handleRemovePreset: (preset: string, category: string) => void;
 };
@@ -30,6 +31,7 @@ enum PresetTabs {
 export default function PresetCard({
 	preset,
 	category,
+	canModify = false,
 	handleRenamePreset,
 	handleRemovePreset,
 }: Params) {
@@ -93,12 +95,14 @@ export default function PresetCard({
 						title='Download Preset'
 						onClick={handleDownloadPreset}
 					/>
-					<ButtonInput
-						icon='bi-trash-fill'
-						color='red'
-						title='Remove Preset'
-						onClick={() => handleRemovePreset(presetData.PresetName, category)}
-					/>
+					{canModify && (
+						<ButtonInput
+							icon='bi-trash-fill'
+							color='red'
+							title='Remove Preset'
+							onClick={() => handleRemovePreset(presetData.PresetName, category)}
+						/>
+					)}
 				</div>
 			</div>
 			<div className='preset-body'>
