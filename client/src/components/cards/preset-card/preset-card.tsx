@@ -105,6 +105,19 @@ export default function PresetCard({
 					)}
 				</div>
 			</div>
+			{preset.PresetList[0].VideoEncoder == undefined && (
+				<div className='preset-warning'>
+					<i className='bi bi-exclamation-circle-fill' />
+					<span>Attention: </span>
+					<span>
+						This preset has missing information. Want to help? See{' '}
+						<a href='https://github.com/TheNickOfTime/handbrake-web/issues/205'>
+							Issue #205
+						</a>{' '}
+						over at the project's GitHub.
+					</span>
+				</div>
+			)}
 			<div className='preset-body'>
 				<div className='preset-tabs'>
 					{tabs.map((tab, index) => (

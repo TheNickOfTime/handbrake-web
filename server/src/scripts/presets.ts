@@ -72,6 +72,14 @@ const defaultPresetsFileToPresetObject = async () => {
 
 		for (let preset of category.ChildrenArray) {
 			const presetName = preset.PresetName;
+			if (
+				categoryName == 'Hardware' &&
+				!presetName.includes('QSV') &&
+				!presetName.includes('NVENC')
+			) {
+				continue;
+			}
+
 			const presetData: HandbrakePresetType = {
 				PresetList: [preset],
 				VersionMajor: defaultPresetsData.VersionMajor,
