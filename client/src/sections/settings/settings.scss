@@ -2,7 +2,7 @@
 @use 'src/style/modules/sizing';
 
 .section#settings-section {
-	@media screen and (min-width: sizing.$large-min-width) {
+	@media screen and (min-width: calc(sizing.$large-min-width - sizing.$sidebar-width)) {
 		.settings-sub-sections {
 			display: grid;
 			gap: 2rem;
