@@ -1,6 +1,7 @@
 @use 'src/style/modules/colors';
+@use 'src/style/modules/sizing';
 
-@media (max-width: 1000px) {
+@media (max-width: sizing.$medium-max-width) {
 	#primary {
 		.dark-overlay {
 			display: inherit !important;
