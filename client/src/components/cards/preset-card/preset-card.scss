@@ -57,6 +57,25 @@
 		}
 	}
 
+	.preset-warning {
+		margin-top: -1rem;
+		margin-bottom: 0.75rem;
+		padding: 0rem 2rem;
+		// border: 0.1rem solid colors.$handbrake-yellow;
+		// border-radius: 4rem;
+		text-align: center;
+		color: colors.$handbrake-yellow;
+
+		.bi {
+			margin-right: 0.5rem;
+		}
+
+		a {
+			color: colors.$handbrake-yellow;
+			font-weight: bold;
+		}
+	}
+
 	.preset-body {
 		.preset-tabs {
 			display: flex;
