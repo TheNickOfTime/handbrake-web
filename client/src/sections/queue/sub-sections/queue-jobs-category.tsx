@@ -87,6 +87,7 @@ export default function QueueJobsCategory({
 					id={`job-id-${jobID}`}
 					job={job}
 					index={index}
+					jobID={jobID}
 					categoryID={id}
 					showDragHandles={showHandles}
 					handleStopJob={() => handleStopJob(jobID)}

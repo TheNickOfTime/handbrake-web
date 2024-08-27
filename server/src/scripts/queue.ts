@@ -2,7 +2,7 @@ import hash from 'object-hash';
 import { JobType, QueueRequestType, QueueStatus } from 'types/queue';
 import { Socket as Worker } from 'socket.io';
 import { TranscodeStage } from 'types/transcode';
-import logger from 'logging';
+import logger, { RemoveJobLogByID } from 'logging';
 import {
 	EmitToAllClients,
 	EmitToWorkerWithID,
@@ -330,6 +330,7 @@ export function RemoveJob(job_id: number) {
 	const job = GetJobFromDatabase(job_id);
 	if (job) {
 		RemoveJobFromDatabase(job_id);
+		RemoveJobLogByID(job_id);
 		UpdateQueue();
 	} else {
 		logger.error(
