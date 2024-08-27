@@ -172,25 +172,35 @@ export default function DatabaseMigration1(database: Database) {
 					`[database] [migration-1] Added column 'preset_category' to table 'watchers' with a default value of 'uncategorized'.`
 				);
 
-				// Recreate table
-				// const renameWatcherTableStatement = database.prepare(
-				// 	'ALTER TABLE watchers RENAME TO watchers_old'
-				// );
-				// renameWatcherTableStatement.run();
-				// logger.info(`[database] [migration-1] Renamed table 'watchers' to 'watchers_old'.`);
-
 				const recreateWatcherTableStatment = database.prepare(
 					'CREATE TABLE IF NOT EXISTS watchers_new( \
-					watcher_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
-					watch_path TEXT NOT NULL, \
-					output_path TEXT, \
-					preset_category TEXT NOT NULL, \
-					preset_id TEXT NOT NULL \
-				)'
+						watcher_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
+						watch_path TEXT NOT NULL, \
+						output_path TEXT, \
+						preset_category TEXT NOT NULL, \
+						preset_id TEXT NOT NULL \
+					)'
 				);
 				recreateWatcherTableStatment.run();
 				logger.info(
 					`[database] [migration-1] Created table 'watchers_new' with new schema.`
+				);
+
+				const recreateWatcherRulesTableStatement = database.prepare(
+					'CREATE TABLE IF NOT EXISTS watcher_rules_new( \
+						watcher_id INT NOT NULL REFERENCES watchers_new(watcher_id) ON DELETE CASCADE, \
+						rule_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
+						name TEXT NOT NULL, \
+						mask INTEGER NOT NULL, \
+						base_rule_method INTEGER NOT NULL, \
+						rule_method INTEGER NOT NULL, \
+						comparison_method INTEGER NOT NULL, \
+						comparison TEXT NOT NULL \
+					)'
+				);
+				recreateWatcherRulesTableStatement.run();
+				logger.info(
+					`[database] [migration-1] Created table 'watcher_rules_new' that references watchers_new.`
 				);
 
 				const insertStatement = database.prepare(
@@ -201,15 +211,27 @@ export default function DatabaseMigration1(database: Database) {
 					`[database] [migration-1] Copied ${insertResult.changes} rows from the table 'watchers' to the table 'watchers_new'.`
 				);
 
-				const dropStatement = database.prepare('DROP TABLE watchers');
-				dropStatement.run();
+				const insertRuleStatement = database.prepare(
+					`INSERT INTO watcher_rules_new(watcher_id, rule_id, name, mask, base_rule_method, rule_method, comparison_method, comparison) SELECT watcher_id, rule_id, name, mask, base_rule_method, rule_method, comparison_method, comparison FROM watcher_rules`
+				);
+				const insertRulesResult = insertRuleStatement.run();
+				logger.info(
+					`[database] [migration-1] Copied ${insertRulesResult.changes} rows from the table 'watcher_rules' to 'watcher_rules_new'.`
+				);
+
+				database.prepare('DROP TABLE watchers').run();
 				logger.info(`[database] [migration-1] Dropped table 'watchers'.`);
 
-				const renameStatement = database.prepare(
-					'ALTER TABLE watchers_new RENAME TO watchers'
-				);
-				renameStatement.run();
+				database.prepare('DROP TABLE watcher_rules').run();
+				logger.info(`[database] [migration-1] Dropped table 'watcher_rules'.`);
+
+				database.prepare('ALTER TABLE watchers_new RENAME TO watchers').run();
 				logger.info(`[database] [migration-1] Renamed 'watchers_new' to 'watchers'.`);
+
+				database.prepare('ALTER TABLE watcher_rules_new RENAME TO watcher_rules').run();
+				logger.info(
+					`[database] [migration-1] Renamed 'watcher_rules_new' to 'watcher_rules'.`
+				);
 			});
 
 			transaction();
