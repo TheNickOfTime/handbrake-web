@@ -16,7 +16,7 @@ export default function DatabaseMigrations(version: number) {
 		);
 	} catch (error) {
 		logger.error(`[database] [migration] Could not complete migrations.`);
-		logger.error(error);
+		console.error(error);
 	}
 }
 
