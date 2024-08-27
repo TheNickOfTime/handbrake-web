@@ -116,22 +116,33 @@ function WatcherRuleNumberComparison(
 	input: string,
 	method: WatcherRuleNumberComparisonMethods,
 	value: string
-) {
+): boolean {
 	const inputNumber = parseFloat(input);
 	const valueNumber = parseFloat(value);
+	let result = false;
 
 	switch (method) {
 		case WatcherRuleNumberComparisonMethods.LessThan:
-			return inputNumber < valueNumber;
+			result = inputNumber < valueNumber;
+			break;
 		case WatcherRuleNumberComparisonMethods.LessThanOrEqualTo:
-			return inputNumber <= valueNumber;
+			result = inputNumber <= valueNumber;
+			break;
 		case WatcherRuleNumberComparisonMethods.EqualTo:
-			return inputNumber == valueNumber;
+			result = inputNumber == valueNumber;
+			break;
 		case WatcherRuleNumberComparisonMethods.GreaterThan:
-			return inputNumber > valueNumber;
+			result = inputNumber > valueNumber;
+			break;
 		case WatcherRuleNumberComparisonMethods.GreaterThanOrEqualTo:
-			return inputNumber >= valueNumber;
+			result = inputNumber >= valueNumber;
+			break;
+		default:
+			result = false;
+			break;
 	}
+
+	return result;
 }
 
 async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, filePath: string) {
@@ -150,80 +161,92 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, f
 			if (!result) {
 				return false;
 			}
-			return true;
 		}
+		return true;
 	};
 
-	const isValid = await asyncEvery(Object.values(watcher.rules), async (rule) => {
-		let comparisonMethod =
-			WatcherRuleComparisonLookup[
-				rule.base_rule_method == WatcherRuleBaseMethods.FileInfo
-					? WatcherRuleFileInfoMethods[rule.rule_method]
-					: rule.base_rule_method == WatcherRuleBaseMethods.MediaInfo
-					? WatcherRuleMediaInfoMethods[rule.rule_method]
-					: 0
-			];
-		let input = '';
+	logger.info(
+		`[watcher] Processing ${Object.keys(watcher.rules).length} rules for the watcher for '${
+			watcher.watch_path
+		}'.`
+	);
 
-		switch (rule.base_rule_method) {
-			case WatcherRuleBaseMethods.FileInfo:
-				switch (rule.rule_method as WatcherRuleFileInfoMethods) {
-					case WatcherRuleFileInfoMethods.FileName:
-						input = path.parse(filePath).name;
-						break;
-					case WatcherRuleFileInfoMethods.FileExtension:
-						input = path.parse(filePath).ext;
-						break;
-					case WatcherRuleFileInfoMethods.FileSize:
-						input = ConvertBytesToMegabytes((await fs.stat(filePath)).size).toFixed(1);
-						break;
-				}
-				break;
-			case WatcherRuleBaseMethods.MediaInfo:
-				const mediaInfo = await GetMediaInfo(filePath);
-				const videoStream = mediaInfo.streams.find(
-					(stream) => stream.codec_type == 'video'
-				);
-				if (!videoStream) return false;
+	const isValid =
+		Object.keys(watcher.rules).length == 0
+			? true
+			: await asyncEvery(Object.values(watcher.rules), async (rule) => {
+					let comparisonMethod =
+						WatcherRuleComparisonLookup[
+							rule.base_rule_method == WatcherRuleBaseMethods.FileInfo
+								? WatcherRuleFileInfoMethods[rule.rule_method]
+								: rule.base_rule_method == WatcherRuleBaseMethods.MediaInfo
+								? WatcherRuleMediaInfoMethods[rule.rule_method]
+								: 0
+						];
+					let input = '';
 
-				switch (rule.rule_method) {
-					case WatcherRuleMediaInfoMethods.MediaWidth:
-						input = videoStream.width!.toString();
-						break;
-					case WatcherRuleMediaInfoMethods.MediaHeight:
-						input = videoStream.height!.toString();
-						break;
-					case WatcherRuleMediaInfoMethods.MediaBitrate:
-						input = ConvertBitsToKilobits(videoStream.bit_rate!).toFixed(0);
-						break;
-					case WatcherRuleMediaInfoMethods.MediaEncoder:
-						input = videoStream.codec_long_name!.toString();
-						break;
-				}
-				break;
-		}
+					switch (rule.base_rule_method) {
+						case WatcherRuleBaseMethods.FileInfo:
+							switch (rule.rule_method as WatcherRuleFileInfoMethods) {
+								case WatcherRuleFileInfoMethods.FileName:
+									input = path.parse(filePath).name;
+									break;
+								case WatcherRuleFileInfoMethods.FileExtension:
+									input = path.parse(filePath).ext;
+									break;
+								case WatcherRuleFileInfoMethods.FileSize:
+									input = ConvertBytesToMegabytes(
+										(await fs.stat(filePath)).size
+									).toFixed(1);
+									break;
+							}
+							break;
+						case WatcherRuleBaseMethods.MediaInfo:
+							const mediaInfo = await GetMediaInfo(filePath);
+							const videoStream = mediaInfo.streams.find(
+								(stream) => stream.codec_type == 'video'
+							);
+							if (!videoStream) return false;
 
-		let result =
-			comparisonMethod == WatcherRuleComparisonMethods.String
-				? WatcherRuleStringComparison(
-						input,
-						rule.comparison_method as WatcherRuleStringComparisonMethods,
-						rule.comparison
-				  )
-				: comparisonMethod == WatcherRuleComparisonMethods.Number
-				? WatcherRuleNumberComparison(
-						input,
-						rule.comparison_method as WatcherRuleNumberComparisonMethods,
-						rule.comparison
-				  )
-				: false;
+							switch (rule.rule_method) {
+								case WatcherRuleMediaInfoMethods.MediaWidth:
+									input = videoStream.width!.toString();
+									break;
+								case WatcherRuleMediaInfoMethods.MediaHeight:
+									input = videoStream.height!.toString();
+									break;
+								case WatcherRuleMediaInfoMethods.MediaBitrate:
+									input = ConvertBitsToKilobits(videoStream.bit_rate!).toFixed(0);
+									break;
+								case WatcherRuleMediaInfoMethods.MediaEncoder:
+									input = videoStream.codec_long_name!.toString();
+									break;
+							}
+							break;
+					}
 
-		if (rule.mask == WatcherRuleMaskMethods.Exclude) {
-			result = !result;
-		}
+					console.log(rule.name, comparisonMethod);
+					let result =
+						comparisonMethod == WatcherRuleComparisonMethods.String
+							? WatcherRuleStringComparison(
+									input,
+									rule.comparison_method as WatcherRuleStringComparisonMethods,
+									rule.comparison
+							  )
+							: comparisonMethod == WatcherRuleComparisonMethods.Number
+							? WatcherRuleNumberComparison(
+									input,
+									rule.comparison_method as WatcherRuleNumberComparisonMethods,
+									rule.comparison
+							  )
+							: false;
 
-		return result;
-	});
+					if (rule.mask == WatcherRuleMaskMethods.Exclude) {
+						result = !result;
+					}
+
+					return result;
+			  });
 
 	if (!isValid) {
 		logger.info(
@@ -274,11 +297,13 @@ function onWatcherDetectFileDelete(watcher: WatcherDefinitionWithRulesType, file
 	const isVideo = mime.getType(filePath);
 	if (isVideo && isVideo.includes('video')) {
 		const queue = GetQueue();
-		const jobsToDelete = Object.keys(queue).filter(
-			(key) =>
-				queue[key].data.input_path == filePath &&
-				queue[key].status.transcode_stage == TranscodeStage.Waiting
-		);
+		const jobsToDelete = Object.keys(queue)
+			.map((key) => parseInt(key))
+			.filter(
+				(key) =>
+					queue[key].data.input_path == filePath &&
+					queue[key].status.transcode_stage == TranscodeStage.Waiting
+			);
 		jobsToDelete.forEach((jobID) => {
 			logger.info(
 				`[server] [watcher] Watcher for '${watcher.watch_path}' is requesting removal of job '${jobID}' because the input file '${filePath}' has been deleted.`
