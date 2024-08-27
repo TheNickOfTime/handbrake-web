@@ -19,6 +19,9 @@ WORKDIR /handbrake-web/server
 ENV NODE_ENV=production
 RUN npm install
 
+# Create directories
+RUN mkdir /data && chown node /data && mkdir /video && chown node /data
+
 # Default environment variables & ports
 EXPOSE 9999
 ENV HANDBRAKE_MODE=server
