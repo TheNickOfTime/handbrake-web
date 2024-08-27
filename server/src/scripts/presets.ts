@@ -105,6 +105,7 @@ export async function LoadDefaultPresets() {
 		logger.info(
 			`[server] [presets] [error] Could not load the default presets from '${defaultPresetsPath}'.`
 		);
+		console.error(error);
 	}
 }
 
@@ -176,7 +177,7 @@ export async function LoadPresets() {
 		logger.error(
 			`[server] [presets] [error] Presets could not be loaded from '${presetsPath}'.`
 		);
-		logger.error(error);
+		console.error(error);
 	}
 }
 
@@ -198,7 +199,7 @@ export async function WritePreset(fileName: string, category: string, preset: Ha
 		logger.info(`[server] [presets] Wrote preset '${fileName}' to '${presetPath}'.`);
 	} catch (error) {
 		logger.error(`[server] [presets] [error] Cannot write preset to file.`);
-		logger.error(error);
+		console.error(error);
 	}
 }
 
@@ -238,7 +239,7 @@ export async function AddPreset(newPreset: HandbrakePresetType, category: string
 		logger.error(
 			`[server] [presets] [error] Could not add the preset '${newPreset.PresetList[0].PresetName}'.`
 		);
-		logger.error(error);
+		console.error(error);
 	}
 }
 
@@ -256,7 +257,7 @@ export async function RemovePreset(presetName: string, category: string) {
 		EmitToAllClients('presets-update', presets);
 	} catch (error) {
 		logger.error(`[server] [presets] [error] Could not remove the preset '${presetName}'.`);
-		logger.error(error);
+		console.error(error);
 	}
 }
 
@@ -287,6 +288,6 @@ export async function RenamePreset(oldName: string, newName: string, category: s
 		logger.error(
 			`[server] [presets] [error] Could not rename the preset '${oldName}' to '${newName}'.`
 		);
-		logger.error(error);
+		console.error(error);
 	}
 }
