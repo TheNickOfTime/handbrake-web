@@ -1,4 +1,5 @@
-import express, { Express } from 'express';
+import express, { Express, Request } from 'express';
+import { GetJobLogByID } from 'logging';
 import path from 'path';
 
 export default function ClientRoutes(app: Express) {
@@ -8,6 +9,18 @@ export default function ClientRoutes(app: Express) {
 	if (isProduction) {
 		app.use(express.static(clientBuildPath));
 	}
+
+	app.get('/logs/jobs', async (req: Request<{}, {}, {}, { id: number }>, res) => {
+		const id = req.query.id;
+		if (id) {
+			const log = await GetJobLogByID(id);
+			if (log) {
+				res.sendFile(log);
+			} else {
+				res.end();
+			}
+		}
+	});
 
 	app.get('*', (req, res) => {
 		const htmlPath = isProduction

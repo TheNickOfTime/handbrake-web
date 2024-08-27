@@ -1,4 +1,4 @@
-import { writeFile } from 'fs/promises';
+import { writeFile, readdir, readFile } from 'fs/promises';
 import path from 'path';
 import { createLogger, format, transports } from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
@@ -136,6 +136,19 @@ export async function WriteWorkerLogToFile(workerID: string, logName: string, lo
 		);
 	} catch (error) {
 		logger.error(`[log] Could not write log to file at '${logPath}'.`);
+		console.error(error);
+	}
+}
+
+export async function GetJobLogByID(jobID: number) {
+	try {
+		const logs = await readdir(logPath);
+		const log = logs.find((log) => log.includes(`job-${jobID}`));
+		if (log) {
+			return path.join(logPath, log);
+		}
+	} catch (error) {
+		logger.error(`[log] Could not get a log for the job with ID '${jobID}'.`);
 		console.error(error);
 	}
 }
