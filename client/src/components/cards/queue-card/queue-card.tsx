@@ -184,10 +184,12 @@ export default function QueueCard({
 								TranscodeStage[
 									job.status.transcode_stage ? job.status.transcode_stage : 0
 								]
-							}{' '}
-							{job.status.transcode_stage == TranscodeStage.Finished && (
+							}
+							{(job.status.transcode_stage == TranscodeStage.Finished ||
+								job.status.transcode_stage == TranscodeStage.Stopped ||
+								job.status.transcode_stage == TranscodeStage.Error) && (
 								<span className='job-log-link'>
-									-{' '}
+									<span> - </span>
 									<a
 										href={`${serverURL}logs/jobs?id=${jobID}`}
 										title='Download Log'
