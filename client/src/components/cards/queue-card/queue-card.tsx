@@ -4,11 +4,14 @@ import { TranscodeStage } from 'types/transcode';
 import ProgressBar from 'components/base/progress/progress-bar';
 import QueueCardSection from './components/queue-card-section';
 import './queue-card.scss';
+import { useOutletContext } from 'react-router-dom';
+import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 
 type Params = {
 	id: string;
 	job: JobType;
 	index: number;
+	jobID: number;
 	categoryID: string;
 	showDragHandles?: boolean;
 	handleStopJob: () => void;
@@ -24,6 +27,7 @@ export default function QueueCard({
 	id,
 	job,
 	index,
+	jobID,
 	categoryID,
 	showDragHandles = false,
 	handleStopJob,
@@ -34,6 +38,8 @@ export default function QueueCard({
 	setDraggedDesiredIndex,
 	handleDrop,
 }: Params) {
+	const { serverURL } = useOutletContext<PrimaryOutletContextType>();
+
 	const selfRef = useRef<HTMLDivElement | null>(null);
 
 	const [draggable, setDraggable] = useState(false);
@@ -178,7 +184,20 @@ export default function QueueCard({
 								TranscodeStage[
 									job.status.transcode_stage ? job.status.transcode_stage : 0
 								]
-							}
+							}{' '}
+							{job.status.transcode_stage == TranscodeStage.Finished && (
+								<span className='job-log-link'>
+									-{' '}
+									<a
+										href={`${serverURL}logs/jobs?id=${jobID}`}
+										title='Download Log'
+										target='_blank'
+										download={`job-${jobID}.log`}
+									>
+										<i className='bi bi-file-text-fill' />
+									</a>
+								</span>
+							)}
 						</QueueCardSection>
 					</div>
 					{(job.status.transcode_stage == TranscodeStage.Scanning ||
