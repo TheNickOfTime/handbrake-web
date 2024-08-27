@@ -71,6 +71,12 @@
 				min-width: 50%;
 				width: 50%;
 			}
+
+			.job-log-link {
+				a {
+					color: colors.$handbrake-blue;
+				}
+			}
 		}
 	}
 

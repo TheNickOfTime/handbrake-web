@@ -6,6 +6,7 @@ import { ConfigType } from 'types/config';
 import { WatcherDefinitionObjectType } from 'types/watcher';
 
 export type PrimaryOutletContextType = {
+	serverURL: string;
 	socket: Socket;
 	queue: QueueType;
 	queueStatus: QueueStatus;

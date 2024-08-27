@@ -154,6 +154,7 @@ export default function Primary() {
 						<Outlet
 							context={
 								{
+									serverURL,
 									socket,
 									queue,
 									queueStatus,
