@@ -47,12 +47,14 @@ const presetFilesToPresetObject = async (presetPath: string) => {
 			for (let preset of presetFiles) {
 				const presetPath = path.join(preset.path, preset.name);
 				const presetData = await presetFileToPresetObject(presetPath);
-				newObject[dir.name][path.parse(preset.name).name] = presetData;
+				const presetName = presetData.PresetList[0].PresetName;
+				newObject[dir.name][presetName] = presetData;
 			}
 		} else {
 			const presetPath = path.join(dir.path, dir.name);
-			const uncategorizedPreset = await presetFileToPresetObject(presetPath);
-			newObject.uncategorized[dir.name] = uncategorizedPreset;
+			const presetData = await presetFileToPresetObject(presetPath);
+			const presetName = presetData.PresetList[0].PresetName;
+			newObject.uncategorized[presetName] = presetData;
 		}
 	}
 
