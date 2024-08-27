@@ -244,8 +244,12 @@ export async function AddPreset(newPreset: HandbrakePresetType, category: string
 
 export async function RemovePreset(presetName: string, category: string) {
 	try {
-		await rm(path.join(presetsPath, category, presetName + '.json'));
+		const presetPath =
+			category != 'uncategorized'
+				? path.join(presetsPath, category, presetName + '.json')
+				: path.join(presetsPath, presetName + '.json');
 
+		await rm(presetPath);
 		delete presets[category][presetName];
 
 		logger.info(`[server] [presets] Preset '${presetName}' has been removed.`);
