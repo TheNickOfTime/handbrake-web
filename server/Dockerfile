@@ -20,7 +20,7 @@ ENV NODE_ENV=production
 RUN npm install
 
 # Create directories
-RUN mkdir /data && mkdir /video
+RUN mkdir /data && chown node /data && mkdir /video && chown node /data
 
 # Default environment variables & ports
 EXPOSE 9999
