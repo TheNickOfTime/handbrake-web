@@ -116,22 +116,33 @@ function WatcherRuleNumberComparison(
 	input: string,
 	method: WatcherRuleNumberComparisonMethods,
 	value: string
-) {
+): boolean {
 	const inputNumber = parseFloat(input);
 	const valueNumber = parseFloat(value);
+	let result = false;
 
 	switch (method) {
 		case WatcherRuleNumberComparisonMethods.LessThan:
-			return inputNumber < valueNumber;
+			result = inputNumber < valueNumber;
+			break;
 		case WatcherRuleNumberComparisonMethods.LessThanOrEqualTo:
-			return inputNumber <= valueNumber;
+			result = inputNumber <= valueNumber;
+			break;
 		case WatcherRuleNumberComparisonMethods.EqualTo:
-			return inputNumber == valueNumber;
+			result = inputNumber == valueNumber;
+			break;
 		case WatcherRuleNumberComparisonMethods.GreaterThan:
-			return inputNumber > valueNumber;
+			result = inputNumber > valueNumber;
+			break;
 		case WatcherRuleNumberComparisonMethods.GreaterThanOrEqualTo:
-			return inputNumber >= valueNumber;
+			result = inputNumber >= valueNumber;
+			break;
+		default:
+			result = false;
+			break;
 	}
+
+	return result;
 }
 
 async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, filePath: string) {
@@ -150,9 +161,15 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, f
 			if (!result) {
 				return false;
 			}
-			return true;
 		}
+		return true;
 	};
+
+	logger.info(
+		`[watcher] Processing ${Object.keys(watcher.rules).length} rules for the watcher for '${
+			watcher.watch_path
+		}'.`
+	);
 
 	const isValid =
 		Object.keys(watcher.rules).length == 0
@@ -208,6 +225,7 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, f
 							break;
 					}
 
+					console.log(rule.name, comparisonMethod);
 					let result =
 						comparisonMethod == WatcherRuleComparisonMethods.String
 							? WatcherRuleStringComparison(
