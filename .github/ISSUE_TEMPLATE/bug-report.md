@@ -7,6 +7,9 @@ assignees: ''
 
 ---
 
+> [!important]
+> Have you searched existing issues (both open and closed) for the issue you are having? If not, please consider doing so - your issue may already be fixed or in discussion!
+
 ## Bug Information
 
 ### Bug Description
@@ -37,3 +40,6 @@ Paste the contents of your docker compose file here...
 ```
 Provide any relevant sections of your log here
 ```
+
+> [!tip]
+> Please ensure all sections have been filled out with the requested information and the information is properly formatted. Issues with missing/poorly formatted information make giving help more difficult!
