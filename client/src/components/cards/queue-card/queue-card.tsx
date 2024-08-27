@@ -191,8 +191,6 @@ export default function QueueCard({
 									<a
 										href={`${serverURL}logs/jobs?id=${jobID}`}
 										title='Download Log'
-										target='_blank'
-										download={`job-${jobID}.log`}
 									>
 										<i className='bi bi-file-text-fill' />
 									</a>

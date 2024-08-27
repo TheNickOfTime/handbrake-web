@@ -15,7 +15,7 @@ export default function ClientRoutes(app: Express) {
 		if (id) {
 			const log = await GetJobLogByID(id);
 			if (log) {
-				res.sendFile(log);
+				res.download(log);
 			} else {
 				res.end();
 			}
