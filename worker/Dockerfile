@@ -27,6 +27,9 @@ WORKDIR /handbrake-web/worker
 ENV NODE_ENV=production
 RUN npm install
 
+# Create directories
+RUN mkdir /data && mkdir /video
+
 # Default environment variables
 ENV HANDBRAKE_MODE=worker
 ENV DATA_PATH=/data
