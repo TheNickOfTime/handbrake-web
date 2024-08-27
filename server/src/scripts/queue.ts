@@ -98,7 +98,6 @@ export function JobForAvailableWorkers(jobID: number) {
 		if (availableWorkers.length > 0) {
 			const selectedWorker = availableWorkers[0];
 			const job = GetJobFromDatabase(jobID);
-			logger.info(job);
 			if (job) {
 				StartJob(jobID, job, selectedWorker);
 				if (GetQueueStatus() != QueueStatus.Active) {
@@ -107,7 +106,7 @@ export function JobForAvailableWorkers(jobID: number) {
 				logger.info(
 					`[server] [queue] Found worker with ID '${GetWorkerID(
 						selectedWorker
-					)}' for job with ID '${jobID}`
+					)}' for job with ID '${jobID}'.`
 				);
 			}
 		} else {
