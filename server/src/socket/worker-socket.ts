@@ -1,3 +1,4 @@
+import path from 'path';
 import { Server } from 'socket.io';
 import { AddWorker, RemoveWorker } from 'scripts/connections';
 import { TranscodeStage } from 'types/transcode';
@@ -11,7 +12,7 @@ import {
 } from 'scripts/database/database-queue';
 import { HandbrakePresetType } from 'types/preset';
 import { GetDefaultPresetByName, GetPresetByName, GetPresets } from 'scripts/presets';
-import logger from 'logging';
+import logger, { logPath, WriteWorkerLogToFile } from 'logging';
 
 export default function WorkerSocket(io: Server) {
 	io.of('/worker').on('connection', (socket) => {
@@ -87,6 +88,13 @@ export default function WorkerSocket(io: Server) {
 			UpdateJobOrderIndexInDatabase(job_id, 0);
 			UpdateQueue();
 			WorkerForAvailableJobs(workerID);
+		});
+
+		socket.on('send-log', (logName: string, logContents: string) => {
+			logger.info(
+				`[socket] Worker '${workerID}' has sent the log '${logName}' to be saved to '${logPath}'.`
+			);
+			WriteWorkerLogToFile(workerID, logName, logContents);
 		});
 	});
 }

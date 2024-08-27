@@ -1,8 +1,10 @@
+import { writeFile } from 'fs/promises';
 import path from 'path';
 import { createLogger, format, transports } from 'winston';
-import { Logger, LeveledLogMethod } from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import { dataPath } from './data';
+
+export const logPath = path.join(dataPath, 'log');
 
 export const formatJSON = (json: string) => {
 	return json.replace(/"([^"]+)":/g, '$1:').replace(/:\s"([^"]+)"/g, ": '$1'");
@@ -110,7 +112,7 @@ function CreateCustomLogger(label: string) {
 		transports: [
 			new transports.Console({ format: consoleFormatter(label) }),
 			new DailyRotateFile({
-				dirname: path.join(dataPath, 'log'),
+				dirname: logPath,
 				filename: 'server-%DATE%',
 				extension: '.log',
 				datePattern: 'YYYY-MM-DD',
@@ -124,3 +126,16 @@ function CreateCustomLogger(label: string) {
 const logger = CreateCustomLogger('server');
 
 export default logger;
+
+export async function WriteWorkerLogToFile(workerID: string, logName: string, logContents: string) {
+	try {
+		const newLogPath = path.join(logPath, logName);
+		await writeFile(newLogPath, logContents);
+		logger.info(
+			`[log] Log file from worker '${workerID}' has been written to '${newLogPath}'.`
+		);
+	} catch (error) {
+		logger.error(`[log] Could not write log to file at '${logPath}'.`);
+		console.error(error);
+	}
+}

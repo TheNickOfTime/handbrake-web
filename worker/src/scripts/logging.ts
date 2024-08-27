@@ -1,5 +1,14 @@
+import { readFile } from 'fs/promises';
 import path from 'path';
+import { Socket } from 'socket.io-client';
 import { createLogger, format, transports } from 'winston';
+import TransportStream from 'winston-transport';
+
+export interface CustomTransportType extends TransportStream {
+	dirname?: string;
+	filename?: string;
+	_dest?: string;
+}
 
 export const formatJSON = (json: string) => {
 	return json.replace(/"([^"]+)":/g, '$1:').replace(/:\s"([^"]+)"/g, ": '$1'");
@@ -129,3 +138,15 @@ export const createJobLogger = (jobID: number) => {
 		],
 	});
 };
+
+export async function SendLogToServer(logPath: string, socket: Socket) {
+	try {
+		const logData = await readFile(logPath, { encoding: 'utf-8' });
+		const logName = path.basename(logPath);
+		socket.emit('send-log', logName, logData);
+		logger.info(`[log] Sending the log '${logName}' to the server.`);
+	} catch (error) {
+		logger.error(`[log] Could not read/send the log at '${logPath}' to the server.`);
+		console.error(error);
+	}
+}

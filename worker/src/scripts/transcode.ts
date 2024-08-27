@@ -8,7 +8,7 @@ import { HandbrakeOutputType, Muxing, Scanning, WorkDone, Working } from 'types/
 import { HandbrakePresetType } from 'types/preset';
 import { JobDataType, JobStatusType } from 'types/queue';
 import { TranscodeStage } from 'types/transcode';
-import logger, { createJobLogger, formatJSON } from 'logging';
+import logger, { createJobLogger, CustomTransportType, formatJSON, SendLogToServer } from 'logging';
 
 let handbrake: ChildProcess | null = null;
 export const isTranscoding = () => handbrake != null;
@@ -198,7 +198,18 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 			jobLogger.error(`[transcode] \n${output}`);
 		});
 
-		handbrake.on('exit', () => {});
+		handbrake.on('exit', () => {
+			// Send log from job to the server
+			const transport = (jobLogger.transports as CustomTransportType[]).find(
+				(transport) => transport._dest != undefined
+			);
+			if (transport && transport.dirname && transport.filename) {
+				const logPath = path.join(transport.dirname, transport.filename);
+				SendLogToServer(logPath, socket);
+			}
+
+			jobLogger.destroy();
+		});
 	} catch (err) {
 		console.error(err);
 	}
