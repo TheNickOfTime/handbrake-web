@@ -39,23 +39,23 @@ services:
   handbrake-server:
     image: ghcr.io/thenickoftime/handbrake-web-server:latest
     container_name: handbrake-web-server
-    user: 1000:1000 #edit to run as user (uuid:guid) with permissions to access your media. 0:0 to run as root.
+    user: 1000:1000 # edit to run as user (uuid:guid) with permissions to access your media. 0:0 to run as root (not recommended).
     ports:
       - 9999:9999
     volumes:
       - /path/to/your/data:/data
-      - /path/to/your/media:/video #ensure this path is the same across all containers
+      - /path/to/your/media:/video # ensure this path is the same across all containers
 
   handbrake-worker:
     image: ghcr.io/thenickoftime/handbrake-web-worker:latest
     container_name: handbrake-web-worker
-    user: 1000:1000 #edit to run as user (uuid:guid) with permissions to access your media. 0:0 to run as root.
+    user: 1000:1000 # edit to run as user (uuid:guid) with permissions to access your media. 0:0 to run as root (not recommended).
     environment:
-      - WORKER_ID= #give your worker a unique name
-      - SERVER_URL= #set to the url or ip of your server, prefix with http:// or https://
-      - SERVER_PORT= #if using a reverse proxy, this may be different than what is set above
+      - WORKER_ID=handbrake-worker # give your worker a unique name
+      - SERVER_URL=handbrake-server # change if setting up a standalone worker, prefix with http(s):// if necessary
+      - SERVER_PORT=9999 # change if using a reverse proxy or the port is otherwise different than above
     volumes:
-      - /path/to/your/media:/video #ensure this path is the same across all containers
+      - /path/to/your/media:/video # ensure this path is the same across all containers
     depends_on:
       - handbrake-server
 ```
