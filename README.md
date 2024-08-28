@@ -1,20 +1,27 @@
 <div align='center'>
-	<strong>Disclaimer:</strong>
-	<em>This project is not related to or part of the official <a href='https://github.com/HandBrake/HandBrake'>HandBrake</a> development. It simply uses the CLI component of HandBrake under the hood.</em>
+    <h1 style='{text-decoration: none}'>HandBrake Web</h1>
+    <div align='center'>
+      <strong>Disclaimer:</strong>
+      <em>This project is not related to or part of the official <a href='https://github.com/HandBrake/HandBrake'>HandBrake</a> development. It simply uses the CLI component of HandBrake under the hood.</em>
+    </div>
+    <img src='client/public/handbrake-icon.png' height=256px>
 </div>
 
-# HandBrake Web
-
-<div align='center'>
-    <img src='images/screenshots/screenshot-dashboard.png' width=70%>
-</div>
-<div align='center' width=100%>
-	<img src='images/screenshots/screenshot-queue.png' width=24.5%>
-	<img src='images/screenshots/screenshot-presets.png' width=24.5%>
-	<img src='images/screenshots/screenshot-watchers.png' width=24.5%>
-	<img src='images/screenshots/screenshot-workers.png' width=24.5%>
-</div>
 <br>
+
+<div align='center' width=100%>
+  <details>
+    <summary>Screenshots (click to expand)</summary>
+    <img src='images/screenshots/screenshot-dashboard.png' width=90%>
+    <img src='images/screenshots/screenshot-queue.png' width=90%>
+    <img src='images/screenshots/screenshot-presets.png' width=90%>
+    <img src='images/screenshots/screenshot-watchers.png' width=90%>
+    <img src='images/screenshots/screenshot-workers.png' width=90%>
+    <img src='images/screenshots/screenshot-settings.png' width=90%>
+  </details>
+</div>
+
+## Summary
 
 HandBrake Web is a program for interfacing with handbrake across multiple machines via a web browser. It consists of two components: the **server** and one or more **worker**(s). **_Warning_** - This application is still under heavy development, use at your own risk, to learn more please see the [Known Issues & Limitations](#planned-features-not-yet-implemented) section.
 
