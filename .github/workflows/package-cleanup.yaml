@@ -16,25 +16,6 @@ jobs:
     permissions:
       packages: write
     steps:
-      - name: Clean Untagged Versions
-        if: github.event_name == 'workflow_run' || github.event_name == 'push'
-        uses: snok/container-retention-policy@v3.0.0
-        with:
-          account: user
-          token: ${{ secrets.GITHUB_TOKEN }}
-          image-names: handbrake-web handbrake-web-server handbrake-web-worker
-          tag-selection: untagged
-          cut-off: 0s
-      - name: Clean 'sha256-*' Versions
-        if: github.event_name == 'workflow_run' || github.event_name == 'push'
-        uses: snok/container-retention-policy@v3.0.0
-        with:
-          account: user
-          token: ${{ secrets.GITHUB_TOKEN }}
-          image-names: handbrake-web handbrake-web-server handbrake-web-worker
-          tag-selection: tagged
-          image-tags: 'sha256-*'
-          cut-off: 0s
       - name: Clean Old PR's 'pr-*' Versions
         if: github.event_name == 'workflow_run' || github.event_name == 'push'
         uses: snok/container-retention-policy@v3.0.0
