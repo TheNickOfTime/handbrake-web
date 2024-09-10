@@ -1,6 +1,8 @@
 # Node ---------------------------------------------------------------------------------------------
 FROM node:bookworm-slim AS main
 
+ARG TARGETARCH
+
 # Configure apt (referenced from the immich project at 'https://github.com/immich-app/base-images/tree/main')
 RUN sed -i -e's/ main/ main contrib non-free non-free-firmware/g' /etc/apt/sources.list.d/debian.sources
 # RUN sed -i -e's/ bookworm-updates/ bookworm-updates sid/g' /etc/apt/sources.list.d/debian.sources
@@ -10,10 +12,10 @@ RUN sed -i -e's/ main/ main contrib non-free non-free-firmware/g' /etc/apt/sourc
 # 	echo "Pin-Priority: 450" >> /etc/apt/preferences.d/prferences
 RUN apt update
 
-# Install mesa drivers
-RUN apt install -y mesa-utils mesa-va-drivers mesa-vulkan-drivers vainfo
-# Install intel media divers
-RUN apt install -y intel-media-va-driver-non-free
+# Install mesa and intel media drivers
+RUN if [ $TARGETARCH = "amd64" ]; then \
+	apt install -y mesa-utils mesa-va-drivers mesa-vulkan-drivers intel-media-va-driver-non-free vainfo \
+	; fi
 # Install handbrake
 RUN apt install -y handbrake-cli
 # Install dumb-init
