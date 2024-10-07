@@ -1,6 +1,3 @@
-> [!NOTE]
-> Development may be slow for the month of September since I will be travelling. v0.8.0 planning is underway and development will occur whenever possible :relaxed:
-
 <div align='center'>
     <h1 style='{text-decoration: none}'>HandBrake Web</h1>
     <div align='center'>
