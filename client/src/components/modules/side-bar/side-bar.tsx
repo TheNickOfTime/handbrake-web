@@ -1,8 +1,9 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useOutletContext } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
 import { ConfigType } from 'types/config';
 import VersionInfo from '../version-info/version-info';
 import './side-bar.scss';
+import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 
 type Params = {
 	showSidebar: boolean;
@@ -62,6 +63,14 @@ export default function SideBar({ showSidebar, setShowSidebar, socket, config }:
 								Workers
 							</NavLink>
 						</li>
+						{config?.upload['allow-uploads'] && (
+							<li>
+								<NavLink to='/uploads' onClick={handleNavLinkClick}>
+									<i className='bi bi-upload' />
+									Uploads
+								</NavLink>
+							</li>
+						)}
 						<li>
 							<NavLink to='/settings' onClick={handleNavLinkClick}>
 								<i className='bi bi-gear-fill' />

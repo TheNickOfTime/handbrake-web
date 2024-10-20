@@ -9,6 +9,7 @@ import SettingsPaths from './sub-sections/settings-paths';
 import SettingsPreset from './sub-sections/settings-presets';
 import ToggleInput from 'components/base/inputs/toggle/toggle-input';
 import SettingsApplication from './sub-sections/settings-application';
+import SettingsUpload from './sub-sections/settings-upload';
 
 export default function SettingsSection() {
 	const { config, socket } = useOutletContext<PrimaryOutletContextType>();
@@ -57,6 +58,7 @@ export default function SettingsSection() {
 					setValid={setPathsValid}
 				/>
 				<SettingsPreset config={currentConfig} setConfig={setCurrentConfig} />
+				<SettingsUpload config={currentConfig} setConfig={setCurrentConfig} />
 				<SettingsApplication config={currentConfig} setConfig={setCurrentConfig} />
 			</div>
 		</Section>
