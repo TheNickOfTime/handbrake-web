@@ -13,6 +13,7 @@ import PresetsSection from 'sections/presets/presets';
 import DashboardSection from 'sections/dashboard/dashboard';
 import WatchersSection from 'sections/watchers/watchers';
 import SettingsSection from 'sections/settings/settings';
+import UploadsSection from 'sections/uploads/uploads';
 
 const routes: RouteObject[] = [
 	{
@@ -39,6 +40,10 @@ const routes: RouteObject[] = [
 			{
 				path: 'watchers',
 				element: <WatchersSection />,
+			},
+			{
+				path: 'uploads',
+				element: <UploadsSection />,
 			},
 			{
 				path: 'settings',
