@@ -7,5 +7,8 @@ paths:
 presets:
   show-default-presets: true
   allow-preset-creator: false
+upload:
+  allow-uploads: false
+  default-upload-path: '/video'
 version:
   check-interval: 12
