@@ -17,6 +17,10 @@
 			flex-flow: row nowrap;
 			align-items: center;
 			gap: 1rem;
+
+			.file-upload {
+				flex-grow: 1;
+			}
 		}
 
 		.fields-section {
