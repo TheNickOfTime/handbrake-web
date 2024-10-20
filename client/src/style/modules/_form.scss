@@ -22,3 +22,27 @@
 		content: '\200b';
 	}
 }
+
+.file-upload {
+	flex-grow: 1;
+
+	font-size: 1.5rem;
+	font-family: font.$font-family-primary;
+
+	border: 0.1rem solid colors.$text-color-primary;
+	border-radius: 0.75rem;
+	// background-color: white;
+
+	&::file-selector-button {
+		margin-right: 1rem;
+		padding: 0.5rem 1rem;
+		font-family: font.$font-family-primary;
+		border: none;
+		background-color: colors.$background-six;
+		color: colors.$text-color-secondary;
+	}
+
+	&::file-selector-button:hover {
+		background-color: colors.$background-five;
+	}
+}
