@@ -2,6 +2,7 @@ export type ConfigType = {
 	config: ConfigMetaType;
 	paths: ConfigPathsType;
 	presets: ConfigPresetsType;
+	upload: ConfigUploadType;
 	version: ConfigVersionType;
 };
 
@@ -18,6 +19,11 @@ export type ConfigPathsType = {
 export type ConfigPresetsType = {
 	'show-default-presets': boolean;
 	'allow-preset-creator': boolean;
+};
+
+export type ConfigUploadType = {
+	'allow-uploads': boolean;
+	'default-upload-path': string;
 };
 
 export type ConfigVersionType = {
