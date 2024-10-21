@@ -6,6 +6,7 @@ import './path-input.scss';
 
 type Params = {
 	id: string;
+	name?: string;
 	label: string;
 	startPath: string;
 	rootPath: string;
@@ -19,6 +20,7 @@ type Params = {
 
 export default function PathInput({
 	id,
+	name,
 	label,
 	startPath,
 	rootPath,
@@ -63,6 +65,7 @@ export default function PathInput({
 						className='input-path-text form-item'
 						id={id}
 						type='text'
+						name={name}
 						value={value ? value : 'N/A'}
 						size={1}
 						disabled
