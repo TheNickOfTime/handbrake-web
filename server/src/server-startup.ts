@@ -15,6 +15,7 @@ import ClientSocket from 'socket/client-socket';
 import WorkerSocket from 'socket/worker-socket';
 import { RegisterExitListeners } from './server-shutdown';
 import { CheckForVersionUpdate } from 'scripts/version';
+import UploadRoutes from 'routes/upload';
 
 export default async function ServerStartup() {
 	// Config---------------------------------------------------------------------------------------
@@ -43,6 +44,7 @@ export default async function ServerStartup() {
 
 	// Routes ------------------------------------------------------------------------------
 	ClientRoutes(app);
+	UploadRoutes(app);
 
 	// Socket Listeners --------------------------------------------------------------------
 	ClientSocket(socket);
