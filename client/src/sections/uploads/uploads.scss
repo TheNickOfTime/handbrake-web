@@ -1,0 +1,24 @@
+.section#uploads-section {
+	.sub-section#upload-file {
+		form {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 1rem;
+
+			width: 100%;
+			margin-bottom: 1rem;
+
+			.file-upload#upload-file-input,
+			.path-input {
+				width: 100%;
+				max-width: 75rem;
+				font-size: 1.75rem;
+			}
+
+			.controlled-button > * {
+				font-size: 1.75rem !important;
+			}
+		}
+	}
+}
