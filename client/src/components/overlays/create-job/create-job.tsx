@@ -1,24 +1,24 @@
+import ButtonGroup from 'components/base/inputs/button-group/button-group';
+import ButtonInput from 'components/base/inputs/button/button-input';
+import CheckboxInput from 'components/base/inputs/checkbox/checkbox-input';
+import PathInput from 'components/base/inputs/path/path-input';
+import SelectInput from 'components/base/inputs/select/select-input';
+import TextInput from 'components/base/inputs/text/text-input';
+import SectionOverlay from 'components/section/section-overlay';
+import { FirstLetterUpperCase } from 'funcs/string.funcs';
+import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { DirectoryItemType, DirectoryItemsType } from 'types/directory';
 import { FileBrowserMode } from 'types/file-browser';
 import { HandbrakeOutputExtensions } from 'types/file-extensions';
 import { QueueRequestType } from 'types/queue';
-import { PrimaryOutletContextType } from 'pages/primary/primary-context';
-import ButtonGroup from 'components/base/inputs/button-group/button-group';
-import ButtonInput from 'components/base/inputs/button/button-input';
-import PathInput from 'components/base/inputs/path/path-input';
-import SelectInput from 'components/base/inputs/select/select-input';
-import TextInput from 'components/base/inputs/text/text-input';
-import SectionOverlay from 'components/section/section-overlay';
-import CheckboxInput from 'components/base/inputs/checkbox/checkbox-input';
 import {
 	FilterVideoFiles,
 	GetOutputItemsFromInputItems,
 	RequestDirectory,
 } from './create-job-funcs';
 import './create-job.scss';
-import { FirstLetterUpperCase } from 'funcs/string.funcs';
 
 type Params = {
 	onClose: () => void;
@@ -251,7 +251,9 @@ export default function CreateJob({ onClose }: Params) {
 		setOutputChanged(true);
 		const newOutputFiles = [...outputFiles];
 		newOutputFiles.map((file) => {
+			const oldExtension = file.extension!;
 			file.extension = extension;
+			file.path = file.path.replace(oldExtension, extension);
 			return file;
 		});
 
