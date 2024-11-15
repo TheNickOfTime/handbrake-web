@@ -1,6 +1,6 @@
 {
   "name": "handbrake-web",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "HandBrake Web",
   "scripts": {
     "dev": "tsx watch src/server.ts",
