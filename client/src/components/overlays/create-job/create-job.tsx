@@ -251,7 +251,9 @@ export default function CreateJob({ onClose }: Params) {
 		setOutputChanged(true);
 		const newOutputFiles = [...outputFiles];
 		newOutputFiles.map((file) => {
+			const oldExtension = file.extension!;
 			file.extension = extension;
+			file.path = file.path.replace(oldExtension, extension);
 			return file;
 		});
 
