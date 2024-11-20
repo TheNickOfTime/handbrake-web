@@ -2,13 +2,13 @@ import TextInfo from 'components/base/info/text-info/text-info';
 import {
 	PresetAudioEncoderDict,
 	PresetEncoderDict,
-	PresetPropertiesDict,
 	PresetFormatDict,
+	PresetPropertiesDict,
 } from 'dict/presets.dict';
-import { HandbrakePresetDataType } from 'types/preset';
-import './preset-card-summary.scss';
 import { LanguageCodeToName } from 'funcs/locale.funcs';
 import { BooleanToConfirmation } from 'funcs/string.funcs';
+import { HandbrakePresetDataType } from 'types/preset';
+import './preset-card-summary.scss';
 
 type Params = {
 	preset: HandbrakePresetDataType;
@@ -68,7 +68,7 @@ export default function PresetCardSummary({ preset }: Params) {
 				<div className='preset-card-subsection-header'>Audio Tracks</div>
 				{preset.AudioList.map((track, index) => (
 					<div key={`summary-audio-track-${index}`}>
-						{[track.AudioEncoder]
+						{track.AudioEncoder
 							? PresetAudioEncoderDict[track.AudioEncoder]
 							: track.AudioEncoder}
 					</div>
