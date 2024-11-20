@@ -6,7 +6,9 @@
 version: 2
 updates:
   - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/' # Location of package manifests
+    directories: # Location of package manifests
+      - '/client'
+      - '/server'
+      - '/worker'
     schedule:
-      interval: 'daily'
-    open-pull-requests-limit: 0
+      interval: 'weekly'
