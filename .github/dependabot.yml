@@ -17,9 +17,12 @@ updates:
       timezone: "America/Los_Angeles"
     groups:
       security-updates:
-        applies-to: "security-updates"
+        applies-to: security-updates
+        update-types:
+          - "patch"
+          - "minor"
       patch-and-minor-updates:
-        applies-to: "version-updates"
+        applies-to: version-updates
         update-types:
           - "patch"
           - "minor"
