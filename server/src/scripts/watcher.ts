@@ -1,17 +1,11 @@
 import chokidar from 'chokidar';
+import fs from 'fs/promises';
+import logger from 'logging';
 import mime from 'mime';
 import path from 'path';
-import fs from 'fs/promises';
-import {
-	GetWatcherIDFromRuleIDFromDatabase,
-	GetWatchersFromDatabase,
-	GetWatcherWithIDFromDatabase,
-	InsertWatcherRuleToDatabase,
-	InsertWatcherToDatabase,
-	RemoveWatcherFromDatabase,
-	RemoveWatcherRuleFromDatabase,
-	UpdateWatcherRuleInDatabase,
-} from './database/database-watcher';
+import { PresetFormatDict } from 'shared/dict/presets.dict';
+import { QueueRequestType } from 'types/queue';
+import { TranscodeStage } from 'types/transcode';
 import {
 	WatcherDefinitionType,
 	WatcherDefinitionWithRulesType,
@@ -25,13 +19,22 @@ import {
 	WatcherRuleNumberComparisonMethods,
 	WatcherRuleStringComparisonMethods,
 } from 'types/watcher';
-import logger from 'logging';
 import { EmitToAllClients } from './connections';
-import { AddJob, GetQueue, RemoveJob } from './queue';
-import { QueueRequestType } from 'types/queue';
+import {
+	GetWatcherIDFromRuleIDFromDatabase,
+	GetWatchersFromDatabase,
+	GetWatcherWithIDFromDatabase,
+	InsertWatcherRuleToDatabase,
+	InsertWatcherToDatabase,
+	RemoveWatcherFromDatabase,
+	RemoveWatcherRuleFromDatabase,
+	UpdateWatcherRuleInDatabase,
+} from './database/database-watcher';
 import { CheckFilenameCollision } from './files';
-import { TranscodeStage } from 'types/transcode';
 import { ConvertBitsToKilobits, ConvertBytesToMegabytes, GetMediaInfo } from './media';
+import { GetDefaultPresetByName, GetPresetByName } from './presets';
+import { AddJob, GetQueue, RemoveJob } from './queue';
+// import {PresetFormatDict} from '';
 
 const watchers: { [index: number]: chokidar.FSWatcher } = [];
 
@@ -259,10 +262,17 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, f
 
 	const isVideo = mime.getType(filePath);
 	if (isVideo && isVideo.includes('video')) {
+		const presetData = watcher.preset_category.match(/Default:/)
+			? GetDefaultPresetByName(
+					watcher.preset_category.replace(/Default:\s/, ''),
+					watcher.preset_id
+			  )
+			: GetPresetByName(watcher.preset_category, watcher.preset_id);
+
 		const parsedPath = path.parse(filePath);
 		const outputPathBase = watcher.output_path ? watcher.output_path : parsedPath.dir;
 		const outputPathName = parsedPath.name;
-		const outputPathExtension = '.mkv';
+		const outputPathExtension = PresetFormatDict[presetData.PresetList[0].FileFormat];
 		const outputPathFull = path.join(outputPathBase, outputPathName) + outputPathExtension;
 		const checkedOutputPath = (
 			await CheckFilenameCollision(outputPathBase, [

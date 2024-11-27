@@ -35,6 +35,7 @@
       "logging": ["./src/scripts/logging"],
       "scripts/*": ["./src/scripts/*"],
       "socket/*": ["./src/socket/*"],
+      "shared/*": ["../shared/*"],
       "types/*": ["../shared/types/*"],
       "funcs/*": ["../shared/funcs/*"]
     } /* Specify a set of entries that re-map imports to additional lookup locations. */,
