@@ -35,7 +35,7 @@
     "@types/express": "^5.0.0",
     "@types/ffprobe": "^1.1.8",
     "@types/ffprobe-static": "^2.0.3",
-    "@typescript-eslint/eslint-plugin": "^8.15.0",
+    "@typescript-eslint/eslint-plugin": "^8.16.0",
     "@typescript-eslint/parser": "^8.15.0",
     "eslint": "^9.15.0",
     "typescript": "^5.4.5"
