@@ -1,5 +1,5 @@
-@use 'src/style/modules/colors';
-@use 'src/style/modules/font';
+@use '@style/modules/colors';
+@use '@style/modules/font';
 
 .preset-card > .preset-body > .current-tab > .preset-card-section#audio {
 	.audio-list-entry {

@@ -1,5 +1,5 @@
-@use 'src/style/modules/colors';
-@use 'src/style/modules/sizing';
+@use '@style/modules/colors';
+@use '@style/modules/sizing';
 
 @media (max-width: sizing.$medium-max-width) {
 	.side-bar {
