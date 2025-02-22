@@ -4,11 +4,12 @@
 @use './style/modules/sizing';
 
 // Global scope
+@use './style/modules/general';
+@use './style/modules/form';
+@use './style/modules/headings';
+@use './style/modules/table';
+
 @import '../node_modules/bootstrap-icons/font/bootstrap-icons.css';
-@import './style/modules/general';
-@import './style/modules/form';
-@import './style/modules/headings';
-@import './style/modules/table';
 
 :root {
 	font-size: 10px;
