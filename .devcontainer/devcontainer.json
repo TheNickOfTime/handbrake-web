@@ -1,32 +1,35 @@
 {
-	"name": "handbrake-web",
-	"build": { "dockerfile": "Dockerfile" },
-	"runArgs": ["--name", "handbrake-web-dev"],
-	"mounts": [
-		// Uncomment to map an external media directory
-		// {
-		// 	"source": "/your/media/location", //change this to wherever you store your desired media
-		// 	"target": "/video",
-		// 	"type": "bind"
-		// }
-	],
-	"containerEnv": {
-		"SERVER_URL": "http://localhost",
-		"SERVER_PORT": "9999",
-		"CLIENT_PORT": "5173",
-		"DATA_PATH": "/workspaces/handbrake-web/data",
-		"VIDEO_PATH": "/video",
-		"SERVER_ID": "development-server",
-		"WORKER_ID": "development-worker"
-	},
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"dbaeumer.vscode-eslint",
-				"christian-kohler.npm-intellisense",
-				"esbenp.prettier-vscode",
-				"github.vscode-github-actions"
-			]
-		}
-	}
+  "name": "handbrake-web",
+  "build": { "dockerfile": "Dockerfile" },
+  "runArgs": ["--name", "handbrake-web-dev"],
+  "mounts": [
+    // Uncomment to map an external media directory
+    // {
+    // 	"source": "/your/media/location", //change this to wherever you store your desired media
+    // 	"target": "/video",
+    // 	"type": "bind"
+    // }
+  ],
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {}
+  },
+  "containerEnv": {
+    "SERVER_URL": "http://localhost",
+    "SERVER_PORT": "9999",
+    "CLIENT_PORT": "5173",
+    "DATA_PATH": "/workspaces/handbrake-web/data",
+    "VIDEO_PATH": "/video",
+    "SERVER_ID": "development-server",
+    "WORKER_ID": "development-worker"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "christian-kohler.npm-intellisense",
+        "esbenp.prettier-vscode",
+        "github.vscode-github-actions"
+      ]
+    }
+  }
 }
