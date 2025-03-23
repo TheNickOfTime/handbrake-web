@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router';
 import { Socket } from 'socket.io-client';
 import { ConfigType } from 'types/config';
 import VersionInfo from '../version-info/version-info';

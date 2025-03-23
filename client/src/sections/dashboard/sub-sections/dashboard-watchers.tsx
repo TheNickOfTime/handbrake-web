@@ -1,5 +1,5 @@
 import SubSection from 'components/section/sub-section';
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router';
 import { WatcherDefinitionObjectType } from 'types/watcher';
 import './dashboard-watchers.scss';
 

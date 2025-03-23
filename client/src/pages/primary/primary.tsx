@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import { useEffect, useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router';
 import { io } from 'socket.io-client';
 
-import { PrimaryOutletContextType } from './primary-context';
 import { ConfigType } from 'types/config';
 import { HandbrakePresetCategoryType } from 'types/preset';
-import { QueueType, QueueStatus } from 'types/queue';
+import { QueueStatus, QueueType } from 'types/queue';
 import { ConnectionIDsType } from 'types/socket';
 import { WatcherDefinitionObjectType } from 'types/watcher';
+import { PrimaryOutletContextType } from './primary-context';
 
 import SideBar from 'components/modules/side-bar/side-bar';
 import NoConnection from 'sections/no-connection/no-connection';

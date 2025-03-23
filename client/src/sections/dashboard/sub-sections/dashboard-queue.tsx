@@ -1,11 +1,11 @@
-import { NavLink } from 'react-router-dom';
-import { QueueType } from 'types/queue';
-import { TranscodeStage } from 'types/transcode';
-import { statusSorting } from 'dict/queue.dict';
+import BadgeInfo from 'components/base/info/badge-info/badge-info';
 import ProgressBar from 'components/base/progress/progress-bar';
 import SubSection from 'components/section/sub-section';
+import { statusSorting } from 'dict/queue.dict';
+import { NavLink } from 'react-router';
+import { QueueType } from 'types/queue';
+import { TranscodeStage } from 'types/transcode';
 import './dashboard-queue.scss';
-import BadgeInfo from 'components/base/info/badge-info/badge-info';
 
 type Params = {
 	queue: QueueType;

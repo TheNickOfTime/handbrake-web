@@ -1,18 +1,18 @@
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouteObject, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouteObject, RouterProvider } from 'react-router';
 
-import './index.scss';
-import '@fontsource/noto-sans';
 import '@fontsource/inter';
+import '@fontsource/noto-sans';
+import './index.scss';
 
 import Primary from 'pages/primary/primary';
-import Error from 'sections/error/error';
-import QueueSection from 'sections/queue/queue';
-import WorkersSection from 'sections/workers/workers';
-import PresetsSection from 'sections/presets/presets';
 import DashboardSection from 'sections/dashboard/dashboard';
-import WatchersSection from 'sections/watchers/watchers';
+import Error from 'sections/error/error';
+import PresetsSection from 'sections/presets/presets';
+import QueueSection from 'sections/queue/queue';
 import SettingsSection from 'sections/settings/settings';
+import WatchersSection from 'sections/watchers/watchers';
+import WorkersSection from 'sections/workers/workers';
 
 const routes: RouteObject[] = [
 	{

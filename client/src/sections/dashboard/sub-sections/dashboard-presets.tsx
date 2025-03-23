@@ -1,9 +1,9 @@
-import { NavLink } from 'react-router-dom';
-import { HandbrakePresetCategoryType } from 'types/preset';
 import SubSection from 'components/section/sub-section';
-import './dashboard-presets.scss';
-import { FirstLetterUpperCase } from 'funcs/string.funcs';
 import { PresetEncoderDict, PresetFormatDict } from 'dict/presets.dict';
+import { FirstLetterUpperCase } from 'funcs/string.funcs';
+import { NavLink } from 'react-router';
+import { HandbrakePresetCategoryType } from 'types/preset';
+import './dashboard-presets.scss';
 
 type Params = {
 	presets: HandbrakePresetCategoryType;
