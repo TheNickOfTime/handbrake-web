@@ -4,8 +4,8 @@
   "description": "HandBrake Web",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "react-router dev --host",
+    "build": "react-router typegen && tsc -b && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -16,7 +16,9 @@
   "dependencies": {
     "@fontsource/inter": "^5.2.5",
     "@fontsource/noto-sans": "^5.2.6",
+    "@react-router/node": "^7.4.0",
     "bootstrap-icons": "^1.11.3",
+    "isbot": "^5",
     "mime": "^4.0.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -24,6 +26,7 @@
     "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
+    "@react-router/dev": "^7.4.0",
     "@types/node": "^22.13.10",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

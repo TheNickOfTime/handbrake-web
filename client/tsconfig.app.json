@@ -24,6 +24,8 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
+    "rootDirs": [".", "./.react-router/types"],
+
     "baseUrl": ".",
     "paths": {
       "@style/*": ["./src/style/*"],
@@ -40,5 +42,5 @@
       "path": "../shared"
     }
   ],
-  "include": ["src"]
+  "include": ["src", ".react-router/types/**/*"]
 }

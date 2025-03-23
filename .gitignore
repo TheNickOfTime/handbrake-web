@@ -7,7 +7,8 @@ build/
 temp/
 
 node_modules/
-.pnpm-store
+.pnpm-store/
+.react-router/
 
 .env
 core

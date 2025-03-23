@@ -1,4 +1,4 @@
-import react from '@vitejs/plugin-react';
+import { reactRouter } from '@react-router/dev/vite';
 import path from 'path';
 import { env } from 'process';
 import { defineConfig } from 'vite';
@@ -10,7 +10,7 @@ export default defineConfig({
 		outDir: './build',
 		emptyOutDir: true,
 	},
-	plugins: [react(), tsconfigPaths()],
+	plugins: [reactRouter(), tsconfigPaths()],
 	resolve: {
 		alias: {
 			'@style': path.resolve(__dirname, './src/style'),
@@ -21,10 +21,6 @@ export default defineConfig({
 			dict: path.resolve(__dirname, '../shared/dict'),
 			funcs: path.resolve(__dirname, '../shared/funcs'),
 		},
-	},
-	server: {
-		host: '127.0.0.1',
-		port: 5173,
 	},
 	define: {
 		APP_VERSION: JSON.stringify(env.npm_package_version),
