@@ -1,4 +1,4 @@
-import chokidar from 'chokidar';
+import chokidar, { type FSWatcher } from 'chokidar';
 import fs from 'fs/promises';
 import logger from 'logging';
 import mime from 'mime';
@@ -36,7 +36,7 @@ import { GetDefaultPresetByName, GetPresetByName } from './presets';
 import { AddJob, GetQueue, RemoveJob } from './queue';
 // import {PresetFormatDict} from '';
 
-const watchers: { [index: number]: chokidar.FSWatcher } = [];
+const watchers: { [index: number]: FSWatcher } = [];
 
 export function RegisterWatcher(id: number, watcher: WatcherDefinitionWithRulesType) {
 	const newWatcher = chokidar.watch(watcher.watch_path, {
