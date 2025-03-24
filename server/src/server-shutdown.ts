@@ -1,8 +1,7 @@
-import { Server } from 'node:http';
-import { Server as SocketServer } from 'socket.io';
+import { Server as SocketServer } from '~socket.io';
 
-import { DatabaseDisconnect } from 'scripts/database/database';
 import logger from 'logging';
+import { DatabaseDisconnect } from '~scripts/database/database';
 
 export function RegisterExitListeners(socket: SocketServer) {
 	process.on('SIGINT', () => {

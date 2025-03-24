@@ -1,4 +1,4 @@
-import { CheckDataDirectoryPermissions } from 'scripts/data';
+import { CheckDataDirectoryPermissions } from '~scripts/data';
 
 async function Server() {
 	// Check critical permissions

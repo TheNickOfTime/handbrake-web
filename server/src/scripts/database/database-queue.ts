@@ -1,14 +1,20 @@
-import {
-	JobOrderTableType,
-	JobsTableType,
-	JobsStatusTableType,
-	JobInsertType,
-	JobStatusInsertType,
-} from 'types/database';
-import { JobType, QueueType, JobDataType, JobStatusType, QueueRequestType } from 'types/queue';
 import logger from 'logging';
+import {
+	JobInsertType,
+	JobOrderTableType,
+	JobsStatusTableType,
+	JobsTableType,
+	JobStatusInsertType,
+} from '~shared/types/database';
+import {
+	JobDataType,
+	JobStatusType,
+	JobType,
+	QueueRequestType,
+	QueueType,
+} from '~shared/types/queue';
+import { TranscodeStage } from '~shared/types/transcode';
 import { database } from './database';
-import { TranscodeStage } from 'types/transcode';
 
 export const queueTableCreateStatements = [
 	'CREATE TABLE IF NOT EXISTS jobs(\

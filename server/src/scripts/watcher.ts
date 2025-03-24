@@ -3,9 +3,9 @@ import fs from 'fs/promises';
 import logger from 'logging';
 import mime from 'mime';
 import path from 'path';
-import { PresetFormatDict } from 'shared/dict/presets.dict';
-import { QueueRequestType } from 'types/queue';
-import { TranscodeStage } from 'types/transcode';
+import { PresetFormatDict } from '~shared/dict/presets.dict';
+import { QueueRequestType } from '~shared/types/queue';
+import { TranscodeStage } from '~shared/types/transcode';
 import {
 	WatcherDefinitionType,
 	WatcherDefinitionWithRulesType,
@@ -18,7 +18,7 @@ import {
 	WatcherRuleMediaInfoMethods,
 	WatcherRuleNumberComparisonMethods,
 	WatcherRuleStringComparisonMethods,
-} from 'types/watcher';
+} from '~shared/types/watcher';
 import { EmitToAllClients } from './connections';
 import {
 	GetWatcherIDFromRuleIDFromDatabase,

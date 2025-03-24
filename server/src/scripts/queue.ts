@@ -1,8 +1,7 @@
-import hash from 'object-hash';
-import { JobType, QueueRequestType, QueueStatus } from 'types/queue';
-import { Socket as Worker } from 'socket.io';
-import { TranscodeStage } from 'types/transcode';
 import logger, { RemoveJobLogByID } from 'logging';
+import { JobType, QueueRequestType, QueueStatus } from '~shared/types/queue';
+import { TranscodeStage } from '~shared/types/transcode';
+import { Socket as Worker } from '~socket.io';
 import {
 	EmitToAllClients,
 	EmitToWorkerWithID,

@@ -1,22 +1,19 @@
-import { Server } from 'socket.io';
+import logger from 'logging';
+import { GetConfig, WriteConfig } from '~scripts/config';
+import { AddClient, RemoveClient } from '~scripts/connections';
 import {
-	CreateDirectoryRequestType,
-	DirectoryType,
-	DirectoryRequestType,
-	DirectoryItemsType,
-} from 'types/directory';
-import { HandbrakePresetType } from 'types/preset';
-import { QueueRequestType } from 'types/queue';
-import { Socket as Client } from 'socket.io';
-import { AddClient, RemoveClient } from 'scripts/connections';
-import { CheckFilenameCollision, GetDirectoryItems, MakeDirectory } from 'scripts/files';
+	GetJobOrderIndexFromTable,
+	UpdateJobOrderIndexInDatabase,
+} from '~scripts/database/database-queue';
+import { GetWatchersFromDatabase } from '~scripts/database/database-watcher';
+import { CheckFilenameCollision, GetDirectoryItems, MakeDirectory } from '~scripts/files';
 import {
 	AddPreset,
 	GetDefaultPresets,
 	GetPresets,
 	RemovePreset,
 	RenamePreset,
-} from 'scripts/presets';
+} from '~scripts/presets';
 import {
 	AddJob,
 	ClearQueue,
@@ -28,29 +25,31 @@ import {
 	StopJob,
 	StopQueue,
 	UpdateQueue,
-} from 'scripts/queue';
-import { ConfigType } from 'types/config';
-import { GetConfig, WriteConfig } from 'scripts/config';
-import {
-	WatcherDefinitionObjectType,
-	WatcherDefinitionType,
-	WatcherRuleDefinitionType,
-} from 'types/watcher';
-import { GetWatchersFromDatabase } from 'scripts/database/database-watcher';
+} from '~scripts/queue';
+import { GetCurrentReleaseInfo, GetLatestReleaseInfo } from '~scripts/version';
 import {
 	AddWatcher,
 	AddWatcherRule,
 	RemoveWatcher,
 	RemoveWatcherRule,
 	UpdateWatcherRule,
-} from 'scripts/watcher';
+} from '~scripts/watcher';
+import { ConfigType } from '~shared/types/config';
 import {
-	GetJobOrderIndexFromTable,
-	UpdateJobOrderIndexInDatabase,
-} from 'scripts/database/database-queue';
-import logger from 'logging';
-import { GetCurrentReleaseInfo, GetLatestReleaseInfo } from 'scripts/version';
-import { GithubReleaseResponseType } from 'types/version';
+	CreateDirectoryRequestType,
+	DirectoryItemsType,
+	DirectoryRequestType,
+	DirectoryType,
+} from '~shared/types/directory';
+import { HandbrakePresetType } from '~shared/types/preset';
+import { QueueRequestType } from '~shared/types/queue';
+import { GithubReleaseResponseType } from '~shared/types/version';
+import {
+	WatcherDefinitionObjectType,
+	WatcherDefinitionType,
+	WatcherRuleDefinitionType,
+} from '~shared/types/watcher';
+import { Socket as Client, Server } from '~socket.io';
 
 const initClient = async (socket: Client) => {
 	const queue = GetQueue();

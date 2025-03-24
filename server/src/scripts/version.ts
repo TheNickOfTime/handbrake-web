@@ -2,7 +2,7 @@ import { compare } from 'compare-versions';
 import { access, readFile, rm, writeFile } from 'fs/promises';
 import logger from 'logging';
 import path from 'path';
-import { GithubReleaseResponseType } from 'types/version';
+import { GithubReleaseResponseType } from '~shared/types/version';
 import { GetConfig } from './config';
 import { dataPath } from './data';
 import { GetStatusFromDatabase, UpdateStatusInDatabase } from './database/database-status';

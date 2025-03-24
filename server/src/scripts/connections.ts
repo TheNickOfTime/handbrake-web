@@ -1,5 +1,5 @@
 import logger from 'logging';
-import { Socket } from 'socket.io';
+import { Socket } from '~socket.io';
 
 type Client = Socket;
 

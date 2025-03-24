@@ -13,13 +13,11 @@
 
     "baseUrl": ".",
     "paths": {
-      "routes/*": ["./src/routes/*"],
       "logging": ["./src/scripts/logging"],
-      "scripts/*": ["./src/scripts/*"],
-      "socket/*": ["./src/socket/*"],
-      "shared/*": ["../shared/*"],
-      "types/*": ["../shared/types/*"],
-      "funcs/*": ["../shared/funcs/*"]
+      "~routes/*": ["./src/routes/*"],
+      "~scripts/*": ["./src/scripts/*"],
+      "~socket/*": ["./src/socket/*"],
+      "~shared/*": ["../shared/*"]
     },
 
     "outDir": "./build/server"

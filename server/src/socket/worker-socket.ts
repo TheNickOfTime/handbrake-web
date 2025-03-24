@@ -1,18 +1,15 @@
-import path from 'path';
-import { Server } from 'socket.io';
-import { AddWorker, RemoveWorker } from 'scripts/connections';
-import { TranscodeStage } from 'types/transcode';
-import { GetQueue, StopJob, UpdateQueue, WorkerForAvailableJobs } from 'scripts/queue';
-import { JobDataType, JobStatusType } from 'types/queue';
+import logger, { logPath, WriteWorkerLogToFile } from 'logging';
+import { AddWorker, RemoveWorker } from '~scripts/connections';
 import {
 	GetJobDataFromTable,
-	GetJobStatusFromTable,
 	UpdateJobOrderIndexInDatabase,
 	UpdateJobStatusInDatabase,
-} from 'scripts/database/database-queue';
-import { HandbrakePresetType } from 'types/preset';
-import { GetDefaultPresetByName, GetPresetByName, GetPresets } from 'scripts/presets';
-import logger, { logPath, WriteWorkerLogToFile } from 'logging';
+} from '~scripts/database/database-queue';
+import { GetDefaultPresetByName, GetPresetByName } from '~scripts/presets';
+import { GetQueue, StopJob, UpdateQueue, WorkerForAvailableJobs } from '~scripts/queue';
+import { HandbrakePresetType } from '~shared/types/preset';
+import { JobDataType, JobStatusType } from '~shared/types/queue';
+import { Server } from '~socket.io';
 
 export default function WorkerSocket(io: Server) {
 	io.of('/worker').on('connection', (socket) => {
