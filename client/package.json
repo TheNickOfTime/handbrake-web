@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "react-router dev --host",
-    "build": "react-router typegen && tsc -b && vite build",
+    "build": "react-router build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },

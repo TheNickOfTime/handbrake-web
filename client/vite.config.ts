@@ -13,10 +13,10 @@ export default defineConfig({
 	plugins: [reactRouter(), tsconfigPaths()],
 	resolve: {
 		alias: {
-			'@style': path.resolve(__dirname, './src/style'),
-			components: path.resolve(__dirname, './src/components'),
-			pages: path.resolve(__dirname, './src/pages'),
-			sections: path.resolve(__dirname, './src/sections'),
+			'@style': path.resolve(__dirname, './app/style'),
+			components: path.resolve(__dirname, './app/components'),
+			pages: path.resolve(__dirname, './app/pages'),
+			sections: path.resolve(__dirname, './app/sections'),
 			types: path.resolve(__dirname, '../shared/types'),
 			dict: path.resolve(__dirname, '../shared/dict'),
 			funcs: path.resolve(__dirname, '../shared/funcs'),

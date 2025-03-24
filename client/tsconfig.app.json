@@ -28,10 +28,10 @@
 
     "baseUrl": ".",
     "paths": {
-      "@style/*": ["./src/style/*"],
-      "components/*": ["./src/components/*"],
-      "pages/*": ["./src/pages/*"],
-      "sections/*": ["./src/sections/*"],
+      "@style/*": ["./app/style/*"],
+      "components/*": ["./app/components/*"],
+      "pages/*": ["./app/pages/*"],
+      "sections/*": ["./app/sections/*"],
       "types/*": ["../shared/types/*"],
       "dict/*": ["../shared/dict/*"],
       "funcs/*": ["../shared/funcs/*"]
@@ -42,5 +42,5 @@
       "path": "../shared"
     }
   ],
-  "include": ["src", ".react-router/types/**/*"]
+  "include": ["app", ".react-router/types/**/*"]
 }
