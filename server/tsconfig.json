@@ -1,30 +1,4 @@
 {
-  "compilerOptions": {
-    "composite": true,
-    "declaration": true,
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "paths": {
-      "routes/*": ["./src/routes/*"],
-      "logging": ["./src/scripts/logging"],
-      "scripts/*": ["./src/scripts/*"],
-      "socket/*": ["./src/socket/*"],
-      "shared/*": ["../shared/*"],
-      "types/*": ["../shared/types/*"],
-      "funcs/*": ["../shared/funcs/*"]
-    },
-    "outDir": "./build",
-
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true
-  },
-  "references": [
-    {
-      "path": "../shared"
-    }
-  ],
-  "include": ["./src"]
+  "files": [],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

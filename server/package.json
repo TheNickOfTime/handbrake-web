@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "prod": "tsx src/server.ts",
-    "build": "tsc --project ./tsconfig.json"
+    "build": "tsc --project ./tsconfig.node.json"
   },
   "repository": {
     "type": "git",
