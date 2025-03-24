@@ -4,7 +4,7 @@
   "compilerOptions": {
     // "verbatimModuleSyntax": true,
     "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true
+    "strict": true
+    // "noEmit": true
   }
 }
