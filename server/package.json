@@ -3,9 +3,9 @@
   "version": "0.8.0",
   "description": "HandBrake Web",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "prod": "tsx src/server.ts",
-    "build": "tsc --project ./tsconfig.node.json"
+    "dev": "tsx watch --tsconfig ./tsconfig.node.json src/server.ts",
+    "prod": "tsx --tsconfig ./tsconfig.node.json src/server.ts",
+    "build": "tsc src/server.ts"
   },
   "repository": {
     "type": "git",
