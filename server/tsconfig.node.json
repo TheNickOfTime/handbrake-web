@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "references": [{ "path": "../shared" }],
-  "include": ["src"],
+  "include": ["src", "vite.config.ts"],
   "compilerOptions": {
     "composite": true,
 
@@ -22,6 +22,6 @@
       "funcs/*": ["../shared/funcs/*"]
     },
 
-    "outDir": "./build"
+    "outDir": "./build/server"
   }
 }
