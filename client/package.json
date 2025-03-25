@@ -36,7 +36,7 @@
     "sass": "^1.85.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.2",
-    "vite": "^6.2.2",
+    "vite": "^6.2.3",
     "vite-tsconfig-paths": "^5.1.3"
   }
 }
