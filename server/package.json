@@ -12,32 +12,32 @@
     "url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
   },
   "dependencies": {
-    "better-sqlite3": "^11.9.0",
+    "better-sqlite3": "^11.10.0",
     "chokidar": "^4.0.3",
     "compare-versions": "^6.1.1",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.5.0",
     "express": "^4.21.1",
     "ffprobe": "^1.1.2",
     "ffprobe-static": "^3.1.0",
-    "mime": "^4.0.3",
+    "mime": "^4.0.7",
     "object-hash": "^3.0.0",
     "socket.io": "^4.8.0",
     "tsconfig-paths": "^4.2.0",
-    "tsx": "^4.16.2",
+    "tsx": "^4.19.4",
     "winston": "^3.14.2",
     "winston-daily-rotate-file": "^5.0.0",
-    "yaml": "^2.4.5"
+    "yaml": "^2.8.0"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.11",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/express": "^5.0.0",
     "@types/ffprobe": "^1.1.8",
     "@types/ffprobe-static": "^2.0.3",
     "@types/object-hash": "^3.0.6",
-    "@typescript-eslint/eslint-plugin": "^8.26.1",
+    "@typescript-eslint/eslint-plugin": "^8.33.1",
     "@typescript-eslint/parser": "^8.26.1",
-    "eslint": "^9.22.0",
-    "typescript": "^5.8.2"
+    "eslint": "^9.28.0",
+    "typescript": "^5.8.3"
   }
 }
