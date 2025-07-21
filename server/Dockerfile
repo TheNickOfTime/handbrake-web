@@ -4,8 +4,8 @@ COPY client /handbrake-web/client
 COPY shared /handbrake-web/shared
 WORKDIR /handbrake-web/client
 
-RUN npm install
-RUN npm run build
+RUN pnpm install --frozen-lockfile --force
+RUN pnpm build
 
 # Main ---------------------------------------------------------------------------------------------
 FROM node:alpine3.20 AS main
@@ -17,7 +17,7 @@ WORKDIR /handbrake-web/server
 
 # Install node dependencies
 ENV NODE_ENV=production
-RUN npm install
+RUN pnpm install --frozen-lockfile --force
 
 # Create directories
 RUN mkdir /data && chown node /data && mkdir /video && chown node /data
@@ -33,4 +33,4 @@ RUN apk add dumb-init
 
 # Start application
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["npm", "run", "prod"]
+CMD ["pnpm", "prod"]

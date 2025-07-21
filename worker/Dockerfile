@@ -27,7 +27,7 @@ WORKDIR /handbrake-web/worker
 
 # Install node dependencies
 ENV NODE_ENV=production
-RUN npm install
+RUN pnpm install --frozen-lockfile --force
 
 # Create directories
 RUN mkdir /data && chown node /data && mkdir /video && chown node /data
@@ -39,4 +39,4 @@ ENV VIDEO_PATH=/video
 
 # Start application
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["npm", "run", "prod"]
+CMD ["pnpm", "prod"]
