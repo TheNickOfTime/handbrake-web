@@ -1,0 +1,11 @@
+{
+  "name": "handbrake-web",
+  "version": "0.8.0",
+  "description": "HandBrake Web",
+  "repository": {
+    "type": "git",
+    "url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
+  },
+  "scripts": {},
+  "packageManager": "pnpm@10.13.1"
+}
