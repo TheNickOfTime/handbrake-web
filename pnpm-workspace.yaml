@@ -19,7 +19,7 @@ catalog:
   '@types/express': ^5.0.0
   '@types/ffprobe': ^1.1.8
   '@types/ffprobe-static': ^2.0.3
-  '@types/node': ^22.13.10
+  '@types/node': ^24.0.15
   '@types/object-hash': ^3.0.6
   '@types/react': ^19.0.0
   '@types/react-dom': ^19.0.0
