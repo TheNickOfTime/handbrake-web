@@ -6,21 +6,13 @@
 version: 2
 updates:
   - package-ecosystem: 'npm' # See documentation for possible values
-    directories: # Location of package manifests
-      - '/client'
-      - '/server'
-      - '/worker'
+    directory: '/'
     schedule:
       interval: 'weekly'
       day: 'monday'
-      time: '00:00'
+      time: '05:00'
       timezone: 'America/Los_Angeles'
     groups:
-      security-updates:
-        applies-to: security-updates
-        update-types:
-          - 'patch'
-          - 'minor'
       patch-and-minor-updates:
         applies-to: version-updates
         update-types:
