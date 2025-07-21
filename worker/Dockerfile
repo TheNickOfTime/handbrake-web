@@ -23,10 +23,12 @@ RUN apt install -y dumb-init
 
 COPY worker /handbrake-web/worker
 COPY shared /handbrake-web/shared
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /handbrake-web/
 WORKDIR /handbrake-web/worker
 
 # Install node dependencies
 ENV NODE_ENV=production
+RUN npm install -g pnpm
 RUN pnpm install --frozen-lockfile --force
 
 # Create directories
