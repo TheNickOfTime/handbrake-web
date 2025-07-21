@@ -1,0 +1,10 @@
+packages:
+  - client
+  - server
+  - shared
+  - worker
+
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - better-sqlite3
+  - esbuild
