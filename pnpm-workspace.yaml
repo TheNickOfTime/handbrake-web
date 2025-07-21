@@ -27,7 +27,7 @@ catalog:
   eslint: ^9.31.0
   eslint-plugin-react-hooks: ^5.2.0
   eslint-plugin-react-refresh: ^0.4.7
-  express: ^4.21.1
+  express: ^5.1.0
   ffprobe: ^1.1.2
   ffprobe-static: ^3.1.0
   mime: ^4.0.7
