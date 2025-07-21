@@ -6,6 +6,8 @@
     "type": "git",
     "url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
   },
-  "scripts": {},
+  "scripts": {
+    "cleanup": "git checkout main && git fetch --prune && git branch | grep -v 'main' | xargs git branch -D"
+  },
   "packageManager": "pnpm@10.13.1"
 }
