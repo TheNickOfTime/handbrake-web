@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import ButtonInput from 'components/base/inputs/button/button-input';
+import WatcherCard from 'components/cards/watcher-card/watcher-card';
 import RegisterWatcher from 'components/overlays/register-watcher/register-watcher';
 import Section from 'components/section/section';
 import SubSection from 'components/section/sub-section';
-import WatcherCard from 'components/cards/watcher-card/watcher-card';
-import './watchers.scss';
+import { PrimaryOutletContextType } from 'pages/primary/context';
+import { useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import { WatcherRuleDefinitionType } from 'types/watcher';
+import './watchers.scss';
 
 export default function WatchersSection() {
 	const { socket, watchers } = useOutletContext<PrimaryOutletContextType>();

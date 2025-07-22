@@ -1,11 +1,11 @@
+import CreateJob from 'components/overlays/create-job/create-job';
+import Section from 'components/section/section';
+import { PrimaryOutletContextType } from 'pages/primary/context';
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { PrimaryOutletContextType } from 'pages/primary/primary-context';
-import Section from 'components/section/section';
-import CreateJob from 'components/overlays/create-job/create-job';
+import './queue.scss';
 import QueueJobs from './sub-sections/queue-jobs';
 import QueueStatus from './sub-sections/queue-status';
-import './queue.scss';
 
 export default function QueueSection() {
 	const { socket, queue, queueStatus } = useOutletContext<PrimaryOutletContextType>();

@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import { useEffect, useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
 import { io } from 'socket.io-client';
 
-import { PrimaryOutletContextType } from './primary-context';
 import { ConfigType } from 'types/config';
 import { HandbrakePresetCategoryType } from 'types/preset';
-import { QueueType, QueueStatus } from 'types/queue';
+import { QueueStatus, QueueType } from 'types/queue';
 import { ConnectionIDsType } from 'types/socket';
 import { WatcherDefinitionObjectType } from 'types/watcher';
+import { PrimaryContext } from './context';
 
-import SideBar from 'components/modules/side-bar/side-bar';
+import { Link, Outlet } from '@tanstack/react-router';
+import SideBar from 'components/modules/side-bar';
 import NoConnection from 'sections/no-connection/no-connection';
-import './primary.scss';
+import './styles.scss';
 
-export default function Primary() {
+export default function PrimaryLayout() {
 	const baseURLRegex = /(^https?:\/\/.+\/)(.+$)/;
 	const serverURL = (
 		import.meta.env.PROD ? window.location.href : 'http://localhost:9999/'
@@ -141,31 +141,31 @@ export default function Primary() {
 			<div className={`dark-overlay ${showSidebar ? 'visible' : 'hidden'}`} />
 			<div className='primary-section'>
 				<div className='mobile-toolbar'>
-					<NavLink className='title' to='/'>
+					<Link className='title' to='/'>
 						<img src='/handbrake-icon.png' alt='Handbrake Icon' />
 						<h1>HandBrake Web</h1>
-					</NavLink>
+					</Link>
 					<button onClick={() => setShowSidebar(!showSidebar)}>
 						<i className='bi-list' />
 					</button>
 				</div>
 				<div className='content'>
 					{socket.connected && config != undefined ? (
-						<Outlet
-							context={
-								{
-									serverURL,
-									socket,
-									queue,
-									queueStatus,
-									presets,
-									defaultPresets,
-									connections,
-									config,
-									watchers,
-								} satisfies PrimaryOutletContextType
-							}
-						/>
+						<PrimaryContext
+							value={{
+								serverURL,
+								socket,
+								queue,
+								queueStatus,
+								presets,
+								defaultPresets,
+								connections,
+								config,
+								watchers,
+							}}
+						>
+							<Outlet />
+						</PrimaryContext>
 					) : (
 						<NoConnection url={serverURL} />
 					)}

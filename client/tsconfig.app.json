@@ -28,7 +28,7 @@
     "paths": {
       "@style/*": ["./src/style/*"],
       "components/*": ["./src/components/*"],
-      "pages/*": ["./src/pages/*"],
+      "pages/*": ["src/layouts/*"],
       "sections/*": ["./src/sections/*"],
       "types/*": ["../shared/types/*"],
       "dict/*": ["../shared/dict/*"],

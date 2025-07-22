@@ -1,8 +1,8 @@
-import { useOutletContext } from 'react-router-dom';
-import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import Section from 'components/section/section';
-import WorkersSummary from './sub-sections/workers-summary';
+import { PrimaryOutletContextType } from 'pages/primary/context';
+import { useOutletContext } from 'react-router-dom';
 import WorkersStatus from './sub-sections/workers-status';
+import WorkersSummary from './sub-sections/workers-summary';
 import './workers.scss';
 
 export type WorkerInfo = {

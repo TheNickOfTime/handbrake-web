@@ -1,15 +1,6 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router';
-import * as React from 'react';
+import { createRootRoute } from '@tanstack/react-router';
+import PrimaryLayout from '../layouts/primary';
 
 export const Route = createRootRoute({
-	component: RootComponent,
+	component: PrimaryLayout,
 });
-
-function RootComponent() {
-	return (
-		<React.Fragment>
-			<div>Hello "__root"!</div>
-			<Outlet />
-		</React.Fragment>
-	);
-}

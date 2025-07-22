@@ -1,17 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import ButtonInput from 'components/base/inputs/button/button-input';
+import { PrimaryOutletContextType } from 'pages/primary/context';
 import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import {
 	CreateDirectoryRequestType,
-	DirectoryType,
 	DirectoryItemType,
 	DirectoryRequestType,
+	DirectoryType,
 } from 'types/directory';
 import { FileBrowserMode } from 'types/file-browser';
-import ButtonInput from 'components/base/inputs/button/button-input';
-import FileBrowserBody from './components/file-browser-body';
 import AddDirectory from './components/file-browser-add-directory';
-import { PrimaryOutletContextType } from 'pages/primary/primary-context';
+import FileBrowserBody from './components/file-browser-body';
 import './file-browser.scss';
 
 type Params = {

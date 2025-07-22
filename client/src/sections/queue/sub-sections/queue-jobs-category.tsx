@@ -1,9 +1,9 @@
+import QueueCard from 'components/cards/queue-card/queue-card';
+import { statusSorting } from 'dict/queue.dict';
+import { PrimaryOutletContextType } from 'pages/primary/context';
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { QueueType } from 'types/queue';
-import { statusSorting } from 'dict/queue.dict';
-import { PrimaryOutletContextType } from 'pages/primary/primary-context';
-import QueueCard from 'components/cards/queue-card/queue-card';
 import QueueJobPreview from './queue-job-preview';
 
 type Params = {

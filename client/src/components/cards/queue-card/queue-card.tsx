@@ -1,11 +1,11 @@
+import ProgressBar from 'components/base/progress/progress-bar';
+import { PrimaryOutletContextType } from 'pages/primary/context';
 import { useRef, useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import { JobType } from 'types/queue';
 import { TranscodeStage } from 'types/transcode';
-import ProgressBar from 'components/base/progress/progress-bar';
 import QueueCardSection from './components/queue-card-section';
 import './queue-card.scss';
-import { useOutletContext } from 'react-router-dom';
-import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 
 type Params = {
 	id: string;

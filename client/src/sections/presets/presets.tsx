@@ -1,11 +1,11 @@
+import UploadPreset from 'components/overlays/upload-preset/upload-preset';
+import Section from 'components/section/section';
+import { PrimaryOutletContextType } from 'pages/primary/context';
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { PrimaryOutletContextType } from 'pages/primary/primary-context';
-import Section from 'components/section/section';
-import UploadPreset from 'components/overlays/upload-preset/upload-preset';
+import './presets.scss';
 import PresetsButtons from './sub-sections/presets-buttons';
 import PresetsList from './sub-sections/presets-list';
-import './presets.scss';
 
 export default function PresetsSection() {
 	const { config, presets, defaultPresets, socket } =

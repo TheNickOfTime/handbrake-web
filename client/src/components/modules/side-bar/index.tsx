@@ -1,8 +1,8 @@
-import { NavLink } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 import { Socket } from 'socket.io-client';
 import { ConfigType } from 'types/config';
 import VersionInfo from '../version-info/version-info';
-import './side-bar.scss';
+import styles from './styles.module.scss';
 
 type Params = {
 	showSidebar: boolean;
@@ -12,65 +12,65 @@ type Params = {
 };
 
 export default function SideBar({ showSidebar, setShowSidebar, socket, config }: Params) {
-	const handleNavLinkClick = () => {
+	const handleLinkClick = () => {
 		if (showSidebar) {
 			setShowSidebar(false);
 		}
 	};
 
 	return (
-		<div className={`side-bar ${showSidebar ? 'expanded' : ''}`}>
-			<div className='side-bar-background' />
-			<div className='side-bar-inner'>
-				<div className='side-bar-header'>
+		<div className={`${styles['side-bar']} ${showSidebar ? 'expanded' : ''}`}>
+			<div className={styles['side-bar-background']} />
+			<div className={styles['side-bar-inner']}>
+				<div className={styles['side-bar-header']}>
 					<img
-						className='side-bar-header-icon'
+						className={styles['side-bar-header-icon']}
 						src='/handbrake-icon.png'
 						alt='HandBrake Icon'
 					/>
 					<h2>HandBrake Web</h2>
 				</div>
-				<div className='side-bar-nav'>
+				<div className={styles['side-bar-nav']}>
 					<ul>
 						<li>
-							<NavLink to='/' onClick={handleNavLinkClick}>
+							<Link to='/' onClick={handleLinkClick}>
 								<i className='bi bi-speedometer' />
 								Dashboard
-							</NavLink>
+							</Link>
 						</li>
 						<li>
-							<NavLink to='/queue' onClick={handleNavLinkClick}>
+							<Link to='/queue' onClick={handleLinkClick}>
 								<i className='bi bi-list-ol' />
 								Queue
-							</NavLink>
+							</Link>
 						</li>
 						<li>
-							<NavLink to='/presets' onClick={handleNavLinkClick}>
+							<Link to='/presets' onClick={handleLinkClick}>
 								<i className='bi bi-sliders' />
 								Presets
-							</NavLink>
+							</Link>
 						</li>
 						<li>
-							<NavLink to='/watchers' onClick={handleNavLinkClick}>
+							<Link to='/watchers' onClick={handleLinkClick}>
 								<i className='bi bi-eye-fill' />
 								Watchers
-							</NavLink>
+							</Link>
 						</li>
 						<li>
-							<NavLink to='/workers' onClick={handleNavLinkClick}>
+							<Link to='/workers' onClick={handleLinkClick}>
 								<i className='bi bi-robot' />
 								Workers
-							</NavLink>
+							</Link>
 						</li>
 						<li>
-							<NavLink to='/settings' onClick={handleNavLinkClick}>
+							<Link to='/settings' onClick={handleLinkClick}>
 								<i className='bi bi-gear-fill' />
 								Settings
-							</NavLink>
+							</Link>
 						</li>
 					</ul>
 				</div>
-				<div className='side-bar-application-version'>
+				<div className={styles['side-bar-application-version']}>
 					<VersionInfo socket={socket} config={config} />
 				</div>
 			</div>

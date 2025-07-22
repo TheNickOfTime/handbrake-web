@@ -1,15 +1,15 @@
+import ButtonInput from 'components/base/inputs/button/button-input';
+import PathInput from 'components/base/inputs/path/path-input';
+import SelectInput from 'components/base/inputs/select/select-input';
+import SectionOverlay from 'components/section/section-overlay';
+import { FirstLetterUpperCase } from 'funcs/string.funcs';
+import { PrimaryOutletContextType } from 'pages/primary/context';
 import { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { DirectoryItemType } from 'types/directory';
 import { FileBrowserMode } from 'types/file-browser';
 import { WatcherDefinitionType } from 'types/watcher';
-import ButtonInput from 'components/base/inputs/button/button-input';
-import PathInput from 'components/base/inputs/path/path-input';
-import SelectInput from 'components/base/inputs/select/select-input';
-import SectionOverlay from 'components/section/section-overlay';
-import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import './register-watcher.scss';
-import { FirstLetterUpperCase } from 'funcs/string.funcs';
 
 type Params = {
 	onClose: () => void;

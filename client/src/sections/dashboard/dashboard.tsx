@@ -1,12 +1,12 @@
-import { useOutletContext } from 'react-router-dom';
-import { PrimaryOutletContextType } from 'pages/primary/primary-context';
 import Section from 'components/section/section';
-import DashboardSummary from './sub-sections/dashboard-summary';
-import DashboardQueue from './sub-sections/dashboard-queue';
-import DashboardWorkers from './sub-sections/dashboard-workers';
-import DashboardPresets from './sub-sections/dashboard-presets';
+import { PrimaryOutletContextType } from 'pages/primary/context';
+import { useOutletContext } from 'react-router-dom';
 import './dashboard.scss';
+import DashboardPresets from './sub-sections/dashboard-presets';
+import DashboardQueue from './sub-sections/dashboard-queue';
+import DashboardSummary from './sub-sections/dashboard-summary';
 import DashboardWatchers from './sub-sections/dashboard-watchers';
+import DashboardWorkers from './sub-sections/dashboard-workers';
 
 export default function DashboardSection() {
 	const { socket, queue, queueStatus, presets, connections, watchers } =

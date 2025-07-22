@@ -1,14 +1,14 @@
-import Section from 'components/section/section';
-import './settings.scss';
-import { useOutletContext } from 'react-router-dom';
-import { PrimaryOutletContextType } from 'pages/primary/primary-context';
-import { useEffect, useState } from 'react';
-import SubSection from 'components/section/sub-section';
 import ButtonInput from 'components/base/inputs/button/button-input';
+import ToggleInput from 'components/base/inputs/toggle/toggle-input';
+import Section from 'components/section/section';
+import SubSection from 'components/section/sub-section';
+import { PrimaryOutletContextType } from 'pages/primary/context';
+import { useEffect, useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
+import './settings.scss';
+import SettingsApplication from './sub-sections/settings-application';
 import SettingsPaths from './sub-sections/settings-paths';
 import SettingsPreset from './sub-sections/settings-presets';
-import ToggleInput from 'components/base/inputs/toggle/toggle-input';
-import SettingsApplication from './sub-sections/settings-application';
 
 export default function SettingsSection() {
 	const { config, socket } = useOutletContext<PrimaryOutletContextType>();
