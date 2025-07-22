@@ -1,3 +1,4 @@
+import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { env } from 'process';
@@ -10,7 +11,14 @@ export default defineConfig({
 		outDir: './build',
 		emptyOutDir: true,
 	},
-	plugins: [react(), tsconfigPaths()],
+	plugins: [
+		tanstackRouter({
+			target: 'react',
+			autoCodeSplitting: true,
+		}),
+		react(),
+		tsconfigPaths(),
+	],
 	resolve: {
 		alias: {
 			'@style': path.resolve(__dirname, './src/style'),
@@ -21,10 +29,6 @@ export default defineConfig({
 			dict: path.resolve(__dirname, '../shared/dict'),
 			funcs: path.resolve(__dirname, '../shared/funcs'),
 		},
-	},
-	server: {
-		host: '127.0.0.1',
-		port: 5173,
 	},
 	define: {
 		APP_VERSION: JSON.stringify(env.npm_package_version),
