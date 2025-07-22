@@ -1,8 +1,8 @@
-import { NavLink } from 'react-router-dom';
-import { QueueType } from 'types/queue';
-import { WorkerIDType } from 'types/socket';
-import SubSection from 'components/section/sub-section';
-import './dashboard-workers.scss';
+import { Link } from '@tanstack/react-router';
+import SubSection from '~components/section/sub-section';
+import { QueueType } from '~types/queue';
+import { WorkerIDType } from '~types/socket';
+import styles from './styles.module.scss';
 
 type Params = {
 	queue: QueueType;
@@ -11,12 +11,12 @@ type Params = {
 
 export default function DashboardWorkers({ queue, workers }: Params) {
 	return (
-		<SubSection id='workers'>
-			<NavLink to='/workers'>
+		<SubSection id={styles['workers']}>
+			<Link to='/workers'>
 				<h2>
 					Workers <i className='bi bi-arrow-right-short' />
 				</h2>
-			</NavLink>
+			</Link>
 			<div className='table-scroll'>
 				<table>
 					<thead>

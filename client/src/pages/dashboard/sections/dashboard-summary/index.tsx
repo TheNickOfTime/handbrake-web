@@ -1,6 +1,6 @@
-import { QueueStatus } from 'types/queue';
-import SubSection from 'components/section/sub-section';
-import './dashboard-summary.scss';
+import SubSection from '~components/section/sub-section';
+import { QueueStatus } from '~types/queue';
+import styles from './styles.module.scss';
 
 type Params = {
 	connectionStatus: boolean;
@@ -9,15 +9,15 @@ type Params = {
 
 export default function DashboardSummary({ connectionStatus, queueStatus }: Params) {
 	return (
-		<SubSection title='Summary' id='summary'>
-			<div className='summary-info'>
-				<div className='info'>
+		<SubSection title='Summary' id={styles['summary']}>
+			<div className={styles['summary-info']}>
+				<div className={styles['info']}>
 					<span>Server: </span>
 					<span className={connectionStatus ? 'color-blue' : 'color-red'}>
 						{connectionStatus ? 'Connected' : 'Disconnected'}
 					</span>
 				</div>
-				<div className='info'>
+				<div className={styles['info']}>
 					<span>Queue: </span>
 					<span
 						className={

@@ -1,5 +1,5 @@
-@use '@style/modules/colors';
-@use '@style/modules/font';
+@use '~styles/modules/colors';
+@use '~styles/modules/font';
 
 .section-overlay#create-new-job {
 	.button-group {

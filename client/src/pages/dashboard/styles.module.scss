@@ -1,7 +1,7 @@
-@use '@style/modules/colors';
+@use '~styles/modules/colors';
 
-.section#dashboard {
-	.table-scroll {
+.dashboard {
+	:global(.table-scroll) {
 		max-width: 100%;
 		overflow-x: auto;
 		padding-bottom: 2rem;

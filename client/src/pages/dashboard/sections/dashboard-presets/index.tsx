@@ -1,9 +1,9 @@
-import { NavLink } from 'react-router-dom';
-import { HandbrakePresetCategoryType } from 'types/preset';
-import SubSection from 'components/section/sub-section';
-import './dashboard-presets.scss';
-import { FirstLetterUpperCase } from 'funcs/string.funcs';
-import { PresetEncoderDict, PresetFormatDict } from 'dict/presets.dict';
+import { Link } from '@tanstack/react-router';
+import SubSection from '~components/section/sub-section';
+import { PresetEncoderDict, PresetFormatDict } from '~dict/presets.dict';
+import { FirstLetterUpperCase } from '~funcs/string.funcs';
+import { HandbrakePresetCategoryType } from '~types/preset';
+import styles from './styles.module.scss';
 
 type Params = {
 	presets: HandbrakePresetCategoryType;
@@ -11,12 +11,12 @@ type Params = {
 
 export default function DashboardPresets({ presets }: Params) {
 	return (
-		<SubSection id='presets'>
-			<NavLink to='/presets'>
+		<SubSection id={styles['presets']}>
+			<Link to='/presets'>
 				<h2>
 					Presets <i className='bi bi-arrow-right-short' />
 				</h2>
-			</NavLink>
+			</Link>
 			<div className='table-scroll'>
 				<table>
 					<thead>

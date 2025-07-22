@@ -1,13 +1,13 @@
 // Local scope
-@use './style/modules/colors';
-@use './style/modules/font';
-@use './style/modules/sizing';
+@use '~styles/modules/colors';
+@use '~styles/modules/font';
+@use '~styles/modules/sizing';
 
 // Global scope
-@use './style/modules/general';
-@use './style/modules/form';
-@use './style/modules/headings';
-@use './style/modules/table';
+@use '~styles/modules/general';
+@use '~styles/modules/form';
+@use '~styles/modules/headings';
+@use '~styles/modules/table';
 
 @import '../node_modules/bootstrap-icons/font/bootstrap-icons.css';
 

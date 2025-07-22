@@ -1,4 +1,4 @@
-import Section from 'components/section/section';
+import Section from '~components/section/section';
 
 type Params = {
 	url: string;

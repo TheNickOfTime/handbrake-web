@@ -1,11 +1,11 @@
-import { NavLink } from 'react-router-dom';
-import { QueueType } from 'types/queue';
-import { TranscodeStage } from 'types/transcode';
-import { statusSorting } from 'dict/queue.dict';
-import ProgressBar from 'components/base/progress/progress-bar';
-import SubSection from 'components/section/sub-section';
-import './dashboard-queue.scss';
-import BadgeInfo from 'components/base/info/badge-info/badge-info';
+import { Link } from '@tanstack/react-router';
+import BadgeInfo from '~components/base/info/badge-info/badge-info';
+import ProgressBar from '~components/base/progress/progress-bar';
+import SubSection from '~components/section/sub-section';
+import { statusSorting } from '~dict/queue.dict';
+import { QueueType } from '~types/queue';
+import { TranscodeStage } from '~types/transcode';
+import styles from './styles.module.scss';
 
 type Params = {
 	queue: QueueType;
@@ -13,12 +13,12 @@ type Params = {
 
 export default function DashboardQueue({ queue }: Params) {
 	return (
-		<SubSection id='queue'>
-			<NavLink to='/queue'>
+		<SubSection id={styles['queue']}>
+			<Link to='/queue'>
 				<h2>
 					Queue <i className='bi bi-arrow-right-short' />
 				</h2>
-			</NavLink>
+			</Link>
 			<div className='table-scroll'>
 				<table>
 					<thead>

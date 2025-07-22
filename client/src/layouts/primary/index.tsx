@@ -1,18 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
+import { Link, Outlet } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-
-import { ConfigType } from 'types/config';
-import { HandbrakePresetCategoryType } from 'types/preset';
-import { QueueStatus, QueueType } from 'types/queue';
-import { ConnectionIDsType } from 'types/socket';
-import { WatcherDefinitionObjectType } from 'types/watcher';
+import SideBar from '~components/modules/side-bar';
+import NoConnection from '~pages/no-connection/no-connection';
+import { ConfigType } from '~types/config';
+import { HandbrakePresetCategoryType } from '~types/preset';
+import { QueueStatus, QueueType } from '~types/queue';
+import { ConnectionIDsType } from '~types/socket';
+import { WatcherDefinitionObjectType } from '~types/watcher';
 import { PrimaryContext } from './context';
-
-import { Link, Outlet } from '@tanstack/react-router';
-import SideBar from 'components/modules/side-bar';
-import NoConnection from 'sections/no-connection/no-connection';
 import './styles.scss';
 
 export default function PrimaryLayout() {

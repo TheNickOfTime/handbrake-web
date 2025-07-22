@@ -1,9 +1,8 @@
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
-import path from 'path';
-import { env } from 'process';
+import { resolve } from 'path';
+import { cwd, env } from 'process';
 import { defineConfig } from 'vite';
-import tsconfigPaths from 'vite-tsconfig-paths';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -17,17 +16,16 @@ export default defineConfig({
 			autoCodeSplitting: true,
 		}),
 		react(),
-		tsconfigPaths(),
 	],
 	resolve: {
 		alias: {
-			'@style': path.resolve(__dirname, './src/style'),
-			components: path.resolve(__dirname, './src/components'),
-			pages: path.resolve(__dirname, './src/pages'),
-			sections: path.resolve(__dirname, './src/sections'),
-			types: path.resolve(__dirname, '../shared/types'),
-			dict: path.resolve(__dirname, '../shared/dict'),
-			funcs: path.resolve(__dirname, '../shared/funcs'),
+			'~styles': resolve(cwd(), './src/styles'),
+			'~components': resolve(cwd(), './src/components'),
+			'~pages': resolve(cwd(), './src/pages'),
+			'~layouts': resolve(cwd(), './src/layouts'),
+			'~types': resolve(cwd(), '../shared/types'),
+			'~dict': resolve(cwd(), '../shared/dict'),
+			'~funcs': resolve(cwd(), '../shared/funcs'),
 		},
 	},
 	define: {

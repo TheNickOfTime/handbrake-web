@@ -1,5 +1,5 @@
-@use '@style/modules/colors';
-@use '@style/modules/sizing';
+@use '~styles/modules/colors';
+@use '~styles/modules/sizing';
 
 @media (max-width: sizing.$medium-max-width) {
 	.side-bar {
@@ -90,7 +90,7 @@
 						color: colors.$text-color-secondary;
 						text-decoration: none;
 
-						.bi {
+						:global(.bi) {
 							margin-right: 1.5rem;
 						}
 					}

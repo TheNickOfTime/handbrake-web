@@ -1,7 +1,7 @@
-import SubSection from 'components/section/sub-section';
-import { NavLink } from 'react-router-dom';
-import { WatcherDefinitionObjectType } from 'types/watcher';
-import './dashboard-watchers.scss';
+import { Link } from '@tanstack/react-router';
+import SubSection from '~components/section/sub-section';
+import { WatcherDefinitionObjectType } from '~types/watcher';
+import styles from './styles.module.scss';
 
 type Params = {
 	watchers: WatcherDefinitionObjectType;
@@ -9,12 +9,12 @@ type Params = {
 
 export default function DashboardWatchers({ watchers }: Params) {
 	return (
-		<SubSection id='watchers'>
-			<NavLink to='/watchers'>
+		<SubSection id={styles['watchers']}>
+			<Link to='/watchers'>
 				<h2>
 					Watchers <i className='bi bi-arrow-right-short' />
 				</h2>
-			</NavLink>
+			</Link>
 			<div className='table-scroll'>
 				<table>
 					<thead>
