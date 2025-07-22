@@ -2,10 +2,12 @@
 FROM node:alpine AS client-build
 COPY client /handbrake-web/client
 COPY shared /handbrake-web/shared
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /handbrake-web
 WORKDIR /handbrake-web/client
 
-RUN npm install
-RUN npm run build
+RUN npm install -g pnpm
+RUN pnpm install
+RUN pnpm build
 
 # Main ---------------------------------------------------------------------------------------------
 FROM node:alpine3.20 AS main
@@ -13,11 +15,13 @@ FROM node:alpine3.20 AS main
 COPY --from=client-build /handbrake-web/client/build /handbrake-web/client
 COPY server /handbrake-web/server
 COPY shared /handbrake-web/shared
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /handbrake-web
 WORKDIR /handbrake-web/server
 
 # Install node dependencies
 ENV NODE_ENV=production
-RUN npm install
+RUN npm install -g pnpm
+RUN pnpm install
 
 # Create directories
 RUN mkdir /data && chown node /data && mkdir /video && chown node /data
@@ -33,4 +37,4 @@ RUN apk add dumb-init
 
 # Start application
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["npm", "run", "prod"]
+CMD ["pnpm", "prod"]

@@ -23,11 +23,13 @@ RUN apt install -y dumb-init
 
 COPY worker /handbrake-web/worker
 COPY shared /handbrake-web/shared
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /handbrake-web
 WORKDIR /handbrake-web/worker
 
 # Install node dependencies
 ENV NODE_ENV=production
-RUN npm install
+RUN npm install -g pnpm
+RUN pnpm install
 
 # Create directories
 RUN mkdir /data && chown node /data && mkdir /video && chown node /data
@@ -39,4 +41,4 @@ ENV VIDEO_PATH=/video
 
 # Start application
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["npm", "run", "prod"]
+CMD ["pnpm", "prod"]
