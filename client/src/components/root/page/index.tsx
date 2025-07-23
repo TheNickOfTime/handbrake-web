@@ -22,7 +22,7 @@ export default function Page({ heading, className, children, ...properties }: Pr
 	};
 
 	return (
-		<div
+		<main
 			className={`page ${styles['page']} ${className ? className : ''}`}
 			ref={scrollRef}
 			onScroll={handleScroll}
@@ -31,6 +31,6 @@ export default function Page({ heading, className, children, ...properties }: Pr
 			<h1 className={styles['heading']}>{heading}</h1>
 			<hr className={styles['divider']} />
 			<PageContext value={context}>{children}</PageContext>
-		</div>
+		</main>
 	);
 }

@@ -1,13 +1,12 @@
+import { useContext, useEffect, useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
 import ToggleInput from '~components/base/inputs/toggle';
 import Page from '~components/root/page';
-import Section from '~components/root/section';
-import { useContext, useEffect, useState } from 'react';
-import styles from './styles.module.scss';
+import { PrimaryContext } from '~layouts/primary/context';
 import SettingsApplication from './sections/application-section';
 import SettingsPaths from './sections/paths-section';
 import SettingsPreset from './sections/presets-section';
-import { PrimaryContext } from '~layouts/primary/context';
+import styles from './styles.module.scss';
 
 export default function SettingsSection() {
 	const { config, socket } = useContext(PrimaryContext)!;
@@ -35,7 +34,7 @@ export default function SettingsSection() {
 
 	return (
 		<Page heading='Settings' className={styles['settings-section']}>
-			<Section className={styles['buttons']}>
+			<Page className={styles['buttons']}>
 				<ButtonInput
 					label='Save Configuration'
 					icon='bi-floppy2-fill'
@@ -48,7 +47,7 @@ export default function SettingsSection() {
 					value={currentConfig.config['auto-fix']}
 					onChange={handleAutoFixChange}
 				/>
-			</Section>
+			</Page>
 			<div className={styles['settings-sections']}>
 				<SettingsPaths
 					config={currentConfig}

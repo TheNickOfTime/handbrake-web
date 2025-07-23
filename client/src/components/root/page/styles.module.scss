@@ -1,13 +1,10 @@
-.page {
-	position: relative;
-	height: 100%;
+@use '~styles/variables/breakpoints';
 
+.page {
 	flex-grow: 1;
 
-	overflow-x: hidden;
-	overflow-y: auto;
-
-	padding: 2rem;
+	margin-top: var(--header-height);
+	padding: 2rem 1rem;
 
 	.heading {
 		margin: 2rem 0;
@@ -15,5 +12,10 @@
 
 	.divider {
 		margin-bottom: 3rem;
+	}
+
+	@media (min-width: breakpoints.$breakpoint-large) {
+		margin-left: var(--sidebar-width);
+		padding: 2rem;
 	}
 }

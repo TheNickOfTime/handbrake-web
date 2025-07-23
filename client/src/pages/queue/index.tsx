@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import CreateJob from '~components/overlays/create-job';
-import Section from '~components/root/section';
+import Page from '~components/root/page';
 import { PrimaryContext } from '~layouts/primary/context';
 import QueueJobs from './sections/queue-jobs';
 import QueueStatus from './sections/queue-status';
@@ -44,7 +44,7 @@ export default function QueueSection() {
 	};
 
 	return (
-		<Section
+		<Page
 			heading='Queue'
 			id={styles['queue']}
 			className={showCreateJob ? 'no-scroll-y' : undefined}
@@ -70,6 +70,6 @@ export default function QueueSection() {
 					}}
 				/>
 			)}
-		</Section>
+		</Page>
 	);
 }

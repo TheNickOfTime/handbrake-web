@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import UploadPreset from '~components/overlays/upload-preset';
-import Section from '~components/root/section';
+import Page from '~components/root/page';
 import { PrimaryContext } from '~layouts/primary/context';
 import PresetsButtons from './sections/buttons-section';
 import PresetsList from './sections/list-section';
@@ -29,7 +29,7 @@ export default function PresetsSection() {
 	};
 
 	return (
-		<Section
+		<Page
 			heading='Presets'
 			id={styles['presets']}
 			className={showUploadPreset ? 'no-scroll-y' : undefined}
@@ -65,6 +65,6 @@ export default function PresetsSection() {
 					handleClose={handleCloseUploadPreset}
 				/>
 			)}
-		</Section>
+		</Page>
 	);
 }

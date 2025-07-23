@@ -3,7 +3,6 @@ import ButtonInput from '~components/base/inputs/button';
 import WatcherCard from '~components/cards/watcher-card';
 import RegisterWatcher from '~components/overlays/register-watcher';
 import Page from '~components/root/page';
-import Section from '~components/root/section';
 import { PrimaryContext } from '~layouts/primary/context';
 import { WatcherRuleDefinitionType } from '~types/watcher';
 import styles from './styles.module.scss';
@@ -37,7 +36,7 @@ export default function WatchersSection() {
 
 	return (
 		<Page className={styles['watchers']} heading='Watchers'>
-			<Section className={styles['status']}>
+			<Page className={styles['status']}>
 				<div className={styles['count']}>Watchers: {watcherIDs.length}</div>
 				<ButtonInput
 					label='Register New Watcher'
@@ -45,9 +44,9 @@ export default function WatchersSection() {
 					color='blue'
 					onClick={handleNewWatcher}
 				/>
-			</Section>
+			</Page>
 			{watcherIDs.length > 0 && (
-				<Section className={styles['registered-watchers']} heading='Registered Watchers'>
+				<Page className={styles['registered-watchers']} heading='Registered Watchers'>
 					{watcherIDs.map((watcherID, index) => (
 						<WatcherCard
 							watcherID={watcherID}
@@ -60,7 +59,7 @@ export default function WatchersSection() {
 							key={`watcher-card-${watcherID}`}
 						/>
 					))}
-				</Section>
+				</Page>
 			)}
 			{showRegisterOverlay && (
 				<RegisterWatcher onClose={() => setShowRegisterOverlay(false)} />

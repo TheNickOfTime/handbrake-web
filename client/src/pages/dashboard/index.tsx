@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import Section from '~components/root/section';
+import Page from '~components/root/page';
 import { PrimaryContext } from '~layouts/primary/context';
 import DashboardPresets from './sections/dashboard-presets';
 import DashboardQueue from './sections/dashboard-queue';
@@ -13,12 +13,12 @@ export default function DashboardSection() {
 		useContext(PrimaryContext)!;
 
 	return (
-		<Section className={styles['dashboard']} heading='Dashboard'>
+		<Page className={styles['dashboard']} heading='Dashboard'>
 			<DashboardSummary connectionStatus={socket.connected} queueStatus={queueStatus} />
 			<DashboardQueue queue={queue} />
 			<DashboardPresets presets={presets} />
 			<DashboardWatchers watchers={watchers} />
 			<DashboardWorkers queue={queue} workers={connections.workers} />
-		</Section>
+		</Page>
 	);
 }

@@ -1,14 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
+import { Outlet } from '@tanstack/react-router';
 import { Fragment, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import SideBar from '~components/root/side-bar';
+import NoConnection from '~pages/_default/no-connection';
 import { ConfigType } from '~types/config';
 import { HandbrakePresetCategoryType } from '~types/preset';
 import { QueueStatus, QueueType } from '~types/queue';
 import { ConnectionIDsType } from '~types/socket';
 import { WatcherDefinitionObjectType } from '~types/watcher';
-import './styles.scss';
+import { PrimaryContext } from './context';
+import styles from './styles.module.scss';
 
 export default function PrimaryLayout() {
 	const baseURLRegex = /(^https?:\/\/.+\/)(.+$)/;
@@ -133,39 +136,25 @@ export default function PrimaryLayout() {
 				socket={socket}
 				config={config}
 			/>
-			{/* <div className={`dark-overlay ${showSidebar ? 'visible' : 'hidden'}`} />
-			<div className='primary-section'>
-				<div className='mobile-toolbar'>
-					<Link className='title' to='/'>
-						<img src='/handbrake-icon.png' alt='Handbrake Icon' />
-						<h1>HandBrake Web</h1>
-					</Link>
-					<button onClick={() => setShowSidebar(!showSidebar)}>
-						<i className='bi-list' />
-					</button>
-				</div>
-				<div className='content'>
-					{socket.connected && config != undefined ? (
-						<PrimaryContext
-							value={{
-								serverURL,
-								socket,
-								queue,
-								queueStatus,
-								presets,
-								defaultPresets,
-								connections,
-								config,
-								watchers,
-							}}
-						>
-							<Outlet />
-						</PrimaryContext>
-					) : (
-						<NoConnection url={serverURL} />
-					)}
-				</div>
-			</div> */}
+			{socket.connected && config != undefined ? (
+				<PrimaryContext
+					value={{
+						serverURL,
+						socket,
+						queue,
+						queueStatus,
+						presets,
+						defaultPresets,
+						connections,
+						config,
+						watchers,
+					}}
+				>
+					<Outlet />
+				</PrimaryContext>
+			) : (
+				<NoConnection url={serverURL} />
+			)}
 		</Fragment>
 	);
 }
