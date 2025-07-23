@@ -2,8 +2,8 @@ import { useContext, useState } from 'react';
 import CreateJob from '~components/overlays/create-job';
 import Page from '~components/root/page';
 import { PrimaryContext } from '~layouts/primary/context';
-import QueueJobs from './sections/queue-jobs';
-import QueueStatus from './sections/queue-status';
+import JobsSection from './sections/jobs-section';
+import StatusSection from './sections/status-section';
 import styles from './styles.module.scss';
 
 export default function QueueSection() {
@@ -49,12 +49,12 @@ export default function QueueSection() {
 			id={styles['queue']}
 			className={showCreateJob ? 'no-scroll-y' : undefined}
 		>
-			<QueueStatus
+			<StatusSection
 				queueStatus={queueStatus}
 				handleStartQueue={handleStartQueue}
 				handleStopQueue={handleStopQueue}
 			/>
-			<QueueJobs
+			<JobsSection
 				queue={queue}
 				handleAddNewJob={handleAddNewJob}
 				handleClearAllJobs={handleClearAllJobs}

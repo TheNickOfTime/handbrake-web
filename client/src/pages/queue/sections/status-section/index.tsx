@@ -1,3 +1,6 @@
+import StatusIcon from '@icons/circle-fill.svg?react';
+import StartIcon from '@icons/play-fill.svg?react';
+import StopIcon from '@icons/stop-fill.svg?react';
 import ButtonInput from '~components/base/inputs/button';
 import Section from '~components/root/section';
 import { QueueStatus as QueueStatusType } from '~types/queue';
@@ -9,25 +12,28 @@ type Params = {
 	handleStopQueue: () => void;
 };
 
-export default function QueueStatus({ queueStatus, handleStartQueue, handleStopQueue }: Params) {
+export default function StatusSection({ queueStatus, handleStartQueue, handleStopQueue }: Params) {
 	return (
-		<Section heading='Status' id={styles['status']}>
-			<div className={styles['status-section']}>
-				<div className={`${styles['status-info']} ${QueueStatusType[queueStatus]}`}>
-					<i className={`${styles['info-icon']} bi bi-circle-fill`} />
-					<span className={styles['info-text']}>{QueueStatusType[queueStatus]}</span>
+		<Section className={styles['status']} heading='Status'>
+			<div className={styles['wrapper']}>
+				<div
+					className={styles['info']}
+					data-status={QueueStatusType[queueStatus].toLowerCase()}
+				>
+					<StatusIcon className={styles['icon']} />
+					<span className={styles['status']}>{QueueStatusType[queueStatus]}</span>
 				</div>
-				<div className={styles['status-buttons']}>
+				<div className={styles['buttons']}>
 					<ButtonInput
 						label='Start Queue'
-						icon='bi-play-fill'
+						Icon={StartIcon}
 						color='blue'
 						disabled={queueStatus != QueueStatusType.Stopped}
 						onClick={handleStartQueue}
 					/>
 					<ButtonInput
 						label='Stop Queue'
-						icon='bi-stop-fill'
+						Icon={StopIcon}
 						color='red'
 						disabled={queueStatus == QueueStatusType.Stopped}
 						onClick={handleStopQueue}

@@ -1,21 +1,17 @@
-import { ButtonHTMLAttributes } from 'react';
+import { ButtonHTMLAttributes, FunctionComponent } from 'react';
 import styles from './styles.module.scss';
 
 interface Properties extends ButtonHTMLAttributes<HTMLButtonElement> {
 	label?: string;
-	icon?: string;
+	Icon?: FunctionComponent<React.SVGProps<SVGSVGElement>>;
 	color?: 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'magenta';
 }
 
-export default function ButtonInput({ label, icon, color, ...properties }: Properties) {
+export default function ButtonInput({ label, Icon, color, ...properties }: Properties) {
 	return (
-		<button
-			className={`controlled-button ${styles['controlled-button']}`}
-			{...properties}
-			data-color={color}
-		>
-			{icon && <i className={`button-icon bi ${icon}`} />}
-			{label && <span className='button-label'>{label}</span>}
+		<button className={`button ${styles['button']}`} {...properties} data-color={color}>
+			{Icon && <Icon className={styles['icon']} />}
+			{label && <span className={styles['label']}>{label}</span>}
 		</button>
 	);
 }

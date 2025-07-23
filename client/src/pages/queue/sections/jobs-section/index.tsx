@@ -1,8 +1,12 @@
+import ClearAllIcon from '@icons/check2-all.svg?react';
+import ClearFinishedIcon from '@icons/check2.svg?react';
+import AddNewIcon from '@icons/plus-lg.svg?react';
 import ButtonInput from '~components/base/inputs/button';
 import Section from '~components/root/section';
 import { QueueType } from '~types/queue';
 import { TranscodeStage } from '~types/transcode';
 import QueueJobsCategory from '../queue-jobs-category';
+import styles from './styles.module.scss';
 
 type Params = {
 	queue: QueueType;
@@ -14,7 +18,7 @@ type Params = {
 	handleRemoveJob: (id: number) => void;
 };
 
-export default function QueueJobs({
+export default function JobsSection({
 	queue,
 	handleAddNewJob,
 	handleClearAllJobs,
@@ -54,21 +58,21 @@ export default function QueueJobs({
 	const onlyFinished = Object.keys(queue).length == Object.keys(jobsFinshed).length;
 
 	return (
-		<Section heading='Jobs' id='jobs'>
-			<div className='buttons'>
+		<Section className={styles['jobs']} heading='Jobs'>
+			<div className={styles['buttons']}>
 				<ButtonInput
 					label='Clear All Jobs'
-					icon='bi-check2-all'
+					Icon={ClearAllIcon}
 					color='orange'
 					onClick={handleClearAllJobs}
 				/>
 				<ButtonInput
 					label='Clear Finished Jobs'
-					icon='bi-check2'
+					Icon={ClearFinishedIcon}
 					color='yellow'
 					onClick={handleClearFinishedJobs}
 				/>
-				<ButtonInput label='Add New Job' icon='bi-plus-lg' onClick={handleAddNewJob} />
+				<ButtonInput label='Add New Job' Icon={AddNewIcon} onClick={handleAddNewJob} />
 			</div>
 			<div className='cards'>
 				<QueueJobsCategory

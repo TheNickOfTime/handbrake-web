@@ -1,25 +1,31 @@
-.controlled-button {
-	// margin: 1rem;
-	padding: 0.5rem 1rem;
-	border: none;
-	border-radius: 0.75rem;
+.button {
+	--button-content-size: 1.1rem;
+
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
-	gap: 1rem;
+	gap: 0.5rem;
+
+	// margin: 1rem;
+	padding: 0.5rem 1rem;
+
+	font-family: var(--body-font);
+	font-size: var(--button-content-size);
+
+	border: none;
+	border-radius: 0.5rem;
 	box-shadow: 0 0 1rem black;
 
 	background-color: var(--handbrake-green);
 	color: var(--text-primary);
 	text-shadow: 0 0 1rem var(--background-primary);
 
-	.button-icon {
-		font-size: 2.5rem;
+	.icon {
+		width: calc(var(--button-content-size) + 0.25rem);
+		height: calc(var(--button-content-size) + 0.25rem);
 	}
 
-	.button-label {
-		font-family: var(--body-font);
-		font-size: 2rem;
+	.label {
 	}
 
 	&:hover:not(:disabled) {
@@ -40,7 +46,7 @@
 	}
 
 	&[data-color='orange'] {
-		background-color: var(--handbrake-green);
+		background-color: var(--handbrake-orange);
 	}
 
 	&[data-color='yellow'] {
