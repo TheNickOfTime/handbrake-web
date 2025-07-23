@@ -6,13 +6,13 @@
 	border-radius: 0.5rem;
 	background-color: hsla(0, 0%, 100%, 0.1);
 
-	.progress-value {
+	.value {
 		height: 100%;
 		background-color: var(--handbrake-blue);
 		display: block;
 	}
 
-	.progress-label {
+	.label {
 		font-size: 1.5rem;
 		position: absolute;
 		top: 0;

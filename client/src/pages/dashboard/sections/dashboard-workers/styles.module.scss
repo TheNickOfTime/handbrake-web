@@ -1,2 +1,9 @@
-#workers {
+.workers {
+	[data-working='true'] {
+		color: var(--handbrake-blue);
+	}
+
+	[data-working='false'] {
+		color: var(--handbrake-yellow);
+	}
 }

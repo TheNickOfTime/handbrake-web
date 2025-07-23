@@ -1,5 +1,21 @@
-#queue {
-	.progress {
+.queue {
+	[data-status='waiting'] {
+		color: var(--handbrake-yellow);
+	}
+
+	[data-status='scanning'] {
+		color: var(--handbrake-orange);
+	}
+
+	[data-status='transcoding'] {
+		color: var(--handbrake-blue);
+	}
+
+	[data-status='finished'] {
+		color: var(--handbrake-green);
+	}
+
+	.percentage {
 		min-width: 25rem;
 		width: 25rem;
 	}

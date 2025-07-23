@@ -1,56 +1,51 @@
-import { Link } from '@tanstack/react-router';
 import Section from '~components/root/section';
+import DashboardTable from '~pages/dashboard/components/dashboard-table';
 import { QueueType } from '~types/queue';
 import { WorkerIDType } from '~types/socket';
 import styles from './styles.module.scss';
 
-type Params = {
+interface Properties {
 	queue: QueueType;
 	workers: WorkerIDType[];
-};
+}
 
-export default function DashboardWorkers({ queue, workers }: Params) {
+export default function DashboardWorkers({ queue, workers }: Properties) {
 	return (
-		<Section id={styles['workers']}>
-			<Link to='/workers'>
-				<h2>
-					Workers <i className='bi bi-arrow-right-short' />
-				</h2>
-			</Link>
-			<div className='table-scroll'>
-				<table>
-					<thead>
-						<tr>
-							<th>Worker ID</th>
-							<th>Connection ID</th>
-							<th>Status</th>
-						</tr>
-					</thead>
-					<tbody>
-						{workers.map((worker) => {
-							const status = Object.values(queue).find(
-								(job) => job.status.worker_id == worker.workerID
-							)
-								? 'Working'
-								: 'Idle';
+		<Section className={styles['workers']} heading='Workers' link='/workers'>
+			<DashboardTable>
+				<thead>
+					<tr>
+						<th>Worker ID</th>
+						<th>Connection ID</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					{workers.map((worker) => {
+						const status = Object.values(queue).find(
+							(job) => job.status.worker_id == worker.workerID
+						)
+							? 'Working'
+							: 'Idle';
 
-							return (
-								<tr key={`worker-${worker}`}>
-									<td>{worker.workerID}</td>
-									<td>{worker.connectionID}</td>
-									<td
-										className={`center ${
-											status == 'Working' ? 'color-blue' : 'color-yellow'
-										}`}
-									>
-										{status}
-									</td>
-								</tr>
-							);
-						})}
-					</tbody>
-				</table>
-			</div>
+						return (
+							<tr key={`worker-${worker}`}>
+								<td>{worker.workerID}</td>
+								<td>{worker.connectionID}</td>
+								<td
+									className={`${
+										status == 'Working' ? 'color-blue' : 'color-yellow'
+									}`}
+									align='center'
+									data-working={status == 'Working'}
+								>
+									{status}
+								</td>
+							</tr>
+						);
+					})}
+				</tbody>
+			</DashboardTable>
 		</Section>
 	);
 }

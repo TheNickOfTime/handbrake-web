@@ -1,14 +1,18 @@
+import { HTMLAttributes } from 'react';
 import styles from './styles.module.scss';
 
-type Params = {
+interface Properties extends HTMLAttributes<HTMLDivElement> {
 	percentage: number;
-};
+}
 
-export default function ProgressBar({ percentage }: Params) {
+export default function ProgressBar({ percentage, className, ...properties }: Properties) {
 	return (
-		<div className={styles['progress-bar']}>
-			<span className={styles['progress-value']} style={{ width: `${percentage}%` }} />
-			<span className={styles['progress-label']}>{percentage.toFixed(2)} %</span>
+		<div
+			className={`progress-bar ${styles['progress-bar']} ${className || ''}`}
+			{...properties}
+		>
+			<span className={styles['value']} style={{ width: `${percentage}%` }} />
+			<span className={styles['label']}>{percentage.toFixed(2)} %</span>
 		</div>
 	);
 }

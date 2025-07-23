@@ -1,0 +1,39 @@
+@use '~styles/mixins/table';
+
+.dashboard-table {
+	@include table.table-scroll;
+
+	table {
+		width: 100%;
+
+		th,
+		td {
+			padding: 0.5rem 1rem;
+
+			&.left {
+				text-align: left;
+			}
+
+			&.center {
+				text-align: center;
+			}
+
+			&.right {
+				text-align: right;
+			}
+		}
+
+		th {
+			font-size: 0.85rem;
+			border-bottom: 0.1rem solid var(--text-tertiary);
+		}
+
+		td {
+			white-space: nowrap;
+		}
+
+		tbody tr:hover {
+			background-color: rgba(255, 255, 255, 0.1);
+		}
+	}
+}

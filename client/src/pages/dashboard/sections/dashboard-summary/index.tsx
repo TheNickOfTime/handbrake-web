@@ -2,36 +2,26 @@ import Section from '~components/root/section';
 import { QueueStatus } from '~types/queue';
 import styles from './styles.module.scss';
 
-type Params = {
+interface Properties {
 	connectionStatus: boolean;
 	queueStatus: QueueStatus;
-};
+}
 
-export default function DashboardSummary({ connectionStatus, queueStatus }: Params) {
+export default function DashboardSummary({ connectionStatus, queueStatus }: Properties) {
 	return (
-		<Section heading='Summary' id={styles['summary']}>
-			<div className={styles['summary-info']}>
-				<div className={styles['info']}>
+		<Section className={styles['summary']} heading='Summary'>
+			<div className={styles['info']}>
+				<div className={`${styles['status']} ${styles['connection']}`}>
 					<span>Server: </span>
-					<span className={connectionStatus ? 'color-blue' : 'color-red'}>
+					<strong data-connected={connectionStatus}>
 						{connectionStatus ? 'Connected' : 'Disconnected'}
-					</span>
+					</strong>
 				</div>
-				<div className={styles['info']}>
+				<div className={`${styles['status']} ${styles['queue']}`}>
 					<span>Queue: </span>
-					<span
-						className={
-							queueStatus == QueueStatus.Active
-								? 'color-blue'
-								: queueStatus == QueueStatus.Idle
-								? 'color-yellow'
-								: queueStatus == QueueStatus.Stopped
-								? 'color-red'
-								: ''
-						}
-					>
+					<strong data-status={QueueStatus[queueStatus].toLowerCase()}>
 						{QueueStatus[queueStatus]}
-					</span>
+					</strong>
 				</div>
 			</div>
 		</Section>
