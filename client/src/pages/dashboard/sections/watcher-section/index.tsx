@@ -9,7 +9,7 @@ interface Properties {
 	workers: WorkerIDType[];
 }
 
-export default function DashboardWorkers({ queue, workers }: Properties) {
+export default function WorkersSection({ queue, workers }: Properties) {
 	return (
 		<Section className={styles['workers']} heading='Workers' link='/workers'>
 			<DashboardTable>

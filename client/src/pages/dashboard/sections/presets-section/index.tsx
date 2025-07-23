@@ -9,7 +9,7 @@ interface Properties {
 	presets: HandbrakePresetCategoryType;
 }
 
-export default function DashboardPresets({ presets }: Properties) {
+export default function PresetsSection({ presets }: Properties) {
 	return (
 		<Section className={styles['presets']} heading='Presets' link='/presets'>
 			<DashboardTable>

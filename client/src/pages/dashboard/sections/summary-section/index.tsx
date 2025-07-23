@@ -7,7 +7,7 @@ interface Properties {
 	queueStatus: QueueStatus;
 }
 
-export default function DashboardSummary({ connectionStatus, queueStatus }: Properties) {
+export default function SummarySection({ connectionStatus, queueStatus }: Properties) {
 	return (
 		<Section className={styles['summary']} heading='Summary'>
 			<div className={styles['info']}>

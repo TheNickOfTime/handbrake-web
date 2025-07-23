@@ -7,7 +7,7 @@ interface Properties {
 	watchers: WatcherDefinitionObjectType;
 }
 
-export default function DashboardWatchers({ watchers }: Properties) {
+export default function WatchersSection({ watchers }: Properties) {
 	return (
 		<Section className={styles['watchers']} heading='Watchers' link='/watchers'>
 			<DashboardTable>

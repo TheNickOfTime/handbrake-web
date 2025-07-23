@@ -11,7 +11,7 @@ interface Properties {
 	queue: QueueType;
 }
 
-export default function DashboardQueue({ queue }: Properties) {
+export default function QueueSection({ queue }: Properties) {
 	return (
 		<Section className={styles['queue']} heading='Queue' link='/queue'>
 			<DashboardTable>
