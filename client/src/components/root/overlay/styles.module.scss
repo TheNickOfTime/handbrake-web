@@ -23,7 +23,7 @@
 		padding: 2rem;
 
 		border-radius: 1rem;
-		background-color: colors.$background-tertiary;
+		background-color: var(--background-tertiary);
 		box-shadow: 0 0 2rem 0 black;
 	}
 }

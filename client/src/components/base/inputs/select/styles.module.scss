@@ -1,4 +1,3 @@
-@use '~styles/variables/colors';
 @use '~styles/variables/breakpoints';
 
 .select-input {
@@ -11,7 +10,7 @@
 
 	select {
 		max-width: 100%;
-		background-color: colors.$background-tertiary;
+		background-color: var(--background-tertiary);
 	}
 }
 

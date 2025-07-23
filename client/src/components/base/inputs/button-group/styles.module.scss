@@ -1,6 +1,3 @@
-@use '~styles/variables/colors';
-@use '~styles/modules/font';
-
 .button-group {
 	width: 100%;
 	margin-bottom: 3rem;
@@ -8,28 +5,28 @@
 	display: flex;
 
 	border-radius: 1rem;
-	border: 0.1rem solid colors.$text-color-primary;
+	border: 0.1rem solid var(--text-primary);
 
 	button {
 		width: 100%;
 		padding: 1rem;
 
 		font-size: 1.75rem;
-		font-family: font.$font-family-primary;
-		color: colors.$text-color-primary;
+		font-family: var(--body-font);
+		color: var(--text-primary);
 
 		// border: 0.1rem solid $text-color-primary;
 		border: none;
 		background-color: transparent;
 
 		&.selected {
-			background-color: colors.$transparent-light-secondary;
+			background-color: var(--transparent-secondary);
 			text-decoration: underline;
 		}
 
 		&:hover {
 			cursor: pointer;
-			background-color: colors.$transparent-light-primary;
+			background-color: var(--transparent-primary);
 		}
 	}
 }

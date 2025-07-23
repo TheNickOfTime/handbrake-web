@@ -9,7 +9,7 @@
 
 		label {
 			font-size: 1.25rem;
-			color: colors.$text-color-tertiary;
+			color: var(--text-tertiary);
 		}
 
 		.file-section {
@@ -22,23 +22,23 @@
 				flex-grow: 1;
 
 				font-size: 1.5rem;
-				font-family: font.$font-family-primary;
+				font-family: var(--body-font);
 
-				border: 0.1rem solid colors.$text-color-primary;
+				border: 0.1rem solid var(--text-primary);
 				border-radius: 0.75rem;
 				// background-color: white;
 
 				&::file-selector-button {
 					margin-right: 1rem;
 					padding: 0.5rem 1rem;
-					font-family: font.$font-family-primary;
+					font-family: var(--body-font);
 					border: none;
-					background-color: colors.$background-six;
-					color: colors.$text-color-secondary;
+					background-color: var(--background-six);
+					color: var(--text-secondary);
 				}
 
 				&::file-selector-button:hover {
-					background-color: colors.$background-five;
+					background-color: var(--background-five);
 				}
 			}
 		}
@@ -51,13 +51,13 @@
 
 			h3 {
 				margin: 0;
-				color: colors.$text-color-secondary;
+				color: var(--text-secondary);
 			}
 
 			.preset-overwrite {
 				margin-bottom: 0.5rem;
 				text-align: center;
-				color: colors.$handbrake-red;
+				color: var(--handbrake-red);
 
 				.bi {
 					margin-right: 0.5rem;
@@ -74,8 +74,8 @@
 					padding: 0.5rem 1rem;
 					flex-grow: 1;
 					font-size: 1.75rem;
-					font-family: font.$font-family-primary;
-					color: colors.$text-color-primary;
+					font-family: var(--body-font);
+					color: var(--text-primary);
 					// border: 0.2rem solid hsla(0, 0%, 100%, 0.1);
 					border: none;
 					border-radius: 0.75rem;

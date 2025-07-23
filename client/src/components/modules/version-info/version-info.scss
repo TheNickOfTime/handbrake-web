@@ -2,7 +2,7 @@
 
 .version-info {
 	.current-version {
-		color: colors.$text-color-tertiary;
+		color: var(--text-tertiary);
 	}
 
 	.latest-version {
@@ -12,8 +12,8 @@
 		padding: 0.5rem 1rem;
 		text-decoration: none;
 		border-radius: 2rem;
-		border: 0.1rem solid colors.$handbrake-yellow;
-		color: colors.$handbrake-yellow;
+		border: 0.1rem solid var(--handbrake-yellow);
+		color: var(--handbrake-yellow);
 
 		.bi {
 			margin-right: 0.5rem;

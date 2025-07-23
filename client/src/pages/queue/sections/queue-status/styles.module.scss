@@ -13,15 +13,15 @@
 			gap: 1rem;
 
 			&.Stopped {
-				color: colors.$handbrake-red;
+				color: var(--handbrake-red);
 			}
 
 			&.Idle {
-				color: colors.$handbrake-yellow;
+				color: var(--handbrake-yellow);
 			}
 
 			&.Active {
-				color: colors.$handbrake-blue;
+				color: var(--handbrake-blue);
 			}
 
 			.info-text {

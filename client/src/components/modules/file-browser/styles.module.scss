@@ -5,7 +5,7 @@
 	overflow: hidden;
 
 	border-radius: 1rem;
-	border: 0.2rem solid colors.$background-primary;
+	border: 0.2rem solid var(--background-primary);
 
 	.file-browser-header {
 		padding: 0 1rem;
@@ -14,7 +14,7 @@
 		justify-content: space-between;
 		align-items: stretch;
 
-		background-color: colors.$background-primary;
+		background-color: var(--background-primary);
 
 		.current-path {
 			padding: 0.5rem 0;
@@ -30,10 +30,10 @@
 			border-radius: 0.5rem;
 			font-size: 2rem;
 			background-color: transparent;
-			color: colors.$text-color-primary;
+			color: var(--text-primary);
 
 			&:hover {
-				background-color: colors.$transparent-light-primary;
+				background-color: var(--transparent-primary);
 			}
 		}
 	}
@@ -53,9 +53,9 @@
 				display: block;
 
 				border: none;
-				border-bottom: 0.1rem solid colors.$background-primary;
+				border-bottom: 0.1rem solid var(--background-primary);
 				background-color: transparent;
-				color: colors.$text-color-primary;
+				color: var(--text-primary);
 
 				font-size: 1.5rem;
 				text-align: left;
@@ -74,11 +74,11 @@
 				}
 
 				&:disabled {
-					color: colors.$text-color-disabled;
+					color: var(--text-disabled);
 				}
 
 				&:hover {
-					background-color: colors.$transparent-light-primary;
+					background-color: var(--transparent-primary);
 					cursor: pointer;
 
 					&:disabled {
@@ -88,7 +88,7 @@
 
 				&:active,
 				&.selected {
-					background-color: colors.$transparent-light-secondary;
+					background-color: var(--transparent-secondary);
 				}
 			}
 		}
@@ -108,7 +108,7 @@
 					flex-grow: 1;
 					padding: 0.5rem 1rem;
 					border-radius: 0.75rem;
-					background-color: colors.$transparent-light-primary;
+					background-color: var(--transparent-primary);
 				}
 			}
 		}
@@ -132,10 +132,10 @@
 				gap: 1.5rem;
 
 				border-radius: 1rem;
-				background-color: colors.$background-tertiary;
+				background-color: var(--background-tertiary);
 
 				.already-exists {
-					color: colors.$handbrake-red;
+					color: var(--handbrake-red);
 				}
 
 				.text-input {

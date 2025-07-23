@@ -1,5 +1,3 @@
-@use '~styles/variables/colors';
-
 .progress-bar {
 	position: relative;
 	min-width: 10rem;
@@ -10,7 +8,7 @@
 
 	.progress-value {
 		height: 100%;
-		background-color: colors.$handbrake-blue;
+		background-color: var(--handbrake-blue);
 		display: block;
 	}
 

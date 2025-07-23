@@ -1,10 +1,8 @@
-@use '~styles/variables/colors';
-@use '~styles/modules/font';
 @use '~styles/variables/breakpoints';
 
 .preset-card {
 	padding: 1rem;
-	background-color: colors.$background-tertiary;
+	background-color: var(--background-tertiary);
 	border-radius: 1rem;
 
 	.preset-header {
@@ -28,7 +26,7 @@
 				width: 100%;
 				padding: 0.5rem 1rem;
 
-				font-family: font.$font-family-secondary;
+				font-family: var(--heading-font);
 				font-weight: bold;
 				font-size: 1.75rem;
 
@@ -36,11 +34,11 @@
 				border-radius: 4rem;
 
 				background-color: transparent;
-				color: colors.$text-color-secondary;
+				color: var(--text-secondary);
 
 				&:hover,
 				&:focus {
-					background-color: colors.$background-four;
+					background-color: var(--background-four);
 				}
 			}
 		}
@@ -61,17 +59,17 @@
 		margin-top: -1rem;
 		margin-bottom: 0.75rem;
 		padding: 0rem 2rem;
-		// border: 0.1rem solid colors.$handbrake-yellow;
+		// border: 0.1rem solid var(--handbrake-yellow);
 		// border-radius: 4rem;
 		text-align: center;
-		color: colors.$handbrake-yellow;
+		color: var(--handbrake-yellow);
 
 		.bi {
 			margin-right: 0.5rem;
 		}
 
 		a {
-			color: colors.$handbrake-yellow;
+			color: var(--handbrake-yellow);
 			font-weight: bold;
 		}
 	}
@@ -89,22 +87,22 @@
 					padding: 0.5rem 1rem;
 					border: none;
 					border-radius: 0;
-					font-family: font.$font-family-primary;
+					font-family: var(--body-font);
 					font-size: 1.25rem;
-					border-right: 0.2rem solid colors.$background-five;
+					border-right: 0.2rem solid var(--background-five);
 					border-radius: 1rem 1rem 0 0;
-					background-color: colors.$background-four;
-					color: colors.$text-color-tertiary;
+					background-color: var(--background-four);
+					color: var(--text-tertiary);
 					display: inline-flex;
 
 					&.current {
-						background-color: colors.$background-five;
-						color: colors.$text-color-secondary;
+						background-color: var(--background-five);
+						color: var(--text-secondary);
 					}
 
 					&:hover {
-						background-color: colors.$background-five;
-						border-right: 0.2rem solid colors.$background-six;
+						background-color: var(--background-five);
+						border-right: 0.2rem solid var(--background-six);
 					}
 
 					.tab-button-label {
@@ -118,14 +116,14 @@
 					flex-grow: 1;
 					button {
 						width: 100%;
-						border-top: 0.2rem solid colors.$background-five;
+						border-top: 0.2rem solid var(--background-five);
 					}
 				}
 			}
 		}
 
 		.current-tab {
-			background-color: colors.$background-five;
+			background-color: var(--background-five);
 			padding: 1rem;
 			border-radius: 1rem;
 			position: relative;
@@ -147,7 +145,7 @@
 					.preset-card-subsection-header {
 						font-size: 1.25rem;
 						font-weight: bold;
-						color: colors.$text-color-tertiary;
+						color: var(--text-tertiary);
 					}
 
 					.side-by-side {

@@ -1,7 +1,6 @@
-@use '~styles/variables/colors';
 @use '~styles/variables/breakpoints';
 
-@media (max-width: sizing.$medium-max-width) {
+@media (max-width: breakpoints.$breakpoint-large) {
 	.side-bar {
 		position: absolute !important;
 		z-index: 999;
@@ -21,14 +20,14 @@
 	.side-bar.expanded {
 		// background-color: red;
 		// min-width: 100% !important;
-		max-width: sizing.$sidebar-width !important;
+		max-width: var(--sidebar-width) !important;
 	}
 }
 
 .side-bar {
 	// position: relative;
 	height: 100%;
-	min-width: sizing.$sidebar-width;
+	min-width: var(--sidebar-width);
 	// max-width: $sidebar-width;
 	// max-width: 100px;
 
@@ -44,27 +43,27 @@
 
 	.side-bar-inner {
 		height: 100%;
-		min-width: sizing.$sidebar-width;
-		max-width: sizing.$sidebar-width;
+		min-width: var(--sidebar-width);
+		max-width: var(--sidebar-width);
 
 		display: flex;
 		flex-flow: column nowrap;
 
-		background-color: colors.$background-secondary;
+		background-color: var(--background-secondary);
 
 		.side-bar-header {
 			width: 100%;
 			text-align: center;
 			padding-top: 2.5rem;
 
-			border-bottom: 0.2rem solid colors.$background-primary;
+			border-bottom: 0.2rem solid var(--background-primary);
 
 			img {
 				width: 35%;
 			}
 
 			h2 {
-				color: colors.$text-color-secondary;
+				color: var(--text-secondary);
 			}
 		}
 
@@ -80,14 +79,14 @@
 				li {
 					// width: 100%;
 					font-size: 1.75rem;
-					border-bottom: 0.2rem solid colors.$background-primary;
+					border-bottom: 0.2rem solid var(--background-primary);
 
 					a {
 						width: 100%;
 						padding: 1rem 2rem;
 
 						display: block;
-						color: colors.$text-color-secondary;
+						color: var(--text-secondary);
 						text-decoration: none;
 
 						:global(.bi) {
@@ -96,13 +95,13 @@
 					}
 
 					a.active {
-						color: colors.$text-color-primary;
+						color: var(--text-primary);
 						font-weight: bold;
 						text-decoration: underline;
 					}
 
 					a:hover {
-						background-color: colors.$background-tertiary;
+						background-color: var(--background-tertiary);
 					}
 				}
 			}
@@ -110,7 +109,7 @@
 
 		.side-bar-application-version {
 			padding: 0.5rem;
-			border-top: 0.1rem solid colors.$background-four;
+			border-top: 0.1rem solid var(--background-four);
 			text-align: center;
 			font-size: 1.25rem;
 		}

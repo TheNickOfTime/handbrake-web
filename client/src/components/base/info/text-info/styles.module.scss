@@ -1,5 +1,3 @@
-@use '~styles/variables/colors';
-
 .text-info {
 	&.vertical > * {
 		display: block;
@@ -13,6 +11,6 @@
 
 	.text-info-label {
 		font-size: 1.25rem;
-		color: colors.$text-color-tertiary;
+		color: var(--text-tertiary);
 	}
 }

@@ -1,6 +1,3 @@
-@use '~styles/modules/font';
-@use '~styles/variables/colors';
-
 .controlled-button {
 	// margin: 1rem;
 	padding: 0.5rem 1rem;
@@ -12,16 +9,16 @@
 	gap: 1rem;
 	box-shadow: 0 0 1rem black;
 
-	background-color: colors.$handbrake-green;
-	color: colors.$text-color-primary;
-	text-shadow: 0 0 1rem colors.$background-primary;
+	background-color: var(--handbrake-green);
+	color: var(--text-primary);
+	text-shadow: 0 0 1rem var(--background-primary);
 
 	.button-icon {
 		font-size: 2.5rem;
 	}
 
 	.button-label {
-		font-family: font.$font-family-primary;
+		font-family: var(--body-font);
 		font-size: 2rem;
 	}
 
@@ -39,26 +36,26 @@
 	}
 
 	&[data-color='red'] {
-		background-color: colors.$handbrake-red;
+		background-color: var(--handbrake-red);
 	}
 
 	&[data-color='orange'] {
-		background-color: colors.$handbrake-orange;
+		background-color: var(--handbrake-green);
 	}
 
 	&[data-color='yellow'] {
-		background-color: colors.$handbrake-yellow;
+		background-color: var(--handbrake-yellow);
 	}
 
 	&[data-color='green'] {
-		background-color: colors.$handbrake-green;
+		background-color: var(--handbrake-green);
 	}
 
 	&[data-color='blue'] {
-		background-color: colors.$handbrake-blue;
+		background-color: var(--handbrake-blue);
 	}
 
 	&[data-color='magenta'] {
-		background-color: colors.$handbrake-magenta;
+		background-color: var(--handbrake-magenta);
 	}
 }

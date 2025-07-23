@@ -7,7 +7,7 @@
 				margin-bottom: 1rem;
 				padding: 0.5rem 1rem;
 				border-radius: 4rem;
-				color: colors.$text-color-tertiary;
+				color: var(--text-tertiary);
 
 				* {
 					margin-right: 0.5rem;
@@ -15,8 +15,8 @@
 				}
 
 				&:hover {
-					background-color: colors.$background-five;
-					// color: colors.$background-primary;
+					background-color: var(--background-five);
+					// color: var(--background-primary);
 				}
 
 				.bi-folder2,

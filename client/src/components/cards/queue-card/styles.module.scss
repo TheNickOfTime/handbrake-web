@@ -10,7 +10,7 @@
 	overflow: hidden;
 
 	border-radius: 1rem;
-	background-color: colors.$background-tertiary;
+	background-color: var(--background-tertiary);
 
 	h5 {
 		margin: 0;
@@ -23,7 +23,7 @@
 		align-items: center;
 		justify-content: center;
 		gap: 0.5rem;
-		background-color: colors.$transparent-light-primary;
+		background-color: var(--transparent-primary);
 		cursor: grab;
 
 		h3 {
@@ -31,7 +31,7 @@
 		}
 
 		i {
-			color: colors.$text-color-disabled;
+			color: var(--text-disabled);
 		}
 	}
 
@@ -74,7 +74,7 @@
 
 			.job-log-link {
 				a {
-					color: colors.$handbrake-blue;
+					color: var(--handbrake-blue);
 				}
 			}
 		}
@@ -90,15 +90,15 @@
 
 			border: none;
 			border-radius: 0;
-			background-color: colors.$transparent-light-secondary;
+			background-color: var(--transparent-secondary);
 
 			.bi {
-				color: colors.$text-color-secondary;
+				color: var(--text-secondary);
 				font-size: 1.5rem;
 			}
 
 			&:hover:not(:disabled) {
-				background-color: colors.$transparent-light-primary;
+				background-color: var(--transparent-primary);
 				cursor: pointer;
 			}
 
@@ -114,7 +114,7 @@
 			&:disabled {
 				background-color: colors.$transparent-light-tertiary;
 				.bi {
-					color: colors.$text-color-disabled;
+					color: var(--text-disabled);
 				}
 			}
 		}

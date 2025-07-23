@@ -9,11 +9,11 @@
 	gap: 1rem;
 
 	border-radius: 1rem;
-	background-color: colors.$background-secondary;
+	background-color: var(--background-secondary);
 
 	.heading {
 		margin: 0;
 		margin-bottom: 1rem;
-		color: colors.$text-color-tertiary;
+		color: var(--text-tertiary);
 	}
 }

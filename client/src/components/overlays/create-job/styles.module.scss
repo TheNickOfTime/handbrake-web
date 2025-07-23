@@ -21,17 +21,17 @@
 			flex-flow: column nowrap;
 			gap: 1rem;
 
-			border: 0.1rem solid colors.$text-color-primary;
+			border: 0.1rem solid var(--text-primary);
 			border-radius: 1rem;
 
 			legend {
-				font-family: font.$font-family-secondary;
+				font-family: var(--heading-font);
 				font-size: 2rem;
 			}
 		}
 
 		label {
-			color: colors.$text-color-secondary;
+			color: var(--text-secondary);
 		}
 	}
 
@@ -45,14 +45,14 @@
 
 				thead {
 					th {
-						border-bottom: 0.1rem solid colors.$text-color-secondary;
+						border-bottom: 0.1rem solid var(--text-secondary);
 					}
 				}
 
 				tbody {
 					tr {
 						&:hover {
-							background-color: colors.$transparent-light-secondary;
+							background-color: var(--transparent-secondary);
 						}
 
 						td {
@@ -67,7 +67,7 @@
 
 						.input-cell:hover,
 						.output-cell:hover {
-							background-color: colors.$transparent-light-secondary;
+							background-color: var(--transparent-secondary);
 						}
 					}
 				}
@@ -78,11 +78,11 @@
 			width: 100%;
 			border: none;
 			background-color: transparent;
-			color: colors.$text-color-secondary;
+			color: var(--text-secondary);
 			cursor: pointer;
 
 			&:hover {
-				background-color: colors.$transparent-light-primary;
+				background-color: var(--transparent-primary);
 			}
 		}
 	}
@@ -105,12 +105,12 @@
 
 	.filename-conflict {
 		text-align: center;
-		color: colors.$handbrake-yellow;
+		color: var(--handbrake-yellow);
 	}
 
 	.filename-overwrite {
 		text-align: center;
-		color: colors.$handbrake-red;
+		color: var(--handbrake-red);
 	}
 
 	.buttons-section {

@@ -1,7 +1,6 @@
-@use '~styles/variables/colors';
 @use '~styles/variables/breakpoints';
 
-@media (max-width: sizing.$medium-max-width) {
+@media (max-width: breakpoints.$breakpoint-large) {
 	#primary {
 		.dark-overlay {
 			display: inherit !important;
@@ -62,7 +61,7 @@
 			min-width: 100%;
 			max-width: 100%;
 
-			background-color: colors.$background-secondary;
+			background-color: var(--background-secondary);
 
 			.title {
 				min-width: 100%;
@@ -72,7 +71,7 @@
 				align-items: center;
 				gap: 1rem;
 				// position: relative;
-				color: colors.$text-color-primary;
+				color: var(--text-primary);
 				text-decoration: none;
 
 				img {
@@ -99,13 +98,13 @@
 				border: none;
 
 				i {
-					color: colors.$text-color-primary;
+					color: var(--text-primary);
 					font-size: 3.5rem;
 				}
 
 				&:hover {
 					cursor: pointer;
-					background-color: colors.$transparent-light-secondary;
+					background-color: var(--transparent-secondary);
 				}
 			}
 		}

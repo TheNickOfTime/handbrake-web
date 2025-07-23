@@ -28,7 +28,7 @@
 
 						&:hover {
 							background-color: white;
-							color: colors.$background-tertiary;
+							color: var(--background-tertiary);
 						}
 					}
 				}
@@ -44,7 +44,7 @@
 					padding: 0.5rem 1rem;
 
 					hr {
-						box-shadow: 0 0 1rem 0 colors.$text-color-primary;
+						box-shadow: 0 0 1rem 0 var(--text-primary);
 					}
 				}
 			}

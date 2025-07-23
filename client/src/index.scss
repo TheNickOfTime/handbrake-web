@@ -1,13 +1,8 @@
-// Local scope
-@use '~styles/variables/colors';
-@use '~styles/modules/font';
-@use '~styles/variables/breakpoints';
-
-// Global scope
-@use '~styles/modules/general';
-@use '~styles/modules/form';
-@use '~styles/modules/headings';
-@use '~styles/modules/table';
+@use '~styles/global/font';
+@use '~styles/global/scroll';
+@use '~styles/global/sizing';
+@use '~styles/global/text';
+@use '~styles/global/theme';
 
 @import '../node_modules/bootstrap-icons/font/bootstrap-icons.css';
 
@@ -29,14 +24,14 @@ body {
 
 	// Font --------------------------------------------------------------------
 	font-size: 1.5rem;
-	font-family: font.$font-family-primary;
+	font-family: var(--body-font);
 
 	// Color -------------------------------------------------------------------
-	background-color: colors.$background-primary;
-	color: colors.$text-color-primary;
+	background-color: var(--background-primary);
+	color: var(--text-primary);
 
 	#root {
-		min-width: sizing.$small-min-width;
+		min-width: var(--breakpoint-min);
 		height: 100vh;
 	}
 }

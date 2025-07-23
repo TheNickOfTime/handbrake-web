@@ -20,19 +20,19 @@
 		}
 
 		.info.total {
-			color: colors.$handbrake-blue;
+			color: var(--handbrake-blue);
 		}
 
 		.info.idle {
-			color: colors.$handbrake-yellow;
+			color: var(--handbrake-yellow);
 		}
 
 		.info.active {
-			color: colors.$handbrake-green;
+			color: var(--handbrake-green);
 		}
 
 		.info.jobs {
-			color: colors.$text-color-tertiary;
+			color: var(--text-tertiary);
 		}
 	}
 }
