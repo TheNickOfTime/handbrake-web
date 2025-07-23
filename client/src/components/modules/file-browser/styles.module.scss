@@ -1,4 +1,3 @@
-@use '~styles/variables/colors';
 @use '~styles/variables/breakpoints';
 
 .file-browser {
@@ -98,10 +97,13 @@
 
 			.selected-file {
 				display: flex;
+				flex-flow: row wrap;
 				align-items: center;
+				gap: 0.5rem;
 
 				.selected-file-label {
 					white-space: nowrap;
+					width: 100%;
 				}
 
 				.selected-file-path {
@@ -155,22 +157,7 @@
 	}
 }
 
-@media screen and (max-width: sizing.$small-max-width) {
-	.file-browser {
-		.file-browser-footer {
-			.selected-file {
-				flex-flow: row wrap;
-				gap: 0.5rem;
-
-				.selected-file-label {
-					width: 100%;
-				}
-			}
-		}
-	}
-}
-
-@media screen and (min-width: sizing.$medium-min-width) {
+@media screen and (min-width: breakpoints.$breakpoint-medium) {
 	.file-browser {
 		.file-browser-footer {
 			.selected-file {

@@ -9,5 +9,5 @@ html {
 	--breakpoint-max: #{breakpoints.$breakpoint-max};
 
 	--header-height: 5rem;
-	--sidebar-width: 30rem;
+	--sidebar-width: #{breakpoints.$sidebar-width};
 }

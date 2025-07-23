@@ -1,8 +1,7 @@
-@use '~styles/variables/colors';
 @use '~styles/variables/breakpoints';
 
 .section#settings-section {
-	@media screen and (min-width: calc(sizing.$large-min-width - sizing.$sidebar-width)) {
+	@media screen and (min-width: calc(breakpoints.$breakpoint-max - breakpoints.$sidebar-width)) {
 		.settings-sub-sections {
 			display: grid;
 			gap: 2rem;

@@ -111,7 +111,7 @@
 				}
 			}
 
-			@media screen and (max-width: sizing.$small-max-width) {
+			@media screen and (max-width: breakpoints.$breakpoint-medium) {
 				.tab-button-container {
 					flex-grow: 1;
 					button {
