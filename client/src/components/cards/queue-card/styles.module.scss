@@ -106,11 +106,11 @@
 			}
 
 			&:active {
-				background-color: colors.$transparent-light-tertiary;
+				background-color: var(--transparent-tertiary);
 			}
 
 			&:disabled {
-				background-color: colors.$transparent-light-tertiary;
+				background-color: var(--transparent-tertiary);
 				.bi {
 					color: var(--text-disabled);
 				}

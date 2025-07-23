@@ -124,7 +124,7 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			background-color: colors.$transparent-dark-primary;
+			background-color: var(--transparent-alt-primary);
 
 			.prompt-window {
 				padding: 2rem 1rem;
