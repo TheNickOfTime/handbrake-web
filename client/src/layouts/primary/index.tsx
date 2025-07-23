@@ -1,16 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { Link, Outlet } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import SideBar from '~components/modules/side-bar';
-import NoConnection from '~pages/_default/no-connection';
+import SideBar from '~components/root/side-bar';
 import { ConfigType } from '~types/config';
 import { HandbrakePresetCategoryType } from '~types/preset';
 import { QueueStatus, QueueType } from '~types/queue';
 import { ConnectionIDsType } from '~types/socket';
 import { WatcherDefinitionObjectType } from '~types/watcher';
-import { PrimaryContext } from './context';
 import './styles.scss';
 
 export default function PrimaryLayout() {
@@ -129,14 +126,14 @@ export default function PrimaryLayout() {
 	});
 
 	return (
-		<div id='primary'>
+		<Fragment>
 			<SideBar
 				showSidebar={showSidebar}
 				setShowSidebar={setShowSidebar}
 				socket={socket}
 				config={config}
 			/>
-			<div className={`dark-overlay ${showSidebar ? 'visible' : 'hidden'}`} />
+			{/* <div className={`dark-overlay ${showSidebar ? 'visible' : 'hidden'}`} />
 			<div className='primary-section'>
 				<div className='mobile-toolbar'>
 					<Link className='title' to='/'>
@@ -168,7 +165,7 @@ export default function PrimaryLayout() {
 						<NoConnection url={serverURL} />
 					)}
 				</div>
-			</div>
-		</div>
+			</div> */}
+		</Fragment>
 	);
 }

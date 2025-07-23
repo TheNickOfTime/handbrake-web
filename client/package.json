@@ -20,6 +20,7 @@
     "@tanstack/react-router-devtools": "^1.129.2",
     "bootstrap-icons": "^1.13.1",
     "mime": "^4.0.7",
+    "modern-normalize": "^3.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "socket.io-client": "^4.8.1"

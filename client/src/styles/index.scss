@@ -1,37 +1,24 @@
+@use '~styles/global/normalize';
+
 @use '~styles/global/font';
 @use '~styles/global/scroll';
 @use '~styles/global/sizing';
 @use '~styles/global/text';
 @use '~styles/global/theme';
 
-@import '../node_modules/bootstrap-icons/font/bootstrap-icons.css';
-
-:root {
-	font-size: 10px;
-}
-
-* {
-	box-sizing: border-box;
-}
+@import 'bootstrap-icons/font/bootstrap-icons.css';
 
 body {
+	min-width: var(--breakpoint-min);
 	min-height: 100vh;
 	max-height: 100vh;
-	// overflow: clip;
-
-	margin: 0;
-	padding: 0;
-
-	// Font --------------------------------------------------------------------
-	font-size: 1.5rem;
-	font-family: var(--body-font);
 
 	// Color -------------------------------------------------------------------
 	background-color: var(--background-primary);
 	color: var(--text-primary);
 
 	#root {
-		min-width: var(--breakpoint-min);
+		// width: 100%;
 		height: 100vh;
 	}
 }

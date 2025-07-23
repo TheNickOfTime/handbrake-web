@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { GithubReleaseResponseType } from 'types/version';
-import './version-info.scss';
-import { ConfigType } from 'types/config';
+import { ConfigType } from '~types/config';
+import { GithubReleaseResponseType } from '~types/version';
+import styles from './styles.module.scss';
 
 type Params = {
 	socket: Socket;
@@ -42,16 +42,20 @@ export default function VersionInfo({ socket, config }: Params) {
 	}, [socket.connected]);
 
 	return (
-		<div className='version-info'>
+		<div className={styles['version-info']}>
 			{currentVersion ? (
 				<a className='current-version' href={currentVersion.html_url} target='_blank'>
 					{currentVersion.name}
 				</a>
 			) : (
-				<span className='current-version'>v{APP_VERSION}</span>
+				<span className={styles['current-version']}>v{APP_VERSION}</span>
 			)}
 			{latestVersion && (
-				<a className='latest-version' href={latestVersion.html_url} target='_blank'>
+				<a
+					className={styles['latest-version']}
+					href={latestVersion.html_url}
+					target='_blank'
+				>
 					<i className='bi bi-exclamation-circle-fill' />
 					<span className='version'>{latestVersion.name}</span>
 					<span> Update Available</span>

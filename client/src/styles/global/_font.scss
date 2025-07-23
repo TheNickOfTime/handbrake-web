@@ -1,10 +1,9 @@
 @use '@fontsource-variable/inter';
 @use '@fontsource-variable/noto-sans';
 
-$font-family-primary: 'Noto Sans Variable', sans-serif;
-$font-family-secondary: 'Inter Variable', sans-serif;
-
 html {
-	--body-font: 'Noto Sans Variable', sans-serif;
-	--heading-font: 'Inter Variable', sans-serif;
+	--body-font: 'Noto Sans Variable', system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+		'Apple Color Emoji', 'Segoe UI Emoji';
+	--heading-font: 'Inter Variable', system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+		'Apple Color Emoji', 'Segoe UI Emoji';
 }
