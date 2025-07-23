@@ -1,5 +1,5 @@
-@use '~styles/modules/colors';
-@use '~styles/modules/sizing';
+@use '~styles/variables/colors';
+@use '~styles/variables/breakpoints';
 
 @media (max-width: sizing.$medium-max-width) {
 	#primary {

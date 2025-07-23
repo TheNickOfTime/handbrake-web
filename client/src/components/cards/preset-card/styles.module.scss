@@ -1,6 +1,6 @@
-@use '~styles/modules/colors';
+@use '~styles/variables/colors';
 @use '~styles/modules/font';
-@use '~styles/modules/sizing';
+@use '~styles/variables/breakpoints';
 
 .preset-card {
 	padding: 1rem;

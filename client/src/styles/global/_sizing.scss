@@ -1,0 +1,13 @@
+@use '../variables/sizing';
+
+html {
+	--breakpoint-min: #{};
+	--breakpoint-small: #{};
+	--breakpoint-medium: #{};
+	--breakpoint-large: #{};
+	--breakpoint-xlarge: #{};
+	--breakpoint-max: #{};
+
+	--header-height: 5rem;
+	--sidebar-width: 30rem;
+}

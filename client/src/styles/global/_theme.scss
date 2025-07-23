@@ -1,0 +1,47 @@
+@use '../variables/colors';
+
+html {
+	--handbrake-red: #{colors.$handbrake-red};
+	--handbrake-orange: #{colors.$handbrake-orange};
+	--handbrake-yellow: #{colors.$handbrake-yellow};
+	--handbrake-green: #{colors.$handbrake-green};
+	--handbrake-blue: #{colors.$handbrake-blue};
+	--handbrake-magenta: #{colors.$handbrake-magenta};
+
+	--background-primary-dark: #{colors.$background-primary};
+	--background-secondary-dark: #{colors.$background-secondary};
+	--background-tertiary-dark: #{colors.$background-tertiary};
+	--background-four-dark: #{colors.$background-four};
+	--background-five-dark: #{colors.$background-five};
+	--background-six-dark: #{colors.$background-six};
+
+	--text-primary-light: #{colors.$text-color-primary};
+	--text-secondary-light: #{colors.$text-color-secondary};
+	--text-tertiary-light: #{colors.$text-color-tertiary};
+
+	--transparent-primary-dark: #{colors.$transparent-light-primary};
+	--transparent-secondary-dark: #{colors.$transparent-light-secondary};
+	--transparent-tertiary-dark: #{colors.$transparent-light-tertiary};
+
+	--transparent-alt-primary-dark: #{colors.$transparent-dark-primary};
+	--transparent-alt-secondary-dark: #{colors.$transparent-dark-secondary};
+}
+
+html[data-theme='dark'] {
+	--background-primary: var(--background-primary-dark);
+	--background-secondary: var(--background-secondary-dark);
+	--background-tertiary: var(--background-tertiary-dark);
+	--background-four: var(--background-four-dark);
+	--background-five: var(--background-five-dark);
+	--background-six: var(--background-six-dark);
+
+	--text-primary: var(--text-primary-light);
+	--text-secondary: var(--text-secondary-light);
+	--text-tertiary: var(--text-tertiary-light);
+
+	--transparent-primary: var(--transparent-primary-dark);
+	--transparent-secondary: var(--transparent-secondary-dark);
+	--transparent-tertiary: var(--transparent-tertiary-dark);
+	--transparent-alt-primary: var(--transparent-alt-primary-dark);
+	--transparent-alt-secondary: var(--transparent-alt-secondary-dark);
+}

@@ -14,8 +14,8 @@
     "url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
   },
   "dependencies": {
-    "@fontsource/inter": "^5.2.6",
-    "@fontsource/noto-sans": "^5.2.7",
+    "@fontsource-variable/inter": "^5.2.6",
+    "@fontsource-variable/noto-sans": "^5.2.7",
     "@tanstack/react-router": "^1.129.2",
     "@tanstack/react-router-devtools": "^1.129.2",
     "bootstrap-icons": "^1.13.1",
