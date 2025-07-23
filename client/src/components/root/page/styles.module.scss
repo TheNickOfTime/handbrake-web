@@ -1,0 +1,21 @@
+@use '~styles/modules/colors';
+
+.page {
+	position: relative;
+	height: 100%;
+
+	flex-grow: 1;
+
+	overflow-x: hidden;
+	overflow-y: auto;
+
+	padding: 2rem;
+
+	.heading {
+		margin: 2rem 0;
+	}
+
+	.divider {
+		margin-bottom: 3rem;
+	}
+}

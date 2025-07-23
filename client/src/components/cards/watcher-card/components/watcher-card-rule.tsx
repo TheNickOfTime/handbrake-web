@@ -116,7 +116,7 @@ export default function WatcherCardRule({
 				<button
 					className='remove-button'
 					onClick={() => handleRemoveRule(id)}
-					title='Remove Watcher Rule'
+					heading='Remove Watcher Rule'
 				>
 					<i className='bi bi-trash-fill' />
 				</button>

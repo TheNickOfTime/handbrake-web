@@ -1,0 +1,64 @@
+@use '~styles/modules/font';
+@use '~styles/modules/colors';
+
+.controlled-button {
+	// margin: 1rem;
+	padding: 0.5rem 1rem;
+	border: none;
+	border-radius: 0.75rem;
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	gap: 1rem;
+	box-shadow: 0 0 1rem black;
+
+	background-color: colors.$handbrake-green;
+	color: colors.$text-color-primary;
+	text-shadow: 0 0 1rem colors.$background-primary;
+
+	.button-icon {
+		font-size: 2.5rem;
+	}
+
+	.button-label {
+		font-family: font.$font-family-primary;
+		font-size: 2rem;
+	}
+
+	&:hover:not(:disabled) {
+		opacity: 80%;
+		cursor: pointer;
+	}
+
+	&:disabled {
+		opacity: 50%;
+	}
+
+	&:hover:disabled {
+		cursor: not-allowed;
+	}
+
+	&[data-color='red'] {
+		background-color: colors.$handbrake-red;
+	}
+
+	&[data-color='orange'] {
+		background-color: colors.$handbrake-orange;
+	}
+
+	&[data-color='yellow'] {
+		background-color: colors.$handbrake-yellow;
+	}
+
+	&[data-color='green'] {
+		background-color: colors.$handbrake-green;
+	}
+
+	&[data-color='blue'] {
+		background-color: colors.$handbrake-blue;
+	}
+
+	&[data-color='magenta'] {
+		background-color: colors.$handbrake-magenta;
+	}
+}

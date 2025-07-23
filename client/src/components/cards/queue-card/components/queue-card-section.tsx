@@ -1,5 +1,5 @@
-import BadgeInfo from 'components/base/info/badge-info/badge-info';
 import { PropsWithChildren } from 'react';
+import BadgeInfo from '~components/base/info/badge-info';
 
 type Params = PropsWithChildren & {
 	label: string;

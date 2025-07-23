@@ -1,0 +1,19 @@
+@use '~styles/modules/colors';
+
+.section {
+	padding: 1rem;
+	margin-bottom: 2rem;
+
+	display: flex;
+	flex-flow: column nowrap;
+	gap: 1rem;
+
+	border-radius: 1rem;
+	background-color: colors.$background-secondary;
+
+	.heading {
+		margin: 0;
+		margin-bottom: 1rem;
+		color: colors.$text-color-tertiary;
+	}
+}
