@@ -1,7 +1,7 @@
-import ProgressBar from 'components/base/progress/progress-bar';
-import SubSection from 'components/section/sub-section';
-import { WorkerInfo } from '../workers';
-import './workers-status.scss';
+import ProgressBar from '~components/base/progress';
+import Section from '~components/root/section';
+import { WorkerInfo } from '../..';
+import styles from './styles.module.scss';
 
 type Params = {
 	workerInfo: WorkerInfo;
@@ -9,9 +9,9 @@ type Params = {
 
 export default function WorkersStatus({ workerInfo }: Params) {
 	return (
-		<SubSection title='Status' id='status'>
+		<Section heading='Status' className={styles['status']}>
 			<div className='table-scroll'>
-				<table className='workers-table'>
+				<table className={styles['workers-table']}>
 					<thead>
 						<tr>
 							<th>ID</th>
@@ -23,7 +23,7 @@ export default function WorkersStatus({ workerInfo }: Params) {
 					<tbody>
 						{Object.keys(workerInfo).map((worker) => (
 							<tr key={worker} id={worker}>
-								<td className='id'>{worker}</td>
+								<td className={styles['id']}>{worker}</td>
 								<td
 									className={
 										workerInfo[worker].status == 'Idle'
@@ -34,8 +34,8 @@ export default function WorkersStatus({ workerInfo }: Params) {
 									<i className='bi bi-circle-fill' />
 									<span>{workerInfo[worker].status}</span>
 								</td>
-								<td className='job'>{workerInfo[worker].job}</td>
-								<td className='progress'>
+								<td className={styles['job']}>{workerInfo[worker].job}</td>
+								<td className={styles['progress']}>
 									{workerInfo[worker].job != 'N/A' ? (
 										<ProgressBar
 											percentage={parseFloat(workerInfo[worker].progress)}
@@ -49,6 +49,6 @@ export default function WorkersStatus({ workerInfo }: Params) {
 					</tbody>
 				</table>
 			</div>
-		</SubSection>
+		</Section>
 	);
 }

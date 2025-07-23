@@ -1,23 +1,21 @@
-import ButtonInput from 'components/base/inputs/button/button-input';
-import PathInput from 'components/base/inputs/path/path-input';
-import SelectInput from 'components/base/inputs/select/select-input';
-import SectionOverlay from 'components/section/section-overlay';
-import { FirstLetterUpperCase } from 'funcs/string.funcs';
-import { PrimaryOutletContextType } from 'pages/primary/context';
-import { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import { DirectoryItemType } from 'types/directory';
-import { FileBrowserMode } from 'types/file-browser';
-import { WatcherDefinitionType } from 'types/watcher';
-import './register-watcher.scss';
+import { useContext, useState } from 'react';
+import ButtonInput from '~components/base/inputs/button';
+import PathInput from '~components/base/inputs/path';
+import SelectInput from '~components/base/inputs/select';
+import Overlay from '~components/root/overlay';
+import { FirstLetterUpperCase } from '~funcs/string.funcs';
+import { PrimaryContext } from '~layouts/primary/context';
+import { DirectoryItemType } from '~types/directory';
+import { FileBrowserMode } from '~types/file-browser';
+import { WatcherDefinitionType } from '~types/watcher';
+import styles from './styles.module.scss';
 
 type Params = {
 	onClose: () => void;
 };
 
 export default function RegisterWatcher({ onClose }: Params) {
-	const { config, presets, defaultPresets, socket } =
-		useOutletContext<PrimaryOutletContextType>();
+	const { config, presets, defaultPresets, socket } = useContext(PrimaryContext)!;
 
 	const [watchPath, setWatchPath] = useState('');
 	const [outputPath, setOutputPath] = useState('');
@@ -55,10 +53,10 @@ export default function RegisterWatcher({ onClose }: Params) {
 	};
 
 	return (
-		<SectionOverlay id='register-watcher'>
+		<Overlay className={styles['register-watcher']}>
 			<h1>Register Watcher</h1>
-			<div className='register-watcher-fields'>
-				<div className='fields-section'>
+			<div className={styles['register-watcher-fields']}>
+				<div className={styles['fields-section']}>
 					<PathInput
 						id='watcher-watch-path'
 						label='Directory to Watch:'
@@ -163,6 +161,6 @@ export default function RegisterWatcher({ onClose }: Params) {
 					/>
 				</div>
 			</div>
-		</SectionOverlay>
+		</Overlay>
 	);
 }

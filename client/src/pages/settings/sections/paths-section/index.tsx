@@ -1,8 +1,9 @@
-import PathInput from 'components/base/inputs/path/path-input';
-import SubSection from 'components/section/sub-section';
 import { useState } from 'react';
-import { ConfigPathsType, ConfigType } from 'types/config';
-import { FileBrowserMode } from 'types/file-browser';
+import PathInput from '~components/base/inputs/path';
+import Section from '~components/root/section';
+import { ConfigPathsType, ConfigType } from '~types/config';
+import { FileBrowserMode } from '~types/file-browser';
+import styles from './styles.module.scss';
 
 type Params = {
 	config: ConfigType;
@@ -48,7 +49,7 @@ export default function SettingsPaths({ config, setConfig, setValid }: Params) {
 	};
 
 	return (
-		<SubSection title='Locations' id='paths'>
+		<Section heading='Locations' className={styles['paths']}>
 			<PathInput
 				id='media-path-selection'
 				label='Root Media Path'
@@ -105,6 +106,6 @@ export default function SettingsPaths({ config, setConfig, setValid }: Params) {
 					});
 				}}
 			/>
-		</SubSection>
+		</Section>
 	);
 }

@@ -1,9 +1,8 @@
-import Section from 'components/section/section';
-import { PrimaryOutletContextType } from 'pages/primary/context';
-import { useOutletContext } from 'react-router-dom';
-import WorkersStatus from './sub-sections/workers-status';
-import WorkersSummary from './sub-sections/workers-summary';
-import './workers.scss';
+import { useContext } from 'react';
+import Page from '~components/root/page';
+import { PrimaryContext } from '~layouts/primary/context';
+import WorkersStatus from './sections/status-section';
+import WorkersSummary from './sections/summary-section';
 
 export type WorkerInfo = {
 	[index: string]: {
@@ -14,7 +13,7 @@ export type WorkerInfo = {
 };
 
 export default function WorkersSection() {
-	const { connections, queue } = useOutletContext<PrimaryOutletContextType>();
+	const { connections, queue } = useContext(PrimaryContext)!;
 
 	const workerInfo = connections.workers.reduce((prev: WorkerInfo, cur) => {
 		const job = Object.values(queue).find((job) => job.status.worker_id == cur.workerID);
@@ -31,9 +30,9 @@ export default function WorkersSection() {
 	}, {});
 
 	return (
-		<Section title='Workers' id='workers'>
+		<Page heading='Workers' id='workers'>
 			<WorkersSummary workerInfo={workerInfo} queue={queue} />
 			<WorkersStatus workerInfo={workerInfo} />
-		</Section>
+		</Page>
 	);
 }

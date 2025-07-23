@@ -1,6 +1,7 @@
-import ToggleInput from 'components/base/inputs/toggle/toggle-input';
-import SubSection from 'components/section/sub-section';
-import { ConfigPresetsType, ConfigType } from 'types/config';
+import ToggleInput from '~components/base/inputs/toggle';
+import Section from '~components/root/section';
+import { ConfigPresetsType, ConfigType } from '~types/config';
+import styles from './styles.module.scss';
 
 type Params = {
 	config: ConfigType;
@@ -16,7 +17,7 @@ export default function SettingsPreset({ config, setConfig }: Params) {
 	};
 
 	return (
-		<SubSection title='Presets' id='presets'>
+		<Section heading='Presets' className={styles['presets']}>
 			<ToggleInput
 				id='default-preset-toggle'
 				label='Show Default Presets'
@@ -30,6 +31,6 @@ export default function SettingsPreset({ config, setConfig }: Params) {
 				onChange={(value) => updatePresetsConfigProperty('allow-preset-creator', value)}
 				disabled
 			/>
-		</SubSection>
+		</Section>
 	);
 }

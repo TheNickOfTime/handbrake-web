@@ -1,6 +1,7 @@
-import NumberInput from 'components/base/inputs/number/number-input';
-import SubSection from 'components/section/sub-section';
-import { ConfigType, ConfigVersionType } from 'types/config';
+import NumberInput from '~components/base/inputs/number';
+import Section from '~components/root/section';
+import { ConfigType, ConfigVersionType } from '~types/config';
+import styles from './styles.module.scss';
 
 type Params = {
 	config: ConfigType;
@@ -16,13 +17,13 @@ export default function SettingsApplication({ config, setConfig }: Params) {
 	};
 
 	return (
-		<SubSection title='Application' id='application'>
+		<Section heading='Application' className={styles['application']}>
 			<NumberInput
 				id='settings-version-check-interval'
 				label='Update Check Interval (hours)'
 				value={config.version['check-interval']}
 				onChange={(value) => updateVersionConfigProperty('check-interval', value)}
 			/>
-		</SubSection>
+		</Section>
 	);
 }

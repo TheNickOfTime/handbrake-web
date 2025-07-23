@@ -4,7 +4,7 @@ import { Link, Outlet } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import SideBar from '~components/modules/side-bar';
-import NoConnection from '~pages/no-connection/no-connection';
+import NoConnection from '~pages/_default/no-connection';
 import { ConfigType } from '~types/config';
 import { HandbrakePresetCategoryType } from '~types/preset';
 import { QueueStatus, QueueType } from '~types/queue';

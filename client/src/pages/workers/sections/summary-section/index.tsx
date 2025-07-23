@@ -1,9 +1,8 @@
-import { QueueType } from 'types/queue';
-import { TranscodeStage } from 'types/transcode';
-import SubSection from 'components/section/sub-section';
-import { WorkerInfo } from '../workers';
-
-import './workers-summary.scss';
+import Section from '~components/root/section';
+import { QueueType } from '~types/queue';
+import { TranscodeStage } from '~types/transcode';
+import { WorkerInfo } from '../..';
+import styles from './styles.module.scss';
 
 type Params = {
 	workerInfo: WorkerInfo;
@@ -12,13 +11,13 @@ type Params = {
 
 export default function WorkersSummary({ workerInfo, queue }: Params) {
 	return (
-		<SubSection title='Summary' id='summary'>
-			<div className='summary-info'>
-				<div className='info total'>
+		<Section heading='Summary' className={'summary'}>
+			<div className={styles['summary-info']}>
+				<div className={`${styles['info']} ${styles['total']}`}>
 					<span>Total Workers: </span>
 					<span>{Object.keys(workerInfo).length}</span>
 				</div>
-				<div className='info idle'>
+				<div className={`${styles['info']} ${styles['idle']}`}>
 					<span>Idle Workers: </span>
 					<span>
 						{
@@ -27,7 +26,7 @@ export default function WorkersSummary({ workerInfo, queue }: Params) {
 						}
 					</span>
 				</div>
-				<div className='info active'>
+				<div className={`${styles['info']} ${styles['active']}`}>
 					<span>Active Workers: </span>
 					<span>
 						{
@@ -36,7 +35,7 @@ export default function WorkersSummary({ workerInfo, queue }: Params) {
 						}
 					</span>
 				</div>
-				<div className='info jobs'>
+				<div className={`${styles['info']} ${styles['jobs']}`}>
 					<span>Available Jobs: </span>
 					<span>
 						{
@@ -49,6 +48,6 @@ export default function WorkersSummary({ workerInfo, queue }: Params) {
 					</span>
 				</div>
 			</div>
-		</SubSection>
+		</Section>
 	);
 }

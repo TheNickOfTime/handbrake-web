@@ -9,7 +9,7 @@ import {
 	WatcherRuleMediaInfoMethods,
 	WatcherRuleNumberComparisonMethods,
 	WatcherRuleStringComparisonMethods,
-} from 'types/watcher';
+} from '~types/watcher';
 
 type Params = {
 	id: number;

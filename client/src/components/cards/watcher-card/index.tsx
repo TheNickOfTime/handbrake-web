@@ -1,3 +1,5 @@
+import TextInfo from '~components/base/info/text-info';
+import ButtonInput from '~components/base/inputs/button';
 import {
 	WatcherDefinitionWithRulesType,
 	WatcherRuleBaseMethods,
@@ -5,11 +7,9 @@ import {
 	WatcherRuleFileInfoMethods,
 	WatcherRuleMaskMethods,
 	WatcherRuleStringComparisonMethods,
-} from 'types/watcher';
-import ButtonInput from 'components/base/inputs/button/button-input';
-import TextInfo from 'components/base/info/text-info/text-info';
-import './watcher-card.scss';
+} from '~types/watcher';
 import WatcherCardRule from './components/watcher-card-rule';
+import styles from './styles.module.scss';
 
 type Params = {
 	watcherID: number;
@@ -42,13 +42,13 @@ export default function WatcherCard({
 	console.log(watcher.rules);
 
 	return (
-		<div className='watcher-card'>
-			<div className='watcher-card-number'>
+		<div className={`watcher-card ${styles['watcher-card']}`}>
+			<div className={styles['watcher-card-number']}>
 				<h3>{index + 1}</h3>
 			</div>
-			<div className='watcher-card-body'>
-				<div className='watcher-card-info'>
-					<div className='watcher-card-info-header'>
+			<div className={styles['watcher-card-body']}>
+				<div className={styles['watcher-card-info']}>
+					<div className={styles['watcher-card-info-header']}>
 						<h5>Info</h5>
 						<ButtonInput
 							icon='bi-trash-fill'
@@ -57,14 +57,14 @@ export default function WatcherCard({
 							onClick={() => handleRemoveWatcher(watcherID)}
 						/>
 					</div>
-					<div className='watcher-card-info-children'>
+					<div className={styles['watcher-card-info-children']}>
 						<TextInfo label='Watching Path'>{watcher.watch_path || 'N/A'}</TextInfo>
 						<TextInfo label='Output Path'>{watcher.output_path || 'N/A'}</TextInfo>
 						<TextInfo label='Preset'>{watcher.preset_id}</TextInfo>
 					</div>
 				</div>
-				<div className='watcher-card-rules'>
-					<div className='watcher-card-rules-header'>
+				<div className={styles['watcher-card-rules']}>
+					<div className={styles['watcher-card-rules-header']}>
 						<h5>Rules</h5>
 						<ButtonInput
 							icon='bi-plus-lg'
@@ -73,9 +73,12 @@ export default function WatcherCard({
 							onClick={() => handleAddRule(watcherID, defaultRuleDefinition)}
 						/>
 					</div>
-					<div className='watcher-card-rule-cards'>
+					<div className={styles['watcher-card-rule-cards']}>
 						{Object.keys(watcher.rules).length == 0 && (
-							<div className='watcher-card-rule' style={{ textAlign: 'center' }}>
+							<div
+								className={styles['watcher-card-rule']}
+								style={{ textAlign: 'center' }}
+							>
 								N/A
 							</div>
 						)}

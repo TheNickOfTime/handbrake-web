@@ -1,16 +1,15 @@
-import ButtonInput from 'components/base/inputs/button/button-input';
-import WatcherCard from 'components/cards/watcher-card/watcher-card';
-import RegisterWatcher from 'components/overlays/register-watcher/register-watcher';
-import Section from 'components/section/section';
-import SubSection from 'components/section/sub-section';
-import { PrimaryOutletContextType } from 'pages/primary/context';
-import { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import { WatcherRuleDefinitionType } from 'types/watcher';
-import './watchers.scss';
+import { useContext, useState } from 'react';
+import ButtonInput from '~components/base/inputs/button';
+import WatcherCard from '~components/cards/watcher-card';
+import RegisterWatcher from '~components/overlays/register-watcher';
+import Page from '~components/root/page';
+import Section from '~components/root/section';
+import { PrimaryContext } from '~layouts/primary/context';
+import { WatcherRuleDefinitionType } from '~types/watcher';
+import styles from './styles.module.scss';
 
 export default function WatchersSection() {
-	const { socket, watchers } = useOutletContext<PrimaryOutletContextType>();
+	const { socket, watchers } = useContext(PrimaryContext)!;
 
 	const [showRegisterOverlay, setShowRegisterOverlay] = useState(false);
 
@@ -37,18 +36,18 @@ export default function WatchersSection() {
 	const watcherIDs = Object.keys(watchers).map((id) => parseInt(id));
 
 	return (
-		<Section title='Watchers' id='watchers'>
-			<SubSection id='watchers-status'>
-				<div className='watcher-count'>Watchers: {watcherIDs.length}</div>
+		<Page className={styles['watchers']} heading='Watchers'>
+			<Section className={styles['status']}>
+				<div className={styles['count']}>Watchers: {watcherIDs.length}</div>
 				<ButtonInput
 					label='Register New Watcher'
 					icon='bi-plus-lg'
 					color='blue'
 					onClick={handleNewWatcher}
 				/>
-			</SubSection>
+			</Section>
 			{watcherIDs.length > 0 && (
-				<SubSection title='Registered Watchers' id='registered-watchers'>
+				<Section className={styles['registered-watchers']} heading='Registered Watchers'>
 					{watcherIDs.map((watcherID, index) => (
 						<WatcherCard
 							watcherID={watcherID}
@@ -61,11 +60,11 @@ export default function WatchersSection() {
 							key={`watcher-card-${watcherID}`}
 						/>
 					))}
-				</SubSection>
+				</Section>
 			)}
 			{showRegisterOverlay && (
 				<RegisterWatcher onClose={() => setShowRegisterOverlay(false)} />
 			)}
-		</Section>
+		</Page>
 	);
 }
