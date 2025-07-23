@@ -16,6 +16,7 @@
 
 	@media (min-width: breakpoints.$breakpoint-large) {
 		margin-left: var(--sidebar-width);
+		margin-top: unset;
 		padding: 2rem;
 	}
 }
