@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 routeTree.gen.ts
+.tanstack
 
 # Editor directories and files
 .vscode/*
