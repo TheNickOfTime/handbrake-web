@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import SubSection from '~components/section/sub-section';
+import Section from '~components/root/section';
 import { WatcherDefinitionObjectType } from '~types/watcher';
 import styles from './styles.module.scss';
 
@@ -9,7 +9,7 @@ type Params = {
 
 export default function DashboardWatchers({ watchers }: Params) {
 	return (
-		<SubSection id={styles['watchers']}>
+		<Section id={styles['watchers']}>
 			<Link to='/watchers'>
 				<h2>
 					Watchers <i className='bi bi-arrow-right-short' />
@@ -45,6 +45,6 @@ export default function DashboardWatchers({ watchers }: Params) {
 					</tbody>
 				</table>
 			</div>
-		</SubSection>
+		</Section>
 	);
 }

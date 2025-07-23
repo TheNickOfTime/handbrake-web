@@ -1,7 +1,7 @@
-import PresetCard from 'components/cards/preset-card/preset-card';
-import { FirstLetterUpperCase } from 'funcs/string.funcs';
 import { useState } from 'react';
-import { HandbrakePresetListType } from 'types/preset';
+import PresetCard from '~components/cards/preset-card';
+import { FirstLetterUpperCase } from '~funcs/string.funcs';
+import { HandbrakePresetListType } from '~types/preset';
 
 type Params = {
 	category: string;

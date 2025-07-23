@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import SubSection from '~components/section/sub-section';
+import Section from '~components/root/section';
 import { QueueType } from '~types/queue';
 import { WorkerIDType } from '~types/socket';
 import styles from './styles.module.scss';
@@ -11,7 +11,7 @@ type Params = {
 
 export default function DashboardWorkers({ queue, workers }: Params) {
 	return (
-		<SubSection id={styles['workers']}>
+		<Section id={styles['workers']}>
 			<Link to='/workers'>
 				<h2>
 					Workers <i className='bi bi-arrow-right-short' />
@@ -51,6 +51,6 @@ export default function DashboardWorkers({ queue, workers }: Params) {
 					</tbody>
 				</table>
 			</div>
-		</SubSection>
+		</Section>
 	);
 }

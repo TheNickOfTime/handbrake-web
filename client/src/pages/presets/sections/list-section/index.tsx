@@ -1,7 +1,7 @@
-import { HandbrakePresetCategoryType } from 'types/preset';
-import { getPresetCount } from 'funcs/preset.funcs';
-import SubSection from 'components/section/sub-section';
-import PresetListCategory from './presets-list-category';
+import Section from '~components/root/section';
+import { getPresetCount } from '~funcs/preset.funcs';
+import { HandbrakePresetCategoryType } from '~types/preset';
+import PresetListCategory from './components/category';
 
 type Params = {
 	label: string;
@@ -23,7 +23,7 @@ export default function PresetsList({
 	if (getPresetCount(presets) == 0) return;
 
 	return (
-		<SubSection title={label} id='list'>
+		<Section heading={label} id='list'>
 			{Object.keys(presets)
 				.sort((a, b) =>
 					a.toLowerCase() > b.toLowerCase() || a == 'uncategorized' ? 1 : -1
@@ -40,6 +40,6 @@ export default function PresetsList({
 						key={`preset-list-category-${categoryName}`}
 					/>
 				))}
-		</SubSection>
+		</Section>
 	);
 }

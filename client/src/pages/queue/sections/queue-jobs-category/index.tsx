@@ -1,10 +1,9 @@
-import QueueCard from 'components/cards/queue-card/queue-card';
-import { statusSorting } from 'dict/queue.dict';
-import { PrimaryOutletContextType } from 'pages/primary/context';
-import { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import { QueueType } from 'types/queue';
-import QueueJobPreview from './queue-job-preview';
+import { useContext, useState } from 'react';
+import QueueCard from '~components/cards/queue-card';
+import { statusSorting } from '~dict/queue.dict';
+import { PrimaryContext } from '~layouts/primary/context';
+import { QueueType } from '~types/queue';
+import QueueJobPreview from '../queue-job-preview';
 
 type Params = {
 	queue: QueueType;
@@ -29,7 +28,7 @@ export default function QueueJobsCategory({
 	handleResetJob,
 	handleRemoveJob,
 }: Params) {
-	const { socket } = useOutletContext<PrimaryOutletContextType>();
+	const { socket } = useContext(PrimaryContext)!;
 
 	const [isCollapsed, setIsCollapsed] = useState(startCollapsed);
 

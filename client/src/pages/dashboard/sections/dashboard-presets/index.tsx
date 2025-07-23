@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import SubSection from '~components/section/sub-section';
+import Section from '~components/root/section';
 import { PresetEncoderDict, PresetFormatDict } from '~dict/presets.dict';
 import { FirstLetterUpperCase } from '~funcs/string.funcs';
 import { HandbrakePresetCategoryType } from '~types/preset';
@@ -11,7 +11,7 @@ type Params = {
 
 export default function DashboardPresets({ presets }: Params) {
 	return (
-		<SubSection id={styles['presets']}>
+		<Section id={styles['presets']}>
 			<Link to='/presets'>
 				<h2>
 					Presets <i className='bi bi-arrow-right-short' />
@@ -52,6 +52,6 @@ export default function DashboardPresets({ presets }: Params) {
 					</tbody>
 				</table>
 			</div>
-		</SubSection>
+		</Section>
 	);
 }

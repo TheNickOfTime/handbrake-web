@@ -1,6 +1,7 @@
-import { HandbrakePresetCategoryType } from 'types/preset';
-import ButtonInput from 'components/base/inputs/button/button-input';
-import SubSection from 'components/section/sub-section';
+import ButtonInput from '~components/base/inputs/button';
+import Section from '~components/root/section';
+import { HandbrakePresetCategoryType } from '~types/preset';
+import styles from './styles.module.scss';
 
 type Params = {
 	presets: HandbrakePresetCategoryType;
@@ -9,8 +10,8 @@ type Params = {
 
 export default function PresetsButtons({ presets, handleOpenUploadPreset }: Params) {
 	return (
-		<SubSection id='buttons'>
-			<div className='preset-count'>
+		<Section id={styles['buttons']}>
+			<div className={styles['preset-count']}>
 				Presets:{' '}
 				{Object.keys(presets).reduce((prev, cur) => {
 					return prev + Object.keys(presets[cur]).length;
@@ -22,6 +23,6 @@ export default function PresetsButtons({ presets, handleOpenUploadPreset }: Para
 				color='blue'
 				onClick={handleOpenUploadPreset}
 			/>
-		</SubSection>
+		</Section>
 	);
 }

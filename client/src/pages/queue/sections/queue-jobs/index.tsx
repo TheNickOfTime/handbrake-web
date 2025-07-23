@@ -1,8 +1,8 @@
-import { QueueType } from 'types/queue';
-import ButtonInput from 'components/base/inputs/button/button-input';
-import SubSection from 'components/section/sub-section';
-import QueueJobsCategory from './queue-jobs-category';
-import { TranscodeStage } from 'types/transcode';
+import ButtonInput from '~components/base/inputs/button';
+import Section from '~components/root/section';
+import { QueueType } from '~types/queue';
+import { TranscodeStage } from '~types/transcode';
+import QueueJobsCategory from '../queue-jobs-category';
 
 type Params = {
 	queue: QueueType;
@@ -54,7 +54,7 @@ export default function QueueJobs({
 	const onlyFinished = Object.keys(queue).length == Object.keys(jobsFinshed).length;
 
 	return (
-		<SubSection title='Jobs' id='jobs'>
+		<Section heading='Jobs' id='jobs'>
 			<div className='buttons'>
 				<ButtonInput
 					label='Clear All Jobs'
@@ -109,6 +109,6 @@ export default function QueueJobs({
 					handleRemoveJob={handleRemoveJob}
 				/>
 			</div>
-		</SubSection>
+		</Section>
 	);
 }

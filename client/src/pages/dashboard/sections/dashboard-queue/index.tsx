@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
-import BadgeInfo from '~components/base/info/badge-info/badge-info';
-import ProgressBar from '~components/base/progress/progress-bar';
-import SubSection from '~components/section/sub-section';
+import BadgeInfo from '~components/base/info/badge-info';
+import ProgressBar from '~components/base/progress';
+import Section from '~components/root/section';
 import { statusSorting } from '~dict/queue.dict';
 import { QueueType } from '~types/queue';
 import { TranscodeStage } from '~types/transcode';
@@ -13,7 +13,7 @@ type Params = {
 
 export default function DashboardQueue({ queue }: Params) {
 	return (
-		<SubSection id={styles['queue']}>
+		<Section id={styles['queue']}>
 			<Link to='/queue'>
 				<h2>
 					Queue <i className='bi bi-arrow-right-short' />
@@ -82,11 +82,11 @@ export default function DashboardQueue({ queue }: Params) {
 								return (
 									<tr key={`queue-job-${key}`}>
 										<td className='order center'>{job.order_index}</td>
-										<td className='input' title={job.data.input_path}>
+										<td className='input' heading={job.data.input_path}>
 											{job.data.input_path.match(/[^/]+$/)}
 											<BadgeInfo info={job.data.input_path} />
 										</td>
-										<td className='output' title={job.data.output_path}>
+										<td className='output' heading={job.data.output_path}>
 											{job.data.output_path.match(/[^/]+$/)}
 											<BadgeInfo info={job.data.output_path} />
 										</td>
@@ -123,6 +123,6 @@ export default function DashboardQueue({ queue }: Params) {
 					</tbody>
 				</table>
 			</div>
-		</SubSection>
+		</Section>
 	);
 }

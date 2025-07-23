@@ -1,6 +1,7 @@
-import { QueueStatus as QueueStatusType } from 'types/queue';
-import SubSection from 'components/section/sub-section';
-import ButtonInput from 'components/base/inputs/button/button-input';
+import ButtonInput from '~components/base/inputs/button';
+import Section from '~components/root/section';
+import { QueueStatus as QueueStatusType } from '~types/queue';
+import styles from './styles.module.scss';
 
 type Params = {
 	queueStatus: QueueStatusType;
@@ -10,13 +11,13 @@ type Params = {
 
 export default function QueueStatus({ queueStatus, handleStartQueue, handleStopQueue }: Params) {
 	return (
-		<SubSection title='Status' id='status'>
-			<div className='status-section'>
-				<div className={`status-info ${QueueStatusType[queueStatus]}`}>
-					<i className='info-icon bi bi-circle-fill' />
-					<span className='info-text'>{QueueStatusType[queueStatus]}</span>
+		<Section heading='Status' id={styles['status']}>
+			<div className={styles['status-section']}>
+				<div className={`${styles['status-info']} ${QueueStatusType[queueStatus]}`}>
+					<i className={`${styles['info-icon']} bi bi-circle-fill`} />
+					<span className={styles['info-text']}>{QueueStatusType[queueStatus]}</span>
 				</div>
-				<div className='status-buttons'>
+				<div className={styles['status-buttons']}>
 					<ButtonInput
 						label='Start Queue'
 						icon='bi-play-fill'
@@ -33,6 +34,6 @@ export default function QueueStatus({ queueStatus, handleStartQueue, handleStopQ
 					/>
 				</div>
 			</div>
-		</SubSection>
+		</Section>
 	);
 }

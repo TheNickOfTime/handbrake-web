@@ -1,14 +1,13 @@
-import CreateJob from 'components/overlays/create-job/create-job';
-import Section from 'components/section/section';
-import { PrimaryOutletContextType } from 'pages/primary/context';
-import { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import './queue.scss';
-import QueueJobs from './sub-sections/queue-jobs';
-import QueueStatus from './sub-sections/queue-status';
+import { useContext, useState } from 'react';
+import CreateJob from '~components/overlays/create-job';
+import Section from '~components/root/section';
+import { PrimaryContext } from '~layouts/primary/context';
+import QueueJobs from './sections/queue-jobs';
+import QueueStatus from './sections/queue-status';
+import styles from './styles.module.scss';
 
 export default function QueueSection() {
-	const { socket, queue, queueStatus } = useOutletContext<PrimaryOutletContextType>();
+	const { socket, queue, queueStatus } = useContext(PrimaryContext)!;
 
 	const [showCreateJob, setShowCreateJob] = useState(false);
 
@@ -45,7 +44,11 @@ export default function QueueSection() {
 	};
 
 	return (
-		<Section title='Queue' id='queue' className={showCreateJob ? 'no-scroll-y' : undefined}>
+		<Section
+			heading='Queue'
+			id={styles['queue']}
+			className={showCreateJob ? 'no-scroll-y' : undefined}
+		>
 			<QueueStatus
 				queueStatus={queueStatus}
 				handleStartQueue={handleStartQueue}

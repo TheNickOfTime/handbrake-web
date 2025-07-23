@@ -1,0 +1,38 @@
+@use '~styles/modules/colors';
+
+#status {
+	.status-section {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: space-between;
+
+		.status-info {
+			display: flex;
+			flex-flow: row wrap;
+			align-items: center;
+			gap: 1rem;
+
+			&.Stopped {
+				color: colors.$handbrake-red;
+			}
+
+			&.Idle {
+				color: colors.$handbrake-yellow;
+			}
+
+			&.Active {
+				color: colors.$handbrake-blue;
+			}
+
+			.info-text {
+				font-size: 2rem;
+			}
+		}
+
+		.status-buttons {
+			display: flex;
+			flex-flow: row wrap;
+			gap: 1rem;
+		}
+	}
+}

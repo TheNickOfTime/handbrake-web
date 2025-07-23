@@ -1,17 +1,7 @@
 @use '~styles/modules/colors';
 
 .section#presets {
-	.sub-section#buttons {
-		flex-flow: row wrap;
-		justify-content: space-between;
-		align-items: center;
-
-		.preset-count {
-			font-size: 2rem;
-		}
-	}
-
-	.sub-section#list {
+	.sub-section .sub-section#list {
 		.category-list {
 			.category-list-header {
 				margin-bottom: 1rem;

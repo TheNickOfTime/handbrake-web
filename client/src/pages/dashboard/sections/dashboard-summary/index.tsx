@@ -1,4 +1,4 @@
-import SubSection from '~components/section/sub-section';
+import Section from '~components/root/section';
 import { QueueStatus } from '~types/queue';
 import styles from './styles.module.scss';
 
@@ -9,7 +9,7 @@ type Params = {
 
 export default function DashboardSummary({ connectionStatus, queueStatus }: Params) {
 	return (
-		<SubSection title='Summary' id={styles['summary']}>
+		<Section heading='Summary' id={styles['summary']}>
 			<div className={styles['summary-info']}>
 				<div className={styles['info']}>
 					<span>Server: </span>
@@ -34,6 +34,6 @@ export default function DashboardSummary({ connectionStatus, queueStatus }: Para
 					</span>
 				</div>
 			</div>
-		</SubSection>
+		</Section>
 	);
 }

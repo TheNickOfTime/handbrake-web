@@ -1,15 +1,13 @@
-import UploadPreset from 'components/overlays/upload-preset/upload-preset';
-import Section from 'components/section/section';
-import { PrimaryOutletContextType } from 'pages/primary/context';
-import { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import './presets.scss';
-import PresetsButtons from './sub-sections/presets-buttons';
-import PresetsList from './sub-sections/presets-list';
+import { useContext, useState } from 'react';
+import UploadPreset from '~components/overlays/upload-preset';
+import Section from '~components/root/section';
+import { PrimaryContext } from '~layouts/primary/context';
+import PresetsButtons from './sections/buttons-section';
+import PresetsList from './sections/list-section';
+import styles from './styles.module.scss';
 
 export default function PresetsSection() {
-	const { config, presets, defaultPresets, socket } =
-		useOutletContext<PrimaryOutletContextType>();
+	const { config, presets, defaultPresets, socket } = useContext(PrimaryContext)!;
 
 	const [showUploadPreset, setShowUploadPreset] = useState(false);
 
@@ -32,8 +30,8 @@ export default function PresetsSection() {
 
 	return (
 		<Section
-			title='Presets'
-			id='presets'
+			heading='Presets'
+			id={styles['presets']}
 			className={showUploadPreset ? 'no-scroll-y' : undefined}
 		>
 			<PresetsButtons

@@ -1,4 +1,4 @@
-import Section from '~components/section/section';
+import Section from '~components/root/section';
 
 type Params = {
 	url: string;
@@ -6,7 +6,7 @@ type Params = {
 
 export default function NoConnection({ url }: Params) {
 	return (
-		<Section title='Error'>
+		<Section heading='Error'>
 			<p>
 				The client is unable to reach the server at {url}. Please check your server status
 				or configuration.
