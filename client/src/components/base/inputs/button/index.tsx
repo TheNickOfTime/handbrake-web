@@ -5,6 +5,7 @@ interface Properties extends ButtonHTMLAttributes<HTMLButtonElement> {
 	label?: string;
 	Icon?: FunctionComponent<React.SVGProps<SVGSVGElement>>;
 	color?: 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'magenta';
+	title?: string;
 }
 
 export default function ButtonInput({ label, Icon, color, ...properties }: Properties) {

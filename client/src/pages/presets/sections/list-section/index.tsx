@@ -1,7 +1,8 @@
 import Section from '~components/root/section';
 import { getPresetCount } from '~funcs/preset.funcs';
 import { HandbrakePresetCategoryType } from '~types/preset';
-import PresetListCategory from './components/category';
+import PresetCategory from './components/category';
+import styles from './styles.module.scss';
 
 type Params = {
 	label: string;
@@ -23,14 +24,14 @@ export default function PresetsList({
 	if (getPresetCount(presets) == 0) return;
 
 	return (
-		<Section heading={label} id='list'>
+		<Section className={styles['list-section']} heading={label}>
 			{Object.keys(presets)
 				.sort((a, b) =>
 					a.toLowerCase() > b.toLowerCase() || a == 'uncategorized' ? 1 : -1
 				)
 				.filter((categoryName) => Object.keys(presets[categoryName]).length != 0)
 				.map((categoryName) => (
-					<PresetListCategory
+					<PresetCategory
 						category={categoryName}
 						presets={presets[categoryName]}
 						collapsed={collapsed}

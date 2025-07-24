@@ -1,7 +1,12 @@
+import CaretDownIcon from '@icons/caret-down-fill.svg?react';
+import CaretUpIcon from '@icons/caret-up-fill.svg?react';
+import FolderOpenIcon from '@icons/folder2-open.svg?react';
+import FolderIcon from '@icons/folder2.svg?react';
 import { useState } from 'react';
 import PresetCard from '~components/cards/preset-card';
 import { FirstLetterUpperCase } from '~funcs/string.funcs';
 import { HandbrakePresetListType } from '~types/preset';
+import styles from './styles.module.scss';
 
 type Params = {
 	category: string;
@@ -12,7 +17,7 @@ type Params = {
 	handleRemovePreset: (preset: string, category: string) => void;
 };
 
-export default function PresetListCategory({
+export default function PresetCategory({
 	category,
 	presets,
 	collapsed,
@@ -23,16 +28,24 @@ export default function PresetListCategory({
 	const [isExpanded, setIsExpanded] = useState(!collapsed);
 
 	return (
-		<div className='category-list'>
-			<div className='category-list-header' onClick={() => setIsExpanded(!isExpanded)}>
-				<i className={`bi ${isExpanded ? 'bi-folder2-open' : 'bi-folder2'}`} />
+		<div className={styles['preset-category']}>
+			<button className={styles['header']} onClick={() => setIsExpanded(!isExpanded)}>
+				{isExpanded ? (
+					<FolderOpenIcon className={styles['folder-icon']} />
+				) : (
+					<FolderIcon className={styles['folder-icon']} />
+				)}
 				<span>{`${FirstLetterUpperCase(category)}${
 					isExpanded ? '' : ` (${Object.keys(presets).length})`
 				}`}</span>
-				<i className={`bi ${isExpanded ? 'bi-caret-down-fill' : 'bi-caret-up-fill'}`} />
-			</div>
+				{isExpanded ? (
+					<CaretDownIcon className={styles['caret-icon']} />
+				) : (
+					<CaretUpIcon className={styles['caret-icon']} />
+				)}
+			</button>
 			{isExpanded && (
-				<div className='category-list-cards'>
+				<div className='preset-cards'>
 					{Object.keys(presets).map((preset) => (
 						<PresetCard
 							preset={presets[preset]}

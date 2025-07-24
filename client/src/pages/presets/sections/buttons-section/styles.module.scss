@@ -1,9 +1,9 @@
-#buttons {
+.button-section {
 	flex-flow: row wrap;
 	justify-content: space-between;
 	align-items: center;
 
 	.preset-count {
-		font-size: 2rem;
+		font-size: 1.25rem;
 	}
 }

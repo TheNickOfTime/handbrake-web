@@ -6,7 +6,7 @@ import PresetsButtons from './sections/buttons-section';
 import PresetsList from './sections/list-section';
 import styles from './styles.module.scss';
 
-export default function PresetsSection() {
+export default function PresetsPage() {
 	const { config, presets, defaultPresets, socket } = useContext(PrimaryContext)!;
 
 	const [showUploadPreset, setShowUploadPreset] = useState(false);
@@ -29,11 +29,7 @@ export default function PresetsSection() {
 	};
 
 	return (
-		<Page
-			heading='Presets'
-			id={styles['presets']}
-			className={showUploadPreset ? 'no-scroll-y' : undefined}
-		>
+		<Page className={styles['presets']} heading='Presets'>
 			<PresetsButtons
 				presets={
 					config.presets['show-default-presets']

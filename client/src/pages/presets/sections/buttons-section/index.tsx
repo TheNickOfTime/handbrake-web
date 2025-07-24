@@ -1,3 +1,4 @@
+import AddIcon from '@icons/plus-lg.svg?react';
 import ButtonInput from '~components/base/inputs/button';
 import Section from '~components/root/section';
 import { HandbrakePresetCategoryType } from '~types/preset';
@@ -10,7 +11,7 @@ type Params = {
 
 export default function PresetsButtons({ presets, handleOpenUploadPreset }: Params) {
 	return (
-		<Section id={styles['buttons']}>
+		<Section className={styles['button-section']}>
 			<div className={styles['preset-count']}>
 				Presets:{' '}
 				{Object.keys(presets).reduce((prev, cur) => {
@@ -19,7 +20,7 @@ export default function PresetsButtons({ presets, handleOpenUploadPreset }: Para
 			</div>
 			<ButtonInput
 				label='Upload New Preset'
-				icon='bi-plus-lg'
+				Icon={AddIcon}
 				color='blue'
 				onClick={handleOpenUploadPreset}
 			/>

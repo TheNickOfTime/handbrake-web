@@ -1,3 +1,5 @@
+import DownloadIcon from '@icons/download.svg?react';
+import DeleteIcon from '@icons/trash-fill.svg?react';
 import { useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
 import { HandbrakePresetType } from '~types/preset';
@@ -68,7 +70,7 @@ export default function PresetCard({
 
 	return (
 		<div className={styles['preset-card']}>
-			<div className={styles['preset-header']}>
+			<div className={styles['heading']}>
 				{handleRenamePreset ? (
 					<form
 						className={styles['header-label-form']}
@@ -93,14 +95,14 @@ export default function PresetCard({
 						onClick={() => {}}
 					/> */}
 					<ButtonInput
-						icon='bi-download'
+						Icon={DownloadIcon}
 						color='blue'
 						title='Download Preset'
 						onClick={handleDownloadPreset}
 					/>
 					{canModify && (
 						<ButtonInput
-							icon='bi-trash-fill'
+							Icon={DeleteIcon}
 							color='red'
 							title='Remove Preset'
 							onClick={() => handleRemovePreset(presetData.PresetName, category)}
@@ -109,7 +111,7 @@ export default function PresetCard({
 				</div>
 			</div>
 			{preset.PresetList[0].VideoEncoder == undefined && (
-				<div className={styles['preset-warning']}>
+				<div className={styles['warning']}>
 					<i className='bi bi-exclamation-circle-fill' />
 					<span>Attention: </span>
 					<span>
@@ -121,10 +123,10 @@ export default function PresetCard({
 					</span>
 				</div>
 			)}
-			<div className={styles['preset-body']}>
-				<div className={styles['preset-tabs']}>
+			<div className={styles['body']}>
+				<div className={styles['tabs']}>
 					{tabs.map((tab, index) => (
-						<div className={styles['tab-button-container']} key={tab}>
+						<div className={styles['tab-wrapper']} key={tab}>
 							<button
 								onClick={() => setCurrentTab(index)}
 								data-current={index == currentTab}
