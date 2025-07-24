@@ -1,50 +1,21 @@
+import { InputHTMLAttributes } from 'react';
 import { EndWithColon } from '~funcs/string.funcs';
 import styles from './styles.module.scss';
 
-type Params = {
-	id: string;
+interface Properties extends InputHTMLAttributes<HTMLInputElement> {
 	label?: string;
-	value: boolean;
-	setValue?: React.Dispatch<React.SetStateAction<boolean>>;
-	onChange?: (value: boolean) => void;
-	disabled?: boolean;
-};
+}
 
-export default function ToggleInput({
-	id,
-	label,
-	value,
-	setValue,
-	onChange,
-	disabled = false,
-}: Params) {
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		if (setValue) {
-			setValue(event.target.checked);
-		}
-		if (onChange) {
-			onChange(event.target.checked);
-		}
-	};
-
+export default function ToggleInput({ label, ...properties }: Properties) {
 	return (
-		<div className={`toggle-input ${styles['toggle-input']}`} id={id}>
+		<div className={`toggle-input ${styles['toggle-input']}`}>
 			{label && (
-				<label
-					className={`input-label ${'toggle-input-label'} ${disabled ? ' disabled' : ''}`}
-					htmlFor='toggle-input-checkbox'
-				>
+				<label className={styles['label']} htmlFor='checkbox-input'>
 					{EndWithColon(label)}
 				</label>
 			)}
-			<label className={styles['toggle-input-checkbox']} id='toggle-input-checkbox'>
-				<input
-					type='checkbox'
-					id='checkbox-input'
-					checked={value}
-					onChange={handleChange}
-					disabled={disabled}
-				/>
+			<label className={styles['checkbox-wrapper']}>
+				<input type='checkbox' id='checkbox-input' {...properties} />
 			</label>
 		</div>
 	);
