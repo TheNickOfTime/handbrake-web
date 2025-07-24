@@ -8,7 +8,8 @@ import {
 import { LanguageCodeToName } from '~funcs/locale.funcs';
 import { BooleanToConfirmation } from '~funcs/string.funcs';
 import { HandbrakePresetDataType } from '~types/preset';
-import styles from './styles.module.scss';
+import PresetSection from '../../components/preset-section';
+import PresetTab from '../../components/preset-tab';
 
 type Params = {
 	preset: HandbrakePresetDataType;
@@ -41,16 +42,14 @@ export default function PresetCardSummary({ preset }: Params) {
 	].filter((filter) => filter && filter.toLowerCase() != 'off');
 
 	return (
-		<div className={styles['preset-card-section']} id='summary'>
-			<div className={styles['preset-card-subsection']}>
-				<div className={styles['preset-card-subsection-header']}>Format</div>
+		<PresetTab>
+			<PresetSection label='Format'>
 				<TextInfo label='Format'>{PresetFormatDict[preset.FileFormat]}</TextInfo>
 				<TextInfo label='Passthru Common Metadata'>
 					{BooleanToConfirmation(preset.MetadataPassthrough)}
 				</TextInfo>
-			</div>
-			<div className={styles['preset-card-subsection']}>
-				<div className={styles['preset-card-subsection-header']}>Video Track</div>
+			</PresetSection>
+			<PresetSection label='Video Track'>
 				<TextInfo label='Encoder'>{PresetEncoderDict[preset.VideoEncoder]}</TextInfo>
 				<TextInfo label='Resolution'>
 					{preset.PictureWidth}x{preset.PictureHeight}
@@ -63,9 +62,8 @@ export default function PresetCardSummary({ preset }: Params) {
 				<TextInfo label='Chaper Markers'>
 					{BooleanToConfirmation(preset.ChapterMarkers)}
 				</TextInfo>
-			</div>
-			<div className={styles['preset-card-subsection']}>
-				<div className={styles['preset-card-subsection-header']}>Audio Tracks</div>
+			</PresetSection>
+			<PresetSection label='Audio Tracks'>
 				{preset.AudioList.map((track, index) => (
 					<div key={`summary-audio-track-${index}`}>
 						{track.AudioEncoder
@@ -73,9 +71,8 @@ export default function PresetCardSummary({ preset }: Params) {
 							: track.AudioEncoder}
 					</div>
 				))}
-			</div>
-			<div className={styles['preset-card-subsection']}>
-				<div className={styles['preset-card-subsection-header']}>Subtitles</div>
+			</PresetSection>
+			<PresetSection label='Subtitles'>
 				{preset.SubtitleLanguageList.length > 0 ? (
 					preset.SubtitleLanguageList.map((language, index) => (
 						<div key={`summary-subtitle-language-${index}`}>
@@ -85,9 +82,8 @@ export default function PresetCardSummary({ preset }: Params) {
 				) : (
 					<div>N/A</div>
 				)}
-			</div>
-			<div className={styles['preset-card-subsection']}>
-				<div className={styles['preset-card-subsection-header']}>Filters</div>
+			</PresetSection>
+			<PresetSection label='Filters'>
 				{filters.length > 0 ? (
 					filters.map((filter, index) => (
 						<div key={`summary-filter-${index}`}>{filter}</div>
@@ -95,7 +91,7 @@ export default function PresetCardSummary({ preset }: Params) {
 				) : (
 					<div>N/A</div>
 				)}
-			</div>
-		</div>
+			</PresetSection>
+		</PresetTab>
 	);
 }

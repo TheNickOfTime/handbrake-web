@@ -8,9 +8,9 @@ interface Properties extends HTMLAttributes<HTMLDivElement> {
 
 export default function TextInfo({ label, vertical = false, children }: Properties) {
 	return (
-		<div className={`${styles['text-info']}${vertical ? ` ${styles['vertical']}` : ''}`}>
-			<span className='text-info-label'>{label}:</span>
-			<span className='text-info-content'>{children}</span>
+		<div className={`${styles['text-info']} ${vertical ? styles['vertical'] : ''}`}>
+			<span className={styles['label']}>{label}:</span>
+			<span className={styles['content']}>{children}</span>
 		</div>
 	);
 }

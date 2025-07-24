@@ -4,13 +4,13 @@
 	}
 
 	&:not(.vertical) {
-		.text-info-label {
-			margin-right: 1rem;
+		.label {
+			margin-right: 0.5rem;
 		}
 	}
 
-	.text-info-label {
-		font-size: 1.25rem;
+	.label {
+		font-size: 0.85rem;
 		color: var(--text-tertiary);
 	}
 }

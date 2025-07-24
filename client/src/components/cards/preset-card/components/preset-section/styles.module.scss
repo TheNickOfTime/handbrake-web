@@ -1,0 +1,13 @@
+.preset-section {
+	max-width: 100%;
+	flex-grow: 1;
+	display: flex;
+	flex-flow: column nowrap;
+	gap: 0.5rem;
+
+	.heading {
+		font-size: 0.85rem;
+		font-weight: bold;
+		color: var(--text-tertiary);
+	}
+}
