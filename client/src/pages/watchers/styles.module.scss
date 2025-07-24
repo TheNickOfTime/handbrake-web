@@ -1,15 +1,15 @@
-.section#watchers {
-	.sub-section#watchers-status {
+.watchers-page {
+	.status {
 		display: flex;
 		flex-flow: row wrap;
 		justify-content: space-between;
 		align-items: center;
 
-		.watcher-count {
-			font-size: 2rem;
+		.count {
+			font-size: 1.15rem;
 		}
 	}
 
-	.sub-section#registered-watchers {
+	.registered-watchers {
 	}
 }

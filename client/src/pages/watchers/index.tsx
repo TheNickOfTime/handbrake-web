@@ -1,13 +1,15 @@
+import RegisterIcon from '@icons/plus-lg.svg?react';
 import { useContext, useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
 import WatcherCard from '~components/cards/watcher-card';
 import RegisterWatcher from '~components/overlays/register-watcher';
 import Page from '~components/root/page';
+import Section from '~components/root/section';
 import { PrimaryContext } from '~layouts/primary/context';
 import { WatcherRuleDefinitionType } from '~types/watcher';
 import styles from './styles.module.scss';
 
-export default function WatchersSection() {
+export default function WatchersPage() {
 	const { socket, watchers } = useContext(PrimaryContext)!;
 
 	const [showRegisterOverlay, setShowRegisterOverlay] = useState(false);
@@ -35,18 +37,18 @@ export default function WatchersSection() {
 	const watcherIDs = Object.keys(watchers).map((id) => parseInt(id));
 
 	return (
-		<Page className={styles['watchers']} heading='Watchers'>
-			<Page className={styles['status']}>
+		<Page className={styles['watchers-page']} heading='Watchers'>
+			<Section className={styles['status']}>
 				<div className={styles['count']}>Watchers: {watcherIDs.length}</div>
 				<ButtonInput
 					label='Register New Watcher'
-					icon='bi-plus-lg'
+					Icon={RegisterIcon}
 					color='blue'
 					onClick={handleNewWatcher}
 				/>
-			</Page>
+			</Section>
 			{watcherIDs.length > 0 && (
-				<Page className={styles['registered-watchers']} heading='Registered Watchers'>
+				<Section className={styles['registered-watchers']} heading='Registered Watchers'>
 					{watcherIDs.map((watcherID, index) => (
 						<WatcherCard
 							watcherID={watcherID}
@@ -59,7 +61,7 @@ export default function WatchersSection() {
 							key={`watcher-card-${watcherID}`}
 						/>
 					))}
-				</Page>
+				</Section>
 			)}
 			{showRegisterOverlay && (
 				<RegisterWatcher onClose={() => setShowRegisterOverlay(false)} />
