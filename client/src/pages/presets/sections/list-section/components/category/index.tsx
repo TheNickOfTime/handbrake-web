@@ -2,7 +2,7 @@ import CaretDownIcon from '@icons/caret-down-fill.svg?react';
 import CaretUpIcon from '@icons/caret-up-fill.svg?react';
 import FolderOpenIcon from '@icons/folder2-open.svg?react';
 import FolderIcon from '@icons/folder2.svg?react';
-import { useState } from 'react';
+import { CSSProperties, useState } from 'react';
 import PresetCard from '~components/cards/preset-card';
 import { FirstLetterUpperCase } from '~funcs/string.funcs';
 import { HandbrakePresetListType } from '~types/preset';
@@ -44,20 +44,26 @@ export default function PresetCategory({
 					<CaretUpIcon className={styles['caret-icon']} />
 				)}
 			</button>
-			{isExpanded && (
-				<div className='preset-cards'>
-					{Object.keys(presets).map((preset) => (
-						<PresetCard
-							preset={presets[preset]}
-							category={category}
-							canModify={canModify}
-							handleRenamePreset={canModify ? handleRenamePreset : undefined}
-							handleRemovePreset={handleRemovePreset}
-							key={`${category}-${preset}`}
-						/>
-					))}
+			<div
+				className={styles['preset-cards']}
+				data-expanded={isExpanded}
+				style={{ '--preset-count': Object.keys(presets).length } as CSSProperties}
+			>
+				<div className={styles['wrapper']}>
+					<div className={styles['cards']}>
+						{Object.keys(presets).map((preset) => (
+							<PresetCard
+								preset={presets[preset]}
+								category={category}
+								canModify={canModify}
+								handleRenamePreset={canModify ? handleRenamePreset : undefined}
+								handleRemovePreset={handleRemovePreset}
+								key={`${category}-${preset}`}
+							/>
+						))}
+					</div>
 				</div>
-			)}
+			</div>
 		</div>
 	);
 }
