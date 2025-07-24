@@ -7,11 +7,11 @@ type Params = {
 	workerInfo: WorkerInfo;
 };
 
-export default function WorkersStatus({ workerInfo }: Params) {
+export default function StatusSection({ workerInfo }: Params) {
 	return (
-		<Section heading='Status' className={styles['status']}>
-			<div className='table-scroll'>
-				<table className={styles['workers-table']}>
+		<Section className={styles['status-section']} heading='Status'>
+			<div className={styles['workers-table']}>
+				<table>
 					<thead>
 						<tr>
 							<th>ID</th>

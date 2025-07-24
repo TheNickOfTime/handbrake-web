@@ -9,9 +9,9 @@ type Params = {
 	queue: QueueType;
 };
 
-export default function WorkersSummary({ workerInfo, queue }: Params) {
+export default function SummarySection({ workerInfo, queue }: Params) {
 	return (
-		<Section heading='Summary' className={'summary'}>
+		<Section className={styles['summary-section']} heading='Summary'>
 			<div className={styles['summary-info']}>
 				<div className={`${styles['info']} ${styles['total']}`}>
 					<span>Total Workers: </span>

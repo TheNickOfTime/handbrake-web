@@ -1,13 +1,16 @@
-.section#workers {
-	.sub-section#status {
-		.table-scroll {
-			overflow-x: auto !important;
-			padding-bottom: 1rem;
-		}
+@use '~styles/mixins/table';
 
-		.workers-table {
+.status-section {
+	.table-scroll {
+		overflow-x: auto !important;
+		padding-bottom: 1rem;
+	}
+
+	.workers-table {
+		@include table.table-scroll;
+
+		table {
 			width: 100%;
-			font-size: 1.75rem;
 
 			thead {
 				th {

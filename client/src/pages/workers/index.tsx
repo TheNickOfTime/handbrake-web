@@ -1,8 +1,9 @@
 import { useContext } from 'react';
 import Page from '~components/root/page';
 import { PrimaryContext } from '~layouts/primary/context';
-import WorkersStatus from './sections/status-section';
-import WorkersSummary from './sections/summary-section';
+import StatusSection from './sections/status-section';
+import SummarySection from './sections/summary-section';
+import styles from './styles.module.scss';
 
 export type WorkerInfo = {
 	[index: string]: {
@@ -12,7 +13,7 @@ export type WorkerInfo = {
 	};
 };
 
-export default function WorkersSection() {
+export default function WorkersPage() {
 	const { connections, queue } = useContext(PrimaryContext)!;
 
 	const workerInfo = connections.workers.reduce((prev: WorkerInfo, cur) => {
@@ -30,9 +31,9 @@ export default function WorkersSection() {
 	}, {});
 
 	return (
-		<Page heading='Workers' id='workers'>
-			<WorkersSummary workerInfo={workerInfo} queue={queue} />
-			<WorkersStatus workerInfo={workerInfo} />
+		<Page className={styles['workers-page']} heading='Workers'>
+			<SummarySection workerInfo={workerInfo} queue={queue} />
+			<StatusSection workerInfo={workerInfo} />
 		</Page>
 	);
 }
