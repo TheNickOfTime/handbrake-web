@@ -2,26 +2,26 @@ import TextInfo from '~components/base/info/text-info';
 import { PresetEncoderDict, PresetPropertiesDict } from '~dict/presets.dict';
 import { BooleanToConfirmation, FirstLetterUpperCase } from '~funcs/string.funcs';
 import { HandbrakePresetDataType, VideoQualityType } from '~types/preset';
+import PresetTab from '../../components/preset-tab';
+import PresetTabSection from '../../components/preset-tab-section';
 import styles from './styles.module.scss';
 
 type Params = {
 	preset: HandbrakePresetDataType;
 };
 
-export default function PresetCardVideo({ preset }: Params) {
+export default function VideoTab({ preset }: Params) {
 	return (
-		<div className={styles['preset-card-section']} id='video'>
-			<div className={styles['preset-card-subsection']}>
-				<div className={styles['preset-card-subsection-header']}>Video</div>
+		<PresetTab className={styles['video-tab']}>
+			<PresetTabSection label='Video'>
 				<TextInfo label='Video Encoder'>{PresetEncoderDict[preset.VideoEncoder]}</TextInfo>
 				<TextInfo label='Framerate (FPS)'>
 					{preset.VideoFrameRate ? preset.VideoFrameRate : 'Same as source'}
 					{', '}
 					{preset.VideoFramerateMode}
 				</TextInfo>
-			</div>
-			<div className={styles['preset-card-subsection']}>
-				<div className={styles['preset-card-subsection-header']}>Quality</div>
+			</PresetTabSection>
+			<PresetTabSection label='Quality'>
 				{preset.VideoQualityType == VideoQualityType.ConstantQuality && (
 					<TextInfo label='Constant Quality'>{preset.VideoQualitySlider}</TextInfo>
 				)}
@@ -36,9 +36,8 @@ export default function PresetCardVideo({ preset }: Params) {
 						</TextInfo>
 					</>
 				)}
-			</div>
-			<div className={styles['preset-card-subsection']}>
-				<div className={styles['preset-card-subsection-header']}>Encoder Options</div>
+			</PresetTabSection>
+			<PresetTabSection label='Encoder Options'>
 				<TextInfo label='Encoder Preset'>
 					{PresetPropertiesDict[preset.VideoPreset] ||
 						FirstLetterUpperCase(preset.VideoPreset)}
@@ -53,7 +52,7 @@ export default function PresetCardVideo({ preset }: Params) {
 				<TextInfo label='Advanced Options'>
 					{preset.VideoOptionExtra ? preset.VideoOptionExtra : 'N/A'}
 				</TextInfo>
-			</div>
-		</div>
+			</PresetTabSection>
+		</PresetTab>
 	);
 }

@@ -13,22 +13,25 @@
 		gap: 1rem;
 		margin: 1rem 0 1.5rem 0;
 
-		.preset-label {
+		.label,
+		.label-input {
+			font-family: var(--heading-font);
+			font-weight: bold;
+			font-size: 1.1rem;
+		}
+
+		.label {
 			flex-grow: 1;
 			margin: 0;
 			padding: 0.5rem 1rem;
 		}
 
-		.header-label-form {
+		.label-form {
 			flex-grow: 1;
 
-			.header-label-input {
+			.label-input {
 				width: 100%;
 				padding: 0.5rem 1rem;
-
-				font-family: var(--heading-font);
-				font-weight: bold;
-				font-size: 1.75rem;
 
 				border: none;
 				border-radius: 4rem;
@@ -43,7 +46,7 @@
 			}
 		}
 
-		.preset-buttons {
+		.buttons {
 			display: flex;
 			flex-flow: row nowrap;
 			justify-content: right;

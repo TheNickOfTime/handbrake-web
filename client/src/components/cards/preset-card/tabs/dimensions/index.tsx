@@ -2,21 +2,20 @@ import TextInfo from '~components/base/info/text-info';
 import { PresetPropertiesDict } from '~dict/presets.dict';
 import { BooleanToConfirmation } from '~funcs/string.funcs';
 import { HandbrakePresetDataType, PictureCropMode } from '~types/preset';
+import PresetTab from '../../components/preset-tab';
+import PresetTabSection from '../../components/preset-tab-section';
 import styles from './styles.module.scss';
 
 type Params = {
 	preset: HandbrakePresetDataType;
 };
 
-export default function PresetCardDimensions({ preset }: Params) {
+export default function DimensionsTab({ preset }: Params) {
 	const rotationMatch = preset.PictureRotate ? preset.PictureRotate.match(/(\d+):([01])/) : null;
 
 	return (
-		<div className={styles['preset-card-section']} id='dimensions'>
-			<div className={styles['preset-card-subsection']}>
-				<div className={styles['preset-card-subsection-header']}>
-					Orientation and Cropping
-				</div>
+		<PresetTab className={styles['dimensions-tab']}>
+			<PresetTabSection label='Orientation and Cropping'>
 				<TextInfo label='Flip Horizontal'>
 					{rotationMatch && BooleanToConfirmation(rotationMatch[2] != null)}
 				</TextInfo>
@@ -24,17 +23,14 @@ export default function PresetCardDimensions({ preset }: Params) {
 					{rotationMatch && rotationMatch[1] ? rotationMatch[1] : 'N/A'}
 				</TextInfo>
 				<TextInfo label='Cropping'>{PictureCropMode[preset.PictureCropMode]}</TextInfo>
-				<div className='cropping-values'>
+				<div className={styles['cropping-values']}>
 					<TextInfo label='Top'>{preset.PictureTopCrop}px</TextInfo>
 					<TextInfo label='Bottom'>{preset.PictureBottomCrop}px</TextInfo>
 					<TextInfo label='Left'>{preset.PictureLeftCrop}px</TextInfo>
 					<TextInfo label='Right'>{preset.PictureRightCrop}px</TextInfo>
 				</div>
-			</div>
-			<div className={styles['preset-card-subsection']}>
-				<div className={styles['preset-card-subsection-header']}>
-					Resolution and Scaling
-				</div>
+			</PresetTabSection>
+			<PresetTabSection label='Resolution and Scaling'>
 				<TextInfo label='Resolution Limit'>
 					{preset.PictureWidth}x{preset.PictureHeight}
 				</TextInfo>
@@ -48,9 +44,8 @@ export default function PresetCardDimensions({ preset }: Params) {
 				<TextInfo label='Allow Upscaling'>
 					{BooleanToConfirmation(preset.PictureAllowUpscaling)}
 				</TextInfo>
-			</div>
-			<div className={styles['preset-card-subsection']}>
-				<div className={styles['preset-card-subsection-header']}>Borders</div>
+			</PresetTabSection>
+			<PresetTabSection label='Borders'>
 				<TextInfo label='Fill'>{PresetPropertiesDict[preset.PicturePadMode]}</TextInfo>
 				<TextInfo label='Color'>
 					{preset.PicturePadColor
@@ -66,7 +61,7 @@ export default function PresetCardDimensions({ preset }: Params) {
 					<TextInfo label='Left'>{preset.PicturePadLeft}px</TextInfo>
 					<TextInfo label='Right'>{preset.PicturePadRight}px</TextInfo>
 				</div>
-			</div>
-		</div>
+			</PresetTabSection>
+		</PresetTab>
 	);
 }

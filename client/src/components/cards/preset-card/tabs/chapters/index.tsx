@@ -1,18 +1,19 @@
 import TextInfo from '~components/base/info/text-info';
 import { BooleanToConfirmation } from '~funcs/string.funcs';
 import { HandbrakePresetDataType } from '~types/preset';
+import PresetTab from '../../components/preset-tab';
 import styles from './styles.module.scss';
 
 type Params = {
 	preset: HandbrakePresetDataType;
 };
 
-export default function PresetCardChapters({ preset }: Params) {
+export default function ChaptersTab({ preset }: Params) {
 	return (
-		<div className={styles['preset-card-section']} id='chapters'>
+		<PresetTab className={styles['chapters-tab']}>
 			<TextInfo label='Create chapter markers'>
 				{BooleanToConfirmation(preset.ChapterMarkers)}
 			</TextInfo>
-		</div>
+		</PresetTab>
 	);
 }

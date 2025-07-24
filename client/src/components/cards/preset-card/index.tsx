@@ -4,13 +4,13 @@ import { useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
 import { HandbrakePresetType } from '~types/preset';
 import styles from './styles.module.scss';
-import PresetCardAudio from './tabs/audio';
-import PresetCardChapters from './tabs/chapters';
-import PresetCardDimensions from './tabs/dimensions';
-import PresetCardFilters from './tabs/filters';
-import PresetCardSubtitles from './tabs/subtitles';
-import PresetCardSummary from './tabs/summary';
-import PresetCardVideo from './tabs/video';
+import AudioTab from './tabs/audio';
+import ChaptersTab from './tabs/chapters';
+import DimensionsTab from './tabs/dimensions';
+import FiltersTab from './tabs/filters';
+import SubtitlesTab from './tabs/subtitles';
+import SummaryTab from './tabs/summary';
+import VideoTab from './tabs/video';
 
 type Params = {
 	preset: HandbrakePresetType;
@@ -72,13 +72,10 @@ export default function PresetCard({
 		<div className={styles['preset-card']}>
 			<div className={styles['heading']}>
 				{handleRenamePreset ? (
-					<form
-						className={styles['header-label-form']}
-						onSubmit={handleRenameInputSubmit}
-					>
+					<form className={styles['label-form']} onSubmit={handleRenameInputSubmit}>
 						<input
 							type='text'
-							className={styles['header-label-input']}
+							className={styles['label-input']}
 							value={presetName}
 							onChange={(event) => setPresetName(event.target.value)}
 							onBlur={handleRenameInputSubmit}
@@ -86,9 +83,9 @@ export default function PresetCard({
 						/>
 					</form>
 				) : (
-					<h3 className={styles['preset-label']}>{presetName}</h3>
+					<h3 className={styles['label']}>{presetName}</h3>
 				)}
-				<div className={styles['preset-buttons']}>
+				<div className={styles['buttons']}>
 					{/* <ButtonInput
 						icon='bi-pencil-square'
 						color='yellow'
@@ -140,19 +137,19 @@ export default function PresetCard({
 					{(() => {
 						switch (currentTab) {
 							case PresetTabs.Summary:
-								return <PresetCardSummary preset={presetData} />;
+								return <SummaryTab preset={presetData} />;
 							case PresetTabs.Dimensions:
-								return <PresetCardDimensions preset={presetData} />;
+								return <DimensionsTab preset={presetData} />;
 							case PresetTabs.Filters:
-								return <PresetCardFilters preset={presetData} />;
+								return <FiltersTab preset={presetData} />;
 							case PresetTabs.Video:
-								return <PresetCardVideo preset={presetData} />;
+								return <VideoTab preset={presetData} />;
 							case PresetTabs.Audio:
-								return <PresetCardAudio preset={presetData} />;
+								return <AudioTab preset={presetData} />;
 							case PresetTabs.Subtitles:
-								return <PresetCardSubtitles preset={presetData} />;
+								return <SubtitlesTab preset={presetData} />;
 							case PresetTabs.Chapters:
-								return <PresetCardChapters preset={presetData} />;
+								return <ChaptersTab preset={presetData} />;
 							default:
 								return null;
 						}

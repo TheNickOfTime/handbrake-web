@@ -2,16 +2,18 @@ import TextInfo from '~components/base/info/text-info';
 import { PresetPropertiesDict } from '~dict/presets.dict';
 import { BooleanToConfirmation } from '~funcs/string.funcs';
 import { HandbrakePresetDataType } from '~types/preset';
+import PresetTab from '../../components/preset-tab';
+import PresetTabSection from '../../components/preset-tab-section';
 import styles from './styles.module.scss';
 
 type Params = {
 	preset: HandbrakePresetDataType;
 };
 
-export default function PresetCardFilters({ preset }: Params) {
+export default function FiltersTab({ preset }: Params) {
 	return (
-		<div className={styles['preset-card-section']} id='filters'>
-			<div className={styles['preset-card-subsection']}>
+		<PresetTab className={styles['filters-tab']}>
+			<PresetTabSection>
 				<TextInfo label='Detelecine'>
 					{PresetPropertiesDict[preset.PictureDetelecine] || preset.PictureDetelecine}
 					{preset.PictureDetelecine == 'custom' &&
@@ -100,7 +102,7 @@ export default function PresetCardFilters({ preset }: Params) {
 				<TextInfo label='Grayscale'>
 					{BooleanToConfirmation(preset.VideoGrayScale)}
 				</TextInfo>
-			</div>
-		</div>
+			</PresetTabSection>
+		</PresetTab>
 	);
 }

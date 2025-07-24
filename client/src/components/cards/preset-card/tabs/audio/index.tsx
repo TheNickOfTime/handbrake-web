@@ -3,19 +3,18 @@ import { PresetAudioEncoderDict } from '~dict/presets.dict';
 import { LanguageCodeToName } from '~funcs/locale.funcs';
 import { BooleanToConfirmation, FirstLetterUpperCase } from '~funcs/string.funcs';
 import { HandbrakePresetDataType } from '~types/preset';
+import PresetTab from '../../components/preset-tab';
+import PresetTabSection from '../../components/preset-tab-section';
 import styles from './styles.module.scss';
 
 type Params = {
 	preset: HandbrakePresetDataType;
 };
 
-export default function PresetCardAudio({ preset }: Params) {
+export default function AudioTab({ preset }: Params) {
 	return (
-		<div className={styles['preset-card-section']} id='audio'>
-			<div className={styles['preset-card-subsection']}>
-				<div className={styles['preset-card-subsection-header']}>
-					Source Track Selection
-				</div>
+		<PresetTab className={styles['audio-tab']}>
+			<PresetTabSection label='Source Track Selection'>
 				<TextInfo label='Track Selection Behavior'>
 					{FirstLetterUpperCase(preset.AudioTrackSelectionBehavior)}
 				</TextInfo>
@@ -24,12 +23,9 @@ export default function PresetCardAudio({ preset }: Params) {
 						', '
 					)}
 				</TextInfo>
-			</div>
-			<div className={styles['preset-card-subsection']}>
-				<div className={styles['preset-card-subsection-header']}>
-					Auto Passthru Behavior
-				</div>
-				<div className={styles['side-by-side']}>
+			</PresetTabSection>
+			<PresetTabSection label='Auto Passthru Behavior'>
+				<div className={styles['passthru-list']}>
 					{Object.keys(PresetAudioEncoderDict)
 						.filter((entry) => entry.includes('copy:'))
 						.map((entry, index) => (
@@ -41,14 +37,11 @@ export default function PresetCardAudio({ preset }: Params) {
 							</TextInfo>
 						))}
 				</div>
-			</div>
-			<div className={styles['preset-card-subsection']}>
-				<div className={styles['preset-card-subsection-header']}>
-					Audio encoder settings for each chosen track
-				</div>
+			</PresetTabSection>
+			<PresetTabSection label='Audio encoder settings for each chosen track'>
 				{!(preset.AudioList.length > 0) && <div>N/A</div>}
 				{preset.AudioList.length > 0 && (
-					<div className='table-scroll'>
+					<div className={styles['audio-list']}>
 						<table>
 							<tbody>
 								{preset.AudioList.sort((entry) =>
@@ -104,7 +97,7 @@ export default function PresetCardAudio({ preset }: Params) {
 						</table>
 					</div>
 				)}
-			</div>
-		</div>
+			</PresetTabSection>
+		</PresetTab>
 	);
 }

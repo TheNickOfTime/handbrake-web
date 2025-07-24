@@ -8,14 +8,14 @@ import {
 import { LanguageCodeToName } from '~funcs/locale.funcs';
 import { BooleanToConfirmation } from '~funcs/string.funcs';
 import { HandbrakePresetDataType } from '~types/preset';
-import PresetSection from '../../components/preset-section';
 import PresetTab from '../../components/preset-tab';
+import PresetTabSection from '../../components/preset-tab-section';
 
 type Params = {
 	preset: HandbrakePresetDataType;
 };
 
-export default function PresetCardSummary({ preset }: Params) {
+export default function SummaryTab({ preset }: Params) {
 	const filters = [
 		preset.PictureDetelecine != 'off'
 			? `Detelecine (${PresetPropertiesDict[preset.PictureDetelecine]})`
@@ -42,14 +42,14 @@ export default function PresetCardSummary({ preset }: Params) {
 	].filter((filter) => filter && filter.toLowerCase() != 'off');
 
 	return (
-		<PresetTab>
-			<PresetSection label='Format'>
+		<PresetTab className='summary-tab'>
+			<PresetTabSection label='Format'>
 				<TextInfo label='Format'>{PresetFormatDict[preset.FileFormat]}</TextInfo>
 				<TextInfo label='Passthru Common Metadata'>
 					{BooleanToConfirmation(preset.MetadataPassthrough)}
 				</TextInfo>
-			</PresetSection>
-			<PresetSection label='Video Track'>
+			</PresetTabSection>
+			<PresetTabSection label='Video Track'>
 				<TextInfo label='Encoder'>{PresetEncoderDict[preset.VideoEncoder]}</TextInfo>
 				<TextInfo label='Resolution'>
 					{preset.PictureWidth}x{preset.PictureHeight}
@@ -62,8 +62,8 @@ export default function PresetCardSummary({ preset }: Params) {
 				<TextInfo label='Chaper Markers'>
 					{BooleanToConfirmation(preset.ChapterMarkers)}
 				</TextInfo>
-			</PresetSection>
-			<PresetSection label='Audio Tracks'>
+			</PresetTabSection>
+			<PresetTabSection label='Audio Tracks'>
 				{preset.AudioList.map((track, index) => (
 					<div key={`summary-audio-track-${index}`}>
 						{track.AudioEncoder
@@ -71,8 +71,8 @@ export default function PresetCardSummary({ preset }: Params) {
 							: track.AudioEncoder}
 					</div>
 				))}
-			</PresetSection>
-			<PresetSection label='Subtitles'>
+			</PresetTabSection>
+			<PresetTabSection label='Subtitles'>
 				{preset.SubtitleLanguageList.length > 0 ? (
 					preset.SubtitleLanguageList.map((language, index) => (
 						<div key={`summary-subtitle-language-${index}`}>
@@ -82,8 +82,8 @@ export default function PresetCardSummary({ preset }: Params) {
 				) : (
 					<div>N/A</div>
 				)}
-			</PresetSection>
-			<PresetSection label='Filters'>
+			</PresetTabSection>
+			<PresetTabSection label='Filters'>
 				{filters.length > 0 ? (
 					filters.map((filter, index) => (
 						<div key={`summary-filter-${index}`}>{filter}</div>
@@ -91,7 +91,7 @@ export default function PresetCardSummary({ preset }: Params) {
 				) : (
 					<div>N/A</div>
 				)}
-			</PresetSection>
+			</PresetTabSection>
 		</PresetTab>
 	);
 }
