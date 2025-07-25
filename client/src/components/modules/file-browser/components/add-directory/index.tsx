@@ -1,7 +1,9 @@
+import WarningIcon from '@icons/exclamation-circle.svg?react';
 import { useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
 import TextInput from '~components/base/inputs/text';
 import { DirectoryItemsType } from '~types/directory';
+import styles from './styles.module.scss';
 
 type Params = {
 	existingItems: DirectoryItemsType;
@@ -38,12 +40,12 @@ export default function AddDirectory({ existingItems, onCancel, onSubmit }: Para
 	};
 
 	return (
-		<div className='add-directory-prompt'>
-			<div className='prompt-window'>
-				<h3 className='no-margin'>Add Directory</h3>
+		<div className={styles['add-directory']}>
+			<div className={styles['prompt-window']}>
+				<h3 className={styles['no-margin']}>Add Directory</h3>
 				{existingName && (
-					<span className='already-exists'>
-						<i className='bi bi-exclamation-circle' />
+					<span className={styles['already-exists']}>
+						<WarningIcon />
 						<span> Directory already exists.</span>
 					</span>
 				)}
@@ -54,7 +56,7 @@ export default function AddDirectory({ existingItems, onCancel, onSubmit }: Para
 					onChange={handleNameChange}
 					onSubmit={handleEnter}
 				/>
-				<div className='buttons'>
+				<div className={styles['buttons']}>
 					<ButtonInput label='Cancel' color='red' onClick={handleCancel} />
 					<ButtonInput
 						label='Submit'

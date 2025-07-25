@@ -1,14 +1,16 @@
+import SaveIcon from '@icons/floppy2-fill.svg?react';
 import { useContext, useEffect, useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
 import ToggleInput from '~components/base/inputs/toggle';
 import Page from '~components/root/page';
+import Section from '~components/root/section';
 import { PrimaryContext } from '~layouts/primary/context';
 import SettingsApplication from './sections/application-section';
 import SettingsPaths from './sections/paths-section';
 import SettingsPreset from './sections/presets-section';
 import styles from './styles.module.scss';
 
-export default function SettingsSection() {
+export default function SettingsPage() {
 	const { config, socket } = useContext(PrimaryContext)!;
 	const [currentConfig, setCurrentConfig] = useState(config);
 	const [canSave, setCanSave] = useState(false);
@@ -23,21 +25,21 @@ export default function SettingsSection() {
 		socket.emit('config-update', currentConfig);
 	};
 
-	const handleAutoFixChange = (value: boolean) => {
+	const handleAutoFixChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setCurrentConfig({
 			...currentConfig,
 			config: {
-				'auto-fix': value,
+				'auto-fix': event.target.checked,
 			},
 		});
 	};
 
 	return (
-		<Page heading='Settings' className={styles['settings-section']}>
-			<Page className={styles['buttons']}>
+		<Page className={styles['settings-page']} heading='Settings'>
+			<Section className={styles['buttons']}>
 				<ButtonInput
 					label='Save Configuration'
-					icon='bi-floppy2-fill'
+					Icon={SaveIcon}
 					onClick={handleSaveConfig}
 					disabled={!canSave}
 				/>
@@ -47,7 +49,7 @@ export default function SettingsSection() {
 					value={currentConfig.config['auto-fix']}
 					onChange={handleAutoFixChange}
 				/>
-			</Page>
+			</Section>
 			<div className={styles['settings-sections']}>
 				<SettingsPaths
 					config={currentConfig}

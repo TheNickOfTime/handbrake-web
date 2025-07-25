@@ -74,6 +74,7 @@ export default function SettingsPaths({ config, setConfig, setValid }: Params) {
 				startPath={config.paths['input-path']}
 				rootPath={config.paths['media-path']}
 				mode={FileBrowserMode.Directory}
+				allowClear={true}
 				allowCreate={true}
 				value={config.paths['input-path']}
 				onConfirm={(item) => {

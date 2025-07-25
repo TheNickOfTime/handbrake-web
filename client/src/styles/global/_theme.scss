@@ -18,6 +18,7 @@ html {
 	--text-primary-light: #{colors.$text-color-primary};
 	--text-secondary-light: #{colors.$text-color-secondary};
 	--text-tertiary-light: #{colors.$text-color-tertiary};
+	--text-disabled-light: #{colors.$text-color-disabled};
 
 	--transparent-primary-dark: #{colors.$transparent-light-primary};
 	--transparent-secondary-dark: #{colors.$transparent-light-secondary};
@@ -38,6 +39,7 @@ html[data-theme='dark'] {
 	--text-primary: var(--text-primary-light);
 	--text-secondary: var(--text-secondary-light);
 	--text-tertiary: var(--text-tertiary-light);
+	--text-disabled: var(--text-disabled-light);
 
 	--transparent-primary: var(--transparent-primary-dark);
 	--transparent-secondary: var(--transparent-secondary-dark);

@@ -21,16 +21,23 @@ export default function SettingsPreset({ config, setConfig }: Params) {
 			<ToggleInput
 				id='default-preset-toggle'
 				label='Show Default Presets'
-				value={config.presets['show-default-presets']}
-				onChange={(value) => updatePresetsConfigProperty('show-default-presets', value)}
+				checked={config.presets['show-default-presets']}
+				onChange={(event) => {
+					updatePresetsConfigProperty('show-default-presets', event.target.checked);
+				}}
 			/>
-			<ToggleInput
+			{/* <ToggleInput
 				id='preset-creator-toggle'
 				label='Enable Preset Creator (Experimental)'
-				value={config.presets['allow-preset-creator']}
-				onChange={(value) => updatePresetsConfigProperty('allow-preset-creator', value)}
+				checked={config.presets['allow-preset-creator']}
+				onChange={(event) =>
+					updatePresetsConfigProperty(
+						'allow-preset-creator',
+						event.target.value === 'true'
+					)
+				}
 				disabled
-			/>
+			/> */}
 		</Section>
 	);
 }

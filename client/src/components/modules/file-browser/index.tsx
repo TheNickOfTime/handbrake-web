@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import AddFolderIcon from '@icons/folder-plus.svg?react';
 import { useContext, useEffect, useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
 import { PrimaryContext } from '~layouts/primary/context';
@@ -10,7 +11,7 @@ import {
 } from '~types/directory';
 import { FileBrowserMode } from '~types/file-browser';
 import AddDirectory from './components/add-directory';
-import FileBrowserBody from './components/body/body';
+import FileBrowserBody from './components/browser-body';
 import styles from './styles.module.scss';
 
 type Params = {
@@ -100,7 +101,7 @@ export default function FileBrowser({ startPath, rootPath, mode, allowCreate, on
 
 	return (
 		<div className={styles['file-browser']}>
-			<div className={styles['file-browser-header']}>
+			<div className={styles['header']}>
 				<div className={styles['current-path']}>
 					<span>{currentPath}</span>
 					{isLoading && <span> (Loading...)</span>}
@@ -114,22 +115,20 @@ export default function FileBrowser({ startPath, rootPath, mode, allowCreate, on
 							event.preventDefault();
 						}}
 					>
-						<i className='bi bi-folder-plus' />
+						<AddFolderIcon />
 					</button>
 				)}
 			</div>
-			<div className={styles['file-browser-main']}>
-				<div className={styles['file-browser-body']}>
-					<FileBrowserBody
-						mode={mode}
-						rootPath={rootPath}
-						directory={directory}
-						updateDirectory={handleUpdateDirectory}
-						selectedItem={selectedItem}
-						setSelectedItem={setSelectedItem}
-					/>
-				</div>
-				<div className={styles['file-browser-footer']}>
+			<div className={styles['main']}>
+				<FileBrowserBody
+					mode={mode}
+					rootPath={rootPath}
+					directory={directory}
+					updateDirectory={handleUpdateDirectory}
+					selectedItem={selectedItem}
+					setSelectedItem={setSelectedItem}
+				/>
+				<div className={styles['footer']}>
 					<div className={styles['selected-file']}>
 						<span className={styles['selected-file-label']}>{selectedFileLabel}</span>
 						<span className={styles['selected-file-path']}>

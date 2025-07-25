@@ -1,7 +1,9 @@
+import ClearIcon from '@icons/eraser-fill.svg?react';
 import { useState } from 'react';
 import FileBrowser from '~components/modules/file-browser';
 import { DirectoryItemType } from '~types/directory';
 import { FileBrowserMode } from '~types/file-browser';
+import ButtonInput from '../button';
 import styles from './styles.module.scss';
 
 type Params = {
@@ -54,32 +56,32 @@ export default function PathInput({
 		<div className={styles['path-input']}>
 			<div className={styles['input-section']}>
 				{label && (
-					<label className={styles['input-label']} htmlFor={id}>
+					<label className={styles['label']} htmlFor={id}>
 						{label.replace(/[:\s]+$/, '') + ':'}
 					</label>
 				)}
 				<div className={styles['inputs']}>
 					<input
-						className={`${'input-path-text'} form-item`}
+						className={styles['path-text']}
 						id={id}
 						type='text'
 						value={value ? value : 'N/A'}
 						size={1}
-						disabled
+						disabled={true}
 					/>
 					{allowClear && value && (
-						<button
-							className='controlled-button yellow reset'
-							type='button'
+						<ButtonInput
+							className={styles['reset']}
+							Icon={ClearIcon}
+							color='yellow'
+							title='Clear Path'
 							onClick={handleClear}
-							heading='Clear Path'
-						>
-							<i className='bi bi-eraser-fill' />
-						</button>
+						/>
 					)}
-					<button
-						className='controlled-button blue'
-						type='button'
+					<ButtonInput
+						className={styles['browse-button']}
+						label={showFileBrowser ? 'Cancel' : 'Browse'}
+						color='blue'
 						onClick={(event) => {
 							event.preventDefault();
 							setShowFileBrowser(!showFileBrowser);
@@ -87,11 +89,7 @@ export default function PathInput({
 						onKeyDown={(event) => {
 							event.preventDefault();
 						}}
-					>
-						<span className='button-label'>
-							{showFileBrowser ? 'Cancel' : 'Browse'}
-						</span>
-					</button>
+					/>
 				</div>
 			</div>
 			{showFileBrowser && (

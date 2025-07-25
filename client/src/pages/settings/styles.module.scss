@@ -1,6 +1,6 @@
 @use '~styles/variables/breakpoints';
 
-.section#settings-section {
+.settings-page {
 	@media screen and (min-width: calc(breakpoints.$breakpoint-max - breakpoints.$sidebar-width)) {
 		.settings-sub-sections {
 			display: grid;
@@ -9,7 +9,7 @@
 		}
 	}
 
-	.sub-section#buttons {
+	.buttons {
 		flex-flow: row wrap;
 		gap: 2rem;
 		align-items: center;

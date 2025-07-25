@@ -1,6 +1,10 @@
+import UpIcon from '@icons/arrow-90deg-up.svg?react';
+import FileIcon from '@icons/file-earmark-fill.svg?react';
+import FolderIcon from '@icons/folder-fill.svg?react';
 import mime from 'mime';
+import { DirectoryItemType, DirectoryType } from '~types/directory';
 import { FileBrowserMode } from '~types/file-browser';
-import { DirectoryType, DirectoryItemType } from '~types/directory';
+import styles from './styles.module.scss';
 
 type Params = {
 	mode: FileBrowserMode;
@@ -65,26 +69,24 @@ export default function FileBrowserBody({
 	};
 
 	return (
-		<>
+		<div className={styles['browser-body']}>
 			{/* Show directory up button if  */}
 			{directory && rootPath != directory.current.path && directory.parent && (
 				<button
-					className='directory-item'
+					className={styles['directory-item']}
 					onClick={(event) => event.preventDefault()}
 					onDoubleClick={(event) => {
 						event.preventDefault();
 						onDoubleClickFolder(directory.parent!);
 					}}
 				>
-					<i className='icon bi bi-arrow-90deg-up' />
-					<span className='label'>..</span>
+					<UpIcon className={styles['icon']} />
+					<span className={styles['label']}>..</span>
 				</button>
 			)}
 			{directory != null &&
 				directory.items.map((child) => {
 					const isSelected = selectedItem?.path == child.path;
-					// const isFile = child.children == undefined;
-					const icon = child.isDirectory ? 'bi-folder-fill' : 'bi-file-earmark-fill';
 					const mimeType = mime.getType(child.path);
 					// console.log(mimeType);
 
@@ -106,17 +108,22 @@ export default function FileBrowserBody({
 
 					return (
 						<button
-							className={`directory-item ${isSelected ? 'selected' : ''}`}
+							className={styles['directory-item']}
 							key={child.path + child.name + child.extension}
 							onClick={onClick}
 							onDoubleClick={onDoubleClick}
 							disabled={disabled}
+							data-selected={isSelected}
 						>
-							<i className={`icon bi ${icon}`} />
+							{child.isDirectory ? (
+								<FolderIcon className={styles['icon']} />
+							) : (
+								<FileIcon className={styles['icon']} />
+							)}
 							<span className='label'>{child.name + child.extension}</span>
 						</button>
 					);
 				})}
-		</>
+		</div>
 	);
 }

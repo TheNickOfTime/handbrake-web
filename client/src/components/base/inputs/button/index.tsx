@@ -8,9 +8,13 @@ interface Properties extends ButtonHTMLAttributes<HTMLButtonElement> {
 	title?: string;
 }
 
-export default function ButtonInput({ label, Icon, color, ...properties }: Properties) {
+export default function ButtonInput({ label, Icon, color, className, ...properties }: Properties) {
 	return (
-		<button className={`button ${styles['button']}`} {...properties} data-color={color}>
+		<button
+			className={`button ${styles['button']} ${className || ''}`}
+			{...properties}
+			data-color={color}
+		>
 			{Icon && <Icon className={styles['icon']} />}
 			{label && <span className={styles['label']}>{label}</span>}
 		</button>
