@@ -12,15 +12,15 @@
     "url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
   },
   "dependencies": {
-    "dotenv": "^17.2.0",
+    "dotenv": "^17.2.1",
     "socket.io-client": "^4.8.1",
     "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/node": "^22.16.5",
-    "eslint": "^9.31.0",
+    "eslint": "^9.33.0",
     "tsconfig-paths": "^4.2.0",
-    "tsx": "^4.20.3",
-    "typescript": "^5.8.3"
+    "tsx": "^4.20.4",
+    "typescript": "^5.9.2"
   }
 }
