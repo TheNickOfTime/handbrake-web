@@ -1,3 +1,5 @@
+@use '~styles/variables/breakpoints';
+
 .overlay {
 	position: absolute;
 	z-index: 100;
@@ -17,11 +19,16 @@
 
 	.window {
 		width: 90%;
-		max-width: 75rem;
+		max-width: 50rem;
 		padding: 2rem;
 
 		border-radius: 1rem;
 		background-color: var(--background-tertiary);
 		box-shadow: 0 0 2rem 0 black;
+	}
+
+	@media (min-width: breakpoints.$breakpoint-large) {
+		left: var(--sidebar-width);
+		width: calc(100% - var(--sidebar-width));
 	}
 }

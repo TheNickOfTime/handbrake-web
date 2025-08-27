@@ -1,24 +1,27 @@
+@use '~styles/mixins/form';
 @use '~styles/variables/breakpoints';
 
 .text-input {
 	display: flex;
-	flex-flow: row wrap;
-	align-items: center;
+	flex-flow: column nowrap;
+	justify-content: center;
 	gap: 0.5rem;
 
 	label {
 		white-space: nowrap;
-		width: 100%;
 	}
 
-	input[type='text'] {
+	input {
+		@include form.form-item;
+
 		flex-grow: 1;
 	}
 }
 
-@media screen and (min-width: breakpoints.$breakpoint-medium) {
+@media (min-width: breakpoints.$breakpoint-medium) {
 	.text-input {
 		flex-flow: row nowrap;
-		gap: 1rem;
+		justify-content: unset;
+		align-items: center;
 	}
 }

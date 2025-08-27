@@ -3,9 +3,12 @@ import styles from './styles.module.scss';
 
 interface Properties extends HTMLAttributes<HTMLDivElement> {}
 
-export default function ButtonGroup({ children, ...properties }: Properties) {
+export default function ButtonGroup({ className, children, ...properties }: Properties) {
 	return (
-		<div className={`button-group ${styles['button-group']}`} {...properties}>
+		<div
+			className={`button-group ${styles['button-group']} ${className || ''}`}
+			{...properties}
+		>
 			{children}
 		</div>
 	);

@@ -51,7 +51,7 @@ export default function WatcherCard({
 					<div className={styles['watcher-card-info-header']}>
 						<h5>Info</h5>
 						<ButtonInput
-							icon='bi-trash-fill'
+							Icon='bi-trash-fill'
 							color='red'
 							title='Remove Watcher'
 							onClick={() => handleRemoveWatcher(watcherID)}
@@ -67,7 +67,7 @@ export default function WatcherCard({
 					<div className={styles['watcher-card-rules-header']}>
 						<h5>Rules</h5>
 						<ButtonInput
-							icon='bi-plus-lg'
+							Icon='bi-plus-lg'
 							color='blue'
 							title='Add Watcher Rule'
 							onClick={() => handleAddRule(watcherID, defaultRuleDefinition)}
