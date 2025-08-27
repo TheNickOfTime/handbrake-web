@@ -8,42 +8,5 @@
 	}
 
 	.cards {
-		.queue-jobs-category {
-			margin-bottom: 2rem;
-
-			.queue-jobs-category-header {
-				h4 {
-					margin: 0rem 0 1rem 0;
-				}
-
-				.bi {
-					margin-left: 0.5rem;
-					display: inline-block;
-					border-radius: 50%;
-					line-height: 1rem;
-					cursor: pointer;
-
-					&:hover {
-						background-color: white;
-						color: var(--background-tertiary);
-					}
-				}
-			}
-
-			.queue-jobs-category-cards {
-				display: flex;
-				flex-flow: column nowrap;
-				margin: 0 -1rem;
-			}
-
-			.drop-preview {
-				flex-grow: 1;
-				padding: 0.5rem 1rem;
-
-				hr {
-					box-shadow: 0 0 1rem 0 var(--text-primary);
-				}
-			}
-		}
 	}
 }

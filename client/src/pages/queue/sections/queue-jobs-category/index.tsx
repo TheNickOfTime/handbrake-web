@@ -1,9 +1,12 @@
+import CaretDownIcon from '@icons/caret-down-fill.svg?react';
+import CaretUpIcon from '@icons/caret-up-fill.svg?react';
 import { useContext, useState } from 'react';
 import QueueCard from '~components/cards/queue-card';
 import { statusSorting } from '~dict/queue.dict';
 import { PrimaryContext } from '~layouts/primary/context';
 import { QueueType } from '~types/queue';
 import QueueJobPreview from '../queue-job-preview';
+import styles from './styles.module.scss';
 
 type Params = {
 	queue: QueueType;
@@ -111,23 +114,22 @@ export default function QueueJobsCategory({
 		}
 
 		return (
-			<div className='queue-jobs-category'>
-				<div className='queue-jobs-category-header'>
-					<h4>
+			<div className={styles['queue-jobs-category']}>
+				{collapsable ? (
+					<h4
+						className={styles['heading']}
+						onClick={() => setIsCollapsed(!isCollapsed)}
+						data-interactive
+					>
 						<span>{label}</span>
-						{collapsable && isCollapsed && <span> ({Object.keys(queue).length})</span>}
-						{collapsable && (
-							<i
-								className={`bi ${
-									isCollapsed ? 'bi-caret-down-fill' : 'bi-caret-up-fill'
-								}`}
-								onClick={() => setIsCollapsed(!isCollapsed)}
-							/>
-						)}
+						{isCollapsed && <span> ({Object.keys(queue).length})</span>}
+						{isCollapsed ? <CaretDownIcon /> : <CaretUpIcon />}
 					</h4>
-				</div>
+				) : (
+					<h4 className={styles['heading']}>{label}</h4>
+				)}
 				{((collapsable && !isCollapsed) || !collapsable) && (
-					<div className='queue-jobs-category-cards'>{jobCards}</div>
+					<div className={styles['cards']}>{jobCards}</div>
 				)}
 			</div>
 		);

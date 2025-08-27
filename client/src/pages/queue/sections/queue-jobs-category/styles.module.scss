@@ -1,0 +1,45 @@
+.queue-jobs-category {
+	margin-bottom: 1.25rem;
+
+	.heading {
+		margin: 0;
+		margin-bottom: 0.75rem;
+
+		svg {
+			width: 1.25rem;
+			height: 1.25rem;
+			padding: 0.125rem;
+			margin-left: 0.5rem;
+			display: inline;
+			// vertical-align: middle;
+			vertical-align: text-bottom;
+			border-radius: 50%;
+		}
+
+		&[data-interactive] {
+			cursor: pointer;
+		}
+
+		&:hover {
+			svg {
+				background-color: white;
+				color: var(--background-tertiary);
+			}
+		}
+	}
+
+	.cards {
+		display: flex;
+		flex-flow: column nowrap;
+		gap: 0.75rem;
+	}
+
+	.drop-preview {
+		flex-grow: 1;
+		padding: 0.5rem 1rem;
+
+		hr {
+			box-shadow: 0 0 1rem 0 var(--text-primary);
+		}
+	}
+}

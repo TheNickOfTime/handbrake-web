@@ -1,3 +1,8 @@
+import ResetIcon from '@icons/arrow-counterclockwise.svg?react';
+import LogIcon from '@icons/file-text-fill.svg?react';
+import ListIcon from '@icons/list.svg?react';
+import StopIcon from '@icons/stop-fill.svg?react';
+import RemoveIcon from '@icons/x-lg.svg?react';
 import { useContext, useRef, useState } from 'react';
 import ProgressBar from '~components/base/progress';
 import { PrimaryContext } from '~layouts/primary/context';
@@ -146,7 +151,7 @@ export default function QueueCard({
 
 	return (
 		<div
-			className={styles['queue-job-outer']}
+			className={styles['queue-card']}
 			id={index.toString()}
 			draggable={draggable}
 			onDragStart={handleDragStart}
@@ -155,19 +160,19 @@ export default function QueueCard({
 			onDrop={handleDrop}
 			ref={selfRef}
 		>
-			<div className='queue-job-inner'>
+			<div className={styles['wrapper']}>
 				{showDragHandles && (
 					<div
-						className='job-number'
+						className={styles['job-number']}
 						onMouseDown={handleDragHandleMouseDown}
 						onMouseUp={handleDragHandleMouseUp}
 					>
-						<h3 className='job-number-label'>{index + 1}</h3>
-						<i className='bi bi-list' />
+						<h3 className={styles['number-label']}>{index + 1}</h3>
+						<ListIcon className={styles['drag-icon']} />
 					</div>
 				)}
-				<div className='job-info'>
-					<div className='job-info-section'>
+				<div className={styles['content']}>
+					<div className={styles['info']}>
 						<QueueCardSection label='Input' title={job.data.input_path}>
 							{job.data.input_path.match(/[^/]+$/)}
 						</QueueCardSection>
@@ -187,13 +192,13 @@ export default function QueueCard({
 							{(job.status.transcode_stage == TranscodeStage.Finished ||
 								job.status.transcode_stage == TranscodeStage.Stopped ||
 								job.status.transcode_stage == TranscodeStage.Error) && (
-								<span className='job-log-link'>
+								<span className={styles['job-log-link']}>
 									<span> - </span>
 									<a
 										href={`${serverURL}logs/jobs?id=${jobID}`}
-										heading='Download Log'
+										title='Download Log'
 									>
-										<i className='bi bi-file-text-fill' />
+										<LogIcon />
 									</a>
 								</span>
 							)}
@@ -201,7 +206,7 @@ export default function QueueCard({
 					</div>
 					{(job.status.transcode_stage == TranscodeStage.Scanning ||
 						job.status.transcode_stage == TranscodeStage.Transcoding) && (
-						<div className='job-info-section'>
+						<div className={styles['info']}>
 							<QueueCardSection label='FPS'>
 								{job.status.transcode_fps_current
 									? `${job.status.transcode_fps_current.toFixed(1)}fps`
@@ -226,30 +231,30 @@ export default function QueueCard({
 						</div>
 					)}
 				</div>
-				<div className='job-actions'>
+				<div className={styles['actions']}>
 					<button
-						className='job-action-stop'
-						heading='Stop Job'
+						className={styles['stop']}
+						title='Stop Job'
 						onClick={() => handleStopJob()}
 						disabled={!canStop}
 					>
-						<i className='bi bi-stop-fill' />
+						<StopIcon />
 					</button>
 					<button
-						className='job-action-reset'
-						heading='Reset Job'
+						className={styles['reset']}
+						title='Reset Job'
 						onClick={() => handleResetJob()}
 						disabled={!canReset}
 					>
-						<i className='bi bi-arrow-counterclockwise' />
+						<ResetIcon />
 					</button>
 					<button
-						className='job-action-reset'
-						heading='Remove Job'
+						className={styles['remove']}
+						title='Remove Job'
 						onClick={() => handleRemoveJob()}
 						disabled={!canRemove}
 					>
-						<i className='bi bi-x-lg' />
+						<RemoveIcon />
 					</button>
 				</div>
 			</div>

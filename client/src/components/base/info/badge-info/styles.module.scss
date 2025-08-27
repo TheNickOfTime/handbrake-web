@@ -1,4 +1,10 @@
 .badge-info {
+	display: inline-block;
+	margin-left: 0.25rem;
 	cursor: help;
-	margin-left: 0.5rem;
+
+	svg {
+		width: 0.75rem;
+		vertical-align: text-bottom;
+	}
 }
