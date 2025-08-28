@@ -1,10 +1,10 @@
 import { createContext } from 'react';
 import { Socket } from 'socket.io-client';
-import { ConfigType } from 'types/config';
-import { HandbrakePresetCategoryType } from 'types/preset';
-import { QueueStatus, QueueType } from 'types/queue';
-import { ConnectionIDsType } from 'types/socket';
-import { WatcherDefinitionObjectType } from 'types/watcher';
+import { ConfigType } from '~types/config';
+import { HandbrakePresetCategoryType } from '~types/preset';
+import { QueueStatus, QueueType } from '~types/queue';
+import { ConnectionIDsType } from '~types/socket';
+import { WatcherDefinitionObjectType } from '~types/watcher';
 
 export interface PrimaryOutletContextType {
 	serverURL: string;

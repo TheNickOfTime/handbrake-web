@@ -1,3 +1,4 @@
+import CircleIcon from '@icons/circle-fill.svg?react';
 import ProgressBar from '~components/base/progress';
 import Section from '~components/root/section';
 import { WorkerInfo } from '../..';
@@ -25,13 +26,10 @@ export default function StatusSection({ workerInfo }: Params) {
 							<tr key={worker} id={worker}>
 								<td className={styles['id']}>{worker}</td>
 								<td
-									className={
-										workerInfo[worker].status == 'Idle'
-											? 'status idle'
-											: 'status working'
-									}
+									className={styles['status']}
+									data-status={workerInfo[worker].status.toLowerCase()}
 								>
-									<i className='bi bi-circle-fill' />
+									<CircleIcon />
 									<span>{workerInfo[worker].status}</span>
 								</td>
 								<td className={styles['job']}>{workerInfo[worker].job}</td>
