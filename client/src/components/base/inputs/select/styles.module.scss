@@ -20,9 +20,8 @@
 	}
 }
 
-@media screen and (min-width: breakpoints.$breakpoint-medium) {
+@media (min-width: breakpoints.$breakpoint-medium) {
 	.select-input {
 		flex-flow: row nowrap;
-		gap: 1rem;
 	}
 }

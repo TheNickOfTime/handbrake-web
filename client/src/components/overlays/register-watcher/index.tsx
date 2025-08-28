@@ -33,8 +33,17 @@ export default function RegisterWatcher({ onClose }: Params) {
 		setOutputPath(item.path);
 	};
 
-	const handlePresetCategoryChange = (category: string) => {
+	const handlePresetCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const category = event.target.value;
+
+		setPresetCategory(category);
 		setIsDefaultPreset(category.includes('Default: '));
+	};
+
+	const handlePresetChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const preset = event.target.value;
+
+		setPresetID(preset);
 	};
 
 	const handleSubmit = () => {
@@ -54,8 +63,8 @@ export default function RegisterWatcher({ onClose }: Params) {
 
 	return (
 		<Overlay className={styles['register-watcher']}>
-			<h1>Register Watcher</h1>
-			<div className={styles['register-watcher-fields']}>
+			<h1 className={styles['heading']}>Register Watcher</h1>
+			<div className={styles['fields']}>
 				<div className={styles['fields-section']}>
 					<PathInput
 						id='watcher-watch-path'
@@ -82,7 +91,6 @@ export default function RegisterWatcher({ onClose }: Params) {
 						id='watcher-preset-category-select'
 						label='Preset Category'
 						value={presetCategory}
-						setValue={setPresetCategory}
 						onChange={handlePresetCategoryChange}
 					>
 						<option value=''>N/A</option>
@@ -112,7 +120,7 @@ export default function RegisterWatcher({ onClose }: Params) {
 						id='watcher-preset-select'
 						label='Preset:'
 						value={presetID}
-						setValue={setPresetID}
+						onChange={handlePresetChange}
 					>
 						<option value=''>N/A</option>
 						{isDefaultPreset &&
@@ -151,7 +159,7 @@ export default function RegisterWatcher({ onClose }: Params) {
 						/>
 					</div> */}
 				</div>
-				<div className='buttons-section'>
+				<div className={styles['buttons-section']}>
 					<ButtonInput label='Cancel' color='red' onClick={handleCancel} />
 					<ButtonInput
 						label='Submit'

@@ -4,15 +4,21 @@
 .path-input {
 	display: flex;
 	flex-direction: column;
-	gap: 2rem;
+	gap: 1rem;
 
 	.input-section {
+		display: flex;
+		flex-flow: row wrap;
+		align-items: center;
+		gap: 0.5rem;
+
 		.label {
-			display: block;
-			margin-bottom: 0.5rem;
-			font-size: 0.85rem;
-			font-weight: 600;
-			color: var(--text-tertiary);
+			white-space: nowrap;
+			// display: block;
+			// margin-bottom: 0.5rem;
+			// font-size: 0.85rem;
+			// font-weight: 600;
+			// color: var(--text-tertiary);
 		}
 
 		.inputs {
@@ -45,11 +51,10 @@
 	}
 }
 
-@media screen and (min-width: breakpoints.$breakpoint-medium) {
+@media (min-width: breakpoints.$breakpoint-medium) {
 	.path-input {
 		.input-section {
 			flex-flow: row nowrap;
-			gap: 1rem;
 		}
 	}
 }
