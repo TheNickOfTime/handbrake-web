@@ -1,3 +1,4 @@
+import WarningIcon from '@icons/exclamation-circle-fill.svg?react';
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import ButtonInput from '~components/base/inputs/button';
@@ -43,12 +44,20 @@ export default function UploadPreset({ socket, presets, handleClose }: Params) {
 		}
 	};
 
-	const handlePresetName = (value: string) => {
-		const newName = value;
+	const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		setPresetCategory(event.target.value);
+	};
+
+	const handleNewCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setNewCategory(event.target.value);
+	};
+
+	const handlePresetName = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const newName = event.target.value;
 		const newPreset = preset;
 		preset!.PresetList[0].PresetName = newName;
 		setPreset(newPreset);
-		setPresetName(value);
+		setPresetName(newName);
 	};
 
 	const handleAddPreset = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -61,73 +70,77 @@ export default function UploadPreset({ socket, presets, handleClose }: Params) {
 	};
 
 	return (
-		<Overlay className={styles['upload-preset']}>
-			<h1>Upload Preset</h1>
-			<div className='file-section'>
-				<label htmlFor='preset-file'>Preset: </label>
-				<input
-					className='file-upload'
-					type='file'
-					id='preset-file'
-					onChange={handlePresetFile}
-				/>
-			</div>
-			{preset && (
-				<div className='fields-section'>
-					<h3>New Preset</h3>
-					<SelectInput
-						id='category-select'
-						label='Category'
-						value={presetCategory}
-						setValue={setPresetCategory}
-					>
-						{Object.keys(presets)
-							.filter((category) => category != 'uncategorized')
-							.map((category) => (
-								<option value={category} key={`preset-category-${category}`}>
-									{FirstLetterUpperCase(category)}
-								</option>
-							))}
-						<option value='new'>New Category</option>
-					</SelectInput>
-					{presetCategory == 'new' && (
-						<TextInput
-							id='new-category-input'
-							label='New Category'
-							value={newCategory}
-							setValue={setNewCategory}
-						/>
-					)}
-					{presets[presetCategory] &&
-						Object.keys(presets[presetCategory]).includes(presetName) && (
-							<div className='preset-overwrite'>
-								<i className='bi bi-exclamation-circle-fill' />
-								<span>
-									Preset '{presetName}' already exists and will be overwriten if
-									the name is not changed.
-								</span>
-							</div>
-						)}
-					<TextInput
-						id='preset-name'
-						label='Preset Name'
-						value={presetName}
-						onChange={handlePresetName}
+		<Overlay className={styles['upload-preset-overlay']}>
+			<div className={styles['wrapper']}>
+				<h1>Upload Preset</h1>
+				<div className={styles['file-section']}>
+					<label htmlFor='preset-file'>Preset: </label>
+					<input
+						className={styles['file-upload']}
+						type='file'
+						id='preset-file'
+						onChange={handlePresetFile}
 					/>
 				</div>
-			)}
-			<div className='buttons-section'>
-				<ButtonInput label='Cancel' color='red' onClick={handleClose} />
-				<ButtonInput
-					label='Upload'
-					color='blue'
-					disabled={
-						preset == null ||
-						presetName == '' ||
-						(presetCategory == 'new' && !newCategory)
-					}
-					onClick={handleAddPreset}
-				/>
+				{preset && (
+					<div className={styles['fields-section']}>
+						<h3>New Preset</h3>
+						<SelectInput
+							id='category-select'
+							label='Category'
+							value={presetCategory}
+							onChange={handleCategoryChange}
+						>
+							{Object.keys(presets)
+								.filter((category) => category != 'uncategorized')
+								.map((category) => (
+									<option value={category} key={`preset-category-${category}`}>
+										{FirstLetterUpperCase(category)}
+									</option>
+								))}
+							<option value='new'>New Category</option>
+						</SelectInput>
+						{presetCategory == 'new' && (
+							<TextInput
+								id='new-category-input'
+								label='New Category'
+								value={newCategory}
+								onChange={handleNewCategoryChange}
+							/>
+						)}
+						<div>
+							{presets[presetCategory] &&
+								Object.keys(presets[presetCategory]).includes(presetName) && (
+									<div className={styles['preset-overwrite']}>
+										<WarningIcon />
+										<span>
+											Preset <strong>'{presetName}'</strong> already exists
+											and will be overwriten if the name is not changed.
+										</span>
+									</div>
+								)}
+							<TextInput
+								id='preset-name'
+								label='Preset Name'
+								value={presetName}
+								onChange={handlePresetName}
+							/>
+						</div>
+					</div>
+				)}
+				<div className={styles['buttons-section']}>
+					<ButtonInput label='Cancel' color='red' onClick={handleClose} />
+					<ButtonInput
+						label='Upload'
+						color='blue'
+						disabled={
+							preset == null ||
+							presetName == '' ||
+							(presetCategory == 'new' && !newCategory)
+						}
+						onClick={handleAddPreset}
+					/>
+				</div>
 			</div>
 		</Overlay>
 	);
