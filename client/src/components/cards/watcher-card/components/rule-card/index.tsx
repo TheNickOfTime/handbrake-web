@@ -1,3 +1,5 @@
+import SaveIcon from '@icons/floppy2-fill.svg?react';
+import RemoveIcon from '@icons/trash-fill.svg?react';
 import { useState } from 'react';
 import {
 	WatcherRuleBaseMethods,
@@ -10,6 +12,7 @@ import {
 	WatcherRuleNumberComparisonMethods,
 	WatcherRuleStringComparisonMethods,
 } from '~types/watcher';
+import styles from '../../styles.module.scss';
 
 type Params = {
 	id: number;
@@ -99,32 +102,29 @@ export default function WatcherCardRule({
 		];
 
 	return (
-		<div className='watcher-card-rule'>
-			<div className='watcher-card-rule-header'>
+		<div className={styles['rule-card']}>
+			<div className={styles['header']}>
 				<span>{index + 1}.</span>
 				<input
 					type='text'
-					id='rule-name'
+					className={styles['rule-name']}
 					value={ruleName}
 					onChange={(event) => setRuleName(event.target.value)}
 				/>
 				{isModified && (
-					<button className='save-button' onClick={handleSave}>
-						<i className='bi bi-floppy2-fill' />
+					<button className={styles['save-button']} onClick={handleSave}>
+						<SaveIcon />
 					</button>
 				)}
 				<button
-					className='remove-button'
+					className={styles['remove-button']}
 					onClick={() => handleRemoveRule(id)}
-					heading='Remove Watcher Rule'
+					title='Remove Watcher Rule'
 				>
-					<i className='bi bi-trash-fill' />
+					<RemoveIcon />
 				</button>
 			</div>
-			<form
-				className='watcher-card-rule-properties'
-				onSubmit={(event) => event.preventDefault()}
-			>
+			<form className={styles['properties']} onSubmit={(event) => event.preventDefault()}>
 				<select
 					id='rule-mask'
 					value={ruleMask}
@@ -213,6 +213,7 @@ export default function WatcherCardRule({
 						: null}
 				</select>
 				<input
+					className={styles['comparison']}
 					type={
 						newBaseComparisonMethod == WatcherRuleComparisonMethods.String
 							? 'text'
@@ -220,7 +221,6 @@ export default function WatcherCardRule({
 							? 'number'
 							: 'text'
 					}
-					id='comparison'
 					value={comparison}
 					placeholder={
 						newBaseComparisonMethod == WatcherRuleComparisonMethods.String

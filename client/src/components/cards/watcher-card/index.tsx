@@ -1,3 +1,5 @@
+import AddIcon from '@icons/plus-lg.svg?react';
+import TrashIcon from '@icons/trash-fill.svg?react';
 import TextInfo from '~components/base/info/text-info';
 import ButtonInput from '~components/base/inputs/button';
 import {
@@ -8,7 +10,7 @@ import {
 	WatcherRuleMaskMethods,
 	WatcherRuleStringComparisonMethods,
 } from '~types/watcher';
-import WatcherCardRule from './components/watcher-card-rule';
+import WatcherCardRule from './components/rule-card';
 import styles from './styles.module.scss';
 
 type Params = {
@@ -43,42 +45,47 @@ export default function WatcherCard({
 
 	return (
 		<div className={`watcher-card ${styles['watcher-card']}`}>
-			<div className={styles['watcher-card-number']}>
+			<div className={styles['number']}>
 				<h3>{index + 1}</h3>
 			</div>
-			<div className={styles['watcher-card-body']}>
-				<div className={styles['watcher-card-info']}>
-					<div className={styles['watcher-card-info-header']}>
-						<h5>Info</h5>
+			<div className={styles['body']}>
+				<div className={styles['info']}>
+					<div className={styles['header']}>
+						<h5 className={styles['heading']}>Info</h5>
 						<ButtonInput
-							Icon='bi-trash-fill'
+							className={styles['button']}
+							Icon={TrashIcon}
 							color='red'
 							title='Remove Watcher'
 							onClick={() => handleRemoveWatcher(watcherID)}
 						/>
 					</div>
-					<div className={styles['watcher-card-info-children']}>
-						<TextInfo label='Watching Path'>{watcher.watch_path || 'N/A'}</TextInfo>
-						<TextInfo label='Output Path'>{watcher.output_path || 'N/A'}</TextInfo>
-						<TextInfo label='Preset'>{watcher.preset_id}</TextInfo>
+					<div className={styles['content']}>
+						<TextInfo className={styles['text-info']} label='Watching Path'>
+							{watcher.watch_path || 'N/A'}
+						</TextInfo>
+						<TextInfo className={styles['text-info']} label='Output Path'>
+							{watcher.output_path || 'N/A'}
+						</TextInfo>
+						<TextInfo className={styles['text-info']} label='Preset'>
+							{watcher.preset_id}
+						</TextInfo>
 					</div>
 				</div>
-				<div className={styles['watcher-card-rules']}>
-					<div className={styles['watcher-card-rules-header']}>
-						<h5>Rules</h5>
+				<div className={styles['rules']}>
+					<div className={styles['header']}>
+						<h5 className={styles['heading']}>Rules</h5>
 						<ButtonInput
-							Icon='bi-plus-lg'
+							className={styles['button']}
+							Icon={AddIcon}
 							color='blue'
 							title='Add Watcher Rule'
 							onClick={() => handleAddRule(watcherID, defaultRuleDefinition)}
 						/>
 					</div>
-					<div className={styles['watcher-card-rule-cards']}>
+					<div className={styles['rule-cards']}>
 						{Object.keys(watcher.rules).length == 0 && (
-							<div
-								className={styles['watcher-card-rule']}
-								style={{ textAlign: 'center' }}
-							>
+							<div className={styles['rule-card']} style={{ textAlign: 'center' }}>
 								N/A
 							</div>
 						)}
