@@ -1,10 +1,10 @@
 import Section from '~components/root/section';
 
-type Params = {
+interface Properties {
 	url: string;
-};
+}
 
-export default function NoConnection({ url }: Params) {
+export default function NoConnection({ url }: Properties) {
 	return (
 		<Section heading='Error'>
 			<p>

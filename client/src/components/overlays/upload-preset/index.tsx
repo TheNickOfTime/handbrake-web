@@ -9,13 +9,13 @@ import { FirstLetterUpperCase } from '~funcs/string.funcs';
 import { HandbrakePresetCategoryType, HandbrakePresetType } from '~types/preset';
 import styles from './styles.module.scss';
 
-type Params = {
+interface Properties {
 	socket: Socket;
 	presets: HandbrakePresetCategoryType;
 	handleClose: () => void;
-};
+}
 
-export default function UploadPreset({ socket, presets, handleClose }: Params) {
+export default function UploadPreset({ socket, presets, handleClose }: Properties) {
 	const [preset, setPreset] = useState<null | HandbrakePresetType>(null);
 	const [presetCategory, setPresetCategory] = useState(
 		Object.keys(presets).filter((category) => category != 'uncategorized').length > 0

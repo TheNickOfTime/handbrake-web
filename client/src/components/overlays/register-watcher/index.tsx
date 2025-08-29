@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { HTMLAttributes, useContext, useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
 import PathInput from '~components/base/inputs/path';
 import SelectInput from '~components/base/inputs/select';
@@ -10,11 +10,11 @@ import { FileBrowserMode } from '~types/file-browser';
 import { WatcherDefinitionType } from '~types/watcher';
 import styles from './styles.module.scss';
 
-type Params = {
+interface Properties extends HTMLAttributes<HTMLDivElement> {
 	onClose: () => void;
-};
+}
 
-export default function RegisterWatcher({ onClose }: Params) {
+export default function RegisterWatcher({ onClose }: Properties) {
 	const { config, presets, defaultPresets, socket } = useContext(PrimaryContext)!;
 
 	const [watchPath, setWatchPath] = useState('');
