@@ -3,7 +3,7 @@ import LogIcon from '@icons/file-text-fill.svg?react';
 import ListIcon from '@icons/list.svg?react';
 import StopIcon from '@icons/stop-fill.svg?react';
 import RemoveIcon from '@icons/x-lg.svg?react';
-import { useContext, useRef, useState } from 'react';
+import { HTMLAttributes, useContext, useRef, useState } from 'react';
 import ProgressBar from '~components/base/progress';
 import { PrimaryContext } from '~layouts/primary/context';
 import { JobType } from '~types/queue';
@@ -11,7 +11,7 @@ import { TranscodeStage } from '~types/transcode';
 import QueueCardSection from './components/queue-card-section';
 import styles from './styles.module.scss';
 
-type Params = {
+interface Properties extends HTMLAttributes<HTMLDivElement> {
 	id: string;
 	job: JobType;
 	index: number;
@@ -25,7 +25,7 @@ type Params = {
 	setDraggedInitialIndex: React.Dispatch<React.SetStateAction<number>>;
 	setDraggedDesiredIndex: React.Dispatch<React.SetStateAction<number>>;
 	handleDrop: () => void;
-};
+}
 
 export default function QueueCard({
 	id,
@@ -41,7 +41,8 @@ export default function QueueCard({
 	setDraggedInitialIndex,
 	setDraggedDesiredIndex,
 	handleDrop,
-}: Params) {
+	...properties
+}: Properties) {
 	const { serverURL } = useContext(PrimaryContext)!;
 
 	const selfRef = useRef<HTMLDivElement | null>(null);
@@ -159,6 +160,7 @@ export default function QueueCard({
 			onDragOver={handleDragOver}
 			onDrop={handleDrop}
 			ref={selfRef}
+			{...properties}
 		>
 			<div className={styles['wrapper']}>
 				{showDragHandles && (
