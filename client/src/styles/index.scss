@@ -6,8 +6,6 @@
 @use '~styles/global/text';
 @use '~styles/global/theme';
 
-@import 'bootstrap-icons/font/bootstrap-icons.css';
-
 body {
 	min-width: var(--breakpoint-min);
 	min-height: 100vh;

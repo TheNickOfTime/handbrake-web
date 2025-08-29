@@ -1,3 +1,4 @@
+import WarningIcon from '@icons/exclamation-circle.svg?react';
 import { useContext } from 'react';
 import PathInput from '~components/base/inputs/path';
 import SelectInput from '~components/base/inputs/select';
@@ -44,8 +45,8 @@ export default function OutputSection() {
 				key={jobFrom == JobFrom.FromFile ? 'output-file' : 'output-directory'}
 			/>
 			{jobFrom == JobFrom.FromFile && nameCollision && !allowCollision && (
-				<span className='filename-conflict'>
-					<i className='bi bi-exclamation-circle-fill' />{' '}
+				<span className={styles['filename-conflict']}>
+					<WarningIcon />{' '}
 					<span>
 						This filename conflicts with an existing file in the directory. Do you want
 						to overwrite it?
@@ -53,8 +54,8 @@ export default function OutputSection() {
 				</span>
 			)}
 			{jobFrom == JobFrom.FromFile && nameCollision && allowCollision && (
-				<span className='filename-overwrite'>
-					<i className='bi bi-exclamation-circle-fill' />{' '}
+				<span className={styles['filename-overwrite']}>
+					<WarningIcon />{' '}
 					<span>
 						WARNING: An existing file will be <u>permanently</u> overwritten when this
 						job is run.

@@ -108,6 +108,14 @@
 		}
 	}
 
+	.filename-conflict,
+	.filename-overwrite {
+		svg {
+			display: inline;
+			vertical-align: middle;
+		}
+	}
+
 	.filename-conflict {
 		text-align: center;
 		color: var(--handbrake-yellow);

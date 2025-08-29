@@ -1,3 +1,4 @@
+import WarningIcon from '@icons/exclamation-circle.svg?react';
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { ConfigType } from '~types/config';
@@ -56,7 +57,7 @@ export default function VersionInfo({ socket, config }: Params) {
 					href={latestVersion.html_url}
 					target='_blank'
 				>
-					<i className='bi bi-exclamation-circle-fill' />
+					<WarningIcon />
 					<span className='version'>{latestVersion.name}</span>
 					<span> Update Available</span>
 				</a>

@@ -1,4 +1,5 @@
 import DownloadIcon from '@icons/download.svg?react';
+import WarningIcon from '@icons/exclamation-circle.svg?react';
 import DeleteIcon from '@icons/trash-fill.svg?react';
 import { HTMLAttributes, useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
@@ -112,7 +113,7 @@ export default function PresetCard({
 			</div>
 			{preset.PresetList[0].VideoEncoder == undefined && (
 				<div className={styles['warning']}>
-					<i className='bi bi-exclamation-circle-fill' />
+					<WarningIcon />
 					<span>Attention: </span>
 					<span>
 						This preset has missing information. Want to help? See{' '}

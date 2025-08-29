@@ -68,8 +68,10 @@
 		text-align: center;
 		color: var(--handbrake-yellow);
 
-		.bi {
-			margin-right: 0.5rem;
+		svg {
+			display: inline-block;
+			margin-right: 0.25rem;
+			vertical-align: middle;
 		}
 
 		a {

@@ -17,8 +17,10 @@
 		border: 0.1rem solid var(--handbrake-yellow);
 		color: var(--handbrake-yellow);
 
-		.bi {
-			margin-right: 0.5rem;
+		svg {
+			display: inline-block;
+			margin-right: 0.25rem;
+			vertical-align: middle;
 		}
 
 		.version {

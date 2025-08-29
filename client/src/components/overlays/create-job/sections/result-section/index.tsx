@@ -52,7 +52,6 @@ export default function ResultSection() {
 			</div>
 			{inputFiles.length > 5 && (
 				<button className={styles['see-more']} onClick={handleSeeMore}>
-					{/* <i className={`bi ${seeMore ? 'bi-caret-up-fill' : 'bi-caret-down-fill'}`} /> */}
 					{seeMore ? <CaretUpIcon /> : <CaretDownIcon />}
 					<span>{seeMore ? ' See Less' : ` See ${inputFiles.length - 5} More`}</span>
 				</button>
