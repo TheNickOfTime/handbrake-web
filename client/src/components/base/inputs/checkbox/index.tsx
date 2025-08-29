@@ -1,40 +1,15 @@
+import { InputHTMLAttributes } from 'react';
 import styles from './styles.module.scss';
 
-type Params = {
-	id: string;
+interface Properties extends InputHTMLAttributes<HTMLInputElement> {
 	label?: string;
-	value: boolean;
-	setValue?: React.Dispatch<React.SetStateAction<boolean>>;
-	onChange?: (value: boolean) => void;
-};
+}
 
-export default function CheckboxInput({ id, label, value, setValue, onChange }: Params) {
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const newValue = event.target.checked;
-
-		if (setValue) {
-			setValue(newValue);
-		}
-
-		if (onChange) {
-			onChange(newValue);
-		}
-	};
-
+export default function CheckboxInput({ label, className, ...properties }: Properties) {
 	return (
-		<div className={styles['checkbox-input']}>
-			{label && (
-				<label className={styles['checkbox-label']} htmlFor={id}>
-					{label}
-				</label>
-			)}
-			<input
-				type='checkbox'
-				id={id}
-				className='form-item'
-				checked={value}
-				onChange={handleChange}
-			/>
+		<div className={`checkbox-input ${styles['checkbox-input']} ${className || ''}`}>
+			{label && <label htmlFor={'checkbox-input'}>{label}</label>}
+			<input type='checkbox' id={'checkbox-input'} {...properties} />
 		</div>
 	);
 }
