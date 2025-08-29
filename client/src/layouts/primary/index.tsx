@@ -11,7 +11,7 @@ import { QueueStatus, QueueType } from '~types/queue';
 import { ConnectionIDsType } from '~types/socket';
 import { WatcherDefinitionObjectType } from '~types/watcher';
 import { PrimaryContext } from './context';
-import styles from './styles.module.scss';
+// import styles from './styles.module.scss';
 
 export default function PrimaryLayout() {
 	const baseURLRegex = /(^https?:\/\/.+\/)(.+$)/;

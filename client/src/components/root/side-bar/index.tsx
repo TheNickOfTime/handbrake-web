@@ -56,7 +56,7 @@ interface Properties {
 	config: ConfigType | undefined;
 }
 
-export default function SideBar({ showSidebar, setShowSidebar, socket, config }: Properties) {
+export default function SideBar({ socket, config }: Properties) {
 	const [isExpanded, setIsExpanded] = useState(false);
 
 	const onMenuButtonClick = () => {
