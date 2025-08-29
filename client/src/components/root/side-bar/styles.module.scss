@@ -12,6 +12,8 @@
 	width: 100%;
 	min-width: var(--breakpoint-min);
 
+	max-height: 100dvh;
+
 	.header {
 		position: absolute;
 		top: 0;
