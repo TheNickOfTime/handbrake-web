@@ -1,52 +1,17 @@
-import React from 'react';
+import { InputHTMLAttributes } from 'react';
 import { EndWithColon } from '~funcs/string.funcs';
 import styles from './styles.module.scss';
 
-type Params = {
-	id: string;
+interface Properties extends InputHTMLAttributes<HTMLInputElement> {
 	label: string;
-	value: number;
-	setValue?: React.Dispatch<React.SetStateAction<number>>;
-	onChange?: (value: number) => void;
-	step?: number;
-	min?: number;
-	max?: number;
-	disabled?: boolean;
-};
+	step?: string | number;
+}
 
-export default function NumberInput({
-	id,
-	label,
-	value,
-	setValue,
-	onChange,
-	step,
-	min,
-	max,
-	disabled,
-}: Params) {
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		if (setValue) {
-			setValue(parseInt(event.target.value));
-		}
-		if (onChange) {
-			onChange(parseInt(event.target.value));
-		}
-	};
-
+export default function NumberInput({ label, className, id, step = 1, ...properties }: Properties) {
 	return (
 		<div className={`number-input ${styles['number-input']}`}>
-			{label && <label htmlFor={id}>{EndWithColon(label)}</label>}
-			<input
-				type='number'
-				id={id}
-				step={step}
-				min={min || 0}
-				max={max}
-				value={value}
-				onChange={handleChange}
-				disabled={disabled}
-			/>
+			{label && <label htmlFor={id || 'number-input'}>{EndWithColon(label)}</label>}
+			<input type='number' id={id || 'number-input'} step={step} {...properties} />
 		</div>
 	);
 }

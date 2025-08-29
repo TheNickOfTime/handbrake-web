@@ -15,13 +15,18 @@ export default function SettingsApplication() {
 		setCurrentConfig({ ...currentConfig, version: { ...currentConfig.version, [key]: value } });
 	};
 
+	const handleIntervalChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+		const value = parseInt(event.target.value);
+		updateVersionConfigProperty('check-interval', value);
+	};
+
 	return (
 		<Section heading='Application' className={styles['application']}>
 			<NumberInput
 				id='settings-version-check-interval'
 				label='Update Check Interval (hours)'
 				value={currentConfig.version['check-interval']}
-				onChange={(value) => updateVersionConfigProperty('check-interval', value)}
+				onChange={handleIntervalChange}
 			/>
 		</Section>
 	);
