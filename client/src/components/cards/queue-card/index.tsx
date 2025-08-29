@@ -41,6 +41,7 @@ export default function QueueCard({
 	setDraggedInitialIndex,
 	setDraggedDesiredIndex,
 	handleDrop,
+	className,
 	...properties
 }: Properties) {
 	const { serverURL } = useContext(PrimaryContext)!;
@@ -152,7 +153,7 @@ export default function QueueCard({
 
 	return (
 		<div
-			className={styles['queue-card']}
+			className={`queue-card ${styles['queue-card']} ${className || ''}`}
 			id={index.toString()}
 			draggable={draggable}
 			onDragStart={handleDragStart}

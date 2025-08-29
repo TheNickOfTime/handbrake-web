@@ -1,5 +1,6 @@
 import AddIcon from '@icons/plus-lg.svg?react';
 import TrashIcon from '@icons/trash-fill.svg?react';
+import { HTMLAttributes } from 'react';
 import TextInfo from '~components/base/info/text-info';
 import ButtonInput from '~components/base/inputs/button';
 import {
@@ -13,7 +14,7 @@ import {
 import WatcherCardRule from './components/rule-card';
 import styles from './styles.module.scss';
 
-type Params = {
+interface Properties extends HTMLAttributes<HTMLDivElement> {
 	watcherID: number;
 	watcher: WatcherDefinitionWithRulesType;
 	index: number;
@@ -21,7 +22,7 @@ type Params = {
 	handleAddRule: (id: number, rule: WatcherRuleDefinitionType) => void;
 	handleUpdateRule: (id: number, rule: WatcherRuleDefinitionType) => void;
 	handleRemoveRule: (ruleID: number) => void;
-};
+}
 
 export default function WatcherCard({
 	watcherID,
@@ -31,7 +32,9 @@ export default function WatcherCard({
 	handleAddRule,
 	handleUpdateRule,
 	handleRemoveRule,
-}: Params) {
+	className,
+	...properties
+}: Properties) {
 	const defaultRuleDefinition: WatcherRuleDefinitionType = {
 		name: 'New Watcher Rule',
 		mask: WatcherRuleMaskMethods.Include,
@@ -41,10 +44,11 @@ export default function WatcherCard({
 		comparison: '',
 	};
 
-	console.log(watcher.rules);
-
 	return (
-		<div className={`watcher-card ${styles['watcher-card']}`}>
+		<div
+			className={`watcher-card ${styles['watcher-card']} ${className || ''}`}
+			{...{ properties }}
+		>
 			<div className={styles['number']}>
 				<h3>{index + 1}</h3>
 			</div>
