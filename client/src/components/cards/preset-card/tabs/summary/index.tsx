@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import TextInfo from '~components/base/info/text-info';
 import {
 	PresetAudioEncoderDict,
@@ -7,15 +8,13 @@ import {
 } from '~dict/presets.dict';
 import { LanguageCodeToName } from '~funcs/locale.funcs';
 import { BooleanToConfirmation } from '~funcs/string.funcs';
-import { HandbrakePresetDataType } from '~types/preset';
 import PresetTab from '../../components/preset-tab';
 import PresetTabSection from '../../components/preset-tab-section';
+import { PresetCardContext } from '../../context';
 
-type Params = {
-	preset: HandbrakePresetDataType;
-};
+export default function SummaryTab() {
+	const { preset } = useContext(PresetCardContext)!;
 
-export default function SummaryTab({ preset }: Params) {
 	const filters = [
 		preset.PictureDetelecine != 'off'
 			? `Detelecine (${PresetPropertiesDict[preset.PictureDetelecine]})`

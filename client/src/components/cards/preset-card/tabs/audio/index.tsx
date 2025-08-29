@@ -1,17 +1,16 @@
+import { useContext } from 'react';
 import TextInfo from '~components/base/info/text-info';
 import { PresetAudioEncoderDict } from '~dict/presets.dict';
 import { LanguageCodeToName } from '~funcs/locale.funcs';
 import { BooleanToConfirmation, FirstLetterUpperCase } from '~funcs/string.funcs';
-import { HandbrakePresetDataType } from '~types/preset';
 import PresetTab from '../../components/preset-tab';
 import PresetTabSection from '../../components/preset-tab-section';
+import { PresetCardContext } from '../../context';
 import styles from './styles.module.scss';
 
-type Params = {
-	preset: HandbrakePresetDataType;
-};
+export default function AudioTab() {
+	const { preset } = useContext(PresetCardContext)!;
 
-export default function AudioTab({ preset }: Params) {
 	return (
 		<PresetTab className={styles['audio-tab']}>
 			<PresetTabSection label='Source Track Selection'>

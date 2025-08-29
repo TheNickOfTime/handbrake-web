@@ -1,16 +1,16 @@
+import { useContext } from 'react';
 import TextInfo from '~components/base/info/text-info';
 import { PresetEncoderDict, PresetPropertiesDict } from '~dict/presets.dict';
 import { BooleanToConfirmation, FirstLetterUpperCase } from '~funcs/string.funcs';
-import { HandbrakePresetDataType, VideoQualityType } from '~types/preset';
+import { VideoQualityType } from '~types/preset';
 import PresetTab from '../../components/preset-tab';
 import PresetTabSection from '../../components/preset-tab-section';
+import { PresetCardContext } from '../../context';
 import styles from './styles.module.scss';
 
-type Params = {
-	preset: HandbrakePresetDataType;
-};
+export default function VideoTab() {
+	const { preset } = useContext(PresetCardContext)!;
 
-export default function VideoTab({ preset }: Params) {
 	return (
 		<PresetTab className={styles['video-tab']}>
 			<PresetTabSection label='Video'>

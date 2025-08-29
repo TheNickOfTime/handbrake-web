@@ -1,8 +1,9 @@
 import DownloadIcon from '@icons/download.svg?react';
 import DeleteIcon from '@icons/trash-fill.svg?react';
-import { useState } from 'react';
+import { HTMLAttributes, useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
 import { HandbrakePresetType } from '~types/preset';
+import { PresetCardContext } from './context';
 import styles from './styles.module.scss';
 import AudioTab from './tabs/audio';
 import ChaptersTab from './tabs/chapters';
@@ -12,13 +13,13 @@ import SubtitlesTab from './tabs/subtitles';
 import SummaryTab from './tabs/summary';
 import VideoTab from './tabs/video';
 
-type Params = {
+interface Properties extends HTMLAttributes<HTMLDivElement> {
 	preset: HandbrakePresetType;
 	category: string;
 	canModify?: boolean;
 	handleRenamePreset?: (oldName: string, newName: string, category: string) => void;
 	handleRemovePreset: (preset: string, category: string) => void;
-};
+}
 
 enum PresetTabs {
 	Summary,
@@ -36,7 +37,9 @@ export default function PresetCard({
 	canModify = false,
 	handleRenamePreset,
 	handleRemovePreset,
-}: Params) {
+	className,
+	...properties
+}: Properties) {
 	const [currentTab, setCurrentTab] = useState(PresetTabs.Summary);
 	const [presetName, setPresetName] = useState(preset.PresetList[0].PresetName);
 
@@ -69,7 +72,7 @@ export default function PresetCard({
 	};
 
 	return (
-		<div className={styles['preset-card']}>
+		<div className={`preset-card ${styles['preset-card']} ${className || ''}`} {...properties}>
 			<div className={styles['heading']}>
 				{handleRenamePreset ? (
 					<form className={styles['label-form']} onSubmit={handleRenameInputSubmit}>
@@ -134,26 +137,28 @@ export default function PresetCard({
 					))}
 				</div>
 				<div className={styles['current-tab']}>
-					{(() => {
-						switch (currentTab) {
-							case PresetTabs.Summary:
-								return <SummaryTab preset={presetData} />;
-							case PresetTabs.Dimensions:
-								return <DimensionsTab preset={presetData} />;
-							case PresetTabs.Filters:
-								return <FiltersTab preset={presetData} />;
-							case PresetTabs.Video:
-								return <VideoTab preset={presetData} />;
-							case PresetTabs.Audio:
-								return <AudioTab preset={presetData} />;
-							case PresetTabs.Subtitles:
-								return <SubtitlesTab preset={presetData} />;
-							case PresetTabs.Chapters:
-								return <ChaptersTab preset={presetData} />;
-							default:
-								return null;
-						}
-					})()}
+					<PresetCardContext value={{ preset: presetData }}>
+						{(() => {
+							switch (currentTab) {
+								case PresetTabs.Summary:
+									return <SummaryTab />;
+								case PresetTabs.Dimensions:
+									return <DimensionsTab />;
+								case PresetTabs.Filters:
+									return <FiltersTab />;
+								case PresetTabs.Video:
+									return <VideoTab />;
+								case PresetTabs.Audio:
+									return <AudioTab />;
+								case PresetTabs.Subtitles:
+									return <SubtitlesTab />;
+								case PresetTabs.Chapters:
+									return <ChaptersTab />;
+								default:
+									return null;
+							}
+						})()}
+					</PresetCardContext>
 				</div>
 			</div>
 		</div>

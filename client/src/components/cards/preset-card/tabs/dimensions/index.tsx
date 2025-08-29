@@ -1,16 +1,16 @@
+import { useContext } from 'react';
 import TextInfo from '~components/base/info/text-info';
 import { PresetPropertiesDict } from '~dict/presets.dict';
 import { BooleanToConfirmation } from '~funcs/string.funcs';
-import { HandbrakePresetDataType, PictureCropMode } from '~types/preset';
+import { PictureCropMode } from '~types/preset';
 import PresetTab from '../../components/preset-tab';
 import PresetTabSection from '../../components/preset-tab-section';
+import { PresetCardContext } from '../../context';
 import styles from './styles.module.scss';
 
-type Params = {
-	preset: HandbrakePresetDataType;
-};
+export default function DimensionsTab() {
+	const { preset } = useContext(PresetCardContext)!;
 
-export default function DimensionsTab({ preset }: Params) {
 	const rotationMatch = preset.PictureRotate ? preset.PictureRotate.match(/(\d+):([01])/) : null;
 
 	return (
