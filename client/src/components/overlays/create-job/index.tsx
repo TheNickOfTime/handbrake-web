@@ -177,18 +177,24 @@ export default function CreateJob({ onClose }: Properties) {
 		}
 	};
 
-	const handleRecursiveChange = async (value: boolean) => {
+	const handleRecursiveChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+		const value = event.target.value == 'true';
+
+		setIsRecursive(value);
+
 		if (inputPath) {
-			const newInputFiles = FilterVideoFiles(
-				(await RequestDirectory(socket, inputPath, value)).items
-			);
-			const newOutputFiles = await socket.emitWithAck(
-				'check-name-collision',
-				outputPath,
-				GetOutputItemsFromInputItems(newInputFiles, outputExtension)
-			);
-			setInputFiles(newInputFiles);
-			setOutputFiles(newOutputFiles);
+			(async function () {
+				const newInputFiles = FilterVideoFiles(
+					(await RequestDirectory(socket, inputPath, value)).items
+				);
+				const newOutputFiles = await socket.emitWithAck(
+					'check-name-collision',
+					outputPath,
+					GetOutputItemsFromInputItems(newInputFiles, outputExtension)
+				);
+				setInputFiles(newInputFiles);
+				setOutputFiles(newOutputFiles);
+			})();
 		}
 	};
 

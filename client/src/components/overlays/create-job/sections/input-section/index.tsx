@@ -9,14 +9,8 @@ import styles from '../../styles.module.scss';
 
 export default function InputSection() {
 	const { config } = useContext(PrimaryContext)!;
-	const {
-		jobFrom,
-		inputPath,
-		handleInputConfirm,
-		isRecursive,
-		setIsRecursive,
-		handleRecursiveChange,
-	} = useContext(CreateJobContext)!;
+	const { jobFrom, inputPath, handleInputConfirm, isRecursive, handleRecursiveChange } =
+		useContext(CreateJobContext)!;
 
 	return (
 		<fieldset className={styles['input-section']}>
@@ -40,7 +34,6 @@ export default function InputSection() {
 					id='recursive-input'
 					label='Recursive:'
 					value={isRecursive}
-					setValue={setIsRecursive}
 					onChange={handleRecursiveChange}
 				/>
 			)}

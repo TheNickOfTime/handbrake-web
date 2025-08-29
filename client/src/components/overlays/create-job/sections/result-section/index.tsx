@@ -38,10 +38,10 @@ export default function ResultSection() {
 							return (
 								<tr key={index}>
 									<td className={styles['index-cell']}>{index + 1}</td>
-									<td className={styles['input-cell']} heading={file.path}>
+									<td className={styles['input-cell']} title={file.path}>
 										{inputText}
 									</td>
-									<td className={styles['output-cell']} heading={outputFile.path}>
+									<td className={styles['output-cell']} title={outputFile.path}>
 										{outputText}
 									</td>
 								</tr>

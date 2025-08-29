@@ -39,7 +39,7 @@ export interface CreateJobContextType {
 	handleFileInputConfirm: (item: DirectoryItemType) => Promise<void>;
 	handleDirectoryInputConfirm: (item: DirectoryItemType) => Promise<void>;
 	handleInputConfirm: (item: DirectoryItemType) => Promise<void>;
-	handleRecursiveChange: (value: boolean) => Promise<void>;
+	handleRecursiveChange: React.ChangeEventHandler<HTMLInputElement>;
 	handleOutputConfirm: (item: DirectoryItemType) => Promise<void>;
 	handleAllowOverwriteSelect: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 	handleOutputNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
