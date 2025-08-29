@@ -35,14 +35,9 @@ export default function NumberInput({
 	};
 
 	return (
-		<div className={styles['number-input']}>
-			{label && (
-				<label className={styles['input-label']} htmlFor={id}>
-					{EndWithColon(label)}
-				</label>
-			)}
+		<div className={`number-input ${styles['number-input']}`}>
+			{label && <label htmlFor={id}>{EndWithColon(label)}</label>}
 			<input
-				className={'form-item' + (value ? '' : ' zero')}
 				type='number'
 				id={id}
 				step={step}

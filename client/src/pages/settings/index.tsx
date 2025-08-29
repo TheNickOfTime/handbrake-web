@@ -5,6 +5,7 @@ import ToggleInput from '~components/base/inputs/toggle';
 import Page from '~components/root/page';
 import Section from '~components/root/section';
 import { PrimaryContext } from '~layouts/primary/context';
+import { SettingsContext } from './context';
 import SettingsApplication from './sections/application-section';
 import SettingsPaths from './sections/paths-section';
 import SettingsPreset from './sections/presets-section';
@@ -36,29 +37,33 @@ export default function SettingsPage() {
 
 	return (
 		<Page className={styles['settings-page']} heading='Settings'>
-			<Section className={styles['buttons']}>
-				<ButtonInput
-					label='Save Configuration'
-					Icon={SaveIcon}
-					onClick={handleSaveConfig}
-					disabled={!canSave}
-				/>
-				<ToggleInput
-					id='auto-fix-toggle'
-					label='Auto-fix Configuration Errors (recommended)'
-					value={currentConfig.config['auto-fix']}
-					onChange={handleAutoFixChange}
-				/>
-			</Section>
-			<div className={styles['settings-sections']}>
-				<SettingsPaths
-					config={currentConfig}
-					setConfig={setCurrentConfig}
-					setValid={setPathsValid}
-				/>
-				<SettingsPreset config={currentConfig} setConfig={setCurrentConfig} />
-				<SettingsApplication config={currentConfig} setConfig={setCurrentConfig} />
-			</div>
+			<SettingsContext
+				value={{
+					currentConfig,
+					setCurrentConfig,
+					setPathsValid,
+				}}
+			>
+				<Section className={styles['buttons']}>
+					<ButtonInput
+						label='Save Configuration'
+						Icon={SaveIcon}
+						onClick={handleSaveConfig}
+						disabled={!canSave}
+					/>
+					<ToggleInput
+						id='auto-fix-toggle'
+						label='Auto-fix Configuration Errors (recommended)'
+						checked={currentConfig.config['auto-fix']}
+						onChange={handleAutoFixChange}
+					/>
+				</Section>
+				<div className={styles['settings-sections']}>
+					<SettingsPaths />
+					<SettingsPreset />
+					<SettingsApplication />
+				</div>
+			</SettingsContext>
 		</Page>
 	);
 }

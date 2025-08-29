@@ -35,17 +35,15 @@
 				flex-grow: 1;
 			}
 
-			.reset {
+			.reset-button {
 				padding: 0.25rem;
 				aspect-ratio: 1;
-				// padding: 0;
-				// text-align: center;
+			}
 
-				// .bi {
-				// 	margin: auto;
-				// 	line-height: 1rem;
-				// 	font-size: 1.75rem;
-				// }
+			.browse-button {
+				--button-content-size: 1rem;
+
+				padding: 0.5rem;
 			}
 		}
 	}

@@ -6,7 +6,7 @@
 	flex-flow: column nowrap;
 	gap: 1rem;
 
-	border-radius: 1rem;
+	border-radius: var(--border-radius);
 	background-color: var(--background-secondary);
 
 	.heading {

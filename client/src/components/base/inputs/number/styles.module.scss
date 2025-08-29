@@ -1,4 +1,5 @@
 @use '~styles/variables/breakpoints';
+@use '~styles/mixins/form';
 
 .number-input {
 	display: flex;
@@ -12,6 +13,8 @@
 	}
 
 	input[type='number'] {
+		@include form.form-item;
+
 		text-align: center;
 		flex-grow: 1;
 	}

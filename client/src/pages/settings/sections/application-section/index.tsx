@@ -1,19 +1,18 @@
+import { useContext } from 'react';
 import NumberInput from '~components/base/inputs/number';
 import Section from '~components/root/section';
-import { ConfigType, ConfigVersionType } from '~types/config';
+import { SettingsContext } from '~pages/settings/context';
+import { ConfigVersionType } from '~types/config';
 import styles from './styles.module.scss';
 
-type Params = {
-	config: ConfigType;
-	setConfig: React.Dispatch<React.SetStateAction<ConfigType>>;
-};
+export default function SettingsApplication() {
+	const { currentConfig, setCurrentConfig } = useContext(SettingsContext)!;
 
-export default function SettingsApplication({ config, setConfig }: Params) {
 	const updateVersionConfigProperty = <K extends keyof ConfigVersionType>(
 		key: K,
 		value: ConfigVersionType[K]
 	) => {
-		setConfig({ ...config, version: { ...config.version, [key]: value } });
+		setCurrentConfig({ ...currentConfig, version: { ...currentConfig.version, [key]: value } });
 	};
 
 	return (
@@ -21,7 +20,7 @@ export default function SettingsApplication({ config, setConfig }: Params) {
 			<NumberInput
 				id='settings-version-check-interval'
 				label='Update Check Interval (hours)'
-				value={config.version['check-interval']}
+				value={currentConfig.version['check-interval']}
 				onChange={(value) => updateVersionConfigProperty('check-interval', value)}
 			/>
 		</Section>

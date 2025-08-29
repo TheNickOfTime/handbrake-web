@@ -53,8 +53,8 @@ export default function PathInput({
 	};
 
 	return (
-		<div className={styles['path-input']}>
-			<div className={styles['input-section']}>
+		<div className={`path-input ${styles['path-input']}`}>
+			<div className={`input-section ${styles['input-section']}`}>
 				{label && (
 					<label className={styles['label']} htmlFor={id}>
 						{label.replace(/[:\s]+$/, '') + ':'}
@@ -71,7 +71,7 @@ export default function PathInput({
 					/>
 					{allowClear && value && (
 						<ButtonInput
-							className={styles['reset']}
+							className={styles['reset-button']}
 							Icon={ClearIcon}
 							color='yellow'
 							title='Clear Path'
@@ -93,7 +93,7 @@ export default function PathInput({
 				</div>
 			</div>
 			{showFileBrowser && (
-				<div className='browser-section'>
+				<div className={`browser-section ${styles['browser-section']}`}>
 					<FileBrowser
 						startPath={startPath}
 						rootPath={rootPath}

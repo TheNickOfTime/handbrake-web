@@ -1,19 +1,18 @@
+import { useContext } from 'react';
 import ToggleInput from '~components/base/inputs/toggle';
 import Section from '~components/root/section';
-import { ConfigPresetsType, ConfigType } from '~types/config';
+import { SettingsContext } from '~pages/settings/context';
+import { ConfigPresetsType } from '~types/config';
 import styles from './styles.module.scss';
 
-type Params = {
-	config: ConfigType;
-	setConfig: React.Dispatch<React.SetStateAction<ConfigType>>;
-};
+export default function SettingsPreset() {
+	const { currentConfig, setCurrentConfig } = useContext(SettingsContext)!;
 
-export default function SettingsPreset({ config, setConfig }: Params) {
 	const updatePresetsConfigProperty = <K extends keyof ConfigPresetsType>(
 		key: K,
 		value: ConfigPresetsType[K]
 	) => {
-		setConfig({ ...config, presets: { ...config.presets, [key]: value } });
+		setCurrentConfig({ ...currentConfig, presets: { ...currentConfig.presets, [key]: value } });
 	};
 
 	return (
@@ -21,7 +20,7 @@ export default function SettingsPreset({ config, setConfig }: Params) {
 			<ToggleInput
 				id='default-preset-toggle'
 				label='Show Default Presets'
-				checked={config.presets['show-default-presets']}
+				checked={currentConfig.presets['show-default-presets']}
 				onChange={(event) => {
 					updatePresetsConfigProperty('show-default-presets', event.target.checked);
 				}}
