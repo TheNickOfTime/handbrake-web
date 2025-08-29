@@ -6,7 +6,7 @@ import { FileBrowserMode } from '~types/file-browser';
 import ButtonInput from '../button';
 import styles from './styles.module.scss';
 
-type Params = {
+interface Properties {
 	id: string;
 	label: string;
 	startPath: string;
@@ -17,7 +17,7 @@ type Params = {
 	value: string;
 	setValue?: (value: string) => void;
 	onConfirm?: (item: DirectoryItemType) => void;
-};
+}
 
 export default function PathInput({
 	id,
@@ -30,7 +30,7 @@ export default function PathInput({
 	value,
 	setValue,
 	onConfirm,
-}: Params) {
+}: Properties) {
 	const [showFileBrowser, setShowFileBrowser] = useState(false);
 
 	const handleClear = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
