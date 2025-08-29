@@ -5,17 +5,21 @@ import TextInput from '~components/base/inputs/text';
 import { DirectoryItemsType } from '~types/directory';
 import styles from './styles.module.scss';
 
-type Params = {
+interface Properties {
 	existingItems: DirectoryItemsType;
 	onCancel: () => void;
 	onSubmit: (directoryName: string) => void;
-};
+}
 
-export default function AddDirectory({ existingItems, onCancel, onSubmit }: Params) {
+export default function AddDirectory({ existingItems, onCancel, onSubmit }: Properties) {
 	const [directoryName, setDirectoryName] = useState('');
 	const [existingName, setExistingName] = useState(false);
 
-	const handleNameChange = (value: string) => {
+	const handleNameChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+		const value = event.target.value;
+
+		setDirectoryName(value);
+
 		const nameExists = existingItems
 			.filter((item) => item.isDirectory)
 			.map((item) => item.name)
@@ -23,20 +27,20 @@ export default function AddDirectory({ existingItems, onCancel, onSubmit }: Para
 		setExistingName(nameExists);
 	};
 
+	const handleNameSumbit: React.FormEventHandler<HTMLInputElement> = () => {
+		if (directoryName) {
+			onSubmit(directoryName);
+		}
+	};
+
 	const handleCancel = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		event.preventDefault();
 		onCancel();
 	};
 
-	const handleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+	const handleSubmit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
 		event.preventDefault();
 		onSubmit(directoryName);
-	};
-
-	const handleEnter = (value: string) => {
-		if (value) {
-			onSubmit(value);
-		}
 	};
 
 	return (
@@ -52,9 +56,8 @@ export default function AddDirectory({ existingItems, onCancel, onSubmit }: Para
 				<TextInput
 					id='new-directory-name'
 					value={directoryName}
-					setValue={setDirectoryName}
 					onChange={handleNameChange}
-					onSubmit={handleEnter}
+					onSubmit={handleNameSumbit}
 				/>
 				<div className={styles['buttons']}>
 					<ButtonInput label='Cancel' color='red' onClick={handleCancel} />

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import AddFolderIcon from '@icons/folder-plus.svg?react';
-import { useContext, useEffect, useState } from 'react';
+import { HTMLAttributes, useContext, useEffect, useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
 import { PrimaryContext } from '~layouts/primary/context';
 import {
@@ -14,15 +14,23 @@ import AddDirectory from './components/add-directory';
 import FileBrowserBody from './components/browser-body';
 import styles from './styles.module.scss';
 
-type Params = {
+interface Properties extends HTMLAttributes<HTMLDivElement> {
 	startPath: string;
 	rootPath: string;
 	mode: FileBrowserMode;
 	allowCreate: boolean;
 	onConfirm: (item: DirectoryItemType) => void;
-};
+}
 
-export default function FileBrowser({ startPath, rootPath, mode, allowCreate, onConfirm }: Params) {
+export default function FileBrowser({
+	startPath,
+	rootPath,
+	mode,
+	allowCreate,
+	onConfirm,
+	className,
+	...properties
+}: Properties) {
 	const { socket } = useContext(PrimaryContext)!;
 
 	const [currentPath, setCurrentPath] = useState(startPath);
@@ -100,7 +108,10 @@ export default function FileBrowser({ startPath, rootPath, mode, allowCreate, on
 	};
 
 	return (
-		<div className={styles['file-browser']}>
+		<div
+			className={`file-browser ${styles['file-browser']} ${className || ''}`}
+			{...properties}
+		>
 			<div className={styles['header']}>
 				<div className={styles['current-path']}>
 					<span>{currentPath}</span>
@@ -109,7 +120,7 @@ export default function FileBrowser({ startPath, rootPath, mode, allowCreate, on
 				{mode == FileBrowserMode.Directory && allowCreate && (
 					<button
 						className={styles['add-directory']}
-						heading='Add New Directory'
+						title='Add New Directory'
 						onClick={handleAddDirectoryButton}
 						onKeyDown={(event) => {
 							event.preventDefault();

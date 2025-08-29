@@ -6,14 +6,14 @@ import { DirectoryItemType, DirectoryType } from '~types/directory';
 import { FileBrowserMode } from '~types/file-browser';
 import styles from './styles.module.scss';
 
-type Params = {
+interface Properties {
 	mode: FileBrowserMode;
 	rootPath: string;
 	directory: DirectoryType | null;
 	updateDirectory: (newPath: string) => void;
 	selectedItem: DirectoryItemType | undefined;
 	setSelectedItem: React.Dispatch<React.SetStateAction<DirectoryItemType | undefined>>;
-};
+}
 
 export default function FileBrowserBody({
 	mode,
@@ -22,7 +22,7 @@ export default function FileBrowserBody({
 	updateDirectory,
 	selectedItem,
 	setSelectedItem,
-}: Params) {
+}: Properties) {
 	const onClickFile = (item: DirectoryItemType) => {
 		switch (mode) {
 			case FileBrowserMode.SingleFile:
