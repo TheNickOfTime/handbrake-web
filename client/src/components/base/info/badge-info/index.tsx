@@ -6,9 +6,9 @@ interface Properties extends HTMLAttributes<HTMLDivElement> {
 	info: string;
 }
 
-export default function BadgeInfo({ info, ...properties }: Properties) {
+export default function BadgeInfo({ info, className, ...properties }: Properties) {
 	return (
-		<div className={styles['badge-info']} title={info} {...properties}>
+		<div className={`${styles['badge-info']} ${className || ''}`} title={info} {...properties}>
 			<InfoIcon />
 		</div>
 	);

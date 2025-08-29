@@ -45,6 +45,13 @@
 					line-height: 1;
 					white-space: nowrap;
 					align-content: center;
+
+					.badge {
+						svg {
+							width: 0.85rem;
+							height: 0.85rem;
+						}
+					}
 				}
 
 				.job-section-children {

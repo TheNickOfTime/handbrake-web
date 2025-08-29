@@ -12,7 +12,7 @@ export default function QueueCardSection({ children, label, title }: Params) {
 		<div className={styles['job-section']} id={label.toLowerCase().replace(/\s/g, '-')}>
 			<h5 className={styles['job-section-label']}>
 				<span>{label}</span>
-				{title && <BadgeInfo info={title} />}
+				{title && <BadgeInfo className={styles['badge']} info={title} />}
 			</h5>
 			<hr />
 			<div className={styles['job-section-children']}>{children}</div>

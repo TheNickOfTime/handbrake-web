@@ -78,11 +78,11 @@ export default function QueueSection({ queue }: Properties) {
 									<td className={styles['order']} align='center'>
 										{job.order_index}
 									</td>
-									<td className={styles['input']} heading={job.data.input_path}>
+									<td className={styles['input']} title={job.data.input_path}>
 										{job.data.input_path.match(/[^/]+$/)}
 										<BadgeInfo info={job.data.input_path} />
 									</td>
-									<td className={styles['output']} heading={job.data.output_path}>
+									<td className={styles['output']} title={job.data.output_path}>
 										{job.data.output_path.match(/[^/]+$/)}
 										<BadgeInfo info={job.data.output_path} />
 									</td>
@@ -94,7 +94,7 @@ export default function QueueSection({ queue }: Properties) {
 									>
 										{TranscodeStage[job.status.transcode_stage || 0]}
 									</td>
-									<td className='progress'>
+									<td className={styles['progress']}>
 										<ProgressBar
 											className={styles['percentage']}
 											percentage={percentage}
