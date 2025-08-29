@@ -1,0 +1,22 @@
+.queue {
+	[data-status='waiting'] {
+		color: var(--handbrake-yellow);
+	}
+
+	[data-status='scanning'] {
+		color: var(--handbrake-orange);
+	}
+
+	[data-status='transcoding'] {
+		color: var(--handbrake-blue);
+	}
+
+	[data-status='finished'] {
+		color: var(--handbrake-green);
+	}
+
+	.progress {
+		min-width: 15rem;
+		width: 15rem;
+	}
+}

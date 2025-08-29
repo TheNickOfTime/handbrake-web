@@ -1,8 +1,9 @@
+import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
-import path from 'path';
-import { env } from 'process';
+import { resolve } from 'path';
+import { cwd, env } from 'process';
 import { defineConfig } from 'vite';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import svgr from 'vite-plugin-svgr';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,21 +11,25 @@ export default defineConfig({
 		outDir: './build',
 		emptyOutDir: true,
 	},
-	plugins: [react(), tsconfigPaths()],
+	plugins: [
+		tanstackRouter({
+			target: 'react',
+			autoCodeSplitting: true,
+		}),
+		react(),
+		svgr(),
+	],
 	resolve: {
 		alias: {
-			'@style': path.resolve(__dirname, './src/style'),
-			components: path.resolve(__dirname, './src/components'),
-			pages: path.resolve(__dirname, './src/pages'),
-			sections: path.resolve(__dirname, './src/sections'),
-			types: path.resolve(__dirname, '../shared/types'),
-			dict: path.resolve(__dirname, '../shared/dict'),
-			funcs: path.resolve(__dirname, '../shared/funcs'),
+			'@icons': resolve(cwd(), 'node_modules/bootstrap-icons/icons'),
+			'~styles': resolve(cwd(), './src/styles'),
+			'~components': resolve(cwd(), './src/components'),
+			'~pages': resolve(cwd(), './src/pages'),
+			'~layouts': resolve(cwd(), './src/layouts'),
+			'~types': resolve(cwd(), '../shared/types'),
+			'~dict': resolve(cwd(), '../shared/dict'),
+			'~funcs': resolve(cwd(), '../shared/funcs'),
 		},
-	},
-	server: {
-		host: '127.0.0.1',
-		port: 5173,
 	},
 	define: {
 		APP_VERSION: JSON.stringify(env.npm_package_version),

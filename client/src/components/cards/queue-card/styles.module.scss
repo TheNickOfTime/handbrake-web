@@ -1,0 +1,137 @@
+.queue-card {
+	// padding: 0.5rem 1rem;
+
+	.wrapper {
+		display: flex;
+		flex-flow: row nowrap;
+		overflow: hidden;
+
+		border-radius: 0.75rem;
+		background-color: var(--background-tertiary);
+
+		.job-number {
+			padding: 0 0.5rem;
+			display: flex;
+			flex-flow: column nowrap;
+			align-items: center;
+			justify-content: center;
+			gap: 0.5rem;
+			background-color: var(--transparent-primary);
+			cursor: grab;
+
+			.number-label {
+				margin: 0;
+			}
+
+			.drag-icon {
+				color: var(--text-disabled);
+			}
+		}
+
+		.content {
+			padding: 1rem 2rem;
+			flex-grow: 1;
+			display: flex;
+			flex-flow: column nowrap;
+			gap: 2rem;
+
+			.job-section {
+				flex-grow: 1;
+				min-width: fit-content;
+
+				.job-section-label {
+					min-width: fit-content;
+					margin: 0;
+					line-height: 1;
+					white-space: nowrap;
+					align-content: center;
+
+					.badge {
+						svg {
+							width: 0.75rem;
+							height: 0.75rem;
+						}
+					}
+				}
+
+				.job-section-children {
+					font-size: 0.9rem;
+				}
+			}
+
+			.info {
+				display: flex;
+				flex-flow: row wrap;
+				gap: 1rem;
+
+				#current-fps,
+				#average-fps {
+					width: 10%;
+				}
+
+				#time-elapsed,
+				#time-left {
+					width: 15%;
+				}
+
+				#progress {
+					min-width: 50%;
+					width: 50%;
+				}
+
+				.job-log-link {
+					a {
+						color: var(--handbrake-blue);
+
+						svg {
+							display: inline-block;
+							vertical-align: middle;
+						}
+					}
+				}
+			}
+		}
+
+		.actions {
+			display: grid;
+			grid-template-columns: 1;
+			gap: 0.2rem;
+
+			button {
+				display: block;
+				padding: 0.375rem;
+
+				border: none;
+				border-radius: 0;
+				background-color: var(--transparent-secondary);
+
+				svg {
+					display: block;
+					color: var(--text-secondary);
+				}
+
+				&:hover:not(:disabled) {
+					background-color: var(--transparent-primary);
+					cursor: pointer;
+				}
+
+				&:hover:disabled {
+					// background-color: $transparent-light-primary;
+					cursor: not-allowed;
+				}
+
+				&:active {
+					background-color: var(--transparent-tertiary);
+				}
+
+				&:disabled {
+					background-color: var(--transparent-tertiary);
+
+					svg {
+						color: var(--text-disabled);
+					}
+				}
+			}
+		}
+	}
+}

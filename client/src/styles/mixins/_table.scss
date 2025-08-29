@@ -1,0 +1,14 @@
+@mixin table-scroll {
+	max-width: 100%;
+	overflow-x: scroll;
+	padding-bottom: 1.25rem;
+
+	table {
+		width: 100%;
+
+		th,
+		td {
+			white-space: nowrap;
+		}
+	}
+}

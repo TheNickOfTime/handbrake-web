@@ -1,0 +1,113 @@
+import AddIcon from '@icons/plus-lg.svg?react';
+import TrashIcon from '@icons/trash-fill.svg?react';
+import { HTMLAttributes } from 'react';
+import TextInfo from '~components/base/info/text-info';
+import ButtonInput from '~components/base/inputs/button';
+import {
+	WatcherDefinitionWithRulesType,
+	WatcherRuleBaseMethods,
+	WatcherRuleDefinitionType,
+	WatcherRuleFileInfoMethods,
+	WatcherRuleMaskMethods,
+	WatcherRuleStringComparisonMethods,
+} from '~types/watcher';
+import WatcherCardRule from './components/rule-card';
+import styles from './styles.module.scss';
+
+interface Properties extends HTMLAttributes<HTMLDivElement> {
+	watcherID: number;
+	watcher: WatcherDefinitionWithRulesType;
+	index: number;
+	handleRemoveWatcher: (id: number) => void;
+	handleAddRule: (id: number, rule: WatcherRuleDefinitionType) => void;
+	handleUpdateRule: (id: number, rule: WatcherRuleDefinitionType) => void;
+	handleRemoveRule: (ruleID: number) => void;
+}
+
+export default function WatcherCard({
+	watcherID,
+	watcher,
+	index,
+	handleRemoveWatcher,
+	handleAddRule,
+	handleUpdateRule,
+	handleRemoveRule,
+	className,
+	...properties
+}: Properties) {
+	const defaultRuleDefinition: WatcherRuleDefinitionType = {
+		name: 'New Watcher Rule',
+		mask: WatcherRuleMaskMethods.Include,
+		base_rule_method: WatcherRuleBaseMethods.FileInfo,
+		rule_method: WatcherRuleFileInfoMethods.FileName,
+		comparison_method: WatcherRuleStringComparisonMethods.EqualTo,
+		comparison: '',
+	};
+
+	return (
+		<div
+			className={`watcher-card ${styles['watcher-card']} ${className || ''}`}
+			{...{ properties }}
+		>
+			<div className={styles['number']}>
+				<h3>{index + 1}</h3>
+			</div>
+			<div className={styles['body']}>
+				<div className={styles['info']}>
+					<div className={styles['header']}>
+						<h5 className={styles['heading']}>Info</h5>
+						<ButtonInput
+							className={styles['button']}
+							Icon={TrashIcon}
+							color='red'
+							title='Remove Watcher'
+							onClick={() => handleRemoveWatcher(watcherID)}
+						/>
+					</div>
+					<div className={styles['content']}>
+						<TextInfo className={styles['text-info']} label='Watching Path'>
+							{watcher.watch_path || 'N/A'}
+						</TextInfo>
+						<TextInfo className={styles['text-info']} label='Output Path'>
+							{watcher.output_path || 'N/A'}
+						</TextInfo>
+						<TextInfo className={styles['text-info']} label='Preset'>
+							{watcher.preset_id}
+						</TextInfo>
+					</div>
+				</div>
+				<div className={styles['rules']}>
+					<div className={styles['header']}>
+						<h5 className={styles['heading']}>Rules</h5>
+						<ButtonInput
+							className={styles['button']}
+							Icon={AddIcon}
+							color='blue'
+							title='Add Watcher Rule'
+							onClick={() => handleAddRule(watcherID, defaultRuleDefinition)}
+						/>
+					</div>
+					<div className={styles['rule-cards']}>
+						{Object.keys(watcher.rules).length == 0 && (
+							<div className={styles['rule-card']} style={{ textAlign: 'center' }}>
+								N/A
+							</div>
+						)}
+						{Object.keys(watcher.rules)
+							.map((ruleID) => parseInt(ruleID))
+							.map((ruleID, index) => (
+								<WatcherCardRule
+									id={ruleID}
+									rule={watcher.rules[ruleID]}
+									index={index}
+									handleUpdateRule={handleUpdateRule}
+									handleRemoveRule={handleRemoveRule}
+									key={`watcher-${watcherID}-rule-${ruleID}`}
+								/>
+							))}
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+}

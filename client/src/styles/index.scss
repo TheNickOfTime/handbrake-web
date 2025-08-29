@@ -1,0 +1,22 @@
+@use '~styles/global/normalize';
+
+@use '~styles/global/font';
+@use '~styles/global/scroll';
+@use '~styles/global/sizing';
+@use '~styles/global/text';
+@use '~styles/global/theme';
+
+body {
+	min-width: var(--breakpoint-min);
+	min-height: 100vh;
+	max-height: 100vh;
+
+	// Color -------------------------------------------------------------------
+	background-color: var(--background-primary);
+	color: var(--text-primary);
+
+	#root {
+		// width: 100%;
+		height: 100vh;
+	}
+}

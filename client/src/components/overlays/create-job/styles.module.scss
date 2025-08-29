@@ -1,0 +1,141 @@
+.create-job-overlay {
+	.heading {
+		margin-bottom: 2rem;
+		font-size: 1.5rem;
+	}
+
+	.mode-section {
+		margin-bottom: 1rem;
+	}
+
+	.job-form {
+		display: flex;
+		flex-flow: column nowrap;
+		gap: 1.25rem;
+
+		fieldset {
+			padding: 1.5rem 1rem;
+			display: flex;
+			flex-flow: column nowrap;
+			gap: 0.75rem;
+
+			border: 0.1rem solid var(--text-primary);
+			border-radius: 1rem;
+
+			legend {
+				font-family: var(--heading-font);
+				font-size: 1.25;
+			}
+		}
+
+		label {
+			color: var(--text-secondary);
+		}
+	}
+
+	.result-section {
+		h3 {
+			margin-bottom: 1rem;
+		}
+
+		.table-wrapper {
+			max-height: 16rem;
+			overflow-y: scroll;
+			margin-bottom: 1rem;
+
+			table {
+				width: 100%;
+				font-size: 0.8rem;
+
+				thead {
+					th {
+						padding: 0.25rem;
+						border-bottom: 0.1rem solid var(--text-secondary);
+					}
+				}
+
+				tbody {
+					tr {
+						&:hover {
+							background-color: var(--transparent-secondary);
+						}
+
+						td {
+							padding: 0.25rem 0.5rem;
+							font-size: 0.8rem;
+							cursor: default;
+						}
+
+						.index-cell {
+							text-align: center;
+						}
+
+						.input-cell:hover,
+						.output-cell:hover {
+							background-color: var(--transparent-secondary);
+						}
+					}
+				}
+			}
+		}
+
+		.see-more {
+			width: 100%;
+			border: none;
+			background-color: transparent;
+			color: var(--text-secondary);
+			cursor: pointer;
+
+			&:hover {
+				background-color: var(--transparent-primary);
+			}
+		}
+	}
+
+	#output-full {
+		display: flex;
+		flex-flow: row nowrap;
+		align-items: center;
+		gap: 1rem;
+
+		.label {
+			white-space: nowrap;
+		}
+
+		.text {
+			flex-grow: 1;
+			// background-color: white;
+		}
+	}
+
+	.filename-conflict,
+	.filename-overwrite {
+		svg {
+			display: inline;
+			vertical-align: middle;
+		}
+	}
+
+	.filename-conflict {
+		text-align: center;
+		color: var(--handbrake-yellow);
+	}
+
+	.filename-overwrite {
+		text-align: center;
+		color: var(--handbrake-red);
+	}
+
+	.buttons-section {
+		display: flex;
+		flex-direction: row wrap;
+		justify-content: right;
+		gap: 1rem;
+	}
+
+	// .controlled-button {
+	// 	.button-label {
+	// 		font-size: 1.5rem;
+	// 	}
+	// }
+}

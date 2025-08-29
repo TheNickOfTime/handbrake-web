@@ -1,0 +1,38 @@
+.status {
+	.wrapper {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: space-between;
+
+		.info {
+			display: flex;
+			flex-flow: row wrap;
+			align-items: center;
+			gap: 0.5rem;
+
+			font-size: 1.1rem;
+
+			&[data-status='stopped'] {
+				color: var(--handbrake-red);
+			}
+
+			&[data-status='idle'] {
+				color: var(--handbrake-yellow);
+			}
+
+			&[data-status='active'] {
+				color: var(--handbrake-blue);
+			}
+
+			.info-text {
+				font-size: 2rem;
+			}
+		}
+
+		.buttons {
+			display: flex;
+			flex-flow: row wrap;
+			gap: 0.75rem;
+		}
+	}
+}

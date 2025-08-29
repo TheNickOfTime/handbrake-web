@@ -1,0 +1,15 @@
+.text-info {
+	.label {
+		margin-right: 0.5rem;
+		font-size: 0.85rem;
+		color: var(--text-tertiary);
+	}
+
+	&[data-vertical='true'] {
+		margin-right: unset;
+
+		& > * {
+			display: block;
+		}
+	}
+}

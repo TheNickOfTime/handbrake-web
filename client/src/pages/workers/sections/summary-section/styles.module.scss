@@ -1,0 +1,34 @@
+.summary-section {
+	.summary-info {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: space-between;
+		gap: 1rem;
+
+		font-size: 1.15rem;
+	}
+
+	.info {
+		padding: 0.75rem 1.5rem;
+		flex-grow: 1;
+		border-radius: 0.5rem;
+		background-color: hsla(0, 0%, 100%, 0.1);
+		text-align: center;
+	}
+
+	.info.total {
+		color: var(--handbrake-blue);
+	}
+
+	.info.idle {
+		color: var(--handbrake-yellow);
+	}
+
+	.info.active {
+		color: var(--handbrake-green);
+	}
+
+	.info.jobs {
+		color: var(--text-tertiary);
+	}
+}

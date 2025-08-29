@@ -1,0 +1,27 @@
+@use '~styles/variables/breakpoints';
+@use '~styles/mixins/form';
+
+.select-input {
+	display: inline-flex;
+	flex-flow: row wrap;
+	align-items: center;
+	gap: 0.5rem;
+
+	.label {
+		width: fit-content;
+		white-space: nowrap;
+	}
+
+	.input {
+		@include form.form-item;
+
+		max-width: 100%;
+		background-color: var(--background-tertiary);
+	}
+}
+
+@media (min-width: breakpoints.$breakpoint-medium) {
+	.select-input {
+		flex-flow: row nowrap;
+	}
+}

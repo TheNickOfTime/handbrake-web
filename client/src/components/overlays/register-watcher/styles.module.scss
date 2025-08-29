@@ -1,0 +1,30 @@
+.register-watcher {
+	.heading {
+		margin-bottom: 1rem;
+	}
+
+	.fields {
+		display: flex;
+		flex-flow: column nowrap;
+		gap: 1rem;
+
+		.fields-section {
+			display: flex;
+			flex-flow: column nowrap;
+			gap: 0.75rem;
+		}
+
+		.buttons-section {
+			display: flex;
+			flex-direction: row wrap;
+			justify-content: right;
+			gap: 0.5rem;
+		}
+	}
+
+	// .controlled-button {
+	// 	.button-label {
+	// 		font-size: 1.5rem;
+	// 	}
+	// }
+}

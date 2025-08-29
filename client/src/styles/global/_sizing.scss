@@ -1,0 +1,14 @@
+@use '../variables/breakpoints';
+
+html {
+	--breakpoint-min: #{breakpoints.$breakpoint-min};
+	--breakpoint-small: #{breakpoints.$breakpoint-small};
+	--breakpoint-medium: #{breakpoints.$breakpoint-medium};
+	--breakpoint-large: #{breakpoints.$breakpoint-large};
+	--breakpoint-xlarge: #{breakpoints.$breakpoint-xlarge};
+	--breakpoint-max: #{breakpoints.$breakpoint-max};
+
+	--header-height: 4rem;
+	--sidebar-width: #{breakpoints.$sidebar-width};
+	--border-radius: 0.75rem;
+}

@@ -1,0 +1,31 @@
+@use '~styles/variables/breakpoints';
+
+.settings-page {
+	.buttons {
+		flex-flow: row wrap;
+		gap: 1rem;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.settings-sections {
+		:global(.section) {
+			display: flex;
+			flex-flow: column nowrap;
+			gap: 1.25rem;
+		}
+	}
+
+	label {
+		font-size: 0.9rem;
+		color: var(--text-tertiary);
+	}
+
+	@media (min-width: calc(breakpoints.$breakpoint-max - breakpoints.$sidebar-width)) {
+		.settings-sections {
+			display: grid;
+			gap: 1rem;
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+}

@@ -1,0 +1,93 @@
+.upload-preset-overlay {
+	.wrapper {
+		display: flex;
+		flex-flow: column nowrap;
+		gap: 1rem;
+
+		.file-section {
+			display: flex;
+			flex-flow: row nowrap;
+			align-items: center;
+			gap: 0.5rem;
+
+			label {
+				// font-size: 1.25rem;
+				font-size: 0.9rem;
+				color: var(--text-tertiary);
+			}
+
+			.file-upload {
+				flex-grow: 1;
+
+				// font-size: 1.5rem;
+				font-family: var(--body-font);
+
+				border: 0.1rem solid var(--text-primary);
+				border-radius: 0.5rem;
+				// background-color: white;
+
+				&::file-selector-button {
+					margin-right: 1rem;
+					padding: 0.375rem 0.5rem;
+					font-family: var(--body-font);
+					border: none;
+					background-color: var(--background-six);
+					color: var(--text-secondary);
+				}
+
+				&::file-selector-button:hover {
+					background-color: var(--background-five);
+				}
+			}
+		}
+
+		.fields-section {
+			margin-top: 2rem;
+			display: flex;
+			flex-flow: column nowrap;
+			gap: 1rem;
+
+			h3 {
+				margin: 0;
+				color: var(--text-secondary);
+			}
+
+			.preset-overwrite {
+				margin-bottom: 0.5rem;
+				text-align: center;
+				color: var(--handbrake-red);
+
+				svg {
+					margin-right: 0.375rem;
+					vertical-align: middle;
+				}
+			}
+
+			.preset-name-section {
+				display: flex;
+				flex-flow: row nowrap;
+				align-items: center;
+				gap: 1rem;
+
+				#preset-name {
+					padding: 0.5rem 1rem;
+					flex-grow: 1;
+					font-size: 1.75rem;
+					font-family: var(--body-font);
+					color: var(--text-primary);
+					// border: 0.2rem solid hsla(0, 0%, 100%, 0.1);
+					border: none;
+					border-radius: 0.75rem;
+					background-color: hsla(0, 0%, 100%, 0.1);
+				}
+			}
+		}
+
+		.buttons-section {
+			display: flex;
+			flex-flow: row wrap;
+			justify-content: flex-end;
+			gap: 1rem;
+		}
+	}
+}

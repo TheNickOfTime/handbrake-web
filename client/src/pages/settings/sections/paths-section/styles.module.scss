@@ -1,0 +1,20 @@
+.paths-section {
+	.path-invalid-warning {
+		margin-top: 0.5rem;
+		margin-bottom: -1.25rem;
+		text-align: center;
+		font-size: 1.25rem;
+		color: var(--handbrake-red);
+
+		svg {
+			margin-right: 0.5rem;
+		}
+	}
+
+	:global(.path-input) {
+		:global(.input-section) {
+			flex-flow: column nowrap;
+			align-items: unset;
+		}
+	}
+}

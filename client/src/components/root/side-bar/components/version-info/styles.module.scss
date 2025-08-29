@@ -1,0 +1,30 @@
+.version-info {
+	padding: 0.375rem;
+	text-align: center;
+	font-size: 0.8rem;
+
+	.current-version {
+		color: var(--text-tertiary);
+	}
+
+	.latest-version {
+		display: block;
+		width: fit-content;
+		margin: 1rem auto 0.5rem auto;
+		padding: 0.5rem 1rem;
+		text-decoration: none;
+		border-radius: 2rem;
+		border: 0.1rem solid var(--handbrake-yellow);
+		color: var(--handbrake-yellow);
+
+		svg {
+			display: inline-block;
+			margin-right: 0.25rem;
+			vertical-align: middle;
+		}
+
+		.version {
+			text-decoration: underline;
+		}
+	}
+}

@@ -1,0 +1,45 @@
+.button-group {
+	--button-group-background: transparent;
+	--button-group-color: var(--text-primary);
+	--button-group-border: 0.125rem solid var(--button-group-color);
+	--button-hover-color: var(--transparent-primary);
+	--button-selected-color: var(--transparent-secondary);
+
+	width: 100%;
+	// margin-bottom: 3rem;
+	overflow: hidden;
+	display: flex;
+
+	border-radius: 0.75rem;
+	border: var(--button-group-border);
+
+	button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+
+		width: 100%;
+		padding: 0.75rem;
+
+		border: none;
+		border-radius: 0;
+		background-color: var(--button-group-background);
+		color: var(--button-group-color);
+
+		cursor: pointer;
+
+		&:hover {
+			background-color: var(--button-hover-color);
+		}
+
+		&[data-selected='true'] {
+			background-color: var(--button-selected-color);
+			text-decoration: underline;
+		}
+	}
+
+	// & > :not(button:first-of-type) {
+	// 	border-left: var(--button-group-border);
+	// }
+}

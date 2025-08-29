@@ -1,0 +1,184 @@
+.watcher-card {
+	display: flex;
+	flex-flow: row nowrap;
+	overflow: hidden;
+	background-color: var(--background-tertiary);
+	border-radius: 0.5rem;
+
+	.number {
+		padding: 0.75rem;
+		display: flex;
+		align-items: center;
+		background-color: var(--background-four);
+	}
+
+	.body {
+		padding: 0.5rem 1rem;
+		flex-grow: 1;
+
+		.info,
+		.rules {
+			margin-bottom: 1.5rem;
+
+			.header {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				margin-bottom: 0.5rem;
+
+				.heading {
+					margin: 0;
+					color: var(--text-tertiary);
+				}
+
+				.button {
+					padding: 0.4em;
+
+					svg {
+						width: 1rem;
+						height: 1rem;
+					}
+				}
+			}
+		}
+
+		.info {
+			.content {
+				display: flex;
+				flex-flow: row wrap;
+				gap: 0.5rem;
+
+				.text-info {
+					flex-grow: 1;
+					border-radius: 1.5rem;
+
+					background-color: var(--background-four);
+					padding: 0.5rem 1rem;
+				}
+			}
+		}
+
+		.rules {
+			.rule-cards {
+				display: flex;
+				flex-flow: column nowrap;
+				gap: 1rem;
+
+				.rule-card {
+					background-color: var(--background-four);
+					padding: 0.75rem;
+					border-radius: 0.5rem;
+
+					.header {
+						display: flex;
+						flex-flow: row nowrap;
+						align-items: center;
+						gap: 1rem;
+
+						font-family: var(--heading-font);
+						margin-bottom: 0.5rem;
+
+						.rule-name {
+							flex-grow: 1;
+							padding: 0.25rem 0.5rem;
+							border-radius: 50cqh;
+							// height: 2.5rem;
+
+							// font-size: 1.5rem;
+							font-family: var(--heading-font);
+
+							border: none;
+							background-color: transparent;
+							color: var(--text-secondary);
+
+							&:hover,
+							&:focus {
+								background-color: var(--background-five);
+							}
+						}
+
+						.save-button,
+						.remove-button {
+							padding: 0.5rem;
+							aspect-ratio: 1;
+							line-height: 1rem;
+							border: none;
+							border-radius: 0.5rem;
+							background-color: transparent;
+							font-size: 1.5rem;
+
+							&:hover {
+								color: var(--text-primary);
+							}
+
+							&:active {
+								color: var(--background-tertiary);
+							}
+						}
+
+						.save-button {
+							// background-color: white;
+							color: var(--handbrake-blue);
+
+							&:hover {
+								background-color: var(--handbrake-blue);
+							}
+						}
+
+						.remove-button {
+							color: var(--handbrake-red);
+
+							&:hover {
+								background-color: var(--handbrake-red);
+							}
+						}
+					}
+
+					.properties {
+						width: 100%;
+						display: inline-flex;
+						flex-flow: row wrap;
+						align-items: center;
+						gap: 0.5rem;
+
+						* {
+							display: inline;
+							vertical-align: middle;
+						}
+
+						span {
+							align-content: center;
+						}
+
+						input,
+						select {
+							flex-grow: 1;
+							border-radius: 1.75rem;
+							border: none;
+
+							// font-size: 1.5rem;
+							font-family: var(--body-font);
+
+							background-color: var(--background-five);
+							color: var(--text-primary);
+						}
+
+						input {
+							padding: 0 0.5rem;
+						}
+
+						select {
+							padding-left: 0.5rem;
+							cursor: pointer;
+						}
+
+						.comparison {
+							min-width: 15rem;
+							flex-grow: 10;
+						}
+					}
+				}
+			}
+		}
+	}
+}

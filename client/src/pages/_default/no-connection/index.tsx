@@ -1,0 +1,16 @@
+import Section from '~components/root/section';
+
+interface Properties {
+	url: string;
+}
+
+export default function NoConnection({ url }: Properties) {
+	return (
+		<Section heading='Error'>
+			<p>
+				The client is unable to reach the server at {url}. Please check your server status
+				or configuration.
+			</p>
+		</Section>
+	);
+}

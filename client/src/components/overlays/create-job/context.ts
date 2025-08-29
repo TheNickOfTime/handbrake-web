@@ -1,0 +1,52 @@
+import { createContext } from 'react';
+import { DirectoryItemsType, DirectoryItemType } from '~types/directory';
+import { HandbrakeOutputExtensions } from '~types/file-extensions';
+import { JobFrom } from '.';
+
+export interface CreateJobContextType {
+	extensions: string[];
+	jobFrom: JobFrom;
+	inputPath: string;
+	setInputPath: React.Dispatch<React.SetStateAction<string>>;
+	inputFiles: DirectoryItemsType;
+	setInputFiles: React.Dispatch<React.SetStateAction<DirectoryItemsType>>;
+	isRecursive: boolean;
+	setIsRecursive: React.Dispatch<React.SetStateAction<boolean>>;
+	outputPath: string;
+	setOutputPath: React.Dispatch<React.SetStateAction<string>>;
+	outputFiles: DirectoryItemsType;
+	setOutputFiles: React.Dispatch<React.SetStateAction<DirectoryItemsType>>;
+	outputExtension: HandbrakeOutputExtensions;
+	setOutputExtension: React.Dispatch<React.SetStateAction<HandbrakeOutputExtensions>>;
+	nameCollision: boolean;
+	setNameCollision: React.Dispatch<React.SetStateAction<boolean>>;
+	outputChanged: boolean;
+	setOutputChanged: React.Dispatch<React.SetStateAction<boolean>>;
+	allowCollision: boolean;
+	setAllowCollision: React.Dispatch<React.SetStateAction<boolean>>;
+	presetCategory: string;
+	setPresetCategory: React.Dispatch<React.SetStateAction<string>>;
+	preset: string;
+	setPreset: React.Dispatch<React.SetStateAction<string>>;
+	isDefaultPreset: boolean;
+	setIsDefaultPreset: React.Dispatch<React.SetStateAction<boolean>>;
+	seeMore: boolean;
+	setSeeMore: React.Dispatch<React.SetStateAction<boolean>>;
+	canSubmit: boolean;
+	handleJobFromChange: (newJobFrom: JobFrom) => void;
+	handleCancel: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+	handleSubmit: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+	handleFileInputConfirm: (item: DirectoryItemType) => Promise<void>;
+	handleDirectoryInputConfirm: (item: DirectoryItemType) => Promise<void>;
+	handleInputConfirm: (item: DirectoryItemType) => Promise<void>;
+	handleRecursiveChange: React.ChangeEventHandler<HTMLInputElement>;
+	handleOutputConfirm: (item: DirectoryItemType) => Promise<void>;
+	handleAllowOverwriteSelect: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+	handleOutputNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	handleExtensionChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+	handlePresetCategoryChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+	handlePresetChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+	handleSeeMore: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+}
+
+export const CreateJobContext = createContext<CreateJobContextType | null>(null);

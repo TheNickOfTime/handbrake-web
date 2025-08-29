@@ -1,0 +1,34 @@
+@use '~styles/variables/breakpoints';
+
+.overlay {
+	position: absolute;
+	z-index: 100;
+	// top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	padding: 5rem 0;
+
+	overflow-y: scroll;
+
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+
+	background-color: hsla(0, 0%, 0%, 0.75);
+
+	.window {
+		width: 90%;
+		max-width: 50rem;
+		padding: 2rem;
+
+		border-radius: 1rem;
+		background-color: var(--background-tertiary);
+		box-shadow: 0 0 2rem 0 black;
+	}
+
+	@media (min-width: breakpoints.$breakpoint-large) {
+		left: var(--sidebar-width);
+		width: calc(100% - var(--sidebar-width));
+	}
+}

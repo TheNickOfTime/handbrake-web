@@ -1,0 +1,50 @@
+.browser-body {
+	padding: 1rem;
+	min-height: 25rem;
+	max-height: 25rem;
+	overflow-y: scroll;
+
+	.directory-item {
+		width: 100%;
+		padding: 0.5rem 0.75rem;
+		display: block;
+
+		border: none;
+		border-bottom: 0.1rem solid var(--background-primary);
+		background-color: transparent;
+		color: var(--text-primary);
+
+		text-align: left;
+		// outline: none;
+
+		.icon {
+			margin-right: 1rem;
+			display: inline;
+			vertical-align: middle;
+			font-size: 1.75rem;
+		}
+
+		.label {
+			display: inline;
+			vertical-align: middle;
+		}
+
+		&:disabled {
+			color: var(--text-disabled);
+		}
+
+		&:hover {
+			background-color: var(--transparent-primary);
+			cursor: pointer;
+
+			&:disabled {
+				cursor: not-allowed;
+			}
+		}
+
+		&:active,
+		&[data-selected='true'] {
+			background-color: var(--transparent-secondary);
+		}
+	}
+}
