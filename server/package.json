@@ -16,7 +16,7 @@
     "chokidar": "^4.0.3",
     "compare-versions": "^6.1.1",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.0",
+    "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "ffprobe": "^1.1.2",
     "ffprobe-static": "^3.1.0",
@@ -24,10 +24,10 @@
     "object-hash": "^3.0.0",
     "socket.io": "^4.8.1",
     "tsconfig-paths": "^4.2.0",
-    "tsx": "^4.20.3",
+    "tsx": "^4.20.5",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0",
-    "yaml": "^2.8.0"
+    "yaml": "^2.8.1"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
@@ -35,9 +35,9 @@
     "@types/ffprobe": "^1.1.8",
     "@types/ffprobe-static": "^2.0.3",
     "@types/object-hash": "^3.0.6",
-    "@typescript-eslint/eslint-plugin": "^8.38.0",
-    "@typescript-eslint/parser": "^8.38.0",
-    "eslint": "^9.31.0",
-    "typescript": "^5.8.3"
+    "@typescript-eslint/eslint-plugin": "^8.42.0",
+    "@typescript-eslint/parser": "^8.42.0",
+    "eslint": "^9.35.0",
+    "typescript": "^5.9.2"
   }
 }
