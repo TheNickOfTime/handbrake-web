@@ -23,23 +23,43 @@ RUN ./configure --launch \
 	# --enable-nvdec \
 	# --enable-vce \
 	# --enable-libdovi
-
+# RUN make --directory=build install
 
 # Node ---------------------------------------------------------------------------------------------
 FROM node:alpine AS main
 
 ARG TARGETARCH
 
-# Copy compiled HandBrakeCLI binary from the build step
-COPY --from=build /handbrake/build/HandBrakeCLI /usr/local/bin
-
 # Install mesa and intel media drivers
 RUN if [ $TARGETARCH = "amd64" ]; then \
-	apk add mesa-dri-gallium mesa-va-gallium intel-media-driver \
-	; fi
+	apk add \
+	mesa-dri-gallium \
+	mesa-va-gallium \
+	intel-media-driver \
+; fi
 
+# Install handbrake dependencies 
+RUN apk add \
+	make \
+	numactl \
+	libass \
+	libbz2 \
+	libvpx \
+	speex \
+	lame-libs \
+	opus \
+	libtheora \
+	libvorbis \
+	x264-libs \
+	jansson \
+	libturbojpeg
+ 
 # Install dumb-init
 RUN apk add dumb-init
+
+# Copy compiled HandBrakeCLI binary from the build step
+COPY --from=build /handbrake/build/HandBrakeCLI /usr/local/bin
+# RUN make --directory=/handbrake-build/build install 
 
 # Copy project dependencies
 COPY worker /handbrake-web/worker
