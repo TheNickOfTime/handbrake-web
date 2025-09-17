@@ -1,6 +1,7 @@
-import { spawn, ChildProcessWithoutNullStreams as ChildProcess } from 'child_process';
+import { ChildProcessWithoutNullStreams as ChildProcess, spawn } from 'child_process';
 import fs from 'fs';
-import { mkdir, writeFile } from 'fs/promises';
+import { mkdir, rename, rm, writeFile } from 'fs/promises';
+import logger, { createJobLogger, CustomTransportType, formatJSON, SendLogToServer } from 'logging';
 import path from 'path';
 import { Socket } from 'socket.io-client';
 import { setTimeout } from 'timers/promises';
@@ -8,7 +9,6 @@ import { HandbrakeOutputType, Muxing, Scanning, WorkDone, Working } from 'types/
 import { HandbrakePresetType } from 'types/preset';
 import { JobDataType, JobStatusType } from 'types/queue';
 import { TranscodeStage } from 'types/transcode';
-import logger, { createJobLogger, CustomTransportType, formatJSON, SendLogToServer } from 'logging';
 
 let handbrake: ChildProcess | null = null;
 export const isTranscoding = () => handbrake != null;
@@ -82,12 +82,12 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 
 		socket.emit('transcode-update', jobID, newStatus);
 
-		handbrake.stdout.on('data', (data) => {
+		handbrake.stdout.on('data', async (data) => {
 			const outputString: string = data.toString();
 			const jsonRegex = /((^[A-Z][a-z]+):\s({(?:[\n\s+].+\n)+^}))+/gm;
 			const jsonOutputMatches = outputString.matchAll(jsonRegex);
 
-			for (const match of jsonOutputMatches) {
+			for await (const match of jsonOutputMatches) {
 				const outputKind = match[2];
 				const outputJSON: HandbrakeOutputType = JSON.parse(match[3]);
 
@@ -154,22 +154,46 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 										time_finished: Date.now(),
 									};
 
-									// Remove original file if necessary, remove '.transoding' temp extension from the file
+									// Remove original file if necessary
 									if (fileCollision) {
-										fs.rm(jobData.output_path, (err) => {
-											if (err) {
-												jobLogger.error(err);
-											} else {
-												jobLogger.info(
-													`[transcode] Overwriting '${path.basename(
-														jobData.output_path
-													)}' with the contents of the current job'.`
-												);
-												fs.renameSync(tempOutputName, jobData.output_path);
-											}
-										});
-									} else {
-										fs.renameSync(tempOutputName, jobData.output_path);
+										jobLogger.info(
+											`[transcode] Overwriting '${path.basename(
+												jobData.output_path
+											)}' with the contents of the current job'.`
+										);
+
+										try {
+											await rm(jobData.output_path);
+											jobLogger.info(
+												`[transcode] Removing the file '${path.basename(
+													jobData.output_path
+												)}'.`
+											);
+										} catch (err) {
+											jobLogger.error(
+												`[transcode] Could not remove the file '${path.basename(
+													jobData.output_path
+												)}' for overwriting.`
+											);
+											throw err;
+										}
+									}
+
+									// Remove '.transoding' temp extension from the file
+									try {
+										await rename(tempOutputName, jobData.output_path);
+										jobLogger.info(
+											`[transcode] Renaming the file '${path.basename(
+												tempOutputName
+											)}' to '${path.basename(jobData.output_path)}'.`
+										);
+									} catch (err) {
+										jobLogger.error(
+											`[transcode] Could not rename the file '${path.basename(
+												tempOutputName
+											)}' to '${path.basename(jobData.output_path)}'.`
+										);
+										throw err;
 									}
 
 									TranscodeFileCleanup();
@@ -253,13 +277,13 @@ async function TranscodeFileCleanup() {
 		const tempOutputName = getTempOutputName(currentJob.output_path);
 		const tempFileExists = fs.existsSync(tempOutputName);
 		if (tempFileExists) {
-			fs.rm(tempOutputName, (err) => {
-				if (err) {
-					logger.error(err);
-				} else {
-					logger.info(`[transcode] Cleaned up temp file '${tempOutputName}'.`);
-				}
-			});
+			try {
+				await rm(tempOutputName);
+				logger.info(`[transcode] Cleaned up temp file '${tempOutputName}'.`);
+			} catch (err) {
+				logger.error(`[transcode] Could not clean up temp file '${tempOutputName}'.`);
+				throw err;
+			}
 		}
 	}
 
@@ -267,11 +291,15 @@ async function TranscodeFileCleanup() {
 	if (presetPath) {
 		const presetExists = fs.existsSync(presetPath);
 		if (presetExists) {
-			fs.rm(presetPath, (err) => {
-				if (err) {
-					logger.info(err);
-				}
-			});
+			try {
+				await rm(presetPath);
+				logger.info(`[transcode] Removed the preset file '${path.basename(presetPath)}'.`);
+			} catch (err) {
+				logger.error(
+					`[error] Could not remove the preset file '${path.basename(presetPath)}'.`
+				);
+				throw err;
+			}
 		}
 	}
 
