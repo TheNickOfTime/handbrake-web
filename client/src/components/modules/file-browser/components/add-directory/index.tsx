@@ -54,6 +54,7 @@ export default function AddDirectory({ existingItems, onCancel, onSubmit }: Prop
 					</span>
 				)}
 				<TextInput
+					className={styles['directory-input']}
 					id='new-directory-name'
 					value={directoryName}
 					onChange={handleNameChange}
