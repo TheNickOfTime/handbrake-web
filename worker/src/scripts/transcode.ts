@@ -1,5 +1,5 @@
 import { ChildProcessWithoutNullStreams as ChildProcess, spawn } from 'child_process';
-import fs from 'fs';
+import { existsSync } from 'fs';
 import { mkdir, rename, rm, writeFile } from 'fs/promises';
 import logger, { createJobLogger, CustomTransportType, formatJSON, SendLogToServer } from 'logging';
 import path from 'path';
@@ -23,7 +23,7 @@ const writePresetToFile = async (preset: HandbrakePresetType) => {
 		const presetDir = '/tmp';
 		const presetName = 'preset.json';
 
-		if (!fs.existsSync(presetDir)) {
+		if (!existsSync(presetDir)) {
 			mkdir(presetDir);
 		}
 
@@ -56,7 +56,7 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 		await writePresetToFile(presetData);
 
 		const tempOutputName = getTempOutputName(jobData.output_path);
-		const fileCollision = fs.existsSync(jobData.output_path);
+		const fileCollision = existsSync(jobData.output_path);
 
 		// Add file transport to the logger
 		// const fileTransport = newJobTransport(jobID);
@@ -275,7 +275,7 @@ async function TranscodeFileCleanup() {
 	//Temp transcoding file
 	if (currentJob) {
 		const tempOutputName = getTempOutputName(currentJob.output_path);
-		const tempFileExists = fs.existsSync(tempOutputName);
+		const tempFileExists = existsSync(tempOutputName);
 		if (tempFileExists) {
 			try {
 				await rm(tempOutputName);
@@ -289,7 +289,7 @@ async function TranscodeFileCleanup() {
 
 	//Temp preset file
 	if (presetPath) {
-		const presetExists = fs.existsSync(presetPath);
+		const presetExists = existsSync(presetPath);
 		if (presetExists) {
 			try {
 				await rm(presetPath);
