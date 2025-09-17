@@ -3,7 +3,6 @@ import { access, mkdir, rename, rm, writeFile } from 'fs/promises';
 import logger, { createJobLogger, CustomTransportType, formatJSON, SendLogToServer } from 'logging';
 import path from 'path';
 import { Socket } from 'socket.io-client';
-import { setTimeout } from 'timers/promises';
 import { HandbrakeOutputType, Muxing, Scanning, WorkDone, Working } from 'types/handbrake';
 import { HandbrakePresetType } from 'types/preset';
 import { JobDataType, JobStatusType } from 'types/queue';
@@ -279,7 +278,7 @@ export function StopTranscode(id: number, socket: Socket) {
 
 async function TranscodeFileCleanup() {
 	// Wait one second to avoid race conditions with other file operations
-	await setTimeout(1000);
+	// await setTimeout(1000);
 
 	//Temp transcoding file
 	if (currentJob) {
@@ -295,9 +294,11 @@ async function TranscodeFileCleanup() {
 		if (tempFileExists) {
 			try {
 				await rm(tempOutputName);
-				logger.info(`[transcode] Cleaned up temp file '${tempOutputName}'.`);
+				logger.info(`[transcode] Cleaned up temp file '${path.basename(tempOutputName)}'.`);
 			} catch (err) {
-				logger.error(`[transcode] Could not clean up temp file '${tempOutputName}'.`);
+				logger.error(
+					`[transcode] Could not clean up temp file '${path.basename(tempOutputName)}'.`
+				);
 				throw err;
 			}
 		}
