@@ -1,6 +1,5 @@
 import { ChildProcessWithoutNullStreams as ChildProcess, spawn } from 'child_process';
-import { existsSync } from 'fs';
-import { mkdir, rename, rm, writeFile } from 'fs/promises';
+import { access, mkdir, rename, rm, writeFile } from 'fs/promises';
 import logger, { createJobLogger, CustomTransportType, formatJSON, SendLogToServer } from 'logging';
 import path from 'path';
 import { Socket } from 'socket.io-client';
@@ -23,8 +22,11 @@ const writePresetToFile = async (preset: HandbrakePresetType) => {
 		const presetDir = '/tmp';
 		const presetName = 'preset.json';
 
-		if (!existsSync(presetDir)) {
-			mkdir(presetDir);
+		// Make the preset directory if it doesn't exist
+		try {
+			await access(presetDir);
+		} catch {
+			await mkdir(presetDir);
 		}
 
 		presetPath = path.join(presetDir, presetName);
@@ -33,7 +35,7 @@ const writePresetToFile = async (preset: HandbrakePresetType) => {
 		logger.info('[worker] Sucessfully wrote preset to file.');
 	} catch (err) {
 		logger.error(`[worker] [error] Could not write preset to file at ${presetPath}.`);
-		console.error(err);
+		throw err;
 	}
 };
 
@@ -56,7 +58,14 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 		await writePresetToFile(presetData);
 
 		const tempOutputName = getTempOutputName(jobData.output_path);
-		const fileCollision = existsSync(jobData.output_path);
+		const fileCollision = await (async () => {
+			try {
+				await access(jobData.output_path);
+				return true;
+			} catch {
+				return false;
+			}
+		})();
 
 		// Add file transport to the logger
 		// const fileTransport = newJobTransport(jobID);
@@ -275,7 +284,14 @@ async function TranscodeFileCleanup() {
 	//Temp transcoding file
 	if (currentJob) {
 		const tempOutputName = getTempOutputName(currentJob.output_path);
-		const tempFileExists = existsSync(tempOutputName);
+		const tempFileExists = await (async () => {
+			try {
+				await access(tempOutputName);
+				return true;
+			} catch {
+				return false;
+			}
+		})();
 		if (tempFileExists) {
 			try {
 				await rm(tempOutputName);
@@ -289,7 +305,14 @@ async function TranscodeFileCleanup() {
 
 	//Temp preset file
 	if (presetPath) {
-		const presetExists = existsSync(presetPath);
+		const presetExists = await (async () => {
+			try {
+				await access(presetPath);
+				return true;
+			} catch {
+				return false;
+			}
+		})();
 		if (presetExists) {
 			try {
 				await rm(presetPath);
