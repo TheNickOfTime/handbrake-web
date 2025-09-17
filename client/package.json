@@ -26,6 +26,7 @@
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
+    "@tanstack/router-cli": "^1.131.44",
     "@tanstack/router-plugin": "^1.131.44",
     "@types/node": "^24.3.0",
     "@types/react": "^19.1.13",
