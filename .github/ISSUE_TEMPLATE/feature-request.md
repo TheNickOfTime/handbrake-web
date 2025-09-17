@@ -2,7 +2,12 @@
 name: Feature Request
 about: Suggest an idea that you have for HandBrake Web
 title: ''
-labels: request, triage, type/feature
+labels:
+  - request
+  - triage
+  - type/feature
+projects:
+  - 'TheNickOfTime/3'
 assignees: ''
 ---
 

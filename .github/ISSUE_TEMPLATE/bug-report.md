@@ -2,7 +2,12 @@
 name: Bug Report
 about: Submit a report for an issue you are experiencing with HandBrake Web
 title: X issue occurs when Y thing happens
-labels: request, triage, type/bug
+labels:
+  - request
+  - triage
+  - type/bug
+projects:
+  - 'TheNickOfTime/3'
 assignees: ''
 ---
 
@@ -27,7 +32,7 @@ Any additional information or screenshots related to your issue.
 
 ### HandBrake Web Version
 
--   vX.X.X
+- vX.X.X
 
 ### Docker Compose
 
@@ -37,9 +42,9 @@ Paste the contents of your docker compose file here...
 
 ### Host Machine
 
--   OS:
--   CPU:
--   GPU:
+- OS:
+- CPU:
+- GPU:
 
 ### Log Information
 
