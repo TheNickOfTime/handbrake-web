@@ -226,7 +226,9 @@ export default function QueueCard({
 									: 'N/A'}
 							</QueueCardSection>
 							<QueueCardSection label='Time Left'>
-								{job.status.transcode_eta ? job.status.transcode_eta : 'N/A'}
+								{job.status.transcode_eta
+									? secondsToTime(job.status.transcode_eta)
+									: 'N/A'}
 							</QueueCardSection>
 							<QueueCardSection label='Progress'>
 								<ProgressBar percentage={percentage} />
