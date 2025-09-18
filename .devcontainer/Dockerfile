@@ -68,9 +68,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/base:bookworm as main
 
 # Install dev dependencies
 RUN apt-get update
-RUN apt-get install -y \
-	sqlite3 \
-	file
+RUN apt-get install -y sqlite3
 
 # Copy compiled HandBrakeCLI binary from the build stage
 COPY --from=build /handbrake/build/HandBrakeCLI /usr/local/bin
