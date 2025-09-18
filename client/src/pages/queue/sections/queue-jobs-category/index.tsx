@@ -109,7 +109,7 @@ export default function QueueJobsCategory({
 					? draggedDesiredIndex - orderIndexOffest
 					: draggedDesiredIndex - orderIndexOffest - 1,
 				0,
-				<QueueJobPreview handleDrop={handleDrop} />
+				<QueueJobPreview handleDrop={handleDrop} key={'drag-preview'} />
 			);
 		}
 
