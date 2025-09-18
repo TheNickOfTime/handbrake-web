@@ -58,10 +58,12 @@ RUN ./configure --launch \
 	# --enable-vce \
 	# --enable-libdovi
 
-# Make a tarball of HandBrake's dependency libraries
+# Make a tarball of HandBrake's dependency libraries for copying later
 RUN ldd /handbrake/build/HandBrakeCLI | \
 	grep -oP '(?<=\s=>\s)(.+)(?=\s\()' | \
-	xargs tar -hcvf dependencies.tar
+	xargs tar -hcvf dependencies.tar && \
+	mkdir lib && \
+	tar -xvf dependencies.tar -C lib
 
 # Configure Dev Container Image --------------------------------------------------------------------
 FROM mcr.microsoft.com/vscode/devcontainers/base:bookworm as main
@@ -73,8 +75,7 @@ RUN apt-get install -y sqlite3
 # Copy compiled HandBrakeCLI binary from the build stage
 COPY --from=build /handbrake/build/HandBrakeCLI /usr/local/bin
 
-# Copy HandBrakeCLI's non-bundled dependencies from the build stage
-COPY --from=build /handbrake/dependencies.tar /dependencies.tar
-RUN tar -xvf /dependencies.tar --skip-old-files -C /
+# Copy HandBrakeCLI's dependencies from the build stage
+COPY --from=build /handbrake/lib/* /lib
 
 ENV NODE_ENV=development
