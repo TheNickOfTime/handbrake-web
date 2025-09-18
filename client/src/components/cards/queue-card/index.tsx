@@ -21,7 +21,7 @@ interface Properties extends HTMLAttributes<HTMLDivElement> {
 	handleStopJob: () => void;
 	handleResetJob: () => void;
 	handleRemoveJob: () => void;
-	setDraggedID: React.Dispatch<React.SetStateAction<string | undefined>>;
+	setDraggedID: React.Dispatch<React.SetStateAction<number | undefined>>;
 	setDraggedInitialIndex: React.Dispatch<React.SetStateAction<number>>;
 	setDraggedDesiredIndex: React.Dispatch<React.SetStateAction<number>>;
 	handleDrop: () => void;
@@ -65,7 +65,7 @@ export default function QueueCard({
 		job.status.worker_id == null;
 
 	const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-		setDraggedID(id);
+		setDraggedID(jobID);
 		setDraggedInitialIndex(job.order_index);
 		const data = {
 			id: id,
