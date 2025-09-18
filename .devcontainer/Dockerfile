@@ -1,11 +1,8 @@
-# Configure Dev Container Image --------------------------------------------------------------------
-FROM mcr.microsoft.com/vscode/devcontainers/base:bookworm as main
-
-# Install dev dependencies
-RUN apt-get update
-RUN apt-get install -y sqlite3
+# Build HandBrake ----------------------------------------------------------------------------------
+FROM debian:bookworm-slim as build
 
 # Install HandBrake dependencies
+RUN apt-get update
 RUN apt-get install -y \
 	autoconf \
 	automake \
@@ -61,7 +58,25 @@ RUN ./configure --launch \
 	# --enable-vce \
 	# --enable-libdovi
 
-# Install HandBrakeCLI
-RUN make --directory=build install
+# Make a tarball of HandBrake's dependency libraries
+RUN ldd /handbrake/build/HandBrakeCLI | \
+	grep -oP '(?<=\s=>\s)(.+)(?=\s\()' | \
+	xargs tar -hcvf dependencies.tar
+
+# Configure Dev Container Image --------------------------------------------------------------------
+FROM mcr.microsoft.com/vscode/devcontainers/base:bookworm as main
+
+# Install dev dependencies
+RUN apt-get update
+RUN apt-get install -y \
+	sqlite3 \
+	file
+
+# Copy compiled HandBrakeCLI binary from the build stage
+COPY --from=build /handbrake/build/HandBrakeCLI /usr/local/bin
+
+# Copy HandBrakeCLI's non-bundled dependencies from the build stage
+COPY --from=build /handbrake/dependencies.tar /dependencies.tar
+RUN tar -xvf /dependencies.tar --skip-old-files -C /
 
 ENV NODE_ENV=development
