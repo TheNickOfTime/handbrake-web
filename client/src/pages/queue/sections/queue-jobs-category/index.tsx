@@ -68,7 +68,7 @@ export default function QueueJobsCategory({
 		});
 
 	// Drag n' drop related stuff
-	const [draggedID, setDraggedID] = useState<string>();
+	const [draggedID, setDraggedID] = useState<number>();
 	const [draggedInitialIndex, setDraggedInitialIndex] = useState(-1);
 	const [draggedDesiredIndex, setDraggedDesiredIndex] = useState(-1);
 
@@ -109,7 +109,7 @@ export default function QueueJobsCategory({
 					? draggedDesiredIndex - orderIndexOffest
 					: draggedDesiredIndex - orderIndexOffest - 1,
 				0,
-				<QueueJobPreview handleDrop={handleDrop} />
+				<QueueJobPreview handleDrop={handleDrop} key={'drag-preview'} />
 			);
 		}
 

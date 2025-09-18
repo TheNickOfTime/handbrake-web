@@ -1,14 +1,14 @@
+import logger from 'logging';
 import {
-	JobOrderTableType,
-	JobsTableType,
-	JobsStatusTableType,
 	JobInsertType,
+	JobOrderTableType,
+	JobsStatusTableType,
+	JobsTableType,
 	JobStatusInsertType,
 } from 'types/database';
-import { JobType, QueueType, JobDataType, JobStatusType, QueueRequestType } from 'types/queue';
-import logger from 'logging';
-import { database } from './database';
+import { JobDataType, JobStatusType, JobType, QueueRequestType, QueueType } from 'types/queue';
 import { TranscodeStage } from 'types/transcode';
+import { database } from './database';
 
 export const queueTableCreateStatements = [
 	'CREATE TABLE IF NOT EXISTS jobs(\
@@ -325,7 +325,7 @@ export function UpdateJobOrderIndexInDatabase(job_id: number, new_index: number)
 	rowsToUpdate.forEach((row) => {
 		orderUpdateStatement.run({ id: row.job_id, new_index: row.new_index });
 		logger.info(
-			`[server] [database] Updating job with id '${job_id}' from order index ${row.order_index} to ${row.new_index}`
+			`[server] [database] Updating job with id '${row.job_id}' from order index ${row.order_index} to ${row.new_index}`
 		);
 	});
 }
