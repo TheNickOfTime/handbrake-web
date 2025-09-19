@@ -4,8 +4,9 @@
   "description": "HandBrake Web",
   "scripts": {
     "dev": "tsx watch src/worker.ts",
-    "prod": "tsx src/worker.ts",
-    "build": "tsc --project ./tsconfig.json"
+    "prod": "node build/worker.js",
+    "lint": "tsc",
+    "build": "tsc && esbuild src/worker.ts --bundle --platform=node --outdir=build --allow-overwrite"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.16.5",
+    "esbuild": "^0.25.10",
     "eslint": "^9.35.0",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.20.5",

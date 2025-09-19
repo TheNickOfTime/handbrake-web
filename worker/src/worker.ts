@@ -1,6 +1,6 @@
-async function MyWorker() {
+async function Worker() {
 	const startup = await import('./worker-startup');
 	startup.default();
 }
 
-MyWorker();
+Worker();
