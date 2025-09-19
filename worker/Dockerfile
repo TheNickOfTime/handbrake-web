@@ -1,5 +1,5 @@
 # Build HandBrake ----------------------------------------------------------------------------------
-FROM alpine:latest AS build
+FROM alpine:latest AS handbrake-build
 
 # Install general dependencies
 RUN apk add grep musl-utils tar
@@ -33,43 +33,14 @@ RUN ldd /handbrake/build/HandBrakeCLI | \
 	mkdir lib && \
 	tar -xvf dependencies.tar -C lib
 
-# Node ---------------------------------------------------------------------------------------------
-FROM node:alpine AS main
+# Build Worker -------------------------------------------------------------------------------------
+FROM node:alpine AS worker-build
 
-ARG TARGETARCH
+# Install nodejs and pnpm
+RUN apk add nodejs pnpm
 
-# Install mesa and intel media drivers
-# RUN if [ $TARGETARCH = "amd64" ]; then \
-# 	apk add \
-# 	mesa-dri-gallium \
-# 	mesa-va-gallium \
-# 	intel-media-driver \
-# ; fi
-
-# Install handbrake dependencies 
-# RUN apk add \
-# 	make \
-# 	numactl \
-# 	libass \
-# 	libbz2 \
-# 	libvpx \
-# 	speex \
-# 	lame-libs \
-# 	opus \
-# 	libtheora \
-# 	libvorbis \
-# 	x264-libs \
-# 	jansson \
-# 	libturbojpeg
- 
-# Install dumb-init
+# Install dumb-init (to copy to the final image)
 RUN apk add dumb-init
-
-# Copy compiled HandBrakeCLI binary from the build step
-COPY --from=build /handbrake/build/HandBrakeCLI /usr/local/bin
-
-# Copy HandBrakeCLI's dependencies from the build stage
-COPY --from=build /handbrake/lib/* /usr
 
 # Copy project dependencies
 COPY worker /handbrake-web/worker
@@ -79,11 +50,33 @@ WORKDIR /handbrake-web/worker
 
 # Install node dependencies
 ENV NODE_ENV=production
-RUN npm install -g pnpm
+# RUN npm install -g pnpm
 RUN pnpm install
 
 # Create directories
-RUN mkdir /data && chown node /data && mkdir /video && chown node /data
+RUN mkdir /data && \
+	chown node /data && \
+	mkdir /video && \
+	chown node /data
+
+# Node ---------------------------------------------------------------------------------------------
+FROM gcr.io/distroless/nodejs22-debian12 AS main
+
+ARG TARGETARCH
+
+# Copy compiled HandBrakeCLI binary from the build step
+COPY --from=handbrake-build /handbrake/build/HandBrakeCLI /usr/local/bin
+
+# Copy HandBrakeCLI's dependencies from the build stage
+COPY --from=handbrake-build /handbrake/lib/* /usr
+
+# Copy dumb-init binary
+COPY --from=worker-build /usr/bin/dumb-init /usr/local/bin/dumb-init
+
+# Copy project from build
+COPY --from=worker-build /handbrake-web /handbrake-web
+COPY --from=worker-build /data /data
+COPY --from=worker-build /video /video
 
 # Default environment variables
 ENV HANDBRAKE_MODE=worker
@@ -91,5 +84,6 @@ ENV DATA_PATH=/data
 ENV VIDEO_PATH=/video
 
 # # Start application
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+WORKDIR /handbrake-web/worker
+ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["pnpm", "prod"]
