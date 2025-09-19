@@ -55,10 +55,7 @@ RUN pnpm install
 RUN pnpm build
 
 # Create directories
-RUN mkdir /data && \
-	chown node /data && \
-	mkdir /video && \
-	chown node /data
+RUN mkdir /video
 
 # Node ---------------------------------------------------------------------------------------------
 FROM gcr.io/distroless/nodejs22-debian12:nonroot AS main
@@ -73,12 +70,11 @@ COPY --from=handbrake-build /handbrake/lib/* /usr
 
 # Copy project from build
 COPY --from=worker-build /handbrake-web/worker/build /handbrake-web/worker/build
-COPY --from=worker-build /data /data
-COPY --from=worker-build /video /video
+COPY --from=worker-build --chown=nonroot /video /video
 
 # Default environment variables
 ENV HANDBRAKE_MODE=worker
-ENV DATA_PATH=/data
+ENV DATA_PATH=/tmp
 ENV VIDEO_PATH=/video
 
 # # Start application
