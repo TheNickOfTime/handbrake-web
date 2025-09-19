@@ -52,6 +52,7 @@ WORKDIR /handbrake-web/worker
 ENV NODE_ENV=production
 # RUN npm install -g pnpm
 RUN pnpm install
+RUN pnpm build
 
 # Create directories
 RUN mkdir /data && \
@@ -65,16 +66,13 @@ FROM gcr.io/distroless/nodejs22-debian12 AS main
 ARG TARGETARCH
 
 # Copy compiled HandBrakeCLI binary from the build step
-COPY --from=handbrake-build /handbrake/build/HandBrakeCLI /usr/local/bin
+COPY --from=handbrake-build /handbrake/build/HandBrakeCLI /usr/local/bin/HandBrakeCLI
 
 # Copy HandBrakeCLI's dependencies from the build stage
 COPY --from=handbrake-build /handbrake/lib/* /usr
 
-# Copy dumb-init binary
-COPY --from=worker-build /usr/bin/dumb-init /usr/local/bin/dumb-init
-
 # Copy project from build
-COPY --from=worker-build /handbrake-web /handbrake-web
+COPY --from=worker-build /handbrake-web/worker/build /handbrake-web/worker/build
 COPY --from=worker-build /data /data
 COPY --from=worker-build /video /video
 
@@ -85,5 +83,4 @@ ENV VIDEO_PATH=/video
 
 # # Start application
 WORKDIR /handbrake-web/worker
-ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
-CMD ["pnpm", "prod"]
+CMD ["/handbrake-web/worker/build/worker.js"]
