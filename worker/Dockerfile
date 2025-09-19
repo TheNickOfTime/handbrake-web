@@ -61,7 +61,7 @@ RUN mkdir /data && \
 	chown node /data
 
 # Node ---------------------------------------------------------------------------------------------
-FROM gcr.io/distroless/nodejs22-debian12 AS main
+FROM gcr.io/distroless/nodejs22-debian12:nonroot AS main
 
 ARG TARGETARCH
 
