@@ -1,11 +1,13 @@
-# Build HandBrake
+# Build HandBrake ----------------------------------------------------------------------------------
 FROM alpine:latest AS build
 
-ENV BUILDKIT_STEP_LOG_MAX_SIZE=-1
-ENV BUILDKIT_STEP_LOG_MAX_SPEED=-1
+# Install general dependencies
+RUN apk add grep musl-utils tar
 
-# Install depenencies (general, intel qsv)
+# Install HandBrake build dependencies
 RUN apk add autoconf automake busybox cmake g++ git jansson-dev lame-dev libass-dev libjpeg-turbo-dev libtheora-dev libtool libvorbis-dev libvpx-dev libxml2-dev m4 make meson nasm ninja numactl-dev opus-dev patch pkgconf python3 speex-dev tar x264-dev
+
+# Install hardware acceleration dependencies
 RUN apk add libva-dev libdrm-dev
 
 # Clone the HandBrake git repo, checkout the latest tag, and then build handbrake
@@ -23,7 +25,13 @@ RUN ./configure --launch \
 	# --enable-nvdec \
 	# --enable-vce \
 	# --enable-libdovi
-# RUN make --directory=build install
+
+# Make a tarball of HandBrake's dependency libraries for copying later
+RUN ldd /handbrake/build/HandBrakeCLI | \
+	grep -oP '(?<=\s=>\s)(.+)(?=\s\()' | \
+	xargs tar -hcvf dependencies.tar && \
+	mkdir lib && \
+	tar -xvf dependencies.tar -C lib
 
 # Node ---------------------------------------------------------------------------------------------
 FROM node:alpine AS main
@@ -31,35 +39,37 @@ FROM node:alpine AS main
 ARG TARGETARCH
 
 # Install mesa and intel media drivers
-RUN if [ $TARGETARCH = "amd64" ]; then \
-	apk add \
-	mesa-dri-gallium \
-	mesa-va-gallium \
-	intel-media-driver \
-; fi
+# RUN if [ $TARGETARCH = "amd64" ]; then \
+# 	apk add \
+# 	mesa-dri-gallium \
+# 	mesa-va-gallium \
+# 	intel-media-driver \
+# ; fi
 
 # Install handbrake dependencies 
-RUN apk add \
-	make \
-	numactl \
-	libass \
-	libbz2 \
-	libvpx \
-	speex \
-	lame-libs \
-	opus \
-	libtheora \
-	libvorbis \
-	x264-libs \
-	jansson \
-	libturbojpeg
+# RUN apk add \
+# 	make \
+# 	numactl \
+# 	libass \
+# 	libbz2 \
+# 	libvpx \
+# 	speex \
+# 	lame-libs \
+# 	opus \
+# 	libtheora \
+# 	libvorbis \
+# 	x264-libs \
+# 	jansson \
+# 	libturbojpeg
  
 # Install dumb-init
 RUN apk add dumb-init
 
 # Copy compiled HandBrakeCLI binary from the build step
 COPY --from=build /handbrake/build/HandBrakeCLI /usr/local/bin
-# RUN make --directory=/handbrake-build/build install 
+
+# Copy HandBrakeCLI's dependencies from the build stage
+COPY --from=build /handbrake/lib/* /usr
 
 # Copy project dependencies
 COPY worker /handbrake-web/worker
