@@ -16,7 +16,7 @@ export const formatJSON = (json: string) => {
 
 const formatInfo = format((info) => {
 	if (info.timestamp) {
-		info.timestamp = new Date(info.timestamp).toLocaleTimeString('en-US', {
+		info.timestamp = new Date(info.timestamp as string).toLocaleTimeString('en-US', {
 			hour12: false,
 		});
 	}
@@ -42,7 +42,7 @@ const formatInfo = format((info) => {
 			}
 
 			const timeTagRegex = /\[\d{2}:\d{2}:\d{2}\]\s/g;
-			if (info.message.match(timeTagRegex)) {
+			if ((info.message as string).match(timeTagRegex)) {
 				info.message = (info.message as string).replaceAll(timeTagRegex, '');
 			}
 			break;
