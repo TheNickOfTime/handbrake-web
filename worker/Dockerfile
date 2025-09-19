@@ -95,10 +95,10 @@ FROM gcr.io/distroless/nodejs22-debian12:debug-nonroot AS main
 ARG TARGETARCH
 
 # Copy compiled HandBrakeCLI binary from the build step
-COPY --from=handbrake-build /handbrake/build/HandBrakeCLI /usr/local/bin/HandBrakeCLI
+COPY --from=handbrake-build /handbrake/build/HandBrakeCLI /usr/local/bin
 
 # Copy HandBrakeCLI's dependencies from the build stage
-COPY --from=handbrake-build /handbrake/lib/* /usr
+COPY --from=handbrake-build /handbrake/lib/* /lib
 
 # Copy project from build
 COPY --from=worker-build /handbrake-web/worker/build /handbrake-web/worker/build
