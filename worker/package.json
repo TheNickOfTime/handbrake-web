@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "tsx watch src/worker.ts",
     "prod": "tsx src/worker.ts",
-    "build": "tsc --project ./tsconfig.json"
+    "build": "esbuild src/worker.ts --bundle --platform=node --outdir=build --allow-overwrite"
   },
   "repository": {
     "type": "git",
