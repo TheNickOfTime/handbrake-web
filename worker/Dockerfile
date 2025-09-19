@@ -1,5 +1,5 @@
 # Build HandBrake ----------------------------------------------------------------------------------
-FROM debian:bookworm-slim as build
+FROM debian:bookworm-slim as handbrake-build
 
 # Install HandBrake dependencies
 RUN apt-get update
