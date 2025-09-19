@@ -1,14 +1,46 @@
 # Build HandBrake ----------------------------------------------------------------------------------
-FROM alpine:latest AS handbrake-build
+FROM debian:bookworm-slim as build
 
-# Install general dependencies
-RUN apk add grep musl-utils tar
-
-# Install HandBrake build dependencies
-RUN apk add autoconf automake busybox cmake g++ git jansson-dev lame-dev libass-dev libjpeg-turbo-dev libtheora-dev libtool libvorbis-dev libvpx-dev libxml2-dev m4 make meson nasm ninja numactl-dev opus-dev patch pkgconf python3 speex-dev tar x264-dev
-
-# Install hardware acceleration dependencies
-RUN apk add libva-dev libdrm-dev
+# Install HandBrake dependencies
+RUN apt-get update
+RUN apt-get install -y \
+	autoconf \
+	automake \
+	build-essential \
+	cmake \
+	git \
+	libass-dev \
+	libbz2-dev \
+	libfontconfig-dev \
+	libfreetype6-dev \
+	libfribidi-dev \
+	libharfbuzz-dev \
+	libjansson-dev \
+	liblzma-dev \
+	libmp3lame-dev \
+	libnuma-dev \
+	libogg-dev \
+	libopus-dev \
+	libsamplerate0-dev \
+	libspeex-dev \
+	libtheora-dev \
+	libtool \
+	libtool-bin \
+	libturbojpeg0-dev \
+	libvorbis-dev \
+	libx264-dev \
+	libxml2-dev \
+	libvpx-dev \
+	m4 \
+	make \
+	meson \
+	nasm \
+	ninja-build \
+	patch \
+	python3 \
+	pkg-config \
+	tar \
+	zlib1g-dev
 
 # Clone the HandBrake git repo, checkout the latest tag, and then build handbrake
 RUN mkdir /handbrake
@@ -19,8 +51,8 @@ RUN git clone https://github.com/HandBrake/HandBrake.git . && \
 	git switch --detach $latest
 RUN ./configure --launch \
 	--launch-jobs=$(nproc) \
-	--disable-gtk \
-	--enable-qsv
+	--disable-gtk
+	# --enable-qsv \
 	# --enable-nvenc \
 	# --enable-nvdec \
 	# --enable-vce \
