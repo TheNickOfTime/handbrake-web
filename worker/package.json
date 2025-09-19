@@ -2,6 +2,7 @@
   "name": "handbrake-web",
   "version": "0.8.0",
   "description": "HandBrake Web",
+  "type": "module",
   "scripts": {
     "dev": "tsx watch src/worker.ts",
     "prod": "tsx src/worker.ts",
