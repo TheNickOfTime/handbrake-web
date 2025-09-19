@@ -1,11 +1,22 @@
-import { ChildProcessWithoutNullStreams as ChildProcess, spawn } from 'child_process';
+import { type ChildProcessWithoutNullStreams as ChildProcess, spawn } from 'child_process';
 import { access, mkdir, rename, rm, writeFile } from 'fs/promises';
-import logger, { createJobLogger, CustomTransportType, formatJSON, SendLogToServer } from 'logging';
+import logger, {
+	createJobLogger,
+	type CustomTransportType,
+	formatJSON,
+	SendLogToServer,
+} from 'logging';
 import path from 'path';
 import { Socket } from 'socket.io-client';
-import { HandbrakeOutputType, Muxing, Scanning, WorkDone, Working } from 'types/handbrake';
-import { HandbrakePresetType } from 'types/preset';
-import { JobDataType, JobStatusType } from 'types/queue';
+import {
+	type HandbrakeOutputType,
+	type Muxing,
+	type Scanning,
+	type WorkDone,
+	type Working,
+} from 'types/handbrake';
+import { type HandbrakePresetType } from 'types/preset';
+import { type JobDataType, type JobStatusType } from 'types/queue';
 import { TranscodeStage } from 'types/transcode';
 
 let handbrake: ChildProcess | null = null;
@@ -97,7 +108,7 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 
 			for await (const match of jsonOutputMatches) {
 				const outputKind = match[2];
-				const outputJSON: HandbrakeOutputType = JSON.parse(match[3]);
+				const outputJSON: HandbrakeOutputType = JSON.parse(match[3]!);
 
 				switch (outputKind) {
 					case 'Version':
