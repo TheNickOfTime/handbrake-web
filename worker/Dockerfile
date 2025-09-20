@@ -1,7 +1,7 @@
 ARG DISTROLESS_VARIANT=debug-nonroot
 
 # Build HandBrake ----------------------------------------------------------------------------------
-FROM debian:bookworm-slim AS handbrake-build
+FROM debian:trixie-slim AS handbrake-build
 
 # Install HandBrake dependencies
 RUN apt-get update
@@ -68,13 +68,7 @@ RUN ldd /handbrake/build/HandBrakeCLI | \
 	tar -xvf dependencies.tar -C lib
 
 # Build Worker -------------------------------------------------------------------------------------
-FROM node:bookworm-slim AS worker-build
-
-# Install nodejs and pnpm
-# RUN apk add nodejs pnpm
-
-# Install dumb-init (to copy to the final image)
-# RUN apk add dumb-init
+FROM node:trixie-slim AS worker-build
 
 # Copy project dependencies
 COPY worker /handbrake-web/worker
