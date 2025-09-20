@@ -1,6 +1,6 @@
 import logger, { RemoveJobLogByID } from 'logging';
 import { Socket as Worker } from 'socket.io';
-import { type JobType, type QueueRequestType, type QueueStatus } from 'types/queue';
+import { type JobType, type QueueRequestType, QueueStatus } from 'types/queue';
 import { TranscodeStage } from 'types/transcode';
 import {
 	EmitToAllClients,

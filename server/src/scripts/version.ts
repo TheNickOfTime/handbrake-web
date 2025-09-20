@@ -3,9 +3,9 @@ import { access, readFile, rm, writeFile } from 'fs/promises';
 import logger from 'logging';
 import path from 'path';
 import { type GithubReleaseResponseType } from 'types/version';
-import { GetStatusFromDatabase, UpdateStatusInDatabase } from './database/database-status';
 import { GetConfig } from './config';
 import { dataPath } from './data';
+import { GetStatusFromDatabase, UpdateStatusInDatabase } from './database/database-status';
 
 const currentVersion = 'v' + process.env.npm_package_version!;
 
@@ -67,7 +67,7 @@ export async function CheckForVersionUpdate() {
 		const timeout = setTimeout(() => abortController.abort(), 5000);
 		const request = await fetch(latestReleaseURL, { signal: abortController.signal });
 		clearTimeout(timeout);
-		const response: GithubReleaseResponseType = await request.json();
+		const response = (await request.json()) as GithubReleaseResponseType;
 
 		const latestVersion = response.name;
 
@@ -149,7 +149,7 @@ export async function GetCurrentReleaseInfo() {
 
 		logger.info(`[version] Fetched information about the current release.`);
 
-		const response: GithubReleaseResponseType = await request.json();
+		const response = (await request.json()) as GithubReleaseResponseType;
 		currentReleaseInfo = response;
 
 		WriteReleaseInfo(currentReleaseInfoPath, response);

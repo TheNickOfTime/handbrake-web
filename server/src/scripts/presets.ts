@@ -1,14 +1,13 @@
-import { json } from 'express';
-import { access, mkdir, readdir, readFile, writeFile, rename, rm } from 'fs/promises';
+import { access, mkdir, readdir, readFile, rm, writeFile } from 'fs/promises';
+import { getPresetCount } from 'funcs/preset.funcs';
+import logger from 'logging';
 import path from 'path';
 import {
-	type HandbrakePresetType,
-	type HandbrakePresetCategoryType,
 	type HandbrakeDefaultPresetsType,
+	type HandbrakePresetCategoryType,
 	type HandbrakePresetListType,
+	type HandbrakePresetType,
 } from 'types/preset';
-import logger from 'logging';
-import { getPresetCount } from 'funcs/preset.funcs';
 import { EmitToAllClients } from './connections';
 import { dataPath } from './data';
 
@@ -37,7 +36,7 @@ const presetFilesToPresetObject = async (presetPath: string) => {
 	for (let dir of files) {
 		if (dir.isDirectory()) {
 			newObject[dir.name] = {};
-			const categoryPath = path.join(dir.path, dir.name);
+			const categoryPath = path.join(dir.parentPath, dir.name);
 			const categoryFiles = await readdir(categoryPath, {
 				encoding: 'utf-8',
 				withFileTypes: true,
@@ -45,13 +44,13 @@ const presetFilesToPresetObject = async (presetPath: string) => {
 
 			const presetFiles = categoryFiles.filter((file) => file.isFile);
 			for (let preset of presetFiles) {
-				const presetPath = path.join(preset.path, preset.name);
+				const presetPath = path.join(preset.parentPath, preset.name);
 				const presetData = await presetFileToPresetObject(presetPath);
 				const presetName = presetData.PresetList[0].PresetName;
 				newObject[dir.name][presetName] = presetData;
 			}
 		} else {
-			const presetPath = path.join(dir.path, dir.name);
+			const presetPath = path.join(dir.parentPath, dir.name);
 			const presetData = await presetFileToPresetObject(presetPath);
 			const presetName = presetData.PresetList[0].PresetName;
 			newObject.uncategorized[presetName] = presetData;
