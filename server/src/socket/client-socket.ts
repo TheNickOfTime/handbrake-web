@@ -1,14 +1,11 @@
-import { Server } from 'socket.io';
-import {
-	CreateDirectoryRequestType,
-	DirectoryType,
-	DirectoryRequestType,
-	DirectoryItemsType,
-} from 'types/directory';
-import { HandbrakePresetType } from 'types/preset';
-import { QueueRequestType } from 'types/queue';
-import { Socket as Client } from 'socket.io';
+import logger from 'logging';
+import { GetConfig, WriteConfig } from 'scripts/config';
 import { AddClient, RemoveClient } from 'scripts/connections';
+import {
+	GetJobOrderIndexFromTable,
+	UpdateJobOrderIndexInDatabase,
+} from 'scripts/database/database-queue';
+import { GetWatchersFromDatabase } from 'scripts/database/database-watcher';
 import { CheckFilenameCollision, GetDirectoryItems, MakeDirectory } from 'scripts/files';
 import {
 	AddPreset,
@@ -29,14 +26,7 @@ import {
 	StopQueue,
 	UpdateQueue,
 } from 'scripts/queue';
-import { ConfigType } from 'types/config';
-import { GetConfig, WriteConfig } from 'scripts/config';
-import {
-	WatcherDefinitionObjectType,
-	WatcherDefinitionType,
-	WatcherRuleDefinitionType,
-} from 'types/watcher';
-import { GetWatchersFromDatabase } from 'scripts/database/database-watcher';
+import { GetCurrentReleaseInfo, GetLatestReleaseInfo } from 'scripts/version';
 import {
 	AddWatcher,
 	AddWatcherRule,
@@ -44,13 +34,22 @@ import {
 	RemoveWatcherRule,
 	UpdateWatcherRule,
 } from 'scripts/watcher';
+import { Socket as Client, Server } from 'socket.io';
+import { type ConfigType } from 'types/config';
 import {
-	GetJobOrderIndexFromTable,
-	UpdateJobOrderIndexInDatabase,
-} from 'scripts/database/database-queue';
-import logger from 'logging';
-import { GetCurrentReleaseInfo, GetLatestReleaseInfo } from 'scripts/version';
-import { GithubReleaseResponseType } from 'types/version';
+	type CreateDirectoryRequestType,
+	type DirectoryItemsType,
+	type DirectoryRequestType,
+	type DirectoryType,
+} from 'types/directory';
+import { type HandbrakePresetType } from 'types/preset';
+import { type QueueRequestType } from 'types/queue';
+import { type GithubReleaseResponseType } from 'types/version';
+import {
+	type WatcherDefinitionObjectType,
+	type WatcherDefinitionType,
+	type WatcherRuleDefinitionType,
+} from 'types/watcher';
 
 const initClient = async (socket: Client) => {
 	const queue = GetQueue();

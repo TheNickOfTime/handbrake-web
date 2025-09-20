@@ -4,15 +4,15 @@ import logger from 'logging';
 import mime from 'mime';
 import path from 'path';
 import { PresetFormatDict } from 'shared/dict/presets.dict';
-import { QueueRequestType } from 'types/queue';
+import { type QueueRequestType } from 'types/queue';
 import { TranscodeStage } from 'types/transcode';
 import {
-	WatcherDefinitionType,
-	WatcherDefinitionWithRulesType,
+	type WatcherDefinitionType,
+	type WatcherDefinitionWithRulesType,
 	WatcherRuleBaseMethods,
 	WatcherRuleComparisonLookup,
 	WatcherRuleComparisonMethods,
-	WatcherRuleDefinitionType,
+	type WatcherRuleDefinitionType,
 	WatcherRuleFileInfoMethods,
 	WatcherRuleMaskMethods,
 	WatcherRuleMediaInfoMethods,

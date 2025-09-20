@@ -1,10 +1,10 @@
-import Database, { Database as DatabaseType } from 'better-sqlite3';
+import Database, { type Database as DatabaseType } from 'better-sqlite3';
 import { access, mkdir } from 'fs/promises';
-import path from 'path';
 import logger from 'logging';
+import path from 'path';
 
-import { dataPath } from '../data';
 import { watcherTableCreateStatements } from 'scripts/database/database-watcher';
+import { dataPath } from '../data';
 import { queueTableCreateStatements } from './database-queue';
 import DatabaseMigrations from './migrations/database-migrations';
 

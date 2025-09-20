@@ -2,10 +2,10 @@ import { json } from 'express';
 import { access, mkdir, readdir, readFile, writeFile, rename, rm } from 'fs/promises';
 import path from 'path';
 import {
-	HandbrakePresetType,
-	HandbrakePresetCategoryType,
-	HandbrakeDefaultPresetsType,
-	HandbrakePresetListType,
+	type HandbrakePresetType,
+	type HandbrakePresetCategoryType,
+	type HandbrakeDefaultPresetsType,
+	type HandbrakePresetListType,
 } from 'types/preset';
 import logger from 'logging';
 import { getPresetCount } from 'funcs/preset.funcs';

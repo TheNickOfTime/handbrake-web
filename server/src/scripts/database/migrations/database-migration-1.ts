@@ -1,4 +1,4 @@
-import { Database } from 'better-sqlite3';
+import { type Database } from 'better-sqlite3';
 import logger from 'logging';
 
 export default function DatabaseMigration1(database: Database) {

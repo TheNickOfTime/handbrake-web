@@ -1,6 +1,10 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { DirectoryType, DirectoryItemType, DirectoryItemsType } from 'types/directory';
+import {
+	type DirectoryType,
+	type DirectoryItemType,
+	type DirectoryItemsType,
+} from 'types/directory';
 import logger from 'logging';
 import { GetQueue } from './queue';
 import { TranscodeStage } from 'types/transcode';
