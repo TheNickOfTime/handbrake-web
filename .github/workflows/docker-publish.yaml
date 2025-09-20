@@ -70,6 +70,7 @@ jobs:
           context: .
           file: ${{ matrix.file }}
           platforms: linux/amd64,linux/arm64
+          build-args: DISTROLESS_VARIANT=${{ github.head_ref == '' && 'debug-nonroot' || 'nonroot' }} # use debug variant for PRs
           provenance: false
           push: true
           tags: ${{ steps.meta.outputs.tags }}
