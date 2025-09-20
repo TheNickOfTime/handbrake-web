@@ -1,12 +1,48 @@
-# Build HandBrake
-FROM alpine:latest AS build
+ARG DISTROLESS_VARIANT=debug-nonroot
 
-ENV BUILDKIT_STEP_LOG_MAX_SIZE=-1
-ENV BUILDKIT_STEP_LOG_MAX_SPEED=-1
+# Build HandBrake ----------------------------------------------------------------------------------
+FROM debian:trixie-slim AS handbrake-build
 
-# Install depenencies (general, intel qsv)
-RUN apk add autoconf automake busybox cmake g++ git jansson-dev lame-dev libass-dev libjpeg-turbo-dev libtheora-dev libtool libvorbis-dev libvpx-dev libxml2-dev m4 make meson nasm ninja numactl-dev opus-dev patch pkgconf python3 speex-dev tar x264-dev
-RUN apk add libva-dev libdrm-dev
+# Install HandBrake dependencies
+RUN apt-get update
+RUN apt-get install -y \
+	autoconf \
+	automake \
+	build-essential \
+	cmake \
+	git \
+	libass-dev \
+	libbz2-dev \
+	libfontconfig-dev \
+	libfreetype6-dev \
+	libfribidi-dev \
+	libharfbuzz-dev \
+	libjansson-dev \
+	liblzma-dev \
+	libmp3lame-dev \
+	libnuma-dev \
+	libogg-dev \
+	libopus-dev \
+	libsamplerate0-dev \
+	libspeex-dev \
+	libtheora-dev \
+	libtool \
+	libtool-bin \
+	libturbojpeg0-dev \
+	libvorbis-dev \
+	libx264-dev \
+	libxml2-dev \
+	libvpx-dev \
+	m4 \
+	make \
+	meson \
+	nasm \
+	ninja-build \
+	patch \
+	python3 \
+	pkg-config \
+	tar \
+	zlib1g-dev
 
 # Clone the HandBrake git repo, checkout the latest tag, and then build handbrake
 RUN mkdir /handbrake
@@ -17,49 +53,22 @@ RUN git clone https://github.com/HandBrake/HandBrake.git . && \
 	git switch --detach $latest
 RUN ./configure --launch \
 	--launch-jobs=$(nproc) \
-	--disable-gtk \
-	--enable-qsv
+	--disable-gtk
+	# --enable-qsv \
 	# --enable-nvenc \
 	# --enable-nvdec \
 	# --enable-vce \
 	# --enable-libdovi
-# RUN make --directory=build install
 
-# Node ---------------------------------------------------------------------------------------------
-FROM node:alpine AS main
+# Make a tarball of HandBrake's dependency libraries for copying later
+RUN ldd /handbrake/build/HandBrakeCLI | \
+	grep -oP '(?<=\s=>\s)(.+)(?=\s\()' | \
+	xargs tar -hcvf dependencies.tar && \
+	mkdir lib && \
+	tar -xvf dependencies.tar -C lib
 
-ARG TARGETARCH
-
-# Install mesa and intel media drivers
-RUN if [ $TARGETARCH = "amd64" ]; then \
-	apk add \
-	mesa-dri-gallium \
-	mesa-va-gallium \
-	intel-media-driver \
-; fi
-
-# Install handbrake dependencies 
-RUN apk add \
-	make \
-	numactl \
-	libass \
-	libbz2 \
-	libvpx \
-	speex \
-	lame-libs \
-	opus \
-	libtheora \
-	libvorbis \
-	x264-libs \
-	jansson \
-	libturbojpeg
- 
-# Install dumb-init
-RUN apk add dumb-init
-
-# Copy compiled HandBrakeCLI binary from the build step
-COPY --from=build /handbrake/build/HandBrakeCLI /usr/local/bin
-# RUN make --directory=/handbrake-build/build install 
+# Build Worker -------------------------------------------------------------------------------------
+FROM node:trixie-slim AS worker-build
 
 # Copy project dependencies
 COPY worker /handbrake-web/worker
@@ -71,15 +80,31 @@ WORKDIR /handbrake-web/worker
 ENV NODE_ENV=production
 RUN npm install -g pnpm
 RUN pnpm install
+RUN pnpm build
 
 # Create directories
-RUN mkdir /data && chown node /data && mkdir /video && chown node /data
+RUN mkdir /video
+
+# Node ---------------------------------------------------------------------------------------------
+FROM gcr.io/distroless/nodejs22-debian12:${DISTROLESS_VARIANT} AS main
+
+ARG TARGETARCH
+
+# Copy compiled HandBrakeCLI binary from the build step
+COPY --from=handbrake-build /handbrake/build/HandBrakeCLI /usr/local/bin/HandBrakeCLI
+
+# Copy HandBrakeCLI's dependencies from the build stage
+COPY --from=handbrake-build /handbrake/lib/* /lib
+
+# Copy project from build
+COPY --from=worker-build /handbrake-web/worker/build /handbrake-web/worker/build
+COPY --from=worker-build --chown=nonroot /video /video
 
 # Default environment variables
 ENV HANDBRAKE_MODE=worker
-ENV DATA_PATH=/data
+ENV DATA_PATH=/tmp
 ENV VIDEO_PATH=/video
 
 # # Start application
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["pnpm", "prod"]
+WORKDIR /handbrake-web/worker
+CMD ["/handbrake-web/worker/build/worker.js"]
