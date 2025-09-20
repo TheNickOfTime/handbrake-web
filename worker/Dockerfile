@@ -90,7 +90,7 @@ RUN pnpm build
 RUN mkdir /video
 
 # Node ---------------------------------------------------------------------------------------------
-FROM gcr.io/distroless/nodejs22-debian12:debug-nonroot AS main
+FROM gcr.io/distroless/nodejs22-debian12:nonroot AS main
 
 ARG TARGETARCH
 
