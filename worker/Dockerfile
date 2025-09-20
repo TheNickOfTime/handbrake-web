@@ -1,3 +1,5 @@
+ARG DISTROLESS_VARIANT=debug-nonroot
+
 # Build HandBrake ----------------------------------------------------------------------------------
 FROM debian:bookworm-slim AS handbrake-build
 
@@ -90,7 +92,7 @@ RUN pnpm build
 RUN mkdir /video
 
 # Node ---------------------------------------------------------------------------------------------
-FROM gcr.io/distroless/nodejs22-debian12:nonroot AS main
+FROM gcr.io/distroless/nodejs22-debian12:${DISTROLESS_VARIANT} AS main
 
 ARG TARGETARCH
 
