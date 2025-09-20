@@ -1,5 +1,5 @@
 # Build HandBrake ----------------------------------------------------------------------------------
-FROM debian:bookworm-slim as handbrake-build
+FROM debian:bookworm-slim AS handbrake-build
 
 # Install HandBrake dependencies
 RUN apt-get update
@@ -66,13 +66,13 @@ RUN ldd /handbrake/build/HandBrakeCLI | \
 	tar -xvf dependencies.tar -C lib
 
 # Build Worker -------------------------------------------------------------------------------------
-FROM node:alpine AS worker-build
+FROM node:bookworm-slim AS worker-build
 
 # Install nodejs and pnpm
-RUN apk add nodejs pnpm
+# RUN apk add nodejs pnpm
 
 # Install dumb-init (to copy to the final image)
-RUN apk add dumb-init
+# RUN apk add dumb-init
 
 # Copy project dependencies
 COPY worker /handbrake-web/worker
@@ -82,7 +82,7 @@ WORKDIR /handbrake-web/worker
 
 # Install node dependencies
 ENV NODE_ENV=production
-# RUN npm install -g pnpm
+RUN npm install -g pnpm
 RUN pnpm install
 RUN pnpm build
 
@@ -95,7 +95,7 @@ FROM gcr.io/distroless/nodejs22-debian12:debug-nonroot AS main
 ARG TARGETARCH
 
 # Copy compiled HandBrakeCLI binary from the build step
-COPY --from=handbrake-build /handbrake/build/HandBrakeCLI /usr/local/bin
+COPY --from=handbrake-build /handbrake/build/HandBrakeCLI /usr/local/bin/HandBrakeCLI
 
 # Copy HandBrakeCLI's dependencies from the build stage
 COPY --from=handbrake-build /handbrake/lib/* /lib
