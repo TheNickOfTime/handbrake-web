@@ -92,7 +92,7 @@ RUN pnpm build
 RUN mkdir /video
 
 # Node ---------------------------------------------------------------------------------------------
-FROM gcr.io/distroless/nodejs22-debian12:${DISTROLESS_VARIANT} AS main
+FROM gcr.io/distroless/nodejs24-debian12:${DISTROLESS_VARIANT} AS main
 
 ARG TARGETARCH
 
@@ -103,7 +103,7 @@ COPY --from=handbrake-build /handbrake/build/HandBrakeCLI /usr/local/bin/HandBra
 COPY --from=handbrake-build /handbrake/lib/* /lib
 
 # Copy project from build
-COPY --from=worker-build /handbrake-web/worker/build /handbrake-web/worker/build
+COPY --from=worker-build /handbrake-web/worker/build /handbrake-web/worker
 COPY --from=worker-build --chown=nonroot /video /video
 
 # Default environment variables
@@ -113,4 +113,4 @@ ENV VIDEO_PATH=/video
 
 # # Start application
 WORKDIR /handbrake-web/worker
-CMD ["/handbrake-web/worker/build/worker.js"]
+CMD ["/handbrake-web/worker/worker.js"]

@@ -6,7 +6,7 @@
     "dev": "tsx watch src/worker.ts",
     "prod": "node build/worker.js",
     "lint": "tsc",
-    "build": "esbuild src/worker.ts --bundle --platform=node --outdir=build --allow-overwrite"
+    "build": "node build.mjs"
   },
   "repository": {
     "type": "git",
