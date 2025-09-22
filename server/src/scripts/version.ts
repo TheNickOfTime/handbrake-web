@@ -131,7 +131,7 @@ export async function GetCurrentReleaseInfo() {
 	} catch (error) {
 		const parsedPath = path.parse(currentReleaseInfoPath);
 		logger.info(
-			`[version] The file '${parsedPath}' does not exist. Fetching the information about '${currentVersion}' from github...`
+			`[version] The file '${parsedPath.base}' does not exist. Fetching the information about '${currentVersion}' from github...`
 		);
 	}
 
