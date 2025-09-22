@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "prod": "node build/server.js",
-    "lint": "tsc",
+    "lint": "tsc -b",
     "build": "node build.mjs"
   },
   "repository": {
