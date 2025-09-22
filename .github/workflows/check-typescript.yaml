@@ -33,6 +33,11 @@ jobs:
         working-directory: ${{ matrix.application }}
         run: pnpm install
 
+      - name: Generate Routes
+        working-directory: ${{ matrix.application }}
+        if: ${{ matrix.application == 'client' }}
+        run: pnpm tsr generate
+
       - name: Check TypeScript
         working-directory: ${{ matrix.application }}
         run: pnpm lint
