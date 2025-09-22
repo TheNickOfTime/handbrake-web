@@ -1,0 +1,40 @@
+name: Check TypeScript
+
+on:
+  pull_request:
+    branches:
+      - main
+      - release/**
+
+jobs:
+  check-typescript:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        application:
+          - client
+          - server
+          - worker
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: /actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Setup Project
+        working-directory: ${{ matrix.application }}
+        run: pnpm install
+
+      - name: Check TypeScript
+        working-directory: ${{ matrix.application }}
+        run: pnpm lint
