@@ -29,10 +29,10 @@ console.info(`[server] [build] Copying non-bundled dependencies to the build out
 try {
 	await copyFile('package.json', 'build/package.json');
 
-	await copyFile(
-		'node_modules/better-sqlite3/build/Release/better_sqlite3.node',
-		'build/better_sqlite3.node'
-	);
+	await cp('node_modules/better-sqlite3/build', 'build/build', {
+		recursive: true,
+		dereference: true,
+	});
 
 	await cp('template', 'build/template', { recursive: true });
 } catch (err) {
