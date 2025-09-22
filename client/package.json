@@ -14,10 +14,10 @@
     "url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
   },
   "dependencies": {
-    "@fontsource-variable/inter": "^5.2.7",
-    "@fontsource-variable/noto-sans": "^5.2.9",
-    "@tanstack/react-router": "^1.131.44",
-    "@tanstack/react-router-devtools": "^1.131.44",
+    "@fontsource-variable/inter": "^5.2.8",
+    "@fontsource-variable/noto-sans": "^5.2.10",
+    "@tanstack/react-router": "^1.131.50",
+    "@tanstack/react-router-devtools": "^1.131.50",
     "bootstrap-icons": "^1.13.1",
     "mime": "^4.1.0",
     "modern-normalize": "^3.0.1",
@@ -26,21 +26,21 @@
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
-    "@tanstack/router-cli": "^1.131.44",
-    "@tanstack/router-plugin": "^1.131.44",
+    "@tanstack/router-cli": "^1.131.50",
+    "@tanstack/router-plugin": "^1.131.50",
     "@types/node": "^24.5.2",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
     "@typescript-eslint/eslint-plugin": "^8.44.0",
     "@typescript-eslint/parser": "^8.44.0",
-    "@vitejs/plugin-react": "^5.0.2",
-    "eslint": "^9.35.0",
+    "@vitejs/plugin-react": "^5.0.3",
+    "eslint": "^9.36.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
-    "sass": "^1.92.1",
+    "sass": "^1.93.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.2",
-    "vite": "^7.1.5",
+    "vite": "^7.1.7",
     "vite-plugin-svgr": "^4.5.0",
     "vite-tsconfig-paths": "^5.1.4"
   }
