@@ -20,7 +20,6 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /handbrake-web
 WORKDIR /handbrake-web/server
 
 # Install node dependencies
-ENV NODE_ENV=production
 RUN npm install -g pnpm
 RUN pnpm install
 RUN pnpm build
@@ -37,6 +36,7 @@ COPY --from=server-build --chown=nonroot /video /data /
 
 # Default environment variables & ports
 EXPOSE 9999
+ENV NODE_ENV=production
 ENV HANDBRAKE_MODE=server
 ENV DATA_PATH=/data
 ENV VIDEO_PATH=/video
