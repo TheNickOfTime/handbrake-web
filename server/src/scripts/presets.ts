@@ -2,6 +2,7 @@ import { access, mkdir, readdir, readFile, rm, writeFile } from 'fs/promises';
 import { getPresetCount } from 'funcs/preset.funcs';
 import logger from 'logging';
 import path from 'path';
+import { cwd } from 'process';
 import {
 	type HandbrakeDefaultPresetsType,
 	type HandbrakePresetCategoryType,
@@ -11,7 +12,7 @@ import {
 import { EmitToAllClients } from './connections';
 import { dataPath } from './data';
 
-const defaultPresetsPath = path.resolve('src/template/default-presets.json');
+const defaultPresetsPath = path.resolve(cwd(), 'template/default-presets.json');
 export const presetsPath = path.join(dataPath, '/presets');
 
 let presets: HandbrakePresetCategoryType = {};

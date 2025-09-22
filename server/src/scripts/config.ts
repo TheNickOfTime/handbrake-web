@@ -2,6 +2,7 @@ import fs from 'fs';
 import { copyFile, readFile, writeFile } from 'fs/promises';
 import logger from 'logging';
 import path from 'path';
+import { cwd } from 'process';
 import { type ConfigType } from 'types/config';
 import { parse, stringify } from 'yaml';
 import { EmitToAllClients } from './connections';
@@ -9,7 +10,7 @@ import { dataPath } from './data';
 
 const configPath = path.join(dataPath, 'config.yaml');
 const templateConfig: ConfigType = parse(
-	fs.readFileSync(path.resolve(__dirname, '../template/config.yaml'), 'utf-8')
+	fs.readFileSync(path.resolve(cwd(), 'template/config.yaml'), 'utf-8')
 );
 
 let config: ConfigType = templateConfig;
@@ -20,7 +21,7 @@ export async function LoadConfig() {
 			logger.info(
 				`[server] [config] No config file exists, copying the template config.yaml`
 			);
-			await copyFile(path.resolve('src/template/config.yaml'), configPath);
+			await copyFile(path.resolve(cwd(), 'template/config.yaml'), configPath);
 		}
 
 		const configFile = await readFile(configPath, 'utf-8');
