@@ -11,7 +11,10 @@
     // }
   ],
   "features": {
-    "ghcr.io/devcontainers/features/node:1": {}
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "24",
+      "pnpmVersion": "10"
+    }
   },
   "containerEnv": {
     "SERVER_URL": "http://localhost",
