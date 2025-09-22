@@ -1,13 +1,17 @@
 import { compare } from 'compare-versions';
+import { readFileSync } from 'fs';
 import { access, readFile, rm, writeFile } from 'fs/promises';
 import logger from 'logging';
-import path from 'path';
+import path, { resolve } from 'path';
+import { cwd } from 'process';
 import { type GithubReleaseResponseType } from 'types/version';
 import { GetConfig } from './config';
 import { dataPath } from './data';
 import { GetStatusFromDatabase, UpdateStatusInDatabase } from './database/database-status';
 
-const currentVersion = 'v' + process.env.npm_package_version!;
+const currentVersion = `v${
+	JSON.parse(readFileSync(resolve(cwd(), 'package.json'), { encoding: 'utf-8' })).version
+}`;
 
 const currentReleaseInfoPath = path.join(dataPath, 'version-info.json');
 const latestReleaseInfoPath = path.join(dataPath, 'update-info.json');
@@ -127,7 +131,7 @@ export async function GetCurrentReleaseInfo() {
 	} catch (error) {
 		const parsedPath = path.parse(currentReleaseInfoPath);
 		logger.info(
-			`[version] The file '${parsedPath}' does not exist. Fetching the information about '${currentVersion}' from github...`
+			`[version] The file '${parsedPath.base}' does not exist. Fetching the information about '${currentVersion}' from github...`
 		);
 	}
 
