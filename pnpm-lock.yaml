@@ -95,6 +95,9 @@ importers:
 
   server:
     dependencies:
+      '@types/node':
+        specifier: ^24.5.2
+        version: 24.5.2
       better-sqlite3:
         specifier: ^12.2.0
         version: 12.2.0
