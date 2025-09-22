@@ -1,0 +1,39 @@
+import esbuild from 'esbuild';
+import { copyFile, cp, rm } from 'node:fs/promises';
+
+console.info(`[server] [build] Starting server application build process...`);
+
+// clear the existing contents of the output directory
+await rm('build', { recursive: true, force: true });
+console.info(`[server] [build] Cleared existing output from the 'build' directory.`);
+
+// Build/bundle the server application
+console.info(`[server] [build] Bundling the server application...`);
+try {
+	await esbuild.build({
+		entryPoints: ['src/server.ts'],
+		bundle: true,
+		platform: 'node',
+		outdir: 'build',
+		allowOverwrite: true,
+		logLevel: 'info',
+	});
+	console.info(`[server] [build] Successfully bundled the server application.`);
+} catch (err) {
+	console.error(`[server] [build] [error] Could not bundle the server application.`);
+	throw err;
+}
+
+// Copy non-bundled dependencies
+console.info(`[server] [build] Copying non-bundled dependencies to the build output location...`);
+try {
+	await copyFile(
+		'node_modules/better-sqlite3/build/Release/better_sqlite3.node',
+		'build/better_sqlite3.node'
+	);
+
+	await cp('template', 'build/template', { recursive: true });
+} catch (err) {
+	console.error(`[server] [build] [error] Could not copy all non-bundled dependencies.`);
+	throw err;
+}
