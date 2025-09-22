@@ -11,12 +11,12 @@ console.info(`[server] [build] Cleared existing output from the 'build' director
 console.info(`[server] [build] Bundling the server application...`);
 try {
 	await esbuild.build({
-		entryPoints: ['src/server.ts'],
-		bundle: true,
-		platform: 'node',
-		outdir: 'build',
-		allowOverwrite: true,
 		logLevel: 'info',
+		platform: 'node',
+		bundle: true,
+		allowOverwrite: true,
+		entryPoints: ['src/server.ts'],
+		outdir: 'build',
 	});
 	console.info(`[server] [build] Successfully bundled the server application.`);
 } catch (err) {
@@ -27,6 +27,8 @@ try {
 // Copy non-bundled dependencies
 console.info(`[server] [build] Copying non-bundled dependencies to the build output location...`);
 try {
+	await copyFile('package.json', 'build/package.json');
+
 	await copyFile(
 		'node_modules/better-sqlite3/build/Release/better_sqlite3.node',
 		'build/better_sqlite3.node'
