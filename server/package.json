@@ -4,14 +4,16 @@
   "description": "HandBrake Web",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "prod": "tsx src/server.ts",
-    "build": "tsc --project ./tsconfig.json"
+    "prod": "node build/server.js",
+    "lint": "tsc",
+    "build": "node build.mjs"
   },
   "repository": {
     "type": "git",
     "url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
   },
   "dependencies": {
+    "@types/node": "^24.5.2",
     "better-sqlite3": "^12.2.0",
     "chokidar": "^4.0.3",
     "compare-versions": "^6.1.1",
@@ -38,6 +40,7 @@
     "@types/object-hash": "^3.0.6",
     "@typescript-eslint/eslint-plugin": "^8.44.0",
     "@typescript-eslint/parser": "^8.44.0",
+    "esbuild": "^0.25.10",
     "eslint": "^9.35.0",
     "typescript": "^5.9.2"
   }
