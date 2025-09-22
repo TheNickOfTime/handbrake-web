@@ -1,12 +1,18 @@
 import logger from 'logging';
 import {
-	JobInsertType,
-	JobOrderTableType,
-	JobsStatusTableType,
-	JobsTableType,
-	JobStatusInsertType,
+	type JobInsertType,
+	type JobOrderTableType,
+	type JobsStatusTableType,
+	type JobsTableType,
+	type JobStatusInsertType,
 } from 'types/database';
-import { JobDataType, JobStatusType, JobType, QueueRequestType, QueueType } from 'types/queue';
+import {
+	type JobDataType,
+	type JobStatusType,
+	type JobType,
+	type QueueRequestType,
+	type QueueType,
+} from 'types/queue';
 import { TranscodeStage } from 'types/transcode';
 import { database } from './database';
 

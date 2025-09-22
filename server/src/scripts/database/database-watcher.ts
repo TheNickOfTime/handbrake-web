@@ -1,12 +1,12 @@
-import { WatcherRuleTableType, WatcherTableType } from 'types/database';
-import {
-	WatcherDefinitionType,
-	WatcherRuleDefinitionType,
-	WatcherDefinitionWithRulesType,
-	WatcherDefinitionObjectType,
-	WatcherRuleDefinitionObjectType,
-} from 'types/watcher';
 import logger from 'logging';
+import { type WatcherRuleTableType, type WatcherTableType } from 'types/database';
+import {
+	type WatcherDefinitionObjectType,
+	type WatcherDefinitionType,
+	type WatcherDefinitionWithRulesType,
+	type WatcherRuleDefinitionObjectType,
+	type WatcherRuleDefinitionType,
+} from 'types/watcher';
 import { database } from './database';
 
 export const watcherTableCreateStatements = [

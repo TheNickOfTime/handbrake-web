@@ -1,9 +1,13 @@
 import fs from 'fs/promises';
-import path from 'path';
-import { DirectoryType, DirectoryItemType, DirectoryItemsType } from 'types/directory';
 import logger from 'logging';
-import { GetQueue } from './queue';
+import path from 'path';
+import {
+	type DirectoryItemType,
+	type DirectoryItemsType,
+	type DirectoryType,
+} from 'types/directory';
 import { TranscodeStage } from 'types/transcode';
+import { GetQueue } from './queue';
 
 export async function GetDirectoryItems(absolutePath: string, recursive: boolean = false) {
 	try {
@@ -36,7 +40,7 @@ export async function GetDirectoryItems(absolutePath: string, recursive: boolean
 		const items: DirectoryItemsType = dir.map((item) => {
 			const parsedName = path.parse(item.name);
 			return {
-				path: path.join(item.path, item.name),
+				path: path.join(item.parentPath, item.name),
 				name: parsedName.name,
 				extension: parsedName.ext,
 				isDirectory: item.isDirectory(),

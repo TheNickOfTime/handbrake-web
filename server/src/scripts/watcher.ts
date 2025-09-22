@@ -1,18 +1,18 @@
-import chokidar from 'chokidar';
+import chokidar, { type FSWatcher } from 'chokidar';
 import fs from 'fs/promises';
 import logger from 'logging';
 import mime from 'mime';
 import path from 'path';
 import { PresetFormatDict } from 'shared/dict/presets.dict';
-import { QueueRequestType } from 'types/queue';
+import { type QueueRequestType } from 'types/queue';
 import { TranscodeStage } from 'types/transcode';
 import {
-	WatcherDefinitionType,
-	WatcherDefinitionWithRulesType,
+	type WatcherDefinitionType,
+	type WatcherDefinitionWithRulesType,
 	WatcherRuleBaseMethods,
 	WatcherRuleComparisonLookup,
 	WatcherRuleComparisonMethods,
-	WatcherRuleDefinitionType,
+	type WatcherRuleDefinitionType,
 	WatcherRuleFileInfoMethods,
 	WatcherRuleMaskMethods,
 	WatcherRuleMediaInfoMethods,
@@ -36,7 +36,7 @@ import { GetDefaultPresetByName, GetPresetByName } from './presets';
 import { AddJob, GetQueue, RemoveJob } from './queue';
 // import {PresetFormatDict} from '';
 
-const watchers: { [index: number]: chokidar.FSWatcher } = [];
+const watchers: { [index: number]: FSWatcher } = [];
 
 export function RegisterWatcher(id: number, watcher: WatcherDefinitionWithRulesType) {
 	const newWatcher = chokidar.watch(watcher.watch_path, {

@@ -1,4 +1,4 @@
-import express, { Express, Request } from 'express';
+import express, { type Express, type Request } from 'express';
 import { GetJobLogByID } from 'logging';
 import path from 'path';
 

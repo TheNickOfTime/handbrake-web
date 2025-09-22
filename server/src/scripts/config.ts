@@ -1,11 +1,11 @@
 import fs from 'fs';
-import { writeFile, copyFile, readFile } from 'fs/promises';
-import path from 'path';
-import { parse, stringify } from 'yaml';
-import { ConfigType } from 'types/config';
+import { copyFile, readFile, writeFile } from 'fs/promises';
 import logger from 'logging';
-import { dataPath } from './data';
+import path from 'path';
+import { type ConfigType } from 'types/config';
+import { parse, stringify } from 'yaml';
 import { EmitToAllClients } from './connections';
+import { dataPath } from './data';
 
 const configPath = path.join(dataPath, 'config.yaml');
 const templateConfig: ConfigType = parse(
