@@ -106,7 +106,8 @@ export default function FileBrowserBody({
 						(!child.isDirectory && mode == FileBrowserMode.Directory) ||
 						(!child.isDirectory &&
 							(!mimeType?.match(/^video\/.+$/) ||
-								!mimeType?.match(/^application\/x-(?:(?:iso9660)|(?:cd))-image$/)));
+								!mimeType?.match(/^application\/x-(?:(?:iso9660)|(?:cd))-image$/) ||
+								!mimeType?.match(/^application\/octet-stream$/)));
 
 					return (
 						<button
