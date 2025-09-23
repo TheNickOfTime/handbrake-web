@@ -65,9 +65,12 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.IMAGE }}
           tags: |
-            type=raw,value=latest,enable={{ is_default_branch }}${{ matrix.hardware-acceleration == 'none' && '' || join(',suffix=-', matrix.hardware-acceleration) }}
-            type=raw,value=${{ env.HANDBRAKE_VERSION }},enable={{ is_default_branch }}${{ matrix.hardware-acceleration == 'none' && '' || join(',suffix=-', matrix.hardware-acceleration) }}
-            type=raw,value=dev,enable={{ is_not_default_branch }}${{ matrix.hardware-acceleration == 'none' && null || join(',suffix=-', matrix.hardware-acceleration) }}
+            type=raw,value=latest,enable=${{ github.ref_name == 'main' && matrix.hardware-acceleration == 'none' }}
+            type=raw,value=${{ matrix.hardware-acceleration }},enable=${{ github.ref_name == 'main' && matrix.hardware-acceleration != 'none' }}
+            type=raw,value=${{ env.HANDBRAKE_VERSION }},enable=${{ github.ref_name == 'main' && matrix.hardware-acceleration == 'none' }}
+            type=raw,value=${{ env.HANDBRAKE_VERSION }}-${{ matrix.hardware-acceleration }},enable=${{ github.ref_name == 'main' && matrix.hardware-acceleration != 'none' }}
+            type=raw,value=dev,enable=${{ github.ref_name != 'main' && matrix.hardware-acceleration == 'none' }}
+            type=raw,value=dev-${{ matrix.hardware-acceleration }},enable=${{ github.ref_name != 'main' && matrix.hardware-acceleration != 'none' }}
 
       - name: Build and push Docker image
         id: push
