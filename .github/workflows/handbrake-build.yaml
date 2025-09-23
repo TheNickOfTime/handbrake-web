@@ -7,6 +7,9 @@ on:
     paths:
       - handbrake/Dockerfile
   workflow_dispatch:
+  pull_request:
+    branches:
+      - main
 
 env:
   IMAGE: handbrake-build
@@ -54,7 +57,7 @@ jobs:
           context: .
           file: 'handbrake/Dockerfile'
           # platforms: linux/amd64,linux/arm64
-          paltforms: linux/amd64
+          platforms: linux/amd64
           provenance: false
           push: true
           tags: latest,${{ env.HANDBRAKE_VERSION }}
