@@ -2,7 +2,7 @@
 FROM debian:bookworm-slim AS handbrake-build
 
 # renovate: datasource=github-releases depName=HandBrake packageName=HandBrake/HandBrake
-ARG HANDBRAKE_VERSION=1.10.1
+ARG HANDBRAKE_VERSION=1.10.2
 
 # Install HandBrake dependencies
 RUN apt-get update
