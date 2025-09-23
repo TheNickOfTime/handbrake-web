@@ -1,0 +1,35 @@
+name: Update HandBrake
+
+on:
+  schedule:
+    - cron: '0 12 * * 1' # runs weekly on monday at 5AM PST
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/handbrake-update.yaml
+      - .github/renovate.json
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get GitHub App token
+        id: get-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.RENOVATE_APP_ID }}
+          private-key: ${{ secrets.RENOVATE_APP_PRIVATE_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Self-hosted Renovate
+        uses: renovatebot/github-action@v43.0.13
+        with:
+          configurationFile: .github/renovate.json
+          token: ${{ steps.get-token.outputs.token }}
+        env:
+          RENOVATE_ONBOARDING: 'false'
+          RENOVATE_REPOSITORIES: ${{ github.repository }}
+          RENOVATE_PLATFORM_COMMIT: 'true'
