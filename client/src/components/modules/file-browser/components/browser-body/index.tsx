@@ -104,7 +104,10 @@ export default function FileBrowserBody({
 
 					const disabled =
 						(!child.isDirectory && mode == FileBrowserMode.Directory) ||
-						(!child.isDirectory && !mimeType?.includes('video'));
+						(!child.isDirectory &&
+							(!mimeType?.match(/^video\/.+$/) ||
+								!mimeType?.match(/^application\/x-(?:(?:iso9660)|(?:cd))-image$/) ||
+								!mimeType?.match(/^application\/octet-stream$/)));
 
 					return (
 						<button
