@@ -3,6 +3,12 @@ name: Update HandBrake
 on:
   schedule:
     - cron: '0 12 * * 1' # runs weekly on monday at 5AM PST
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/handbrake-update.yaml
+      - .github/renovate.json
 
 jobs:
   renovate:
