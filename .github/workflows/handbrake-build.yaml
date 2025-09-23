@@ -6,10 +6,11 @@ on:
       - main
     paths:
       - handbrake/Dockerfile
-  workflow_dispatch:
   pull_request:
     branches:
       - main
+    paths:
+      - handbrake/Dockerfile
 
 env:
   IMAGE: handbrake-build
@@ -55,6 +56,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.IMAGE }}
+          flavor: |
+            latest=true
           tags: |
             type=raw,value=${{env.HANDBRAKE_VERSION}}
 
