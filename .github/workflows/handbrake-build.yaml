@@ -54,7 +54,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.image }}
+          images: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.IMAGE }}
           tags: |
             type=raw,value=${{env.HANDBRAKE_VERSION}}
 
