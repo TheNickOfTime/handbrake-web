@@ -65,9 +65,9 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.IMAGE }}
           tags: |
-            type=raw,value=latest,enable={{ is_default_branch }},suffix=${{ matrix.hardware-acceleration == 'none' && null || join('-', matrix.hardware-acceleration) }}
-            type=raw,value=${{ env.HANDBRAKE_VERSION }},enable={{ is_default_branch }},suffix=${{ matrix.hardware-acceleration == 'none' && null || join('-', matrix.hardware-acceleration) }}
-            type=raw,value=dev,enable={{ is_not_default_branch }},suffix=${{ matrix.hardware-acceleration == 'none' && null || join('-', matrix.hardware-acceleration) }}
+            type=raw,value=latest,enable={{ is_default_branch }}${{ matrix.hardware-acceleration == 'none' && '' || join(',suffix=-', matrix.hardware-acceleration) }}
+            type=raw,value=${{ env.HANDBRAKE_VERSION }},enable={{ is_default_branch }}${{ matrix.hardware-acceleration == 'none' && '' || join(',suffix=-', matrix.hardware-acceleration) }}
+            type=raw,value=dev,enable={{ is_not_default_branch }}${{ matrix.hardware-acceleration == 'none' && null || join(',suffix=-', matrix.hardware-acceleration) }}
 
       - name: Build and push Docker image
         id: push
