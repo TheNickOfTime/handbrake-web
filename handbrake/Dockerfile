@@ -7,7 +7,6 @@ ARG HANDBRAKE_VERSION=1.10.2
 ARG HARDWARE_ACCELERATION=none
 
 # Install HandBrake dependencies
-RUN sed -i -e's/ main/ main contrib non-free non-free-firmware/g' /etc/apt/sources.list.d/debian.sources
 RUN apt-get update
 RUN apt-get install -y \
 	autoconf \
@@ -55,10 +54,15 @@ RUN case "${HARDWARE_ACCELERATION}" in \
 				libva-dev \
 				libdrm-dev \
 		;;\
-		# "nvidia") \
-		# 	apt-get install -y \
-		# 		nvidia-driver \
-		# ;;\
+		"nvidia") \
+			sed -i -e's/ main/ main contrib non-free non-free-firmware/g' /etc/apt/sources.list.d/debian.sources && \
+			apt-get update && \
+			apt-get install -y \
+				clang \
+				llvm \
+				nvidia-cuda-dev \
+				nvidia-cuda-toolkit \
+		;;\
 	esac
 
 # Clone the HandBrake git repo, checkout the latest tag, and then build handbrake
@@ -82,14 +86,14 @@ RUN case "${HARDWARE_ACCELERATION}" in \
 			--enable-qsv \
 			# --enable-libdovi \
 		;; \
-		# "nvidia") \
-		# 	./configure --launch \
-		# 	--launch-jobs=$(nproc) \
-		# 	--disable-gtk \
-		# 	--enable-nvenc \
-		# 	--enable-nvdec \
-		# 	# --enable-libdovi \
-		# ;;\
+		"nvidia") \
+			./configure --launch \
+			--launch-jobs=$(nproc) \
+			--disable-gtk \
+			--enable-nvenc \
+			--enable-nvdec \
+			# --enable-libdovi \
+		;;\
 	esac
 
 # Make a tarball of HandBrake's dependency libraries for copying later
