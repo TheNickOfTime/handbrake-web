@@ -25,6 +25,14 @@ jobs:
   build-and-publish-image:
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        hardware-acceleration:
+          - none
+          - intel
+          - nvidia
+
     permissions:
       contents: read
       packages: write
@@ -57,9 +65,9 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.IMAGE }}
           tags: |
-            type=raw,value=latest,enable={{ is_default_branch }}
-            type=raw,value=${{ env.HANDBRAKE_VERSION }},enable={{ is_default_branch }}
-            type=raw,value=dev,enable={{ is_not_default_branch }}
+            type=raw,value=latest,enable={{ is_default_branch }},suffix=${{ matrix.hardware-acceleration == 'none' && '' || join('-', matrix.hardware-acceleration) }}
+            type=raw,value=${{ env.HANDBRAKE_VERSION }},enable={{ is_default_branch }},suffix=${{ matrix.hardware-acceleration == 'none' && '' || join('-', matrix.hardware-acceleration) }}
+            type=raw,value=dev,enable={{ is_not_default_branch }},suffix=${{ matrix.hardware-acceleration == 'none' && '' || join('-', matrix.hardware-acceleration) }}
 
       - name: Build and push Docker image
         id: push
@@ -69,15 +77,8 @@ jobs:
           file: 'handbrake/Dockerfile'
           # platforms: linux/amd64,linux/arm64
           platforms: linux/amd64
+          build-args: HARDWARE_ACCELERATION=${{matrix.hardware-acceleration}}
           provenance: false
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-      # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)."
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.REPO_OWNER}}/${{ env.IMAGE }}
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
