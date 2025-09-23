@@ -2,12 +2,7 @@ name: Update HandBrake
 
 on:
   schedule:
-    - cron: '0 12 * * *' # runs at 5AM PST
-  pull_request:
-    branches:
-      - main
-    paths:
-      - .github/renovate.json
+    - cron: '0 12 * * 1' # runs weekly on monday at 5AM PST
 
 jobs:
   renovate:
