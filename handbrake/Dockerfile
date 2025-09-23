@@ -4,7 +4,10 @@ FROM debian:bookworm-slim AS handbrake-build
 # renovate: datasource=github-releases depName=HandBrake packageName=HandBrake/HandBrake
 ARG HANDBRAKE_VERSION=1.10.2
 
+ARG HARDWARE_ACCELERATION=none
+
 # Install HandBrake dependencies
+RUN sed -i -e's/ main/ main contrib non-free non-free-firmware/g' /etc/apt/sources.list.d/debian.sources
 RUN apt-get update
 RUN apt-get install -y \
 	autoconf \
@@ -45,19 +48,49 @@ RUN apt-get install -y \
 	tar \
 	zlib1g-dev
 
+# Install hardware acceleration libraries
+RUN case "${HARDWARE_ACCELERATION}" in \
+		"intel") \
+			apt-get install -y \
+				libva-dev \
+				libdrm-dev \
+		;;\
+		# "nvidia") \
+		# 	apt-get install -y \
+		# 		nvidia-driver \
+		# ;;\
+	esac
+
 # Clone the HandBrake git repo, checkout the latest tag, and then build handbrake
 RUN mkdir /handbrake
 WORKDIR /handbrake
 RUN git clone https://github.com/HandBrake/HandBrake.git . && \
 	git switch --detach ${HANDBRAKE_VERSION}
-RUN ./configure --launch \
-	--launch-jobs=$(nproc) \
-	--disable-gtk
-	# --enable-qsv \
-	# --enable-nvenc \
-	# --enable-nvdec \
-	# --enable-vce \
-	# --enable-libdovi
+
+RUN case "${HARDWARE_ACCELERATION}" in \
+		# No hardware acceleration platforms
+		"none") \
+			./configure --launch \
+			--launch-jobs=$(nproc) \
+			--disable-gtk \
+			# --enable-libdovi \
+		;; \
+		"intel") \
+			./configure --launch \
+			--launch-jobs=$(nproc) \
+			--disable-gtk \
+			--enable-qsv \
+			# --enable-libdovi \
+		;; \
+		# "nvidia") \
+		# 	./configure --launch \
+		# 	--launch-jobs=$(nproc) \
+		# 	--disable-gtk \
+		# 	--enable-nvenc \
+		# 	--enable-nvdec \
+		# 	# --enable-libdovi \
+		# ;;\
+	esac
 
 # Make a tarball of HandBrake's dependency libraries for copying later
 RUN ldd /handbrake/build/HandBrakeCLI | \
@@ -69,5 +102,7 @@ RUN ldd /handbrake/build/HandBrakeCLI | \
 # Final image --------------------------------------------------------------------------------------
 FROM gcr.io/distroless/base-debian12 AS main
 
-COPY --from=handbrake-build /handbrake/build/HandBrakeCLI /handbrake/HandBrakeCLI
-COPY --from=handbrake-build /handbrake/lib /handbrake/lib
+COPY --from=handbrake-build /handbrake/build/HandBrakeCLI /usr/local/bin/HandBrakeCLI
+COPY --from=handbrake-build /handbrake/lib/* /lib
+
+ENTRYPOINT [ "/usr/local/bin/HandBrakeCLI" ]
