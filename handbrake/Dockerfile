@@ -1,8 +1,7 @@
-# Dependency versions ------------------------------------------------------------------------------
-ARG HANDBRAKE_VERSION=1.10.2
-
 # Build HandBrake ----------------------------------------------------------------------------------
 FROM debian:bookworm-slim AS handbrake-build
+
+ARG HANDBRAKE_VERSION=1.10.2
 
 # Install HandBrake dependencies
 RUN apt-get update
