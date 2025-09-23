@@ -56,10 +56,10 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.IMAGE }}
-          flavor: |
-            latest=true
           tags: |
-            type=raw,value=${{env.HANDBRAKE_VERSION}}
+            type=raw,value=latest,enable={{ is_default_branch }}
+            type=raw,value=${{ env.HANDBRAKE_VERSION }},enable={{ is_default_branch }}
+            type=raw,value=${{ env.HANDBRAKE_VERSION }}-test,enable={{ is_not_default_branch }}
 
       - name: Build and push Docker image
         id: push
