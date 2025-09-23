@@ -1,0 +1,15 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "dependencyDashboard": false,
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^handbrake/Dockerfile$/"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>.+?)\\sdepName=(?<depName>.+?) packageName=(?<packageName>.+?)\\nARG .+?_VERSION=(?<currentValue>[\\d.]+)"
+      ]
+    }
+  ],
+  "enabledManagers": ["custom.regex"]
+}
