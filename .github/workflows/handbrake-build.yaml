@@ -50,6 +50,14 @@ jobs:
       - name: Get HandBrake version
         run: cat handbrake/Dockerfile | grep -oP '(?<=ARG\s)(HANDBRAKE_VERSION=.+)' >> $GITHUB_ENV
 
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.image }}
+          tags: |
+            type=raw,value=${{env.HANDBRAKE_VERSION}}
+
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6
@@ -60,7 +68,8 @@ jobs:
           platforms: linux/amd64
           provenance: false
           push: true
-          tags: latest,${{ env.HANDBRAKE_VERSION }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)."
       - name: Generate artifact attestation
