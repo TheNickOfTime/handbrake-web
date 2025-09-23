@@ -59,7 +59,7 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{ is_default_branch }}
             type=raw,value=${{ env.HANDBRAKE_VERSION }},enable={{ is_default_branch }}
-            type=raw,value=${{ env.HANDBRAKE_VERSION }}-test,enable={{ is_not_default_branch }}
+            type=raw,value=dev,enable={{ is_not_default_branch }}
 
       - name: Build and push Docker image
         id: push
