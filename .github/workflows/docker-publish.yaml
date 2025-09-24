@@ -71,6 +71,23 @@ jobs:
             type=semver,pattern={{major}}.{{minor}},enabled=${{ matrix.hardware-acceleration == 'none' }}
             type=semver,pattern={{major}}.{{minor}},suffix=${{ matrix.hardware-acceleration }},enabled=${{ matrix.hardware-acceleration != 'none' }}
 
+      - name: Get handbrake-build base image tag
+        run: |
+          if [ ${{ github.ref_name }} == 'main' ]; then \
+            if [ ${{ matrix.hardware-acceleration }} == 'none' ]; then \
+              echo "latest"; \
+            else \
+              echo "${{ matrix.hardware-acceleration }}";
+            fi; \
+          else \
+            if [ ${{ matrix.hardware-acceleration }} ] == 'none'; then \
+              echo "dev"; \
+            else \
+              echo "dev-${{ matrix.hardware-acceleration }}";
+            fi;
+          fi; \
+          > echo BASE_IMAGE_TAG=${1} >> $GITHUB_ENV
+
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6
@@ -81,7 +98,7 @@ jobs:
           platforms: linux/amd64
           build-args: |
             DISTROLESS_VARIANT=${{ github.head_ref == '' && 'nonroot' || 'debug-nonroot' }} # use debug variant for PRs
-            HARDWARE_ACCELERATION=${{ matrix.hardware-acceleration }}
+            HANDBRAKE_BUILD_BASE_IMAGE_TAG=${{ env.BASE_IMAGE_TAG }}
           provenance: false
           push: true
           tags: ${{ steps.meta.outputs.tags }}

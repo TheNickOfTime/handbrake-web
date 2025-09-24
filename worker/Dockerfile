@@ -1,7 +1,8 @@
 ARG DISTROLESS_VARIANT=debug-nonroot
+ARG HANDBRAKE_BUILD_BASE_IMAGE_TAG=latest
 
 # HandBrake Build ----------------------------------------------------------------------------------
-FROM ghcr.io/thenickoftime/handbrake-build:latest AS handbrake-build
+FROM ghcr.io/thenickoftime/handbrake-build:${HANDBRAKE_BUILD_BASE_IMAGE_TAG} AS handbrake-build
 
 # Build Worker -------------------------------------------------------------------------------------
 FROM node:bookworm-slim AS worker-build
