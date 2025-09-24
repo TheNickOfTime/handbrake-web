@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-publish-image:
+  handbrake-build:
     runs-on: ubuntu-latest
 
     strategy:
@@ -85,3 +85,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  handbrake-web-build:
+    needs: handbrake-build
+    uses: ./.github/workflows/docker-publish.yaml
