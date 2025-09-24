@@ -73,14 +73,14 @@ jobs:
 
       - name: Get handbrake-build base image tag
         run: |
-          if [ ${{ github.ref_name }} == 'main' ]; then \
+          if [ ${{ github.ref_name }}  == 'main' ]; then \
             if [ ${{ matrix.hardware-acceleration }} == 'none' ]; then \
               echo "latest"; \
             else \
               echo "${{ matrix.hardware-acceleration }}";
             fi; \
           else \
-            if [ ${{ matrix.hardware-acceleration }} ] == 'none'; then \
+            if [ ${{ matrix.hardware-acceleration }} == 'none' ]; then \
               echo "dev"; \
             else \
               echo "dev-${{ matrix.hardware-acceleration }}";
