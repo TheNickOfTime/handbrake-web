@@ -34,10 +34,10 @@ FROM gcr.io/distroless/nodejs24-debian12:${DISTROLESS_VARIANT} AS main
 ARG TARGETARCH
 
 # Copy compiled HandBrakeCLI binary from the build step
-COPY --from=handbrake-build /handbrake/HandBrakeCLI /usr/local/bin/HandBrakeCLI
+COPY --from=handbrake-build /usr/local/bin/HandBrakeCLI /usr/local/bin/HandBrakeCLI
 
 # Copy HandBrakeCLI's dependencies from the build stage
-COPY --from=handbrake-build /handbrake/lib/* /lib
+COPY --from=handbrake-build /lib/* /lib
 
 # Copy project from build
 COPY --from=worker-build /handbrake-web/worker/build /handbrake-web/worker
