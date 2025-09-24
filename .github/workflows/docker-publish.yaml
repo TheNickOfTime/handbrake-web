@@ -17,7 +17,7 @@ on:
     types: [published]
   workflow_run:
     workflows:
-      - Build Handbrake
+      - Build HandBrake
     types:
       - completed
 
