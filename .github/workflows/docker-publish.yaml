@@ -28,10 +28,15 @@ jobs:
 
           - image: handbrake-web-worker
             file: worker/Dockerfile
-            hardware-acceleration:
-              - none
-              - intel
-              - nvidia
+            hardware-acceleration: none
+
+          - image: handbrake-web-worker
+            file: worker/Dockerfile
+            hardware-acceleration: intel
+
+          - image: handbrake-web-worker
+            file: worker/Dockerfile
+            hardware-acceleration: nvidia
 
     permissions:
       contents: read
