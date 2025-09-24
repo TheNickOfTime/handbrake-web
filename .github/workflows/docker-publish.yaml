@@ -15,7 +15,11 @@ on:
       - handbrake/Dockerfile
   release:
     types: [published]
-  workflow_call:
+  workflow_run:
+    workflows:
+      - Build Handbrake
+    types:
+      - completed
 
 env:
   REGISTRY: ghcr.io
