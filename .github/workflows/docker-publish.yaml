@@ -97,7 +97,7 @@ jobs:
           # platforms: linux/amd64,linux/arm64
           platforms: linux/amd64
           build-args: |
-            DISTROLESS_VARIANT=${{ github.head_ref == '' && 'nonroot' || 'debug-nonroot' }},\
+            DISTROLESS_VARIANT=${{ github.head_ref == '' && 'nonroot' || 'debug-nonroot' }}
             HANDBRAKE_BUILD_BASE_IMAGE_TAG=${{ env.BASE_IMAGE_TAG }}
           provenance: false
           push: true
