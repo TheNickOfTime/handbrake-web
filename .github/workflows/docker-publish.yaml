@@ -5,12 +5,13 @@ on:
     branches:
       - main
       - release/**
-  release:
-    types: [published]
   pull_request:
     branches:
       - main
       - release/**
+  release:
+    types:
+      - published
 
 env:
   REGISTRY: ghcr.io
@@ -62,6 +63,14 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+
+      - name: Wait on handbrake-build
+        uses: lewagon/wait-on-check-action@v1.3.3
+        with:
+          ref: ${{ github.ref }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          running-workflow-name: wait-for-check-regexp
+          check-regexp: handbrake-build
 
       - name: Build and push Docker image
         id: push
