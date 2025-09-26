@@ -89,6 +89,8 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
 
       - name: Wait handbrake-build to finish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [[ -z $( \
             gh api /repos/TheNickOfTime/handbrake-web/commits/refs/heads/test/handbrake-build-before-handbrake-web-build/check-runs | \
