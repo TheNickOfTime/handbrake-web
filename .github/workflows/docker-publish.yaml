@@ -8,6 +8,7 @@ on:
     paths:
       - .github/workflows/docker-publish.yaml
       - client/**
+      - docker/**
       - server/**
       - shared/**
       - worker/**
@@ -21,6 +22,7 @@ on:
     paths:
       - .github/workflows/docker-publish.yaml
       - client/**
+      - docker/**
       - server/**
       - shared/**
       - worker/**
@@ -85,6 +87,25 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+
+      - name: Wait handbrake-build to finish
+        run: |
+          if [[ -z $( \
+            gh api /repos/TheNickOfTime/handbrake-web/commits/refs/heads/test/handbrake-build-before-handbrake-web-build/check-runs | \
+            jq '.check_runs[] | select(.name=="handbrake-build")' \
+          ) ]]; then \
+            echo "The job 'handbrake-build' does not exist for this job."; \
+          else \
+            until [[ $( \
+                gh api /repos/TheNickOfTime/handbrake-web/commits/refs/heads/test/handbrake-build-before-handbrake-web-build/check-runs | \
+                jq -r '.check_runs[] | select(.name=="handbrake-build") | .status' \
+              ) = "complete" \
+            ]]; \
+            do \
+              echo "Waiting for the job 'handbrake-build' to finish, checking again in 10s..." && sleep 10s; \
+            done; \
+            echo "The job 'handbrake-build' has finished!"; \
+          fi;
 
       - name: Build and push Docker image
         id: push
