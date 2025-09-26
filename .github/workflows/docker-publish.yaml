@@ -101,7 +101,7 @@ jobs:
             until [[ $( \
                 gh api /repos/TheNickOfTime/handbrake-web/commits/refs/heads/test/handbrake-build-before-handbrake-web-build/check-runs | \
                 jq -r '.check_runs[] | select(.name=="handbrake-build") | .status' \
-              ) = "complete" \
+              ) = "completed" \
             ]]; \
             do \
               echo "Waiting for the job 'handbrake-build' to finish, checking again in 10s..." && sleep 10s; \
