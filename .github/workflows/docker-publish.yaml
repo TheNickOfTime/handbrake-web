@@ -16,8 +16,12 @@ env:
   REGISTRY: ghcr.io
   REPO_OWNER: ${{ github.repository_owner }}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build-handbrake:
+  build-handbrake-web:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
