@@ -5,12 +5,31 @@ on:
     branches:
       - main
       - release/**
-  release:
-    types: [published]
+    paths:
+      - .github/workflows/docker-publish.yaml
+      - client/**
+      - server/**
+      - shared/**
+      - worker/**
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
   pull_request:
     branches:
       - main
       - release/**
+    paths:
+      - .github/workflows/docker-publish.yaml
+      - client/**
+      - server/**
+      - shared/**
+      - worker/**
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+  release:
+    types:
+      - published
 
 env:
   REGISTRY: ghcr.io
