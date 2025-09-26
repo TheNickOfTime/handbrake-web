@@ -92,16 +92,16 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo /repos/${{ github.repository }}/commits/${{ github.base_ref || github.ref }}/check-runs && \
-          echo $(gh api /repos/${{ github.repository }}/commits/${{ github.base_ref || github.ref }}/check-runs) && \
+          echo /repos/${{ github.repository }}/commits/${{ github.head_ref || github.ref }}/check-runs && \
+          echo $(gh api /repos/${{ github.repository }}/commits/${{ github.head_ref || github.ref }}/check-runs) && \
           if [[ -z $( \
-            gh api /repos/${{ github.repository }}/commits/${{ github.base_ref || github.ref }}/check-runs | \
+            gh api /repos/${{ github.repository }}/commits/${{ github.head_ref || github.ref }}/check-runs | \
             jq '.check_runs[] | select(.name=="handbrake-build")' \
           ) ]]; then \
             echo "The job 'handbrake-build' does not exist for this job."; \
           else \
             until [[ $( \
-                gh api /repos/${{ github.repository }}/commits/${{ github.base_ref || github.ref }}/check-runs | \
+                gh api /repos/${{ github.repository }}/commits/${{ github.head_ref || github.ref }}/check-runs | \
                 jq -r '.check_runs[] | select(.name=="handbrake-build") | .status' \
               ) = "completed" \
             ]]; \
