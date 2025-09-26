@@ -125,6 +125,9 @@ importers:
       ffprobe-static:
         specifier: ^3.1.0
         version: 3.1.0
+      kysely:
+        specifier: ^0.28.7
+        version: 0.28.7
       mime:
         specifier: ^4.1.0
         version: 4.1.0
@@ -1820,6 +1823,10 @@ packages:
 
   kuler@2.0.0:
     resolution: {integrity: sha512-Xq9nH7KlWZmXAtodXDDRE7vs6DU1gTU8zYDHDiWLSip45Egwq3plLHzPn27NgvzL2r1LMPC1vdqh98sQxtqj4A==}
+
+  kysely@0.28.7:
+    resolution: {integrity: sha512-u/cAuTL4DRIiO2/g4vNGRgklEKNIj5Q3CG7RoUB5DV5SfEC2hMvPxKi0GWPmnzwL2ryIeud2VTcEEmqzTzEPNw==}
+    engines: {node: '>=20.0.0'}
 
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -4163,6 +4170,8 @@ snapshots:
       json-buffer: 3.0.1
 
   kuler@2.0.0: {}
+
+  kysely@0.28.7: {}
 
   levn@0.4.1:
     dependencies:
