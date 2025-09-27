@@ -4,17 +4,14 @@ import logger from 'logging';
 import type { Database } from './database-types';
 
 const sqlite = new SQLite('../data/handbrake-test.db');
-
-const dialect = new SqliteDialect({
-	database: sqlite,
-});
-
-export const database = new Kysely<Database>({
-	dialect: dialect,
-});
-
 sqlite.pragma('journal_mode = WAL');
 sqlite.pragma('foreign_keys = ON');
+
+export const database = new Kysely<Database>({
+	dialect: new SqliteDialect({
+		database: sqlite,
+	}),
+});
 
 try {
 	await database.schema
@@ -99,8 +96,10 @@ try {
 	throw err;
 }
 
-const testCommand = database.selectFrom('jobs').selectAll();
+const testCommand = database.selectFrom('jobs').where('job_id', '=', 21).selectAll();
 
-console.log(await testCommand.execute());
+console.log((await testCommand.executeTakeFirstOrThrow()).input_path);
+
+sqlite.pragma;
 
 database.destroy();
