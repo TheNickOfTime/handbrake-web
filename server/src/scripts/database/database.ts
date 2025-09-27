@@ -1,25 +1,32 @@
-import Database, { type Database as DatabaseType } from 'better-sqlite3';
+import SQLite from 'better-sqlite3';
 import { access, mkdir } from 'fs/promises';
+import { Kysely, SqliteDialect } from 'kysely';
 import logger from 'logging';
 import path from 'path';
-
-import { watcherTableCreateStatements } from 'scripts/database/database-watcher';
 import { dataPath } from '../data';
-import { queueTableCreateStatements } from './database-queue';
+import { initStatusTableSchema } from './database-status';
+import type { Database } from './database-types';
 import DatabaseMigrations from './migrations/database-migrations';
 
 const databasePath = path.join(dataPath, 'handbrake.db');
 
 export const databaseVersion = 1;
 
-export let database: DatabaseType = new Database(databasePath, {});
-database.pragma('journal_mode = WAL');
-database.pragma('foreign_keys = ON');
+const sqlite = new SQLite('../data/handbrake-test.db');
+
+export const database = new Kysely<Database>({
+	dialect: new SqliteDialect({
+		database: sqlite,
+	}),
+});
+
+sqlite.pragma('journal_mode = WAL');
+sqlite.pragma('foreign_keys = ON');
 
 export async function DatabaseConnect() {
 	try {
 		// Check if database tables exist ----------------------------------------------------------
-		const checkTablesStatement = database.prepare(
+		const checkTablesStatement = sqlite.prepare(
 			`SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%'`
 		);
 		const checkTablesResult = checkTablesStatement.all();
@@ -27,14 +34,12 @@ export async function DatabaseConnect() {
 
 		// Create the tables if they don't exist ---------------------------------------------------
 		const tableCreateStatements = [
-			...queueTableCreateStatements,
-			'CREATE TABLE IF NOT EXISTS status(id TEXT NOT NULL, state INTEGER NOT NULL, PRIMARY KEY (id))',
-			...watcherTableCreateStatements,
-		]
-			.map((statement) => statement.replace(/\t/gm, ''))
-			.map((statement) => database.prepare(statement));
+			...initStatusTableSchema,
+			// ...queueTableCreateStatements,
+			// ...watcherTableCreateStatements,
+		];
 
-		tableCreateStatements.forEach((statement) => statement.run());
+		tableCreateStatements.forEach(async (statement) => await statement.execute());
 
 		// Check database version ------------------------------------------------------------------
 		await CheckDatabaseVersion(databaseExists);
@@ -47,8 +52,8 @@ export async function DatabaseConnect() {
 
 export async function DatabaseDisconnect() {
 	try {
-		database.pragma('wal_checkpoint(full)');
-		database.close();
+		sqlite.pragma('wal_checkpoint(full)');
+		database.destroy();
 		logger.info(`[server] [database] The database has been disconnected.`);
 	} catch (error) {
 		logger.error(`[server] [database] [error] Could not disconnect the database.`);
@@ -57,15 +62,15 @@ export async function DatabaseDisconnect() {
 }
 
 async function CheckDatabaseVersion(databaseExists: boolean) {
-	const createVersionTableStatement = database.prepare(
-		'CREATE TABLE IF NOT EXISTS database_version(version INT NOT NULL PRIMARY KEY)'
-	);
+	const createVersionTableStatement = database.schema
+		.createTable('database_version')
+		.ifNotExists()
+		.addColumn('version', 'integer', (col) => col.notNull().primaryKey());
+
 	if (databaseExists) {
 		try {
-			const checkVersionStatement = database.prepare<[], { version: number }>(
-				'SELECT version FROM database_version'
-			);
-			const checkVersionResult = checkVersionStatement.get();
+			const checkVersionStatement = database.selectFrom('database_version').select('version');
+			const checkVersionResult = await checkVersionStatement.executeTakeFirstOrThrow();
 			if (!checkVersionResult) {
 				throw new Error(
 					'[server] [database] [error] Cannot get database_version from the database. Application will now shut down.'
@@ -91,12 +96,12 @@ async function CheckDatabaseVersion(databaseExists: boolean) {
 			DatabaseMigrations(-1);
 		}
 	} else {
-		createVersionTableStatement.run();
+		await createVersionTableStatement.execute();
 
-		const insertVersionStatement = database.prepare<{ version: number }>(
-			'INSERT INTO database_version(version) VALUES($version)'
-		);
-		insertVersionStatement.run({ version: databaseVersion });
+		const insertVersionStatement = database
+			.insertInto('database_version')
+			.values({ version: databaseVersion });
+		await insertVersionStatement.execute();
 	}
 }
 
@@ -112,7 +117,7 @@ async function DatabaseBackup(name: string) {
 			await mkdir(backupDir);
 		}
 
-		await database.backup(backupPath);
+		await sqlite.backup(backupPath);
 
 		logger.info(`[server] [database] [backup] Backed up the database to '${backupPath}'.`);
 	} catch (error) {
