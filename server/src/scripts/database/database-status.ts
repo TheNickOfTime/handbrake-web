@@ -1,33 +1,39 @@
 import logger from 'logging';
-import { type StatusTableType } from 'types/database';
 import { database } from './database';
+import type { AddStatus, GetStatus } from './database-types';
 
 // export function InitializeStatus() {
 // 	const;
 // }
 
-export function GetStatusFromDatabase(id: string) {
+export const initStatusTableSchema = [
+	database.schema
+		.createTable('status')
+		.ifNotExists()
+		.addColumn('id', 'text', (col) => col.notNull().primaryKey())
+		.addColumn('state', 'integer', (col) => col.notNull()),
+];
+
+export async function GetStatusFromDatabase(id: GetStatus['id']) {
 	try {
-		const statusStatement = database.prepare<{ id: string }, StatusTableType>(
-			'SELECT state FROM status WHERE id = $id'
-		);
-		const statusQuery = statusStatement.get({ id: id });
-		return statusQuery;
+		return await database.selectFrom('status').where('id', '=', id).executeTakeFirstOrThrow();
 	} catch (err) {
 		logger.error(`[server] [database] [error] Could not get the status of '${id}'.`);
-		logger.error(err);
+		throw err;
 	}
 }
 
-export function UpdateStatusInDatabase(id: string, state: number) {
+export async function UpdateStatusInDatabase(newStatus: AddStatus) {
 	try {
-		const updateStatement = database.prepare(
-			'INSERT INTO status (id, state) VALUES ($id, $state) ON CONFLICT (id) DO UPDATE SET state = $state'
-		);
-		updateStatement.run({ id: id, state: state });
-		// logger.info(`[server] [database] Sucessfully updated the status of '${id}' to '${state}'.`);
+		return await database
+			.insertInto('status')
+			.values(newStatus)
+			.onConflict((con) => con.doUpdateSet({ state: newStatus.state }))
+			.execute();
 	} catch (err) {
-		logger.error(`[server] [database] [error] Could not update the status of '${id}'.`);
-		logger.error(err);
+		logger.error(
+			`[server] [database] [error] Could not update the status of '${newStatus.id}'.`
+		);
+		throw err;
 	}
 }
