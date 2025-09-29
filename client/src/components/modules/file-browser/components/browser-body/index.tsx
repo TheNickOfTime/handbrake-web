@@ -1,9 +1,9 @@
+import { DirectoryItemType, DirectoryType } from '@handbrake-web/shared/types/directory';
+import { FileBrowserMode } from '@handbrake-web/shared/types/file-browser';
 import UpIcon from '@icons/arrow-90deg-up.svg?react';
 import FileIcon from '@icons/file-earmark-fill.svg?react';
 import FolderIcon from '@icons/folder-fill.svg?react';
 import mime from 'mime';
-import { DirectoryItemType, DirectoryType } from '~types/directory';
-import { FileBrowserMode } from '~types/file-browser';
 import styles from './styles.module.scss';
 
 interface Properties {

@@ -1,10 +1,10 @@
+import { statusSorting } from '@handbrake-web/shared/dict/queue.dict';
+import { QueueType } from '@handbrake-web/shared/types/queue';
+import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import BadgeInfo from '~components/base/info/badge-info';
 import ProgressBar from '~components/base/progress';
 import Section from '~components/root/section';
-import { statusSorting } from '~dict/queue.dict';
 import DashboardTable from '~pages/dashboard/components/dashboard-table';
-import { QueueType } from '~types/queue';
-import { TranscodeStage } from '~types/transcode';
 import styles from './styles.module.scss';
 
 interface Properties {

@@ -1,3 +1,18 @@
+import { type ConfigType } from '@handbrake-web/shared/types/config';
+import {
+	type CreateDirectoryRequestType,
+	type DirectoryItemsType,
+	type DirectoryRequestType,
+	type DirectoryType,
+} from '@handbrake-web/shared/types/directory';
+import { type HandbrakePresetType } from '@handbrake-web/shared/types/preset';
+import { type QueueRequestType } from '@handbrake-web/shared/types/queue';
+import { type GithubReleaseResponseType } from '@handbrake-web/shared/types/version';
+import {
+	type WatcherDefinitionObjectType,
+	type WatcherDefinitionType,
+	type WatcherRuleDefinitionType,
+} from '@handbrake-web/shared/types/watcher';
 import logger from 'logging';
 import { GetConfig, WriteConfig } from 'scripts/config';
 import { AddClient, RemoveClient } from 'scripts/connections';
@@ -35,21 +50,6 @@ import {
 	UpdateWatcherRule,
 } from 'scripts/watcher';
 import { Socket as Client, Server } from 'socket.io';
-import { type ConfigType } from 'types/config';
-import {
-	type CreateDirectoryRequestType,
-	type DirectoryItemsType,
-	type DirectoryRequestType,
-	type DirectoryType,
-} from 'types/directory';
-import { type HandbrakePresetType } from 'types/preset';
-import { type QueueRequestType } from 'types/queue';
-import { type GithubReleaseResponseType } from 'types/version';
-import {
-	type WatcherDefinitionObjectType,
-	type WatcherDefinitionType,
-	type WatcherRuleDefinitionType,
-} from 'types/watcher';
 
 const initClient = async (socket: Client) => {
 	const queue = GetQueue();

@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import AddFolderIcon from '@icons/folder-plus.svg?react';
-import { HTMLAttributes, useContext, useEffect, useState } from 'react';
-import ButtonInput from '~components/base/inputs/button';
-import { PrimaryContext } from '~layouts/primary/context';
 import {
 	CreateDirectoryRequestType,
 	DirectoryItemType,
 	DirectoryRequestType,
 	DirectoryType,
-} from '~types/directory';
-import { FileBrowserMode } from '~types/file-browser';
+} from '@handbrake-web/shared/types/directory';
+import { FileBrowserMode } from '@handbrake-web/shared/types/file-browser';
+import AddFolderIcon from '@icons/folder-plus.svg?react';
+import { HTMLAttributes, useContext, useEffect, useState } from 'react';
+import ButtonInput from '~components/base/inputs/button';
+import { PrimaryContext } from '~layouts/primary/context';
 import AddDirectory from './components/add-directory';
 import FileBrowserBody from './components/browser-body';
 import styles from './styles.module.scss';

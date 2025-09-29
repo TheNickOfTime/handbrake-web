@@ -1,6 +1,6 @@
+import { QueueType } from '@handbrake-web/shared/types/queue';
+import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import Section from '~components/root/section';
-import { QueueType } from '~types/queue';
-import { TranscodeStage } from '~types/transcode';
 import { WorkerInfo } from '../..';
 import styles from './styles.module.scss';
 

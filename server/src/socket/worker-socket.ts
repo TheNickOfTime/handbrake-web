@@ -1,3 +1,5 @@
+import { type HandbrakePresetType } from '@handbrake-web/shared/types/preset';
+import { type JobDataType, type JobStatusType } from '@handbrake-web/shared/types/queue';
 import logger, { logPath, WriteWorkerLogToFile } from 'logging';
 import { AddWorker, RemoveWorker } from 'scripts/connections';
 import {
@@ -8,8 +10,6 @@ import {
 import { GetDefaultPresetByName, GetPresetByName } from 'scripts/presets';
 import { GetQueue, StopJob, UpdateQueue, WorkerForAvailableJobs } from 'scripts/queue';
 import { Server } from 'socket.io';
-import { type HandbrakePresetType } from 'types/preset';
-import { type JobDataType, type JobStatusType } from 'types/queue';
 
 export default function WorkerSocket(io: Server) {
 	io.of('/worker').on('connection', (socket) => {

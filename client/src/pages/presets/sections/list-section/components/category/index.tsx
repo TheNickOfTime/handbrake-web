@@ -1,11 +1,11 @@
+import { FirstLetterUpperCase } from '@handbrake-web/shared/funcs/string.funcs';
+import { HandbrakePresetListType } from '@handbrake-web/shared/types/preset';
 import CaretDownIcon from '@icons/caret-down-fill.svg?react';
 import CaretUpIcon from '@icons/caret-up-fill.svg?react';
 import FolderOpenIcon from '@icons/folder2-open.svg?react';
 import FolderIcon from '@icons/folder2.svg?react';
 import { CSSProperties, useState } from 'react';
 import PresetCard from '~components/cards/preset-card';
-import { FirstLetterUpperCase } from '~funcs/string.funcs';
-import { HandbrakePresetListType } from '~types/preset';
 import styles from './styles.module.scss';
 
 type Params = {

@@ -1,6 +1,6 @@
+import { DirectoryItemsType, DirectoryItemType } from '@handbrake-web/shared/types/directory';
+import { HandbrakeOutputExtensions } from '@handbrake-web/shared/types/file-extensions';
 import { createContext } from 'react';
-import { DirectoryItemsType, DirectoryItemType } from '~types/directory';
-import { HandbrakeOutputExtensions } from '~types/file-extensions';
 import { JobFrom } from '.';
 
 export interface CreateJobContextType {

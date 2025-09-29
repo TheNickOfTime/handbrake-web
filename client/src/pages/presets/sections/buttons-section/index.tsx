@@ -1,7 +1,7 @@
+import { HandbrakePresetCategoryType } from '@handbrake-web/shared/types/preset';
 import AddIcon from '@icons/plus-lg.svg?react';
 import ButtonInput from '~components/base/inputs/button';
 import Section from '~components/root/section';
-import { HandbrakePresetCategoryType } from '~types/preset';
 import styles from './styles.module.scss';
 
 type Params = {

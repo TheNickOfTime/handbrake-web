@@ -1,10 +1,21 @@
 {
-	"compilerOptions": {
-		"target": "ESNext",
-		"module": "ESNext",
-		"declaration": true,
-		"declarationMap": true,
-		"outDir": "./build",
-		"composite": true
-	}
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
+
+    "target": "es2022",
+    "lib": ["es2022"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "moduleDetection": "force",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
+    "strict": true,
+
+    "rootDir": "./src",
+    "outDir": "./build",
+    "noEmit": false,
+    "declaration": true
+  },
+  "include": ["src"]
 }

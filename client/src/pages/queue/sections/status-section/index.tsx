@@ -1,9 +1,9 @@
+import { QueueStatus as QueueStatusType } from '@handbrake-web/shared/types/queue';
 import StatusIcon from '@icons/circle-fill.svg?react';
 import StartIcon from '@icons/play-fill.svg?react';
 import StopIcon from '@icons/stop-fill.svg?react';
 import ButtonInput from '~components/base/inputs/button';
 import Section from '~components/root/section';
-import { QueueStatus as QueueStatusType } from '~types/queue';
 import styles from './styles.module.scss';
 
 type Params = {

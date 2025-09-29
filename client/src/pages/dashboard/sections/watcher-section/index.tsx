@@ -1,7 +1,7 @@
+import { QueueType } from '@handbrake-web/shared/types/queue';
+import { WorkerIDType } from '@handbrake-web/shared/types/socket';
 import Section from '~components/root/section';
 import DashboardTable from '~pages/dashboard/components/dashboard-table';
-import { QueueType } from '~types/queue';
-import { WorkerIDType } from '~types/socket';
 import styles from './styles.module.scss';
 
 interface Properties {

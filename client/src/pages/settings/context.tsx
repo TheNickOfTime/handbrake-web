@@ -1,5 +1,5 @@
+import { ConfigType } from '@handbrake-web/shared/types/config';
 import { createContext } from 'react';
-import { ConfigType } from '~types/config';
 
 interface SettingsContextType {
 	currentConfig: ConfigType;

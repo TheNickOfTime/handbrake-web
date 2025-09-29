@@ -1,8 +1,8 @@
+import { PresetEncoderDict, PresetFormatDict } from '@handbrake-web/shared/dict/presets.dict';
+import { FirstLetterUpperCase } from '@handbrake-web/shared/funcs/string.funcs';
+import { HandbrakePresetCategoryType } from '@handbrake-web/shared/types/preset';
 import Section from '~components/root/section';
-import { PresetEncoderDict, PresetFormatDict } from '~dict/presets.dict';
-import { FirstLetterUpperCase } from '~funcs/string.funcs';
 import DashboardTable from '~pages/dashboard/components/dashboard-table';
-import { HandbrakePresetCategoryType } from '~types/preset';
 import styles from './styles.module.scss';
 
 interface Properties {

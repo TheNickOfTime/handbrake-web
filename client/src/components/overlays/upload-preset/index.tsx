@@ -1,3 +1,8 @@
+import { FirstLetterUpperCase } from '@handbrake-web/shared/funcs/string.funcs';
+import {
+	HandbrakePresetCategoryType,
+	HandbrakePresetType,
+} from '@handbrake-web/shared/types/preset';
 import WarningIcon from '@icons/exclamation-circle-fill.svg?react';
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
@@ -5,8 +10,6 @@ import ButtonInput from '~components/base/inputs/button';
 import SelectInput from '~components/base/inputs/select';
 import TextInput from '~components/base/inputs/text';
 import Overlay from '~components/root/overlay';
-import { FirstLetterUpperCase } from '~funcs/string.funcs';
-import { HandbrakePresetCategoryType, HandbrakePresetType } from '~types/preset';
 import styles from './styles.module.scss';
 
 interface Properties {

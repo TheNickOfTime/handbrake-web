@@ -1,9 +1,9 @@
+import { type ConfigType } from '@handbrake-web/shared/types/config';
 import fs from 'fs';
 import { copyFile, readFile, writeFile } from 'fs/promises';
 import logger from 'logging';
 import path from 'path';
 import { cwd } from 'process';
-import { type ConfigType } from 'types/config';
 import { parse, stringify } from 'yaml';
 import { EmitToAllClients } from './connections';
 import { dataPath } from './data';

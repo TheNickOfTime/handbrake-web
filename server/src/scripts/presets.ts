@@ -1,14 +1,14 @@
-import { access, mkdir, readdir, readFile, rm, writeFile } from 'fs/promises';
-import { getPresetCount } from 'funcs/preset.funcs';
-import logger from 'logging';
-import path from 'path';
-import { cwd } from 'process';
+import { getPresetCount } from '@handbrake-web/shared/funcs/preset.funcs';
 import {
 	type HandbrakeDefaultPresetsType,
 	type HandbrakePresetCategoryType,
 	type HandbrakePresetListType,
 	type HandbrakePresetType,
-} from 'types/preset';
+} from '@handbrake-web/shared/types/preset';
+import { access, mkdir, readdir, readFile, rm, writeFile } from 'fs/promises';
+import logger from 'logging';
+import path from 'path';
+import { cwd } from 'process';
 import { EmitToAllClients } from './connections';
 import { dataPath } from './data';
 

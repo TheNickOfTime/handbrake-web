@@ -1,8 +1,8 @@
+import { DirectoryItemsType } from '@handbrake-web/shared/types/directory';
 import WarningIcon from '@icons/exclamation-circle.svg?react';
 import { useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
 import TextInput from '~components/base/inputs/text';
-import { DirectoryItemsType } from '~types/directory';
 import styles from './styles.module.scss';
 
 interface Properties {

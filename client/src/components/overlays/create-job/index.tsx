@@ -1,9 +1,9 @@
+import { DirectoryItemType, DirectoryItemsType } from '@handbrake-web/shared/types/directory';
+import { HandbrakeOutputExtensions } from '@handbrake-web/shared/types/file-extensions';
+import { QueueRequestType } from '@handbrake-web/shared/types/queue';
 import { useContext, useState } from 'react';
 import Overlay from '~components/root/overlay';
 import { PrimaryContext } from '~layouts/primary/context';
-import { DirectoryItemType, DirectoryItemsType } from '~types/directory';
-import { HandbrakeOutputExtensions } from '~types/file-extensions';
-import { QueueRequestType } from '~types/queue';
 import { CreateJobContext, CreateJobContextType } from './context';
 import { FilterVideoFiles, GetOutputItemsFromInputItems, RequestDirectory } from './funcs';
 import ButtonsSection from './sections/buttons-section';

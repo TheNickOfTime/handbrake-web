@@ -1,7 +1,7 @@
 {
-  "name": "handbrake-web",
+  "name": "@handbrake-web/worker",
   "version": "0.8.0",
-  "description": "HandBrake Web",
+  "description": "HandBrake Web Worker",
   "scripts": {
     "dev": "tsx watch src/worker.ts",
     "prod": "node build/worker.js",
@@ -13,6 +13,7 @@
     "url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
   },
   "dependencies": {
+    "@handbrake-web/shared": "workspace:*",
     "dotenv": "^17.2.2",
     "socket.io-client": "^4.8.1",
     "winston": "^3.17.0",

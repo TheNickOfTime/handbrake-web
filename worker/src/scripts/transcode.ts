@@ -1,3 +1,13 @@
+import {
+	type HandbrakeOutputType,
+	type Muxing,
+	type Scanning,
+	type WorkDone,
+	type Working,
+} from '@handbrake-web/shared/types/handbrake';
+import { type HandbrakePresetType } from '@handbrake-web/shared/types/preset';
+import { type JobDataType, type JobStatusType } from '@handbrake-web/shared/types/queue';
+import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import { type ChildProcessWithoutNullStreams as ChildProcess, spawn } from 'child_process';
 import { access, mkdir, rename, rm, writeFile } from 'fs/promises';
 import logger, {
@@ -8,16 +18,6 @@ import logger, {
 } from 'logging';
 import path from 'path';
 import { Socket } from 'socket.io-client';
-import {
-	type HandbrakeOutputType,
-	type Muxing,
-	type Scanning,
-	type WorkDone,
-	type Working,
-} from 'types/handbrake';
-import { type HandbrakePresetType } from 'types/preset';
-import { type JobDataType, type JobStatusType } from 'types/queue';
-import { TranscodeStage } from 'types/transcode';
 
 let handbrake: ChildProcess | null = null;
 export const isTranscoding = () => handbrake != null;

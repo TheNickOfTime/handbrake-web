@@ -1,6 +1,6 @@
+import { FirstLetterUpperCase } from '@handbrake-web/shared/funcs/string.funcs';
 import { useContext } from 'react';
 import SelectInput from '~components/base/inputs/select';
-import { FirstLetterUpperCase } from '~funcs/string.funcs';
 import { PrimaryContext } from '~layouts/primary/context';
 import { CreateJobContext } from '../../context';
 import styles from '../../styles.module.scss';

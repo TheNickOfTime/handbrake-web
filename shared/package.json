@@ -1,0 +1,30 @@
+{
+  "name": "@handbrake-web/shared",
+  "description": "HandBrake Web Shared",
+  "scripts": {
+    "build": "tsc -b",
+    "postinstall": "tsc -b"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
+  },
+  "exports": {
+    "./dict/*": {
+      "default": "./build/dict/*.js",
+      "types": "./build/dict/*.d.ts"
+    },
+    "./funcs/*": {
+      "default": "./build/funcs/*.js",
+      "types": "./build/funcs/*.d.ts"
+    },
+    "./types/*": {
+      "default": "./build/types/*.js",
+      "types": "./build/types/*.d.ts"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "typescript": "^5.9.2"
+  }
+}

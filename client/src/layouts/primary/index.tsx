@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
+import { ConfigType } from '@handbrake-web/shared/types/config';
+import { HandbrakePresetCategoryType } from '@handbrake-web/shared/types/preset';
+import { QueueStatus, QueueType } from '@handbrake-web/shared/types/queue';
+import { ConnectionIDsType } from '@handbrake-web/shared/types/socket';
+import { WatcherDefinitionObjectType } from '@handbrake-web/shared/types/watcher';
 import { Outlet } from '@tanstack/react-router';
 import { Fragment, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import SideBar from '~components/root/side-bar';
 import NoConnection from '~pages/_default/no-connection';
-import { ConfigType } from '~types/config';
-import { HandbrakePresetCategoryType } from '~types/preset';
-import { QueueStatus, QueueType } from '~types/queue';
-import { ConnectionIDsType } from '~types/socket';
-import { WatcherDefinitionObjectType } from '~types/watcher';
 import { PrimaryContext } from './context';
 // import styles from './styles.module.scss';
 

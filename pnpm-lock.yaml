@@ -16,6 +16,9 @@ importers:
       '@fontsource-variable/noto-sans':
         specifier: ^5.2.10
         version: 5.2.10
+      '@handbrake-web/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@tanstack/react-router':
         specifier: ^1.132.23
         version: 1.132.23(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -95,6 +98,9 @@ importers:
 
   server:
     dependencies:
+      '@handbrake-web/shared':
+        specifier: workspace:*
+        version: link:../shared
       better-sqlite3:
         specifier: ^12.4.1
         version: 12.4.1
@@ -181,8 +187,20 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
+  shared:
+    devDependencies:
+      '@types/node':
+        specifier: ^24.5.2
+        version: 24.5.2
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+
   worker:
     dependencies:
+      '@handbrake-web/shared':
+        specifier: workspace:*
+        version: link:../shared
       dotenv:
         specifier: ^17.2.2
         version: 17.2.2

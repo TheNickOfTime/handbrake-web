@@ -1,4 +1,3 @@
-import { HandbrakePresetType } from './preset';
 import { TranscodeStage } from './transcode';
 
 export type QueueRequestType = {

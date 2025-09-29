@@ -1,11 +1,6 @@
-import chokidar, { type FSWatcher } from 'chokidar';
-import fs from 'fs/promises';
-import logger from 'logging';
-import mime from 'mime';
-import path from 'path';
-import { PresetFormatDict } from 'shared/dict/presets.dict';
-import { type QueueRequestType } from 'types/queue';
-import { TranscodeStage } from 'types/transcode';
+import { PresetFormatDict } from '@handbrake-web/shared/dict/presets.dict';
+import { type QueueRequestType } from '@handbrake-web/shared/types/queue';
+import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import {
 	type WatcherDefinitionType,
 	type WatcherDefinitionWithRulesType,
@@ -18,7 +13,12 @@ import {
 	WatcherRuleMediaInfoMethods,
 	WatcherRuleNumberComparisonMethods,
 	WatcherRuleStringComparisonMethods,
-} from 'types/watcher';
+} from '@handbrake-web/shared/types/watcher';
+import chokidar, { type FSWatcher } from 'chokidar';
+import fs from 'fs/promises';
+import logger from 'logging';
+import mime from 'mime';
+import path from 'path';
 import { EmitToAllClients } from './connections';
 import {
 	GetWatcherIDFromRuleIDFromDatabase,

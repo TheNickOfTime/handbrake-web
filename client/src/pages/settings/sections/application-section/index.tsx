@@ -1,8 +1,8 @@
+import { ConfigVersionType } from '@handbrake-web/shared/types/config';
 import { useContext } from 'react';
 import NumberInput from '~components/base/inputs/number';
 import Section from '~components/root/section';
 import { SettingsContext } from '~pages/settings/context';
-import { ConfigVersionType } from '~types/config';
 import styles from './styles.module.scss';
 
 export default function SettingsApplication() {

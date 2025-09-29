@@ -1,12 +1,15 @@
-import logger from 'logging';
-import { type WatcherRuleTableType, type WatcherTableType } from 'types/database';
+import {
+	type WatcherRuleTableType,
+	type WatcherTableType,
+} from '@handbrake-web/shared/types/database';
 import {
 	type WatcherDefinitionObjectType,
 	type WatcherDefinitionType,
 	type WatcherDefinitionWithRulesType,
 	type WatcherRuleDefinitionObjectType,
 	type WatcherRuleDefinitionType,
-} from 'types/watcher';
+} from '@handbrake-web/shared/types/watcher';
+import logger from 'logging';
 import { database } from './database';
 
 export const watcherTableCreateStatements = [

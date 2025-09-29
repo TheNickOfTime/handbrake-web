@@ -1,6 +1,6 @@
+import { getPresetCount } from '@handbrake-web/shared/funcs/preset.funcs';
+import { HandbrakePresetCategoryType } from '@handbrake-web/shared/types/preset';
 import Section from '~components/root/section';
-import { getPresetCount } from '~funcs/preset.funcs';
-import { HandbrakePresetCategoryType } from '~types/preset';
 import PresetCategory from './components/category';
 import styles from './styles.module.scss';
 

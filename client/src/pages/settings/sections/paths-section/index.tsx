@@ -1,10 +1,10 @@
+import { ConfigPathsType } from '@handbrake-web/shared/types/config';
+import { FileBrowserMode } from '@handbrake-web/shared/types/file-browser';
 import WarningIcon from '@icons/exclamation-circle-fill.svg?react';
 import { HTMLAttributes, useContext, useState } from 'react';
 import PathInput from '~components/base/inputs/path';
 import Section from '~components/root/section';
 import { SettingsContext } from '~pages/settings/context';
-import { ConfigPathsType } from '~types/config';
-import { FileBrowserMode } from '~types/file-browser';
 import styles from './styles.module.scss';
 
 const InvalidWarning = ({ name }: { name: string }) => {
