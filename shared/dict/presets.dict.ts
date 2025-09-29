@@ -1,4 +1,4 @@
-import { ClientLookupDict } from '../types/dict';
+import type { ClientLookupDict } from '../types/dict';
 
 export const PresetFormatDict: ClientLookupDict = {
 	av_mp4: '.mp4',

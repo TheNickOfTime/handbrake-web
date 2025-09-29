@@ -1,0 +1,16 @@
+{
+  "name": "handbrake-web",
+  "description": "HandBrake Web",
+  "scripts": {
+    "lint": "tsc -b"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "typescript": "^5.9.2"
+  }
+}

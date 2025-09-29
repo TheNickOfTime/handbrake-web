@@ -1,7 +1,7 @@
-import { HandbrakePresetCategoryType } from '../types/preset';
+import type { HandbrakePresetCategoryType } from '../types/preset';
 
 export const getPresetCount = (presets: HandbrakePresetCategoryType) => {
-	return Object.keys(presets).reduce((result, current) => {
-		return result + Object.keys(presets[current]).length;
+	return Object.entries(presets).reduce((result, current) => {
+		return result + Object.entries(current).length;
 	}, 0);
 };

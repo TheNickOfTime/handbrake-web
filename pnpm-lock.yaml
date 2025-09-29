@@ -181,6 +181,15 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
+  shared:
+    devDependencies:
+      '@types/node':
+        specifier: ^24.5.2
+        version: 24.5.2
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+
   worker:
     dependencies:
       dotenv:
