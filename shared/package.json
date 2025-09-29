@@ -9,9 +9,18 @@
     "url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
   },
   "exports": {
-    "./dict": "./build/dict",
-    "./funcs": "./build/funcs",
-    "./types": "./build/types"
+    "./dict": {
+      "default": "./build/dict/*.js",
+      "types": "./build/dict/*.d.ts"
+    },
+    "./funcs": {
+      "default": "./build/funcs/*.js",
+      "types": "./build/funcs/*.d.ts"
+    },
+    "./types/*": {
+      "default": "./build/types/*.js",
+      "types": "./build/types/*.d.ts"
+    }
   },
   "devDependencies": {
     "@types/node": "^24.5.2",
