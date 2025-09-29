@@ -10,7 +10,7 @@ import {
 	type WatcherRuleDefinitionType,
 } from '@handbrake-web/shared/types/watcher';
 import logger from 'logging';
-import { database } from './database';
+import { sqliteDatabase } from './database';
 
 export const watcherTableCreateStatements = [
 	'CREATE TABLE IF NOT EXISTS watchers( \
@@ -34,10 +34,12 @@ export const watcherTableCreateStatements = [
 
 export function GetWatchersFromDatabase() {
 	try {
-		const watchersStatement = database.prepare<[], WatcherTableType>('SELECT * FROM watchers');
+		const watchersStatement = sqliteDatabase.prepare<[], WatcherTableType>(
+			'SELECT * FROM watchers'
+		);
 		const watchersResult = watchersStatement.all();
 
-		const ruleStatement = database.prepare<{ id: number }, WatcherRuleTableType>(
+		const ruleStatement = sqliteDatabase.prepare<{ id: number }, WatcherRuleTableType>(
 			'SELECT * FROM watcher_rules WHERE watcher_id = $id'
 		);
 
@@ -84,13 +86,13 @@ export function GetWatchersFromDatabase() {
 
 export function GetWatcherWithIDFromDatabase(id: number) {
 	try {
-		const watcherStatement = database.prepare<{ id: number }, WatcherTableType>(
+		const watcherStatement = sqliteDatabase.prepare<{ id: number }, WatcherTableType>(
 			'SELECT * FROM watchers WHERE watcher_id = $id'
 		);
 		const watcherResult = watcherStatement.get({ id: id });
 
 		if (watcherResult) {
-			const ruleStatement = database.prepare<{ id: number }, WatcherRuleTableType>(
+			const ruleStatement = sqliteDatabase.prepare<{ id: number }, WatcherRuleTableType>(
 				'SELECT * FROM watcher_rules WHERE watcher_id = $id'
 			);
 
@@ -130,7 +132,7 @@ export function GetWatcherWithIDFromDatabase(id: number) {
 
 export function GetWatcherIDFromRuleIDFromDatabase(id: number) {
 	try {
-		const idStatement = database.prepare<{ id: number }, { watcher_id: string }>(
+		const idStatement = sqliteDatabase.prepare<{ id: number }, { watcher_id: string }>(
 			'SELECT watcher_id FROM watcher_rules WHERE rule_id = $id'
 		);
 		const idResult = idStatement.get({ id: id });
@@ -147,7 +149,7 @@ export function GetWatcherIDFromRuleIDFromDatabase(id: number) {
 
 export function InsertWatcherToDatabase(watcher: WatcherDefinitionType) {
 	try {
-		const insertWatcherStatement = database.prepare<WatcherDefinitionType>(
+		const insertWatcherStatement = sqliteDatabase.prepare<WatcherDefinitionType>(
 			'INSERT INTO watchers(watch_path, output_path, preset_category, preset_id) VALUES($watch_path, $output_path, $preset_category, $preset_id)'
 		);
 		const insertWatcherResult = insertWatcherStatement.run({
@@ -172,7 +174,7 @@ export function InsertWatcherToDatabase(watcher: WatcherDefinitionType) {
 
 export function InsertWatcherRuleToDatabase(watcherID: number, rule: WatcherRuleDefinitionType) {
 	try {
-		const insertRuleStatement = database.prepare<WatcherRuleTableType>(
+		const insertRuleStatement = sqliteDatabase.prepare<WatcherRuleTableType>(
 			'INSERT INTO watcher_rules(watcher_id, name, mask, base_rule_method, rule_method, comparison_method, comparison) VALUES($watcher_id, $name, $mask, $base_rule_method, $rule_method, $comparison_method, $comparison)'
 		);
 		const insertRuleResult = insertRuleStatement.run({
@@ -194,7 +196,7 @@ export function InsertWatcherRuleToDatabase(watcherID: number, rule: WatcherRule
 
 export function UpdateWatcherRuleInDatabase(ruleID: number, rule: WatcherRuleDefinitionType) {
 	try {
-		const updateStatement = database.prepare<{ id: number } & WatcherRuleDefinitionType>(
+		const updateStatement = sqliteDatabase.prepare<{ id: number } & WatcherRuleDefinitionType>(
 			'UPDATE watcher_rules SET \
 			name = $name, \
 			mask = $mask, \
@@ -219,7 +221,9 @@ export function UpdateWatcherRuleInDatabase(ruleID: number, rule: WatcherRuleDef
 
 export function RemoveWatcherFromDatabase(id: number) {
 	try {
-		const removeStatement = database.prepare('DELETE FROM watchers WHERE watcher_id = $id');
+		const removeStatement = sqliteDatabase.prepare(
+			'DELETE FROM watchers WHERE watcher_id = $id'
+		);
 		const removalResult = removeStatement.run({ id: id });
 		logger.info(`[server] [database] Removed watcher with id '${id}' from the database.`);
 		return removalResult;
@@ -233,7 +237,9 @@ export function RemoveWatcherFromDatabase(id: number) {
 
 export function RemoveWatcherRuleFromDatabase(id: number) {
 	try {
-		const removeStatement = database.prepare('DELETE FROM watcher_rules WHERE rule_id = $id');
+		const removeStatement = sqliteDatabase.prepare(
+			'DELETE FROM watcher_rules WHERE rule_id = $id'
+		);
 		const removalResult = removeStatement.run({ id: id });
 		logger.info(`[server] [database] Removed rule with id '${id}' from the database.`);
 		return removalResult;

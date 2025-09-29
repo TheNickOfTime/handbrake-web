@@ -1,6 +1,6 @@
 import { type StatusTableType } from '@handbrake-web/shared/types/database';
 import logger from 'logging';
-import { database } from './database';
+import { sqliteDatabase } from './database';
 
 // export function InitializeStatus() {
 // 	const;
@@ -8,7 +8,7 @@ import { database } from './database';
 
 export function GetStatusFromDatabase(id: string) {
 	try {
-		const statusStatement = database.prepare<{ id: string }, StatusTableType>(
+		const statusStatement = sqliteDatabase.prepare<{ id: string }, StatusTableType>(
 			'SELECT state FROM status WHERE id = $id'
 		);
 		const statusQuery = statusStatement.get({ id: id });
@@ -21,7 +21,7 @@ export function GetStatusFromDatabase(id: string) {
 
 export function UpdateStatusInDatabase(id: string, state: number) {
 	try {
-		const updateStatement = database.prepare(
+		const updateStatement = sqliteDatabase.prepare(
 			'INSERT INTO status (id, state) VALUES ($id, $state) ON CONFLICT (id) DO UPDATE SET state = $state'
 		);
 		updateStatement.run({ id: id, state: state });

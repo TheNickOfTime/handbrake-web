@@ -14,7 +14,7 @@ import {
 } from '@handbrake-web/shared/types/queue';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import logger from 'logging';
-import { database } from './database';
+import { sqliteDatabase } from './database';
 
 export const queueTableCreateStatements = [
 	'CREATE TABLE IF NOT EXISTS jobs(\
@@ -66,7 +66,7 @@ const joinQueryToJob = (query: JobsTableType & JobsStatusTableType & JobOrderTab
 
 export function GetQueueFromDatabase() {
 	try {
-		const statement = database.prepare<
+		const statement = sqliteDatabase.prepare<
 			[],
 			JobsTableType & JobsStatusTableType & JobOrderTableType
 		>(
@@ -95,7 +95,7 @@ export function GetQueueFromDatabase() {
 
 export function GetJobFromDatabase(job_id: number): JobType | undefined {
 	try {
-		const statement = database.prepare<
+		const statement = sqliteDatabase.prepare<
 			{ job_id: number },
 			JobsTableType & JobsStatusTableType & JobOrderTableType
 		>(
@@ -120,7 +120,7 @@ export function GetJobFromDatabase(job_id: number): JobType | undefined {
 
 export function GetJobDataFromTable(job_id: number): JobDataType | undefined {
 	try {
-		const statement = database.prepare<{ job_id: number }, JobsTableType>(
+		const statement = sqliteDatabase.prepare<{ job_id: number }, JobsTableType>(
 			'SELECT * FROM jobs WHERE job_id = $job_id'
 		);
 		const result = statement.get({ job_id: job_id });
@@ -143,7 +143,7 @@ export function GetJobDataFromTable(job_id: number): JobDataType | undefined {
 
 export function GetJobStatusFromTable(job_id: number): JobStatusType | undefined {
 	try {
-		const statement = database.prepare<{ job_id: number }, JobsStatusTableType>(
+		const statement = sqliteDatabase.prepare<{ job_id: number }, JobsStatusTableType>(
 			'SELECT * FROM jobs_status WHERE job_id = $job_id'
 		);
 		const result = statement.get({ job_id: job_id });
@@ -170,7 +170,7 @@ export function GetJobStatusFromTable(job_id: number): JobStatusType | undefined
 
 export function GetJobOrderIndexFromTable(job_id: number): number | undefined {
 	try {
-		const statement = database.prepare<{ job_id: number }, JobOrderTableType>(
+		const statement = sqliteDatabase.prepare<{ job_id: number }, JobOrderTableType>(
 			'SELECT order_index FROM jobs_order WHERE job_id = $job_id'
 		);
 		const result = statement.get({ job_id: job_id });
@@ -187,7 +187,7 @@ export function GetJobOrderIndexFromTable(job_id: number): number | undefined {
 
 export function InsertJobToDatabase(request: QueueRequestType) {
 	try {
-		const dataStatement = database.prepare<JobInsertType>(
+		const dataStatement = sqliteDatabase.prepare<JobInsertType>(
 			'INSERT INTO jobs(input_path, output_path, preset_category, preset_id) \
 			VALUES($input_path, $output_path, $preset_category, $preset_id)'
 		);
@@ -200,17 +200,17 @@ export function InsertJobToDatabase(request: QueueRequestType) {
 
 		const job_id = dataResult.lastInsertRowid as number;
 
-		const statusStatement = database.prepare<JobStatusInsertType>(
+		const statusStatement = sqliteDatabase.prepare<JobStatusInsertType>(
 			'INSERT INTO jobs_status(job_id) VALUES($job_id)'
 		);
 		statusStatement.run({ job_id: job_id });
 
 		const next_order_index =
-			database
+			sqliteDatabase
 				.prepare<[], { 'COUNT(*)': number }>('SELECT COUNT(*) FROM jobs_order AS count')
 				.get()!['COUNT(*)'] + 1;
 
-		const statement = database.prepare<JobOrderTableType>(
+		const statement = sqliteDatabase.prepare<JobOrderTableType>(
 			'INSERT INTO jobs_order(job_id, order_index) VALUES($job_id, $order_index)'
 		);
 		const result = statement.run({ job_id: job_id, order_index: next_order_index });
@@ -229,11 +229,11 @@ export function InsertJobToDatabase(request: QueueRequestType) {
 export function InsertJobToJobsOrderTable(job_id: number) {
 	try {
 		const nextOrderIndex =
-			database
+			sqliteDatabase
 				.prepare<[], { 'COUNT(*)': number }>('SELECT COUNT(*) FROM jobs_order AS count')
 				.get()!['COUNT(*)'] + 1;
 
-		const statement = database.prepare<{ job_id: number; orderIndex: number }>(
+		const statement = sqliteDatabase.prepare<{ job_id: number; orderIndex: number }>(
 			'INSERT INTO jobs_order(job_id, order_index) VALUES($job_id, $orderIndex)'
 		);
 		const result = statement.run({ job_id: job_id, orderIndex: nextOrderIndex });
@@ -255,7 +255,7 @@ export function UpdateJobDataInDatabase(job_id: number, data: JobDataType) {
 			.filter((entry) => entry[1] != undefined)
 			.map(([key, value]) => `${key} = ${typeof value == 'string' ? `'${value}'` : value}`)
 			.join(', ');
-		const statement = database.prepare<{ job_id: number }>(
+		const statement = sqliteDatabase.prepare<{ job_id: number }>(
 			`UPDATE jobs_data SET ${updates} WHERE job_id = $job_id`
 		);
 		const result = statement.run({
@@ -276,7 +276,7 @@ export function UpdateJobStatusInDatabase(job_id: number, status: JobStatusType)
 			// .filter((entry) => entry[1] != undefined)
 			.map(([key, value]) => `${key} = ${typeof value == 'string' ? `'${value}'` : value}`)
 			.join(', ');
-		const statement = database.prepare<{ job_id: number }>(
+		const statement = sqliteDatabase.prepare<{ job_id: number }>(
 			`UPDATE jobs_status SET ${updates} WHERE job_id = $job_id`
 		);
 		const result = statement.run({
@@ -301,20 +301,21 @@ export function UpdateJobOrderIndexInDatabase(job_id: number, new_index: number)
 
 	if (previous_index == new_index) return;
 
-	const orderUpdateStatement = database.prepare<{ id: number; new_index: number }>(
+	const orderUpdateStatement = sqliteDatabase.prepare<{ id: number; new_index: number }>(
 		'UPDATE jobs_order SET order_index = $new_index WHERE job_id = $id'
 	);
 
-	const jobsStatement = database.prepare<{ id: number; new_index: number }, JobOrderTableType>(
-		'SELECT * FROM jobs_order WHERE job_id != $id ORDER BY order_index ASC'
-	);
+	const jobsStatement = sqliteDatabase.prepare<
+		{ id: number; new_index: number },
+		JobOrderTableType
+	>('SELECT * FROM jobs_order WHERE job_id != $id ORDER BY order_index ASC');
 	const reorderResult = jobsStatement.all({ id: job_id, new_index: new_index });
 
 	if (new_index > 0) {
 		orderUpdateStatement.run({ id: job_id, new_index: -1 });
 		reorderResult.splice(new_index - 1, 0, { job_id: job_id, order_index: previous_index });
 	} else {
-		database.prepare('DELETE FROM jobs_order WHERE job_id = $id').run({ id: job_id });
+		sqliteDatabase.prepare('DELETE FROM jobs_order WHERE job_id = $id').run({ id: job_id });
 		logger.info(
 			`[server] [database] Removing job with id '${job_id}' from the 'jobs_order' table.`
 		);
@@ -339,7 +340,7 @@ export function UpdateJobOrderIndexInDatabase(job_id: number, new_index: number)
 export function RemoveJobFromDatabase(job_id: number) {
 	try {
 		UpdateJobOrderIndexInDatabase(job_id, 0);
-		const removalStatement = database.prepare('DELETE FROM jobs WHERE job_id = $job_id');
+		const removalStatement = sqliteDatabase.prepare('DELETE FROM jobs WHERE job_id = $job_id');
 		const removalResult = removalStatement.run({ job_id: job_id });
 		logger.info(`[server] [database] Removed job '${job_id}' from the database.`);
 		return removalResult;

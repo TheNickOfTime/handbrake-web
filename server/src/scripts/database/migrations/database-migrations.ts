@@ -1,5 +1,5 @@
 import logger from 'logging';
-import { database, databaseVersion } from '../database';
+import { databaseVersion, sqliteDatabase } from '../database';
 import DatabaseMigration0 from './database-migration-0';
 import DatabaseMigration1 from './database-migration-1';
 
@@ -27,14 +27,14 @@ function RunDatabaseMigration(version: number) {
 
 	switch (version) {
 		case 0:
-			DatabaseMigration0(database);
+			DatabaseMigration0(sqliteDatabase);
 			break;
 		case 1:
-			DatabaseMigration1(database);
+			DatabaseMigration1(sqliteDatabase);
 			break;
 	}
 
-	const upgradeVersionStatement = database.prepare<{ version: number }>(
+	const upgradeVersionStatement = sqliteDatabase.prepare<{ version: number }>(
 		'UPDATE database_version SET version = $version'
 	);
 	upgradeVersionStatement.run({ version: version });
