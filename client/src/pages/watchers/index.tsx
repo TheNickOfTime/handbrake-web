@@ -1,3 +1,4 @@
+import { WatcherRuleDefinitionType } from '@handbrake-web/shared/types/watcher';
 import RegisterIcon from '@icons/plus-lg.svg?react';
 import { useContext, useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
@@ -6,7 +7,6 @@ import RegisterWatcher from '~components/overlays/register-watcher';
 import Page from '~components/root/page';
 import Section from '~components/root/section';
 import { PrimaryContext } from '~layouts/primary/context';
-import { WatcherRuleDefinitionType } from '~types/watcher';
 import styles from './styles.module.scss';
 
 export default function WatchersPage() {

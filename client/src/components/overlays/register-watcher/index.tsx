@@ -1,13 +1,13 @@
+import { FirstLetterUpperCase } from '@handbrake-web/shared/funcs/string.funcs';
+import { DirectoryItemType } from '@handbrake-web/shared/types/directory';
+import { FileBrowserMode } from '@handbrake-web/shared/types/file-browser';
+import { WatcherDefinitionType } from '@handbrake-web/shared/types/watcher';
 import { HTMLAttributes, useContext, useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
 import PathInput from '~components/base/inputs/path';
 import SelectInput from '~components/base/inputs/select';
 import Overlay from '~components/root/overlay';
-import { FirstLetterUpperCase } from '~funcs/string.funcs';
 import { PrimaryContext } from '~layouts/primary/context';
-import { DirectoryItemType } from '~types/directory';
-import { FileBrowserMode } from '~types/file-browser';
-import { WatcherDefinitionType } from '~types/watcher';
 import styles from './styles.module.scss';
 
 interface Properties extends HTMLAttributes<HTMLDivElement> {

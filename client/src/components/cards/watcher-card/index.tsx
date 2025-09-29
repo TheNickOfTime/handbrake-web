@@ -1,8 +1,3 @@
-import AddIcon from '@icons/plus-lg.svg?react';
-import TrashIcon from '@icons/trash-fill.svg?react';
-import { HTMLAttributes } from 'react';
-import TextInfo from '~components/base/info/text-info';
-import ButtonInput from '~components/base/inputs/button';
 import {
 	WatcherDefinitionWithRulesType,
 	WatcherRuleBaseMethods,
@@ -10,7 +5,12 @@ import {
 	WatcherRuleFileInfoMethods,
 	WatcherRuleMaskMethods,
 	WatcherRuleStringComparisonMethods,
-} from '~types/watcher';
+} from '@handbrake-web/shared/types/watcher';
+import AddIcon from '@icons/plus-lg.svg?react';
+import TrashIcon from '@icons/trash-fill.svg?react';
+import { HTMLAttributes } from 'react';
+import TextInfo from '~components/base/info/text-info';
+import ButtonInput from '~components/base/inputs/button';
 import WatcherCardRule from './components/rule-card';
 import styles from './styles.module.scss';
 

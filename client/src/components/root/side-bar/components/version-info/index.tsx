@@ -1,8 +1,8 @@
+import { ConfigType } from '@handbrake-web/shared/types/config';
+import { GithubReleaseResponseType } from '@handbrake-web/shared/types/version';
 import WarningIcon from '@icons/exclamation-circle.svg?react';
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { ConfigType } from '~types/config';
-import { GithubReleaseResponseType } from '~types/version';
 import styles from './styles.module.scss';
 
 type Params = {

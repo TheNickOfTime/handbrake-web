@@ -1,5 +1,5 @@
+import { QueueStatus } from '@handbrake-web/shared/types/queue';
 import Section from '~components/root/section';
-import { QueueStatus } from '~types/queue';
 import styles from './styles.module.scss';
 
 interface Properties {

@@ -1,8 +1,8 @@
+import { FileBrowserMode } from '@handbrake-web/shared/types/file-browser';
 import { useContext } from 'react';
 import CheckboxInput from '~components/base/inputs/checkbox';
 import PathInput from '~components/base/inputs/path';
 import { PrimaryContext } from '~layouts/primary/context';
-import { FileBrowserMode } from '~types/file-browser';
 import { JobFrom } from '../..';
 import { CreateJobContext } from '../../context';
 import styles from '../../styles.module.scss';

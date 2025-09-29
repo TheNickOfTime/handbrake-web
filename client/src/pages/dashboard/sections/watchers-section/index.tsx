@@ -1,6 +1,6 @@
+import { WatcherDefinitionObjectType } from '@handbrake-web/shared/types/watcher';
 import Section from '~components/root/section';
 import DashboardTable from '~pages/dashboard/components/dashboard-table';
-import { WatcherDefinitionObjectType } from '~types/watcher';
 import styles from './styles.module.scss';
 
 interface Properties {

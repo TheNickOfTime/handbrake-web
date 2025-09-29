@@ -1,8 +1,11 @@
+import { PresetAudioEncoderDict } from '@handbrake-web/shared/dict/presets.dict';
+import { LanguageCodeToName } from '@handbrake-web/shared/funcs/locale.funcs';
+import {
+	BooleanToConfirmation,
+	FirstLetterUpperCase,
+} from '@handbrake-web/shared/funcs/string.funcs';
 import { useContext } from 'react';
 import TextInfo from '~components/base/info/text-info';
-import { PresetAudioEncoderDict } from '~dict/presets.dict';
-import { LanguageCodeToName } from '~funcs/locale.funcs';
-import { BooleanToConfirmation, FirstLetterUpperCase } from '~funcs/string.funcs';
 import PresetTab from '../../components/preset-tab';
 import PresetTabSection from '../../components/preset-tab-section';
 import { PresetCardContext } from '../../context';

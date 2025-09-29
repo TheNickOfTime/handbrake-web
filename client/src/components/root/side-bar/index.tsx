@@ -1,3 +1,4 @@
+import { ConfigType } from '@handbrake-web/shared/types/config';
 import WatchersIcon from '@icons/eye-fill.svg?react';
 import SettingsIcon from '@icons/gear-fill.svg?react';
 import QueueIcon from '@icons/list-ol.svg?react';
@@ -8,7 +9,6 @@ import DashboardIcon from '@icons/speedometer.svg?react';
 import { Link } from '@tanstack/react-router';
 import { FunctionComponent, SVGProps, useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { ConfigType } from '~types/config';
 import VersionInfo from './components/version-info';
 import styles from './styles.module.scss';
 

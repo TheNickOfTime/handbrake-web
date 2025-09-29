@@ -1,8 +1,8 @@
+import { PresetPropertiesDict } from '@handbrake-web/shared/dict/presets.dict';
+import { BooleanToConfirmation } from '@handbrake-web/shared/funcs/string.funcs';
+import { PictureCropMode } from '@handbrake-web/shared/types/preset';
 import { useContext } from 'react';
 import TextInfo from '~components/base/info/text-info';
-import { PresetPropertiesDict } from '~dict/presets.dict';
-import { BooleanToConfirmation } from '~funcs/string.funcs';
-import { PictureCropMode } from '~types/preset';
 import PresetTab from '../../components/preset-tab';
 import PresetTabSection from '../../components/preset-tab-section';
 import { PresetCardContext } from '../../context';

@@ -1,6 +1,3 @@
-import SaveIcon from '@icons/floppy2-fill.svg?react';
-import RemoveIcon from '@icons/trash-fill.svg?react';
-import { useState } from 'react';
 import {
 	WatcherRuleBaseMethods,
 	WatcherRuleComparisonLookup,
@@ -11,7 +8,10 @@ import {
 	WatcherRuleMediaInfoMethods,
 	WatcherRuleNumberComparisonMethods,
 	WatcherRuleStringComparisonMethods,
-} from '~types/watcher';
+} from '@handbrake-web/shared/types/watcher';
+import SaveIcon from '@icons/floppy2-fill.svg?react';
+import RemoveIcon from '@icons/trash-fill.svg?react';
+import { useState } from 'react';
 import styles from '../../styles.module.scss';
 
 type Params = {

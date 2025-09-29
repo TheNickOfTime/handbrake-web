@@ -1,10 +1,10 @@
+import { statusSorting } from '@handbrake-web/shared/dict/queue.dict';
+import { QueueType } from '@handbrake-web/shared/types/queue';
 import CaretDownIcon from '@icons/caret-down-fill.svg?react';
 import CaretUpIcon from '@icons/caret-up-fill.svg?react';
 import { useContext, useState } from 'react';
 import QueueCard from '~components/cards/queue-card';
-import { statusSorting } from '~dict/queue.dict';
 import { PrimaryContext } from '~layouts/primary/context';
-import { QueueType } from '~types/queue';
 import QueueJobPreview from '../queue-job-preview';
 import styles from './styles.module.scss';
 

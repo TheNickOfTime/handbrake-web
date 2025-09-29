@@ -1,5 +1,5 @@
+import { HandbrakePresetDataType } from '@handbrake-web/shared/types/preset';
 import { createContext } from 'react';
-import { HandbrakePresetDataType } from '~types/preset';
 
 interface PresetCardContextType {
 	preset: HandbrakePresetDataType;

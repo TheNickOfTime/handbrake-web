@@ -1,10 +1,10 @@
+import { FileBrowserMode } from '@handbrake-web/shared/types/file-browser';
 import WarningIcon from '@icons/exclamation-circle.svg?react';
 import { useContext } from 'react';
 import PathInput from '~components/base/inputs/path';
 import SelectInput from '~components/base/inputs/select';
 import TextInput from '~components/base/inputs/text';
 import { PrimaryContext } from '~layouts/primary/context';
-import { FileBrowserMode } from '~types/file-browser';
 import { JobFrom } from '../..';
 import { CreateJobContext } from '../../context';
 import styles from '../../styles.module.scss';

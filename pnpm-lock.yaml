@@ -16,6 +16,9 @@ importers:
       '@fontsource-variable/noto-sans':
         specifier: ^5.2.10
         version: 5.2.10
+      '@handbrake-web/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@tanstack/react-router':
         specifier: ^1.132.23
         version: 1.132.23(react-dom@19.1.1(react@19.1.1))(react@19.1.1)

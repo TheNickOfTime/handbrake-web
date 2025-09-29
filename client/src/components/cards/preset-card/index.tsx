@@ -1,9 +1,9 @@
+import { HandbrakePresetType } from '@handbrake-web/shared/types/preset';
 import DownloadIcon from '@icons/download.svg?react';
 import WarningIcon from '@icons/exclamation-circle.svg?react';
 import DeleteIcon from '@icons/trash-fill.svg?react';
 import { HTMLAttributes, useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
-import { HandbrakePresetType } from '~types/preset';
 import { PresetCardContext } from './context';
 import styles from './styles.module.scss';
 import AudioTab from './tabs/audio';

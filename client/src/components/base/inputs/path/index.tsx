@@ -1,8 +1,8 @@
+import { DirectoryItemType } from '@handbrake-web/shared/types/directory';
+import { FileBrowserMode } from '@handbrake-web/shared/types/file-browser';
 import ClearIcon from '@icons/eraser-fill.svg?react';
 import { useState } from 'react';
 import FileBrowser from '~components/modules/file-browser';
-import { DirectoryItemType } from '~types/directory';
-import { FileBrowserMode } from '~types/file-browser';
 import ButtonInput from '../button';
 import styles from './styles.module.scss';
 

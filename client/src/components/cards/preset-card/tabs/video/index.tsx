@@ -1,8 +1,11 @@
+import { PresetEncoderDict, PresetPropertiesDict } from '@handbrake-web/shared/dict/presets.dict';
+import {
+	BooleanToConfirmation,
+	FirstLetterUpperCase,
+} from '@handbrake-web/shared/funcs/string.funcs';
+import { VideoQualityType } from '@handbrake-web/shared/types/preset';
 import { useContext } from 'react';
 import TextInfo from '~components/base/info/text-info';
-import { PresetEncoderDict, PresetPropertiesDict } from '~dict/presets.dict';
-import { BooleanToConfirmation, FirstLetterUpperCase } from '~funcs/string.funcs';
-import { VideoQualityType } from '~types/preset';
 import PresetTab from '../../components/preset-tab';
 import PresetTabSection from '../../components/preset-tab-section';
 import { PresetCardContext } from '../../context';

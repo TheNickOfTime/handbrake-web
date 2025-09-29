@@ -16,6 +16,7 @@
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",
     "@fontsource-variable/noto-sans": "^5.2.10",
+    "@handbrake-web/shared": "workspace:*",
     "@tanstack/react-router": "^1.132.23",
     "@tanstack/react-router-devtools": "^1.132.23",
     "bootstrap-icons": "^1.13.1",

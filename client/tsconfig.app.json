@@ -29,16 +29,8 @@
       "~components/*": ["./src/components/*"],
       "~layouts/*": ["./src/layouts/*"],
       "~styles/*": ["./src/styles/*"],
-      "~pages/*": ["./src/pages/*"],
-      "~types/*": ["../shared/types/*"],
-      "~dict/*": ["../shared/dict/*"],
-      "~funcs/*": ["../shared/funcs/*"]
+      "~pages/*": ["./src/pages/*"]
     }
   },
-  "references": [
-    {
-      "path": "../shared"
-    }
-  ],
   "include": ["src"]
 }

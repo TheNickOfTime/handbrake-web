@@ -1,8 +1,8 @@
+import { ConfigPresetsType } from '@handbrake-web/shared/types/config';
 import { useContext } from 'react';
 import ToggleInput from '~components/base/inputs/toggle';
 import Section from '~components/root/section';
 import { SettingsContext } from '~pages/settings/context';
-import { ConfigPresetsType } from '~types/config';
 import styles from './styles.module.scss';
 
 export default function SettingsPreset() {

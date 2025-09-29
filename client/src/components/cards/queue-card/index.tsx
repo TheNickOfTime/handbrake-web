@@ -1,3 +1,5 @@
+import { JobType } from '@handbrake-web/shared/types/queue';
+import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import ResetIcon from '@icons/arrow-counterclockwise.svg?react';
 import LogIcon from '@icons/file-text-fill.svg?react';
 import ListIcon from '@icons/list.svg?react';
@@ -6,8 +8,6 @@ import RemoveIcon from '@icons/x-lg.svg?react';
 import { HTMLAttributes, useContext, useRef, useState } from 'react';
 import ProgressBar from '~components/base/progress';
 import { PrimaryContext } from '~layouts/primary/context';
-import { JobType } from '~types/queue';
-import { TranscodeStage } from '~types/transcode';
 import QueueCardSection from './components/queue-card-section';
 import styles from './styles.module.scss';
 

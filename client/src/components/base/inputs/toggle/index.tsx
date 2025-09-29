@@ -1,5 +1,5 @@
+import { EndWithColon } from '@handbrake-web/shared/funcs/string.funcs';
 import { InputHTMLAttributes } from 'react';
-import { EndWithColon } from '~funcs/string.funcs';
 import styles from './styles.module.scss';
 
 interface Properties extends InputHTMLAttributes<HTMLInputElement> {

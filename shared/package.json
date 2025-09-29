@@ -9,11 +9,11 @@
     "url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
   },
   "exports": {
-    "./dict": {
+    "./dict/*": {
       "default": "./build/dict/*.js",
       "types": "./build/dict/*.d.ts"
     },
-    "./funcs": {
+    "./funcs/*": {
       "default": "./build/funcs/*.js",
       "types": "./build/funcs/*.d.ts"
     },
