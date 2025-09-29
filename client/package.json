@@ -1,7 +1,7 @@
 {
-  "name": "handbrake-web-client",
+  "name": "@handbrake-web/client",
   "version": "0.8.0",
-  "description": "HandBrake Web",
+  "description": "HandBrake Web Client",
   "type": "module",
   "scripts": {
     "dev": "vite --host",

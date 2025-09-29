@@ -1,7 +1,7 @@
 {
-  "name": "handbrake-web",
+  "name": "@handbrake-web/server",
   "version": "0.8.0",
-  "description": "HandBrake Web",
+  "description": "HandBrake Web Server",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "prod": "node build/server.js",

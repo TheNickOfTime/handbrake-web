@@ -1,6 +1,6 @@
 {
-  "name": "handbrake-web",
-  "description": "HandBrake Web",
+  "name": "@handbrake-web/shared",
+  "description": "HandBrake Web Shared",
   "scripts": {
     "lint": "tsc -b"
   },
