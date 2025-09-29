@@ -2,7 +2,8 @@
   "name": "@handbrake-web/shared",
   "description": "HandBrake Web Shared",
   "scripts": {
-    "build": "tsc -b"
+    "build": "tsc -b",
+    "postinstall": "tsc -b"
   },
   "repository": {
     "type": "git",
