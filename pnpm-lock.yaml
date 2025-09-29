@@ -192,6 +192,9 @@ importers:
 
   worker:
     dependencies:
+      '@handbrake-web/shared':
+        specifier: workspace:*
+        version: link:../shared
       dotenv:
         specifier: ^17.2.2
         version: 17.2.2

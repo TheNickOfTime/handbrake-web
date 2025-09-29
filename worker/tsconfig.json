@@ -19,14 +19,8 @@
     "paths": {
       "scripts/*": ["./src/scripts/*"],
       "socket/*": ["./src/socket/*"],
-      "logging": ["./src/scripts/logging"],
-      "types/*": ["../shared/types/*"]
+      "logging": ["./src/scripts/logging"]
     }
   },
-  "references": [
-    {
-      "path": "../shared"
-    }
-  ],
   "include": ["./src"]
 }
