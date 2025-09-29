@@ -13,6 +13,7 @@
     "url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
   },
   "dependencies": {
+    "@handbrake-web/shared": "workspace:*",
     "better-sqlite3": "^12.4.1",
     "chokidar": "^4.0.3",
     "compare-versions": "^6.1.1",

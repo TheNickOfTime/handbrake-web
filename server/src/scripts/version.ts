@@ -1,10 +1,10 @@
+import { type GithubReleaseResponseType } from '@handbrake-web/shared/types/version';
 import { compare } from 'compare-versions';
 import { readFileSync } from 'fs';
 import { access, readFile, rm, writeFile } from 'fs/promises';
 import logger from 'logging';
 import path, { resolve } from 'path';
 import { cwd } from 'process';
-import { type GithubReleaseResponseType } from 'types/version';
 import { GetConfig } from './config';
 import { dataPath } from './data';
 import { GetStatusFromDatabase, UpdateStatusInDatabase } from './database/database-status';

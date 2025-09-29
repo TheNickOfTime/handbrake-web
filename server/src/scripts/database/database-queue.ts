@@ -1,19 +1,19 @@
-import logger from 'logging';
 import {
 	type JobInsertType,
 	type JobOrderTableType,
 	type JobsStatusTableType,
 	type JobsTableType,
 	type JobStatusInsertType,
-} from 'types/database';
+} from '@handbrake-web/shared/types/database';
 import {
 	type JobDataType,
 	type JobStatusType,
 	type JobType,
 	type QueueRequestType,
 	type QueueType,
-} from 'types/queue';
-import { TranscodeStage } from 'types/transcode';
+} from '@handbrake-web/shared/types/queue';
+import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
+import logger from 'logging';
 import { database } from './database';
 
 export const queueTableCreateStatements = [

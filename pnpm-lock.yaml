@@ -98,6 +98,9 @@ importers:
 
   server:
     dependencies:
+      '@handbrake-web/shared':
+        specifier: workspace:*
+        version: link:../shared
       better-sqlite3:
         specifier: ^12.4.1
         version: 12.4.1

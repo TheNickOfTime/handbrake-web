@@ -20,16 +20,8 @@
       "routes/*": ["./src/routes/*"],
       "logging": ["./src/scripts/logging"],
       "scripts/*": ["./src/scripts/*"],
-      "socket/*": ["./src/socket/*"],
-      "shared/*": ["../shared/*"],
-      "types/*": ["../shared/types/*"],
-      "funcs/*": ["../shared/funcs/*"]
+      "socket/*": ["./src/socket/*"]
     }
   },
-  "references": [
-    {
-      "path": "../shared"
-    }
-  ],
   "include": ["./src"]
 }

@@ -1,5 +1,5 @@
+import { type StatusTableType } from '@handbrake-web/shared/types/database';
 import logger from 'logging';
-import { type StatusTableType } from 'types/database';
 import { database } from './database';
 
 // export function InitializeStatus() {

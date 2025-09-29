@@ -1,7 +1,11 @@
+import {
+	type JobType,
+	type QueueRequestType,
+	QueueStatus,
+} from '@handbrake-web/shared/types/queue';
+import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import logger, { RemoveJobLogByID } from 'logging';
 import { Socket as Worker } from 'socket.io';
-import { type JobType, type QueueRequestType, QueueStatus } from 'types/queue';
-import { TranscodeStage } from 'types/transcode';
 import {
 	EmitToAllClients,
 	EmitToWorkerWithID,
