@@ -1,33 +1,34 @@
-import { type StatusTableType } from '@handbrake-web/shared/types/database';
 import logger from 'logging';
-import { sqliteDatabase } from './database';
+import { database } from './database';
 
-// export function InitializeStatus() {
-// 	const;
-// }
-
-export function GetStatusFromDatabase(id: string) {
+export async function DatabaseSelectStatusByID(id: string) {
 	try {
-		const statusStatement = sqliteDatabase.prepare<{ id: string }, StatusTableType>(
-			'SELECT state FROM status WHERE id = $id'
-		);
-		const statusQuery = statusStatement.get({ id: id });
-		return statusQuery;
+		return (
+			await database
+				.selectFrom('status')
+				.where('id', '=', id)
+				.select('state')
+				.executeTakeFirstOrThrow()
+		).state;
 	} catch (err) {
 		logger.error(`[server] [database] [error] Could not get the status of '${id}'.`);
-		logger.error(err);
+		throw err;
 	}
 }
 
-export function UpdateStatusInDatabase(id: string, state: number) {
+export async function DatabaseUpdateStatus(id: string, state: number) {
 	try {
-		const updateStatement = sqliteDatabase.prepare(
-			'INSERT INTO status (id, state) VALUES ($id, $state) ON CONFLICT (id) DO UPDATE SET state = $state'
-		);
-		updateStatement.run({ id: id, state: state });
-		// logger.info(`[server] [database] Sucessfully updated the status of '${id}' to '${state}'.`);
+		const result = await database
+			.insertInto('status')
+			.values({ id: id, state: state })
+			.onConflict((builder) => builder.doUpdateSet({ state: state }))
+			.executeTakeFirstOrThrow();
+
+		logger.info(`[server] [database] Sucessfully updated the status of '${id}' to '${state}'.`);
+
+		return result;
 	} catch (err) {
 		logger.error(`[server] [database] [error] Could not update the status of '${id}'.`);
-		logger.error(err);
+		throw err;
 	}
 }
