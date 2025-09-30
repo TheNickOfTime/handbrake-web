@@ -45,7 +45,7 @@ export type UpdateJob = Updateable<JobsTable>;
 export interface JobsStatusTable {
 	job_id: Generated<number>;
 	worker_id: string | null;
-	transcode_stage: TranscodeStage;
+	transcode_stage: Generated<TranscodeStage>;
 	transcode_percentage: Generated<number>;
 	transcode_eta: Generated<number>;
 	transcode_fps_current: Generated<number>;
