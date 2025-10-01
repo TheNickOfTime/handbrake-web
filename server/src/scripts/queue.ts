@@ -1,8 +1,4 @@
-import type {
-	AddJobType,
-	DetailedJobType,
-	UpdateJobStatusType,
-} from '@handbrake-web/shared/types/database';
+import type { AddJobType, DetailedJobType } from '@handbrake-web/shared/types/database';
 import { QueueStatus } from '@handbrake-web/shared/types/queue';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import logger, { RemoveJobLogByID } from 'logging';
@@ -43,22 +39,19 @@ export async function InitializeQueue() {
 
 	// Queue Data
 	const queue = await DatabaseGetDetailedJobs();
-	Object.keys(queue)
-		.map((key) => parseInt(key))
-		.forEach((jobID) => {
-			const job = queue[jobID];
-			if (
-				job.worker_id != null ||
-				job.transcode_stage == TranscodeStage.Scanning ||
-				job.transcode_stage == TranscodeStage.Transcoding
-			) {
-				StopJob(jobID);
+	queue.forEach((job) => {
+		if (
+			job.worker_id != null ||
+			job.transcode_stage == TranscodeStage.Scanning ||
+			job.transcode_stage == TranscodeStage.Transcoding
+		) {
+			StopJob(job.job_id);
 
-				logger.info(
-					`[server] [queue] Job '${jobID}' was loaded from the database in an unfinished state. The job will be updated to 'Stopped'.`
-				);
-			}
-		});
+			logger.info(
+				`[server] [queue] Job '${job.job_id}' was loaded from the database in an unfinished state. The job will be updated to 'Stopped'.`
+			);
+		}
+	});
 	EmitToAllClients('queue-update', queue);
 }
 
@@ -66,7 +59,7 @@ export async function GetBusyWorkers() {
 	const busyWorkers = GetWorkers().filter(async (worker) => {
 		const queue = await GetQueue();
 
-		return Object.values(queue)
+		return queue
 			.filter((job) => job.worker_id != null)
 			.map((job) => job.worker_id)
 			.includes(GetWorkerID(worker));
@@ -88,10 +81,9 @@ export async function GetAvailableWorkers() {
 
 export async function GetAvailableJobs() {
 	const queue = await DatabaseGetDetailedJobs();
-	const availableJobs = Object.keys(queue)
-		.map((key) => parseInt(key))
-		.filter((key) => queue[key].transcode_stage == TranscodeStage.Waiting)
-		.sort((keyA, keyB) => queue[keyA].order_index - queue[keyB].order_index);
+	const availableJobs = queue
+		.filter((job) => job.transcode_stage == TranscodeStage.Waiting)
+		.sort((jobA, jobB) => jobA.order_index - jobB.order_index);
 	return availableJobs;
 }
 
@@ -104,7 +96,7 @@ export async function JobForAvailableWorkers(jobID: number) {
 		if (availableWorkers.length > 0) {
 			const selectedWorker = availableWorkers[0];
 			const job = await DatabaseGetDetailedJobByID(jobID);
-			StartJob(jobID, job, selectedWorker);
+			StartJob(job, selectedWorker);
 			if ((await GetQueueStatus()) != QueueStatus.Active) {
 				SetQueueStatus(QueueStatus.Active);
 			}
@@ -129,15 +121,14 @@ export async function WorkerForAvailableJobs(workerID: string) {
 		const availableJobs = await GetAvailableJobs();
 		if (availableJobs.length > 0) {
 			const worker = GetWorkerWithID(workerID);
-			const selectedJobID = availableJobs[0];
-			const selectedJob = await DatabaseGetDetailedJobByID(selectedJobID);
+			const selectedJob = availableJobs[0];
 			if (selectedJob && worker) {
-				StartJob(selectedJobID, selectedJob, worker);
+				StartJob(selectedJob, worker);
 				if ((await GetQueueStatus()) != QueueStatus.Active) {
 					SetQueueStatus(QueueStatus.Active);
 				}
 				logger.info(
-					`[server] [queue] Found job with ID '${selectedJobID}' for worker with ID '${workerID}'.`
+					`[server] [queue] Found job with ID '${selectedJob}' for worker with ID '${workerID}'.`
 				);
 			}
 		} else {
@@ -180,20 +171,19 @@ export async function StartQueue(clientID: string) {
 
 			if (maxConcurrent > 0) {
 				for (let i = 0; i < maxConcurrent; i++) {
-					const selectedJobID = availableJobs[i];
-					const selectedJob = await DatabaseGetDetailedJobByID(selectedJobID);
+					const selectedJob = availableJobs[i];
 					const selectedWorker = availableWorkers[i];
 					const selectedWorkerID = GetWorkerID(selectedWorker);
 
 					if (selectedJob) {
-						StartJob(selectedJobID, selectedJob, selectedWorker);
+						StartJob(selectedJob, selectedWorker);
 
 						logger.info(
-							`[server] [queue] Assigning worker '${selectedWorkerID}' to job '${selectedJobID}'.`
+							`[server] [queue] Assigning worker '${selectedWorkerID}' to job '${selectedJob}'.`
 						);
 					} else {
 						throw new Error(
-							`[server] [queue] Cannot find job with ID '${selectedJobID}' in the database.`
+							`[server] [queue] Cannot find job with ID '${selectedJob}' in the database.`
 						);
 					}
 				}
@@ -245,44 +235,51 @@ export async function AddJob(data: AddJobType) {
 	}
 }
 
-export async function StartJob(jobID: number, job: UpdateJobStatusType, worker: Worker) {
+export async function StartJob(job: DetailedJobType, worker: Worker) {
 	const workerID = GetWorkerID(worker);
 
-	await DatabaseUpdateJobStatus(jobID, {
+	await DatabaseUpdateJobStatus(job.job_id, {
 		worker_id: workerID,
 		time_started: new Date().getTime(),
 	});
 
-	worker.emit('start-transcode', jobID);
+	worker.emit('start-transcode', job.job_id);
 }
 
 export async function StopJob(job_id: number, isError: boolean = false) {
-	const job = await DatabaseGetDetailedJobByID(job_id);
-	// Tell the worker to stop transcoding
-	const worker = job.worker_id;
-	if (worker) {
-		if (GetWorkerWithID(worker)) {
-			EmitToWorkerWithID(worker, 'stop-transcode', job_id);
+	try {
+		console.log('wow');
+		const job = await DatabaseGetDetailedJobByID(job_id);
+		console.log('wow after');
+		// Tell the worker to stop transcoding
+		const worker = job.worker_id;
+		if (worker) {
+			if (GetWorkerWithID(worker)) {
+				EmitToWorkerWithID(worker, 'stop-transcode', job_id);
+			}
 		}
-	}
 
-	const newStage = isError ? TranscodeStage.Error : TranscodeStage.Stopped;
+		const newStage = isError ? TranscodeStage.Error : TranscodeStage.Stopped;
 
-	// Update Job in database
-	await DatabaseUpdateJobOrderIndex(job_id, 0);
-	await DatabaseUpdateJobStatus(job_id, {
-		worker_id: null,
-		transcode_stage: newStage,
-		transcode_percentage: 0,
-		transcode_eta: 0,
-		transcode_fps_current: 0,
-		transcode_fps_average: 0,
-		time_started: 0,
-		time_finished: Date.now(),
-	});
-	await UpdateQueue();
-	if (worker) {
-		WorkerForAvailableJobs(worker);
+		// Update Job in database
+		await DatabaseUpdateJobOrderIndex(job_id, 0);
+		await DatabaseUpdateJobStatus(job_id, {
+			worker_id: null,
+			transcode_stage: newStage,
+			transcode_percentage: 0,
+			transcode_eta: 0,
+			transcode_fps_current: 0,
+			transcode_fps_average: 0,
+			time_started: 0,
+			time_finished: Date.now(),
+		});
+		await UpdateQueue();
+		if (worker) {
+			WorkerForAvailableJobs(worker);
+		}
+	} catch (err) {
+		logger.error(`Could not stop the job with id '${job_id}'.`);
+		throw err;
 	}
 }
 
