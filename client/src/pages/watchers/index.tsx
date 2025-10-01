@@ -1,4 +1,4 @@
-import { WatcherRuleDefinitionType } from '@handbrake-web/shared/types/watcher';
+import { AddWatcherRuleType, UpdateWatcherRuleType } from '@handbrake-web/shared/types/database';
 import RegisterIcon from '@icons/plus-lg.svg?react';
 import { useContext, useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
@@ -22,11 +22,11 @@ export default function WatchersPage() {
 		socket.emit('remove-watcher', rowid);
 	};
 
-	const handleAddRule = (id: number, rule: WatcherRuleDefinitionType) => {
+	const handleAddRule = (id: number, rule: AddWatcherRuleType) => {
 		socket.emit('add-watcher-rule', id, rule);
 	};
 
-	const handleUpdateRule = (id: number, rule: WatcherRuleDefinitionType) => {
+	const handleUpdateRule = (id: number, rule: UpdateWatcherRuleType) => {
 		socket.emit('update-watcher-rule', id, rule);
 	};
 
@@ -34,7 +34,7 @@ export default function WatchersPage() {
 		socket.emit('remove-watcher-rule', id);
 	};
 
-	const watcherIDs = Object.keys(watchers).map((id) => parseInt(id));
+	const watcherIDs = watchers.map((watcher) => watcher.watcher_id);
 
 	return (
 		<Page className={styles['watchers-page']} heading='Watchers'>
@@ -49,7 +49,7 @@ export default function WatchersPage() {
 			</Section>
 			{watcherIDs.length > 0 && (
 				<Section className={styles['registered-watchers']} heading='Registered Watchers'>
-					{watcherIDs.map((watcherID, index) => (
+					{/* {watcherIDs.map((watcherID, index) => (
 						<WatcherCard
 							watcherID={watcherID}
 							watcher={watchers[watcherID]}
@@ -59,6 +59,17 @@ export default function WatchersPage() {
 							handleUpdateRule={handleUpdateRule}
 							handleRemoveRule={handleRemoveRule}
 							key={`watcher-card-${watcherID}`}
+						/>
+					))} */}
+					{watchers.map((watcher, index) => (
+						<WatcherCard
+							watcher={watcher}
+							index={index}
+							handleRemoveWatcher={handleRemoveWatcher}
+							handleAddRule={handleAddRule}
+							handleUpdateRule={handleUpdateRule}
+							handleRemoveRule={handleRemoveRule}
+							key={`watcher-card-${watcher.watcher_id}`}
 						/>
 					))}
 				</Section>

@@ -1,6 +1,7 @@
 import {
 	type AddWatcherRuleType,
 	type AddWatcherType,
+	type DetailedWatcherType,
 	type UpdateWatcherRuleType,
 } from '@handbrake-web/shared/types/database';
 import { jsonArrayFrom } from 'kysely/helpers/sqlite';
@@ -33,7 +34,7 @@ const selectFromWatchersDetailed = database
 
 export async function DatabaseGetDetailedWatchers() {
 	try {
-		const watchers = await selectFromWatchersDetailed.execute();
+		const watchers: DetailedWatcherType[] = await selectFromWatchersDetailed.execute();
 		return watchers;
 	} catch (err) {
 		logger.error('[server] [database] [error] Could not get watchers from the database.');
@@ -43,7 +44,7 @@ export async function DatabaseGetDetailedWatchers() {
 
 export async function DatabaseGetDetailedWatcherByID(watcher_id: number) {
 	try {
-		const watcher = await selectFromWatchersDetailed
+		const watcher: DetailedWatcherType = await selectFromWatchersDetailed
 			.where('watcher_id', '=', watcher_id)
 			.executeTakeFirstOrThrow();
 		return watcher;

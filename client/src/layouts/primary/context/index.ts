@@ -1,9 +1,8 @@
 import { ConfigType } from '@handbrake-web/shared/types/config';
-import { DetailedJobType } from '@handbrake-web/shared/types/database';
+import { DetailedJobType, DetailedWatcherType } from '@handbrake-web/shared/types/database';
 import { HandbrakePresetCategoryType } from '@handbrake-web/shared/types/preset';
 import { QueueStatus } from '@handbrake-web/shared/types/queue';
 import { ConnectionIDsType } from '@handbrake-web/shared/types/socket';
-import { WatcherDefinitionObjectType } from '@handbrake-web/shared/types/watcher';
 import { createContext } from 'react';
 import { Socket } from 'socket.io-client';
 
@@ -16,7 +15,7 @@ export interface PrimaryOutletContextType {
 	defaultPresets: HandbrakePresetCategoryType;
 	connections: ConnectionIDsType;
 	config: ConfigType;
-	watchers: WatcherDefinitionObjectType;
+	watchers: DetailedWatcherType[];
 }
 
 export const PrimaryContext = createContext<PrimaryOutletContextType | null>(null);

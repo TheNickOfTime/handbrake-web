@@ -1,5 +1,11 @@
 import { type ConfigType } from '@handbrake-web/shared/types/config';
-import type { AddJobType } from '@handbrake-web/shared/types/database';
+import type {
+	AddJobType,
+	AddWatcherRuleType,
+	AddWatcherType,
+	DetailedWatcherType,
+	UpdateWatcherRuleType,
+} from '@handbrake-web/shared/types/database';
 import {
 	type CreateDirectoryRequestType,
 	type DirectoryItemsType,
@@ -8,11 +14,6 @@ import {
 } from '@handbrake-web/shared/types/directory';
 import { type HandbrakePresetType } from '@handbrake-web/shared/types/preset';
 import { type GithubReleaseResponseType } from '@handbrake-web/shared/types/version';
-import {
-	type WatcherDefinitionObjectType,
-	type WatcherDefinitionType,
-	type WatcherRuleDefinitionType,
-} from '@handbrake-web/shared/types/watcher';
 import logger from 'logging';
 import { GetConfig, WriteConfig } from 'scripts/config';
 import { AddClient, RemoveClient } from 'scripts/connections';
@@ -184,12 +185,14 @@ export default function ClientSocket(io: Server) {
 		// Watchers --------------------------------------------------------------------------------
 		socket.on(
 			'get-watchers',
-			async (callback: (watchers: WatcherDefinitionObjectType | undefined) => void) => {
-				callback(await DatabaseGetDetailedWatchers());
+			async (callback: (watchers: DetailedWatcherType[] | undefined) => void) => {
+				const watchers = await DatabaseGetDetailedWatchers();
+				console.log(watchers);
+				callback(watchers);
 			}
 		);
 
-		socket.on('add-watcher', async (watcher: WatcherDefinitionType) => {
+		socket.on('add-watcher', async (watcher: AddWatcherType) => {
 			logger.info(watcher);
 			await AddWatcher(watcher);
 		});
@@ -198,19 +201,13 @@ export default function ClientSocket(io: Server) {
 			await RemoveWatcher(id);
 		});
 
-		socket.on(
-			'add-watcher-rule',
-			async (watcherID: number, rule: WatcherRuleDefinitionType) => {
-				await AddWatcherRule(watcherID, rule);
-			}
-		);
+		socket.on('add-watcher-rule', async (watcherID: number, rule: AddWatcherRuleType) => {
+			await AddWatcherRule(watcherID, rule);
+		});
 
-		socket.on(
-			'update-watcher-rule',
-			async (ruleID: number, rule: WatcherRuleDefinitionType) => {
-				await UpdateWatcherRule(ruleID, rule);
-			}
-		);
+		socket.on('update-watcher-rule', async (ruleID: number, rule: UpdateWatcherRuleType) => {
+			await UpdateWatcherRule(ruleID, rule);
+		});
 
 		socket.on('remove-watcher-rule', async (ruleID: number) => {
 			await RemoveWatcherRule(ruleID);

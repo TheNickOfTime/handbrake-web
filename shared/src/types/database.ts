@@ -106,6 +106,7 @@ export type WatcherRuleType = Selectable<WatcherRulesTable>;
 export type AddWatcherRuleType = Omit<Insertable<WatcherRulesTable>, 'watcher_id' | 'rule_id'>;
 export type UpdateWatcherRuleType = Omit<Updateable<WatcherRulesTable>, 'watcher_id' | 'rule_id'>;
 
+export type DetailedWatcherRuleType = Omit<Selectable<WatcherRulesTable>, 'watcher_id'>;
 export type DetailedWatcherType = WatchersType & {
-	rules: Omit<Selectable<WatcherRulesTable>, 'watcher_id'>[];
+	rules: DetailedWatcherRuleType[];
 };
