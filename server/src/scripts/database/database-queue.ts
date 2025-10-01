@@ -1,9 +1,9 @@
 import {
-	type AddJob,
+	type AddJobType,
 	type JobsOrderTable,
 	type JobsStatusTable,
-	type UpdateJob,
-	type UpdateJobStatus,
+	type UpdateJobStatusType,
+	type UpdateJobType,
 } from '@handbrake-web/shared/types/database';
 import type { NotNull } from 'kysely';
 import logger from 'logging';
@@ -14,8 +14,8 @@ const selectFromJobsStatus = database.selectFrom('jobs_status');
 const selectFromJobsOrder = database.selectFrom('jobs_order');
 const selectFromJobsDetailed = database
 	.selectFrom('jobs')
-	.leftJoin('jobs_status', 'jobs.job_id', 'jobs_status.job_id')
-	.leftJoin('jobs_order', 'jobs.job_id', 'jobs_order.job_id');
+	.leftJoin('jobs_order', 'jobs.job_id', 'jobs_order.job_id')
+	.leftJoin('jobs_status', 'jobs.job_id', 'jobs_status.job_id');
 
 const getNextOrderIndex = async () =>
 	(
@@ -101,7 +101,7 @@ export async function DatabaseGetJobOrderIndexByID(job_id: number) {
 	}
 }
 
-export async function DatabaseInsertJob(values: AddJob) {
+export async function DatabaseInsertJob(values: AddJobType) {
 	try {
 		// Insert new row into the jobs table
 		const newJob = await database
@@ -156,7 +156,7 @@ export async function DatabaseInsertJobOrderByID(job_id: number) {
 	}
 }
 
-export async function DatabaseUpdateJob(job_id: number, data: UpdateJob) {
+export async function DatabaseUpdateJob(job_id: number, data: UpdateJobType) {
 	try {
 		const result = await database
 			.updateTable('jobs')
@@ -171,7 +171,7 @@ export async function DatabaseUpdateJob(job_id: number, data: UpdateJob) {
 	}
 }
 
-export async function DatabaseUpdateJobStatus(job_id: number, status: UpdateJobStatus) {
+export async function DatabaseUpdateJobStatus(job_id: number, status: UpdateJobStatusType) {
 	try {
 		const result = await database
 			.updateTable('jobs_status')

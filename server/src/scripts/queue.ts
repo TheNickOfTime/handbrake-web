@@ -1,4 +1,4 @@
-import type { AddJob, UpdateJobStatus } from '@handbrake-web/shared/types/database';
+import type { AddJobType, UpdateJobStatusType } from '@handbrake-web/shared/types/database';
 import { QueueStatus } from '@handbrake-web/shared/types/queue';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import logger, { RemoveJobLogByID } from 'logging';
@@ -19,12 +19,12 @@ import {
 	DatabaseUpdateJobOrderIndex,
 	DatabaseUpdateJobStatus,
 } from './database/database-queue';
-import { GetStatusFromDatabase, UpdateStatusInDatabase } from './database/database-status';
+import { DatabaseSelectStatusByID, DatabaseUpdateStatus } from './database/database-status';
 
 // Init --------------------------------------------------------------------------------------------
 export async function InitializeQueue() {
 	// Queue Status
-	const status = GetQueueStatus();
+	const status = await GetQueueStatus();
 	if (status != null || status != undefined) {
 		logger.info(
 			`[server] [queue] Existing queue status '${QueueStatus[status]}' retreived from the database.`
@@ -83,7 +83,7 @@ export async function GetAvailableWorkers() {
 }
 
 export async function GetAvailableJobs() {
-	const queue = await GetQueue();
+	const queue = await DatabaseGetDetailedJobs();
 	const availableJobs = Object.keys(queue)
 		.map((key) => parseInt(key))
 		.filter((key) => queue[key].transcode_stage == TranscodeStage.Waiting)
@@ -92,7 +92,7 @@ export async function GetAvailableJobs() {
 }
 
 export async function JobForAvailableWorkers(jobID: number) {
-	if (GetQueueStatus() != QueueStatus.Stopped) {
+	if ((await GetQueueStatus()) != QueueStatus.Stopped) {
 		logger.info(
 			`[server] [queue] Job with ID '${jobID}' is available, checking for available workers...`
 		);
@@ -101,7 +101,7 @@ export async function JobForAvailableWorkers(jobID: number) {
 			const selectedWorker = availableWorkers[0];
 			const job = await DatabaseGetDetailedJobByID(jobID);
 			StartJob(jobID, job, selectedWorker);
-			if (GetQueueStatus() != QueueStatus.Active) {
+			if ((await GetQueueStatus()) != QueueStatus.Active) {
 				SetQueueStatus(QueueStatus.Active);
 			}
 			logger.info(
@@ -118,7 +118,7 @@ export async function JobForAvailableWorkers(jobID: number) {
 }
 
 export async function WorkerForAvailableJobs(workerID: string) {
-	if (GetQueueStatus() != QueueStatus.Stopped) {
+	if ((await GetQueueStatus()) != QueueStatus.Stopped) {
 		logger.info(
 			`[server] [queue] Worker with ID '${workerID}' is available, checking for available jobs...`
 		);
@@ -129,7 +129,7 @@ export async function WorkerForAvailableJobs(workerID: string) {
 			const selectedJob = await DatabaseGetDetailedJobByID(selectedJobID);
 			if (selectedJob && worker) {
 				StartJob(selectedJobID, selectedJob, worker);
-				if (GetQueueStatus() != QueueStatus.Active) {
+				if ((await GetQueueStatus()) != QueueStatus.Active) {
 					SetQueueStatus(QueueStatus.Active);
 				}
 				logger.info(
@@ -150,18 +150,19 @@ export async function WorkerForAvailableJobs(workerID: string) {
 }
 
 // Status ------------------------------------------------------------------------------------------
-export function GetQueueStatus() {
-	const status = GetStatusFromDatabase('queue')?.state as QueueStatus;
+export async function GetQueueStatus() {
+	const status = await DatabaseSelectStatusByID('queue');
 	return status;
 }
 
 export function SetQueueStatus(newState: QueueStatus) {
-	UpdateStatusInDatabase('queue', newState);
+	DatabaseUpdateStatus('queue', newState);
 	EmitToAllClients('queue-status-update', newState);
 }
 
 export async function StartQueue(clientID: string) {
-	if (GetQueueStatus() == QueueStatus.Stopped) {
+	const status = await GetQueueStatus();
+	if (status == QueueStatus.Stopped) {
 		try {
 			const availableWorkers = await GetAvailableWorkers();
 			const availableJobs = await GetAvailableJobs();
@@ -207,8 +208,8 @@ export async function StartQueue(clientID: string) {
 	}
 }
 
-export function StopQueue(clientID?: string) {
-	if (GetQueueStatus() != QueueStatus.Stopped) {
+export async function StopQueue(clientID?: string) {
+	if ((await GetQueueStatus()) != QueueStatus.Stopped) {
 		const newStatus = QueueStatus.Stopped;
 		SetQueueStatus(newStatus);
 
@@ -232,15 +233,15 @@ export async function UpdateQueue() {
 }
 
 // Job Actions -------------------------------------------------------------------------------------
-export async function AddJob(data: AddJob) {
+export async function AddJob(data: AddJobType) {
 	const job = await DatabaseInsertJob(data);
 	if (job) {
 		await UpdateQueue();
-		JobForAvailableWorkers(job);
+		await JobForAvailableWorkers(job);
 	}
 }
 
-export async function StartJob(jobID: number, job: UpdateJobStatus, worker: Worker) {
+export async function StartJob(jobID: number, job: UpdateJobStatusType, worker: Worker) {
 	const workerID = GetWorkerID(worker);
 
 	await DatabaseUpdateJobStatus(jobID, {

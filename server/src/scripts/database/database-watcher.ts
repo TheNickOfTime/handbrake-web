@@ -1,25 +1,33 @@
 import {
-	type AddWatcher,
-	type AddWatcherRule,
-	type UpdateWatcherRule,
+	type AddWatcherRuleType,
+	type AddWatcherType,
+	type UpdateWatcherRuleType,
 } from '@handbrake-web/shared/types/database';
-import { jsonArrayFrom } from 'kysely/helpers/postgres';
+import { jsonArrayFrom } from 'kysely/helpers/sqlite';
 import logger from 'logging';
 import { database } from './database';
 
 const selectFromWatchersDetailed = database
 	.selectFrom('watchers')
 	.select((eb) => [
-		'watcher_id',
-		'watch_path',
-		'output_path',
-		'preset_category',
-		'preset_id',
+		'watchers.watcher_id',
+		'watchers.watch_path',
+		'watchers.output_path',
+		'watchers.preset_category',
+		'watchers.preset_id',
 		jsonArrayFrom(
 			eb
 				.selectFrom('watcher_rules')
-				.whereRef('watcher_id', '=', 'watchers.watcher_id')
-				.selectAll()
+				.select([
+					'watcher_rules.rule_id',
+					'watcher_rules.name',
+					'watcher_rules.mask',
+					'watcher_rules.base_rule_method',
+					'watcher_rules.rule_method',
+					'watcher_rules.comparison_method',
+					'watcher_rules.comparison',
+				])
+				.whereRef('watchers.watcher_id', '=', 'watcher_rules.watcher_id')
 		).as('rules'),
 	]);
 
@@ -64,11 +72,12 @@ export async function DatabaseGetWatcherIDFromRule(rule_id: number) {
 	}
 }
 
-export async function DatabaseInsertWatcher(watcher: AddWatcher) {
+export async function DatabaseInsertWatcher(watcher: AddWatcherType) {
 	try {
 		const result = await database
 			.insertInto('watchers')
 			.values(watcher)
+			.returningAll()
 			.executeTakeFirstOrThrow();
 
 		logger.info(
@@ -84,15 +93,16 @@ export async function DatabaseInsertWatcher(watcher: AddWatcher) {
 	}
 }
 
-export async function DatabaseInsertWatcherRule(watcher_id: number, values: AddWatcherRule) {
+export async function DatabaseInsertWatcherRule(watcher_id: number, values: AddWatcherRuleType) {
 	try {
 		const result = await database
 			.insertInto('watcher_rules')
 			.values({ watcher_id, ...values })
+			.returningAll()
 			.executeTakeFirstOrThrow();
 
 		logger.info(
-			`[server] [database] Inserted a new rule '${values.name}' for watcher '${watcher_id}' into the database with id '${result.insertId}'.`
+			`[server] [database] Inserted a new rule '${values.name}' for watcher '${watcher_id}' into the database with id '${result.rule_id}'.`
 		);
 
 		return result;
@@ -104,7 +114,7 @@ export async function DatabaseInsertWatcherRule(watcher_id: number, values: AddW
 	}
 }
 
-export async function UpdateWatcherRuleInDatabase(rule_id: number, values: UpdateWatcherRule) {
+export async function UpdateWatcherRuleInDatabase(rule_id: number, values: UpdateWatcherRuleType) {
 	try {
 		const result = database
 			.updateTable('watcher_rules')

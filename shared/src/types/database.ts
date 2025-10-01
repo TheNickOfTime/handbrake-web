@@ -22,9 +22,9 @@ export interface StatusTable {
 	state: number;
 }
 
-export type GetStatus = Selectable<StatusTable>;
-export type AddStatus = Omit<Insertable<StatusTable>, 'id'>;
-export type UpdateStatus = Omit<Updateable<StatusTable>, 'id'>;
+export type GetStatusType = Selectable<StatusTable>;
+export type AddStatusType = Omit<Insertable<StatusTable>, 'id'>;
+export type UpdateStatusType = Omit<Updateable<StatusTable>, 'id'>;
 
 // Jobs Tables -------------------------------------------------------------------------------------
 
@@ -57,16 +57,16 @@ export interface JobsOrderTable {
 }
 
 // Derived Job Types -------------------------------------------------------------------
-export type GetJob = Selectable<JobsTable>;
-export type AddJob = Omit<Insertable<JobsTable>, 'job_id'>;
-export type UpdateJob = Omit<Updateable<JobsTable>, 'job_id'>;
-export type GetJobStatus = Selectable<JobsStatusTable>;
-export type AddJobStatus = Omit<Insertable<JobsStatusTable>, 'job_id'>;
-export type UpdateJobStatus = Omit<Updateable<JobsStatusTable>, 'job_id'>;
-export type GetJobOrder = Selectable<JobsOrderTable>;
-export type AddJobOrder = Omit<Insertable<JobsOrderTable>, 'job_id'>;
-export type UpdateJobOrder = Omit<Updateable<JobsOrderTable>, 'job_id'>;
-export type GetJobDetailed = GetJob & GetJobStatus & GetJobOrder;
+export type GetJobType = Selectable<JobsTable>;
+export type AddJobType = Omit<Insertable<JobsTable>, 'job_id'>;
+export type UpdateJobType = Omit<Updateable<JobsTable>, 'job_id'>;
+export type GetJobStatusType = Selectable<JobsStatusTable>;
+export type AddJobStatusType = Omit<Insertable<JobsStatusTable>, 'job_id'>;
+export type UpdateJobStatusType = Omit<Updateable<JobsStatusTable>, 'job_id'>;
+export type GetJobOrderType = Selectable<JobsOrderTable>;
+export type AddJobOrderType = Omit<Insertable<JobsOrderTable>, 'job_id'>;
+export type UpdateJobOrderType = Omit<Updateable<JobsOrderTable>, 'job_id'>;
+export type GetJobDetailedType = GetJobType & GetJobStatusType & GetJobOrderType;
 
 // Watcher Tables ----------------------------------------------------------------------------------
 
@@ -81,23 +81,23 @@ export interface WatchersTable {
 
 // Watcher Rules -----------------------------------------------------------------------
 export interface WatcherRulesTable {
-	base_rule_method: number;
-	comparison: string;
-	comparison_method: number;
-	mask: number;
-	name: string;
 	rule_id: Generated<number>;
-	rule_method: number;
 	watcher_id: number;
+	name: string;
+	mask: number;
+	base_rule_method: number;
+	rule_method: number;
+	comparison_method: number;
+	comparison: string;
 }
 
 // Watcher Derived Types ---------------------------------------------------------------
-export type GetWatchers = Selectable<WatchersTable>;
-export type AddWatcher = Omit<Insertable<WatchersTable>, 'watcher_id'>;
-export type UpdateWatcher = Omit<Updateable<WatchersTable>, 'watcher_id'>;
-export type GetWatcherRule = Selectable<WatcherRulesTable>;
-export type AddWatcherRule = Omit<Insertable<WatcherRulesTable>, 'watcher_id' | 'rule_id'>;
-export type UpdateWatcherRule = Omit<Updateable<WatcherRulesTable>, 'watcher_id' | 'rule_id'>;
-export type GetWatchersDetailed = GetWatchers & {
-	rules: Selectable<WatcherRulesTable>[];
+export type GetWatchersType = Selectable<WatchersTable>;
+export type AddWatcherType = Omit<Insertable<WatchersTable>, 'watcher_id'>;
+export type UpdateWatcherType = Omit<Updateable<WatchersTable>, 'watcher_id'>;
+export type GetWatcherRuleType = Selectable<WatcherRulesTable>;
+export type AddWatcherRuleType = Omit<Insertable<WatcherRulesTable>, 'watcher_id' | 'rule_id'>;
+export type UpdateWatcherRuleType = Omit<Updateable<WatcherRulesTable>, 'watcher_id' | 'rule_id'>;
+export type GetWatchersDetailedType = GetWatchersType & {
+	rules: Omit<Selectable<WatcherRulesTable>, 'watcher_id'>[];
 };

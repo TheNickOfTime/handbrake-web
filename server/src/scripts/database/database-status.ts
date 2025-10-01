@@ -8,8 +8,8 @@ export async function DatabaseSelectStatusByID(id: string) {
 				.selectFrom('status')
 				.where('id', '=', id)
 				.select('state')
-				.executeTakeFirstOrThrow()
-		).state;
+				.executeTakeFirst()
+		)?.state;
 	} catch (err) {
 		logger.error(`[server] [database] [error] Could not get the status of '${id}'.`);
 		throw err;

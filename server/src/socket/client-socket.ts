@@ -30,7 +30,7 @@ import {
 	RenamePreset,
 } from 'scripts/presets';
 import {
-	AddJob,
+	AddJobType,
 	ClearQueue,
 	GetQueue,
 	GetQueueStatus,
@@ -43,8 +43,8 @@ import {
 } from 'scripts/queue';
 import { GetCurrentReleaseInfo, GetLatestReleaseInfo } from 'scripts/version';
 import {
-	AddWatcher,
 	AddWatcherRule,
+	AddWatcherType,
 	RemoveWatcher,
 	RemoveWatcherRule,
 	UpdateWatcherRule,
@@ -95,7 +95,7 @@ export default function ClientSocket(io: Server) {
 			logger.info(
 				`[socket] Client '${socket.id}' has requested to add a job for '${data.input}' to the queue.`
 			);
-			AddJob(data);
+			AddJobType(data);
 		});
 
 		socket.on('stop-job', (jobID: number) => {
@@ -191,7 +191,7 @@ export default function ClientSocket(io: Server) {
 
 		socket.on('add-watcher', (watcher: WatcherDefinitionType) => {
 			logger.info(watcher);
-			AddWatcher(watcher);
+			AddWatcherType(watcher);
 		});
 
 		socket.on('remove-watcher', (id: number) => {

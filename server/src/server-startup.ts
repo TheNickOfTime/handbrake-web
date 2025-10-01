@@ -1,20 +1,20 @@
-import { createServer } from 'http';
-import express from 'express';
-import { Server as SocketServer } from 'socket.io';
-import 'dotenv/config';
 import cors from 'cors';
+import 'dotenv/config';
+import express from 'express';
+import { createServer } from 'http';
+import { Server as SocketServer } from 'socket.io';
 
 import logger from 'logging';
+import ClientRoutes from 'routes/client';
+import { LoadConfig } from 'scripts/config';
+import { DatabaseConnect } from 'scripts/database/database';
 import { LoadDefaultPresets, LoadPresets } from 'scripts/presets';
 import { InitializeQueue } from 'scripts/queue';
-import { DatabaseConnect } from 'scripts/database/database';
+import { CheckForVersionUpdate } from 'scripts/version';
 import { InitializeWatchers } from 'scripts/watcher';
-import { LoadConfig } from 'scripts/config';
-import ClientRoutes from 'routes/client';
 import ClientSocket from 'socket/client-socket';
 import WorkerSocket from 'socket/worker-socket';
 import { RegisterExitListeners } from './server-shutdown';
-import { CheckForVersionUpdate } from 'scripts/version';
 
 export default async function ServerStartup() {
 	// Config---------------------------------------------------------------------------------------
@@ -26,8 +26,8 @@ export default async function ServerStartup() {
 
 	// Database ------------------------------------------------------------------------------------
 	await DatabaseConnect();
-	InitializeQueue();
-	InitializeWatchers();
+	await InitializeQueue();
+	await InitializeWatchers();
 
 	// Setup Server --------------------------------------------------------------------------------
 	const app = express();

@@ -1,9 +1,10 @@
 import type { Database } from '@handbrake-web/shared/types/database';
 import SQLite from 'better-sqlite3';
-import { Kysely, SqliteDialect } from 'kysely';
+import { Kysely, ParseJSONResultsPlugin, SqliteDialect } from 'kysely';
 import logger from 'logging';
 import path from 'path';
 import { dataPath } from '../data';
+import { Test } from './database-test';
 import { InitializeDatabaseTables, isDatabaseInitialized } from './utilities/init';
 import { CheckDatabaseVersion } from './utilities/version';
 
@@ -21,6 +22,7 @@ export const database = new Kysely<Database>({
 	dialect: new SqliteDialect({
 		database: sqliteDatabase,
 	}),
+	plugins: [new ParseJSONResultsPlugin()],
 });
 
 export async function DatabaseConnect() {
@@ -35,6 +37,8 @@ export async function DatabaseConnect() {
 		await CheckDatabaseVersion(sqliteDatabase, isInitialized);
 
 		logger.info('[server] [database] The database is ready!');
+
+		await Test();
 	} catch (err) {
 		logger.error(`[server] [database] Could not succesfully initialize the database.`);
 		throw err;

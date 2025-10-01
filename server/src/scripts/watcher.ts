@@ -1,9 +1,11 @@
 import { PresetFormatDict } from '@handbrake-web/shared/dict/presets.dict';
-import { type QueueRequestType } from '@handbrake-web/shared/types/queue';
+import type {
+	AddJobType,
+	AddWatcherType,
+	GetWatchersDetailedType,
+} from '@handbrake-web/shared/types/database';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import {
-	type WatcherDefinitionType,
-	type WatcherDefinitionWithRulesType,
 	WatcherRuleBaseMethods,
 	WatcherRuleComparisonLookup,
 	WatcherRuleComparisonMethods,
@@ -21,11 +23,11 @@ import mime from 'mime';
 import path from 'path';
 import { EmitToAllClients } from './connections';
 import {
-	GetWatcherIDFromRuleIDFromDatabase,
-	GetWatchersFromDatabase,
-	GetWatcherWithIDFromDatabase,
-	InsertWatcherRuleToDatabase,
-	InsertWatcherToDatabase,
+	DatabaseGetDetailedWatcherByID,
+	DatabaseGetDetailedWatchers,
+	DatabaseGetWatcherIDFromRule,
+	DatabaseInsertWatcher,
+	DatabaseInsertWatcherRule,
 	RemoveWatcherFromDatabase,
 	RemoveWatcherRuleFromDatabase,
 	UpdateWatcherRuleInDatabase,
@@ -34,11 +36,10 @@ import { CheckFilenameCollision } from './files';
 import { ConvertBitsToKilobits, ConvertBytesToMegabytes, GetMediaInfo } from './media';
 import { GetDefaultPresetByName, GetPresetByName } from './presets';
 import { AddJob, GetQueue, RemoveJob } from './queue';
-// import {PresetFormatDict} from '';
 
 const watchers: { [index: number]: FSWatcher } = [];
 
-export function RegisterWatcher(id: number, watcher: WatcherDefinitionWithRulesType) {
+export function RegisterWatcher(watcher: GetWatchersDetailedType) {
 	const newWatcher = chokidar.watch(watcher.watch_path, {
 		awaitWriteFinish: true,
 		ignoreInitial: true,
@@ -61,7 +62,7 @@ export function RegisterWatcher(id: number, watcher: WatcherDefinitionWithRulesT
 		logger.error(error);
 	});
 
-	watchers[id] = newWatcher;
+	watchers[watcher.watcher_id] = newWatcher;
 
 	logger.info(`[server] [watcher] Registered watcher for '${watcher.watch_path}'.`);
 }
@@ -80,13 +81,10 @@ export async function DeregisterWatcher(id: number) {
 	}
 }
 
-export function InitializeWatchers() {
-	const watchers = GetWatchersFromDatabase();
-	if (watchers) {
-		Object.keys(watchers).forEach((watcherID) => {
-			const parsedWatcherID = parseInt(watcherID);
-			RegisterWatcher(parsedWatcherID, watchers[parsedWatcherID]);
-		});
+export async function InitializeWatchers() {
+	const watchers = await DatabaseGetDetailedWatchers();
+	for await (const watcher of watchers) {
+		RegisterWatcher(watcher);
 	}
 }
 
@@ -148,7 +146,7 @@ function WatcherRuleNumberComparison(
 	return result;
 }
 
-async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, filePath: string) {
+async function onWatcherDetectFileAdd(watcher: GetWatchersDetailedType, filePath: string) {
 	logger.info(
 		`[server] [watcher] Watcher for '${
 			watcher.watch_path
@@ -284,11 +282,11 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, f
 				},
 			])
 		)[0].path;
-		const newJobRequest: QueueRequestType = {
-			input: filePath,
-			output: checkedOutputPath,
-			category: watcher.preset_category,
-			preset: watcher.preset_id,
+		const newJobRequest: AddJobType = {
+			input_path: filePath,
+			output_path: checkedOutputPath,
+			preset_category: watcher.preset_category,
+			preset_id: watcher.preset_id,
 		};
 		logger.info(
 			`[server] [watcher] Watcher for '${watcher.watch_path}' is requesting a new job be made for the video file '${parsedPath.base}'.`
@@ -297,7 +295,7 @@ async function onWatcherDetectFileAdd(watcher: WatcherDefinitionWithRulesType, f
 	}
 }
 
-function onWatcherDetectFileDelete(watcher: WatcherDefinitionWithRulesType, filePath: string) {
+async function onWatcherDetectFileDelete(watcher: GetWatchersDetailedType, filePath: string) {
 	logger.info(
 		`[server] [watcher] Watcher for '${
 			watcher.watch_path
@@ -306,13 +304,13 @@ function onWatcherDetectFileDelete(watcher: WatcherDefinitionWithRulesType, file
 
 	const isVideo = mime.getType(filePath);
 	if (isVideo && isVideo.includes('video')) {
-		const queue = GetQueue();
+		const queue = await GetQueue();
 		const jobsToDelete = Object.keys(queue)
 			.map((key) => parseInt(key))
 			.filter(
 				(key) =>
-					queue[key].data.input_path == filePath &&
-					queue[key].status.transcode_stage == TranscodeStage.Waiting
+					queue[key].input_path == filePath &&
+					queue[key].transcode_stage == TranscodeStage.Waiting
 			);
 		jobsToDelete.forEach((jobID) => {
 			logger.info(
@@ -323,7 +321,7 @@ function onWatcherDetectFileDelete(watcher: WatcherDefinitionWithRulesType, file
 	}
 }
 
-function onWatcherDetectFileChange(watcher: WatcherDefinitionWithRulesType, filePath: string) {
+function onWatcherDetectFileChange(watcher: GetWatchersDetailedType, filePath: string) {
 	logger.info(
 		`[server] [watcher] Watcher for '${
 			watcher.watch_path
@@ -332,64 +330,44 @@ function onWatcherDetectFileChange(watcher: WatcherDefinitionWithRulesType, file
 }
 
 export function UpdateWatchers() {
-	const updatedWatchers = GetWatchersFromDatabase();
+	const updatedWatchers = DatabaseGetDetailedWatchers();
 	EmitToAllClients('watchers-update', updatedWatchers);
 }
 
-export function AddWatcher(watcher: WatcherDefinitionType) {
-	const result = InsertWatcherToDatabase(watcher);
-	if (result) {
-		RegisterWatcher(result.lastInsertRowid as number, { ...watcher, rules: [] });
-		UpdateWatchers();
-	}
+export async function AddWatcher(watcher: AddWatcherType) {
+	const result = await DatabaseInsertWatcher(watcher);
+	RegisterWatcher({ ...result, rules: [] });
+	UpdateWatchers();
 }
 
-export function RemoveWatcher(watcherID: number) {
-	const result = RemoveWatcherFromDatabase(watcherID);
-	if (result) {
-		DeregisterWatcher(watcherID);
-		UpdateWatchers();
-	}
+export async function RemoveWatcher(watcherID: number) {
+	await RemoveWatcherFromDatabase(watcherID);
+	DeregisterWatcher(watcherID);
+	UpdateWatchers();
 }
 
 export async function AddWatcherRule(watcherID: number, rule: WatcherRuleDefinitionType) {
 	await DeregisterWatcher(watcherID);
-	const result = InsertWatcherRuleToDatabase(watcherID, rule);
-	if (result) {
-		UpdateWatchers();
-		const updatedWatcher = GetWatcherWithIDFromDatabase(watcherID);
-		if (updatedWatcher) {
-			RegisterWatcher(watcherID, updatedWatcher);
-		}
-	}
+	await DatabaseInsertWatcherRule(watcherID, rule);
+	const updatedWatcher = await DatabaseGetDetailedWatcherByID(watcherID);
+	RegisterWatcher(updatedWatcher);
+	UpdateWatchers();
 }
 
 export async function UpdateWatcherRule(ruleID: number, rule: WatcherRuleDefinitionType) {
-	const watcherID = GetWatcherIDFromRuleIDFromDatabase(ruleID);
-	if (watcherID) {
-		await DeregisterWatcher(watcherID);
-		const result = UpdateWatcherRuleInDatabase(ruleID, rule);
-		if (result) {
-			UpdateWatchers();
-			const updatedWatcher = GetWatcherWithIDFromDatabase(watcherID);
-			if (updatedWatcher) {
-				RegisterWatcher(watcherID, updatedWatcher);
-			}
-		}
-	}
+	const watcherID = await DatabaseGetWatcherIDFromRule(ruleID);
+	await DeregisterWatcher(watcherID);
+	await UpdateWatcherRuleInDatabase(ruleID, rule);
+	const updatedWatcher = await DatabaseGetDetailedWatcherByID(watcherID);
+	RegisterWatcher(updatedWatcher);
+	UpdateWatchers();
 }
 
 export async function RemoveWatcherRule(ruleID: number) {
-	const watcherID = GetWatcherIDFromRuleIDFromDatabase(ruleID);
-	if (watcherID) {
-		await DeregisterWatcher(watcherID);
-		const result = RemoveWatcherRuleFromDatabase(ruleID);
-		if (result) {
-			UpdateWatchers();
-			const updatedWatcher = GetWatcherWithIDFromDatabase(watcherID);
-			if (updatedWatcher) {
-				RegisterWatcher(watcherID, updatedWatcher);
-			}
-		}
-	}
+	const watcherID = await DatabaseGetWatcherIDFromRule(ruleID);
+	await DeregisterWatcher(watcherID);
+	await RemoveWatcherRuleFromDatabase(ruleID);
+	const updatedWatcher = await DatabaseGetDetailedWatcherByID(watcherID);
+	RegisterWatcher(updatedWatcher);
+	UpdateWatchers();
 }
