@@ -90,11 +90,12 @@ export default function ClientSocket(io: Server) {
 		});
 
 		// Jobs ------------------------------------------------------------------------------------
-		socket.on('add-job', async (data: AddJobType) => {
+		socket.on('add-job', async (data: AddJobType, callback: () => void) => {
 			logger.info(
 				`[socket] Client '${socket.id}' has requested to add a job for '${data.input_path}' to the queue.`
 			);
 			await AddJob(data);
+			callback();
 		});
 
 		socket.on('stop-job', async (jobID: number) => {

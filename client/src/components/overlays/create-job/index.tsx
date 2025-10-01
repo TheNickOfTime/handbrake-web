@@ -75,22 +75,34 @@ export default function CreateJob({ onClose }: Properties) {
 		onClose();
 	};
 
-	const handleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+	const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		event.preventDefault();
 
 		console.log(inputFiles, outputFiles);
 
-		inputFiles.forEach((file, index) => {
+		// inputFiles.forEach(async (file, index) => {
+		// 	const outputFile = outputFiles[index];
+		// 	const newJob: AddJobType = {
+		// 		input_path: file.path,
+		// 		output_path: outputFile.path,
+		// 		preset_category: presetCategory,
+		// 		preset_id: preset,
+		// 	};
+		// 	await socket.emitWithAck('add-job', newJob);
+		// 	console.log(`[client] New job sent to the server.\n${newJob}`);
+		// });
+
+		for await (const [index, inputFile] of inputFiles.entries()) {
 			const outputFile = outputFiles[index];
 			const newJob: AddJobType = {
-				input_path: file.path,
+				input_path: inputFile.path,
 				output_path: outputFile.path,
 				preset_category: presetCategory,
 				preset_id: preset,
 			};
-			socket.emit('add-job', newJob);
-			console.log(`[client] New job sent to the server.\n${newJob}`);
-		});
+			await socket.emitWithAck('add-job', newJob);
+			console.log(`[client] New job sent to the server.\n${JSON.stringify(newJob, null, 2)}`);
+		}
 
 		onClose();
 	};
