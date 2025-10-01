@@ -86,8 +86,6 @@ export async function DeregisterWatcher(id: number) {
 export async function InitializeWatchers() {
 	const watchers = await DatabaseGetDetailedWatchers();
 
-	console.log(watchers);
-
 	for await (const watcher of watchers) {
 		RegisterWatcher(watcher);
 	}
