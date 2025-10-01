@@ -1,6 +1,7 @@
 import type { AddJobType, DetailedJobType } from '@handbrake-web/shared/types/database';
 import { QueueStatus } from '@handbrake-web/shared/types/queue';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
+import { error } from 'console';
 import logger, { RemoveJobLogByID } from 'logging';
 import { Socket as Worker } from 'socket.io';
 import {
@@ -291,8 +292,8 @@ export async function ResetJob(job_id: number) {
 		job.transcode_stage == TranscodeStage.Finished
 	) {
 		// Update Job in database
-		DatabaseInsertJobOrderByID(job_id);
-		DatabaseUpdateJobStatus(job_id, {
+		await DatabaseInsertJobOrderByID(job_id);
+		await DatabaseUpdateJobStatus(job_id, {
 			worker_id: null,
 			transcode_stage: TranscodeStage.Waiting,
 			transcode_percentage: 0,
@@ -304,11 +305,12 @@ export async function ResetJob(job_id: number) {
 		});
 
 		await UpdateQueue();
-		JobForAvailableWorkers(job_id);
+		await JobForAvailableWorkers(job_id);
 	} else {
 		logger.error(
 			`[server] [error] Job with id '${job_id}' cannot be reset because it is not in a stopped/finished state.`
 		);
+		throw error;
 	}
 }
 

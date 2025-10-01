@@ -41,7 +41,7 @@ export async function DatabaseGetDetailedJobs() {
 export async function DatabaseGetDetailedJobByID(job_id: number) {
 	try {
 		const job = await selectFromJobsDetailed
-			.where('job_id', '=', job_id)
+			.where('jobs.job_id', '=', job_id)
 			.selectAll()
 			.$narrowType<{ [index in keyof (JobsStatusTable & JobsOrderTable)]: NotNull }>()
 			.executeTakeFirstOrThrow();
@@ -198,7 +198,19 @@ export async function DatabaseUpdateJobOrderIndex(job_id: number, new_index: num
 
 		if (previous_index == new_index) return;
 
-		if (new_index > 0) {
+		const isDelete = new_index == 0;
+		const isNewGreater = new_index > previous_index;
+
+		if (isDelete) {
+			// Delete the job from the table if the new index is 0
+			await database
+				.deleteFrom('jobs_order')
+				.where('job_id', '=', job_id)
+				.executeTakeFirstOrThrow();
+			logger.info(
+				`[server] [database] Removing job with id '${job_id}' from the 'jobs_order' table.`
+			);
+		} else {
 			// Set the desired job to order -1 (so other jobs can be moved without conflict)
 			await database
 				.updateTable('jobs_order')
@@ -208,39 +220,44 @@ export async function DatabaseUpdateJobOrderIndex(job_id: number, new_index: num
 			logger.info(
 				`Temporarily setting job '${job_id}' from order index '${previous_index}' to '-1'.`
 			);
-		} else {
-			// Delete the job from the table if the new index is 0
-			await database
-				.deleteFrom('jobs_order')
-				.where('job_id', '=', job_id)
-				.executeTakeFirstOrThrow();
-			logger.info(
-				`[server] [database] Removing job with id '${job_id}' from the 'jobs_order' table.`
-			);
 		}
 
 		// Get only the jobs that will need to be reordered, in the order they will be acted upon
-		const isNewGreater = new_index > previous_index;
-		const jobsToReorder = (
-			await database
-				.selectFrom('jobs_order')
-				.where('job_id', '!=', job_id)
-				.where('order_index', '>=', isNewGreater ? previous_index : new_index)
-				.where('order_index', '<=', isNewGreater ? new_index : previous_index)
-				.selectAll()
-				.orderBy('order_index', isNewGreater ? 'asc' : 'desc')
-				.execute()
-		).map((job) => ({
-			...job,
-			new_order_index: isNewGreater ? job.order_index - 1 : job.order_index + 1,
-		}));
+		const jobsToReorder = isDelete
+			? (
+					await database
+						.selectFrom('jobs_order')
+						.where('job_id', '!=', job_id)
+						.where('order_index', '>=', previous_index)
+						.selectAll()
+						.orderBy('order_index', 'asc')
+						.execute()
+			  ).map((job) => ({
+					...job,
+					new_order_index: job.order_index - 1,
+			  }))
+			: (
+					await database
+						.selectFrom('jobs_order')
+						.where('job_id', '!=', job_id)
+						.where('order_index', '>=', isNewGreater ? previous_index : new_index)
+						.where('order_index', '<=', isNewGreater ? new_index : previous_index)
+						.selectAll()
+						.orderBy('order_index', isNewGreater ? 'asc' : 'desc')
+						.execute()
+			  ).map((job) => ({
+					...job,
+					new_order_index: isNewGreater ? job.order_index - 1 : job.order_index + 1,
+			  }));
 
 		// Add the target job to the end of the reorder array
-		jobsToReorder.push({
-			job_id: job_id,
-			order_index: previous_index,
-			new_order_index: new_index,
-		});
+		if (!isDelete) {
+			jobsToReorder.push({
+				job_id: job_id,
+				order_index: previous_index,
+				new_order_index: new_index,
+			});
+		}
 
 		// Reorder all necessary jobs
 		for await (const job of jobsToReorder) {
