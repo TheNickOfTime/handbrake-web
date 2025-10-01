@@ -1,10 +1,10 @@
-import { WatcherDefinitionObjectType } from '@handbrake-web/shared/types/watcher';
+import { DetailedWatcherType } from '@handbrake-web/shared/types/database';
 import Section from '~components/root/section';
 import DashboardTable from '~pages/dashboard/components/dashboard-table';
 import styles from './styles.module.scss';
 
 interface Properties {
-	watchers: WatcherDefinitionObjectType;
+	watchers: DetailedWatcherType[];
 }
 
 export default function WatchersSection({ watchers }: Properties) {
@@ -20,20 +20,16 @@ export default function WatchersSection({ watchers }: Properties) {
 					</tr>
 				</thead>
 				<tbody>
-					{Object.keys(watchers)
-						.map((watcherID) => parseInt(watcherID))
-						.map((watcherID) => {
-							const watcher = watchers[watcherID];
-
-							return (
-								<tr key={watcherID}>
-									<td>{watcher.watch_path}</td>
-									<td align='center'>{watcher.output_path || 'N/A'}</td>
-									<td align='center'>{watcher.preset_id}</td>
-									<td align='center'>{Object.keys(watcher.rules).length}</td>
-								</tr>
-							);
-						})}
+					{watchers.map((watcher) => {
+						return (
+							<tr key={watcher.watcher_id}>
+								<td>{watcher.watch_path}</td>
+								<td align='center'>{watcher.output_path || 'N/A'}</td>
+								<td align='center'>{watcher.preset_id}</td>
+								<td align='center'>{watcher.rules.length}</td>
+							</tr>
+						);
+					})}
 				</tbody>
 			</DashboardTable>
 		</Section>
