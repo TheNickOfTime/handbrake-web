@@ -328,29 +328,27 @@ export async function ClearQueue(clientID: string, finishedOnly: boolean = false
 		} jobs from the queue.`
 	);
 	const queue = await DatabaseGetDetailedJobs();
-	for (const key of Object.keys(queue).map((key) => parseInt(key))) {
-		const job = queue[key];
-
+	for await (const job of queue) {
 		switch (job.transcode_stage) {
 			case TranscodeStage.Waiting:
 				if (!finishedOnly) {
-					DatabaseRemoveJobByID(key);
+					await DatabaseRemoveJobByID(job.job_id);
 					logger.info(
-						`[server] Removing job '${key}' from the queue due to being 'Waiting'.`
+						`[server] Removing job '${job.job_id}' from the queue due to being 'Waiting'.`
 					);
 				}
 				break;
 			case TranscodeStage.Finished:
-				DatabaseRemoveJobByID(key);
+				await DatabaseRemoveJobByID(job.job_id);
 				logger.info(
-					`[server] Removing job '${key}' from the queue due to being 'Finished'.`
+					`[server] Removing job '${job}' from the queue due to being 'Finished'.`
 				);
 				break;
 			case TranscodeStage.Stopped:
 				if (!finishedOnly) {
-					DatabaseRemoveJobByID(key);
+					await DatabaseRemoveJobByID(job.job_id);
 					logger.info(
-						`[server] Removing job '${key}' from the queue due to being 'Stopped'.`
+						`[server] Removing job '${job.job_id}' from the queue due to being 'Stopped'.`
 					);
 				}
 		}
