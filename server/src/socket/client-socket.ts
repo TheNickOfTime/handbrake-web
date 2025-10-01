@@ -52,13 +52,12 @@ import {
 import { Socket as Client, Server } from 'socket.io';
 
 const initClient = async (socket: Client) => {
-	const queue = GetQueue();
 	socket.emit('config-update', GetConfig());
-	socket.emit('queue-update', queue);
+	socket.emit('queue-update', await GetQueue());
 	socket.emit('presets-update', GetPresets());
 	socket.emit('default-presets-update', GetDefaultPresets());
-	socket.emit('queue-status-update', GetQueueStatus());
-	socket.emit('watchers-update', DatabaseGetDetailedWatchers());
+	socket.emit('queue-status-update', await GetQueueStatus());
+	socket.emit('watchers-update', await DatabaseGetDetailedWatchers());
 };
 
 export default function ClientSocket(io: Server) {

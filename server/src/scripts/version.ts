@@ -7,7 +7,7 @@ import path, { resolve } from 'path';
 import { cwd } from 'process';
 import { GetConfig } from './config';
 import { dataPath } from './data';
-import { GetStatusFromDatabase, UpdateStatusInDatabase } from './database/database-status';
+import { DatabaseSelectStatusByID, DatabaseUpdateStatus } from './database/database-status';
 
 const currentVersion = `v${
 	JSON.parse(readFileSync(resolve(cwd(), 'package.json'), { encoding: 'utf-8' })).version
@@ -33,7 +33,7 @@ export async function CheckForVersionUpdate() {
 		return;
 	}
 
-	const lastCheck = GetStatusFromDatabase('last-version-update-check')?.state || 0;
+	const lastCheck = (await DatabaseSelectStatusByID('last-version-update-check')) || 0;
 	const now = Date.now();
 	const timeSinceLastCheck = now - lastCheck;
 	const timeSinceLastCheckHours = Math.floor(timeSinceLastCheck / 1000 / 60 / 60);
@@ -92,7 +92,7 @@ export async function CheckForVersionUpdate() {
 			await RemoveReleaseInfo(latestReleaseInfoPath);
 		}
 
-		UpdateStatusInDatabase('last-version-update-check', Date.now());
+		DatabaseUpdateStatus('last-version-update-check', Date.now());
 	} catch (error) {
 		logger.error(`[version] An error occurred while checking for the latest version.`);
 		console.error(error);

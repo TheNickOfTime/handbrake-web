@@ -1,4 +1,8 @@
-import type { AddJobType, UpdateJobStatusType } from '@handbrake-web/shared/types/database';
+import type {
+	AddJobType,
+	DetailedJobType,
+	UpdateJobStatusType,
+} from '@handbrake-web/shared/types/database';
 import { QueueStatus } from '@handbrake-web/shared/types/queue';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import logger, { RemoveJobLogByID } from 'logging';
@@ -221,7 +225,7 @@ export async function StopQueue(clientID?: string) {
 
 // Queue -------------------------------------------------------------------------------------------
 export async function GetQueue() {
-	const queue = await DatabaseGetDetailedJobs();
+	const queue: DetailedJobType[] = await DatabaseGetDetailedJobs();
 	return queue;
 }
 
