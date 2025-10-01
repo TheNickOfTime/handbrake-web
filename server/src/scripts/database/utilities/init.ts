@@ -78,9 +78,9 @@ export async function InitializeDatabaseTables() {
 			.createTable('watchers')
 			.ifNotExists()
 			.addColumn('watcher_id', 'integer', (col) => col.notNull().primaryKey().autoIncrement())
-			.addColumn('watcher_path', 'text', (col) => col.notNull())
+			.addColumn('watch_path', 'text', (col) => col.notNull())
 			.addColumn('output_path', 'text')
-			.addColumn('preset-category', 'text', (col) => col.notNull())
+			.addColumn('preset_category', 'text', (col) => col.notNull())
 			.addColumn('preset_id', 'text', (col) => col.notNull())
 			.execute();
 		logger.info(`[server] [database] Initialized the 'watchers' table.`);
@@ -98,6 +98,7 @@ export async function InitializeDatabaseTables() {
 			.addColumn('base_rule_method', 'integer', (col) => col.notNull())
 			.addColumn('rule_method', 'integer', (col) => col.notNull())
 			.addColumn('comparison_method', 'integer', (col) => col.notNull())
+			.addColumn('comparison', 'text', (col) => col.notNull())
 			.execute();
 		logger.info(`[server] [database] Initialized the 'watcher_rules' table.`);
 
