@@ -27,34 +27,24 @@ export default function JobsSection({
 	handleResetJob,
 	handleRemoveJob,
 }: Params) {
-	const jobsInProgress: QueueType = Object.fromEntries(
-		Object.entries(queue).filter(
-			(entry) =>
-				entry[1].status.transcode_stage == TranscodeStage.Transcoding ||
-				entry[1].status.transcode_stage == TranscodeStage.Scanning
-		)
+	const jobsInProgress: QueueType = queue.filter(
+		(job) =>
+			job.transcode_stage == TranscodeStage.Transcoding ||
+			job.transcode_stage == TranscodeStage.Scanning
 	);
 
-	const jobsWaiting: QueueType = Object.fromEntries(
-		Object.entries(queue).filter(
-			(entry) => entry[1].status.transcode_stage == TranscodeStage.Waiting
-		)
+	const jobsWaiting: QueueType = queue.filter(
+		(job) => job.transcode_stage == TranscodeStage.Waiting
 	);
 
-	const jobsStopped: QueueType = Object.fromEntries(
-		Object.entries(queue).filter(
-			(entry) =>
-				entry[1].status.transcode_stage == TranscodeStage.Stopped ||
-				entry[1].status.transcode_stage == TranscodeStage.Error
-		)
+	const jobsStopped: QueueType = queue.filter(
+		(job) =>
+			job.transcode_stage == TranscodeStage.Stopped ||
+			job.transcode_stage == TranscodeStage.Error
 	);
-
-	const jobsFinshed: QueueType = Object.fromEntries(
-		Object.entries(queue).filter(
-			(entry) => entry[1].status.transcode_stage == TranscodeStage.Finished
-		)
+	const jobsFinshed: QueueType = queue.filter(
+		(job) => job.transcode_stage == TranscodeStage.Finished
 	);
-
 	const onlyFinished = Object.keys(queue).length == Object.keys(jobsFinshed).length;
 
 	return (

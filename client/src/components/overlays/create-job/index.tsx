@@ -1,6 +1,6 @@
+import { AddJobType } from '@handbrake-web/shared/types/database';
 import { DirectoryItemType, DirectoryItemsType } from '@handbrake-web/shared/types/directory';
 import { HandbrakeOutputExtensions } from '@handbrake-web/shared/types/file-extensions';
-import { QueueRequestType } from '@handbrake-web/shared/types/queue';
 import { useContext, useState } from 'react';
 import Overlay from '~components/root/overlay';
 import { PrimaryContext } from '~layouts/primary/context';
@@ -82,11 +82,11 @@ export default function CreateJob({ onClose }: Properties) {
 
 		inputFiles.forEach((file, index) => {
 			const outputFile = outputFiles[index];
-			const newJob: QueueRequestType = {
-				input: file.path,
-				output: outputFile.path,
-				category: presetCategory,
-				preset: preset,
+			const newJob: AddJobType = {
+				input_path: file.path,
+				output_path: outputFile.path,
+				preset_category: presetCategory,
+				preset_id: preset,
 			};
 			socket.emit('add-job', newJob);
 			console.log(`[client] New job sent to the server.\n${newJob}`);

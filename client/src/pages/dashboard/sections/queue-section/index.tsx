@@ -25,22 +25,21 @@ export default function QueueSection({ queue }: Properties) {
 					</tr>
 				</thead>
 				<tbody>
-					{Object.keys(queue)
-						.map((key) => parseInt(key))
+					{queue
 						.sort(
 							(a, b) => {
-								const stageA = queue[a].status.transcode_stage;
-								const stageB = queue[b].status.transcode_stage;
+								const stageA = a.transcode_stage;
+								const stageB = b.transcode_stage;
 								if (stageA != undefined && stageB != undefined) {
 									// return (
 									// 	statusSorting[queue[a].status.transcode_stage] -
 									// 	statusSorting[queue[b].status.transcode_stage]
 									// );
-									const orderA = queue[a].order_index;
-									const orderB = queue[b].order_index;
+									const orderA = a.order_index;
+									const orderB = b.order_index;
 
-									const finishedA = queue[a].status.time_finished || 0;
-									const finishedB = queue[b].status.time_finished || 0;
+									const finishedA = a.time_finished || 0;
+									const finishedB = a.time_finished || 0;
 
 									return stageA == stageB
 										? orderA != null && orderB != null
@@ -65,34 +64,33 @@ export default function QueueSection({ queue }: Properties) {
 							// 	? 1
 							// 	: 1
 						)
-						.map((key) => {
-							const job = queue[key];
-							const percentage = job.status.transcode_percentage
-								? job.status.transcode_percentage * 100
+						.map((job) => {
+							const percentage = job.transcode_percentage
+								? job.transcode_percentage * 100
 								: 0;
 
 							// console.log(job.order_index);
 
 							return (
-								<tr key={`queue-job-${key}`}>
+								<tr key={`queue-job-${job}`}>
 									<td className={styles['order']} align='center'>
 										{job.order_index}
 									</td>
-									<td className={styles['input']} title={job.data.input_path}>
-										{job.data.input_path.match(/[^/]+$/)}
-										<BadgeInfo info={job.data.input_path} />
+									<td className={styles['input']} title={job.input_path}>
+										{job.input_path.match(/[^/]+$/)}
+										<BadgeInfo info={job.input_path} />
 									</td>
-									<td className={styles['output']} title={job.data.output_path}>
-										{job.data.output_path.match(/[^/]+$/)}
-										<BadgeInfo info={job.data.output_path} />
+									<td className={styles['output']} title={job.output_path}>
+										{job.output_path.match(/[^/]+$/)}
+										<BadgeInfo info={job.output_path} />
 									</td>
 									<td
 										align='center'
 										data-status={TranscodeStage[
-											job.status.transcode_stage || 0
+											job.transcode_stage || 0
 										].toLocaleLowerCase()}
 									>
-										{TranscodeStage[job.status.transcode_stage || 0]}
+										{TranscodeStage[job.transcode_stage || 0]}
 									</td>
 									<td className={styles['progress']}>
 										<ProgressBar

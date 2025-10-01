@@ -24,7 +24,7 @@ export default function PrimaryLayout() {
 
 	const [socket] = useState(io(server, { autoConnect: false }));
 	const [config, setConfig] = useState<ConfigType>();
-	const [queue, setQueue] = useState<QueueType>({});
+	const [queue, setQueue] = useState<QueueType>([]);
 	const [queueStatus, setQueueStatus] = useState<QueueStatus>(QueueStatus.Idle);
 	const [presets, setPresets] = useState<HandbrakePresetCategoryType>({});
 	const [defaultPresets, setDefaultPresets] = useState<HandbrakePresetCategoryType>({});

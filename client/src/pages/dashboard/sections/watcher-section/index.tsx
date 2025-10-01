@@ -22,9 +22,7 @@ export default function WorkersSection({ queue, workers }: Properties) {
 				</thead>
 				<tbody>
 					{workers.map((worker) => {
-						const status = Object.values(queue).find(
-							(job) => job.status.worker_id == worker.workerID
-						)
+						const status = queue.find((job) => job.worker_id == worker.workerID)
 							? 'Working'
 							: 'Idle';
 
