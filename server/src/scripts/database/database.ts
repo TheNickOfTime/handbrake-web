@@ -4,7 +4,6 @@ import { Kysely, ParseJSONResultsPlugin, SqliteDialect } from 'kysely';
 import logger from 'logging';
 import path from 'path';
 import { dataPath } from '../data';
-import { Test } from './database-test';
 import { InitializeDatabaseTables, isDatabaseInitialized } from './utilities/init';
 import { CheckDatabaseVersion } from './utilities/version';
 
@@ -37,8 +36,6 @@ export async function DatabaseConnect() {
 		await CheckDatabaseVersion(sqliteDatabase, isInitialized);
 
 		logger.info('[server] [database] The database is ready!');
-
-		await Test();
 	} catch (err) {
 		logger.error(`[server] [database] Could not succesfully initialize the database.`);
 		throw err;
