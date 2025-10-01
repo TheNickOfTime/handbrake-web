@@ -200,13 +200,20 @@ export async function DatabaseUpdateJobOrderIndex(job_id: number, new_index: num
 
 		if (new_index > 0) {
 			// Set the desired job to order -1 (so other jobs can be moved without conflict)
-			database
+			await database
 				.updateTable('jobs_order')
 				.set({ order_index: -1 })
-				.where('job_id', '=', job_id);
+				.where('job_id', '=', job_id)
+				.executeTakeFirstOrThrow();
+			logger.info(
+				`Temporarily setting job '${job_id}' from order index '${previous_index}' to '-1'.`
+			);
 		} else {
 			// Delete the job from the table if the new index is 0
-			database.deleteFrom('jobs_order').where('job_id', '=', job_id);
+			await database
+				.deleteFrom('jobs_order')
+				.where('job_id', '=', job_id)
+				.executeTakeFirstOrThrow();
 			logger.info(
 				`[server] [database] Removing job with id '${job_id}' from the 'jobs_order' table.`
 			);
@@ -214,31 +221,38 @@ export async function DatabaseUpdateJobOrderIndex(job_id: number, new_index: num
 
 		// Get only the jobs that will need to be reordered, in the order they will be acted upon
 		const isNewGreater = new_index > previous_index;
-		const jobsToReorder = await database
-			.selectFrom('jobs_order')
-			.where('job_id', '!=', job_id)
-			.where('order_index', '>', isNewGreater ? previous_index : new_index)
-			.where('order_index', '<=', isNewGreater ? new_index : previous_index)
-			.selectAll()
-			.orderBy('order_index', isNewGreater ? 'desc' : 'asc')
-			.execute();
+		const jobsToReorder = (
+			await database
+				.selectFrom('jobs_order')
+				.where('job_id', '!=', job_id)
+				.where('order_index', '>=', isNewGreater ? previous_index : new_index)
+				.where('order_index', '<=', isNewGreater ? new_index : previous_index)
+				.selectAll()
+				.orderBy('order_index', isNewGreater ? 'asc' : 'desc')
+				.execute()
+		).map((job) => ({
+			...job,
+			new_order_index: isNewGreater ? job.order_index - 1 : job.order_index + 1,
+		}));
 
 		// Add the target job to the end of the reorder array
-		jobsToReorder.push({ job_id: job_id, order_index: new_index });
+		jobsToReorder.push({
+			job_id: job_id,
+			order_index: previous_index,
+			new_order_index: new_index,
+		});
 
 		// Reorder all necessary jobs
 		for await (const job of jobsToReorder) {
-			const newJobOrderIndex = isNewGreater ? job.order_index - 1 : job.order_index + 1;
+			logger.info(
+				`[server] [database] Updating job with id '${job.job_id}' from order index ${job.order_index} to ${job.new_order_index}.`
+			);
 
 			await database
 				.updateTable('jobs_order')
-				.set({ order_index: newJobOrderIndex })
+				.set({ order_index: job.new_order_index })
 				.where('job_id', '=', job.job_id)
 				.executeTakeFirstOrThrow();
-
-			logger.info(
-				`[server] [database] Updating job with id '${job.job_id}' from order index ${job.order_index} to ${newJobOrderIndex}.`
-			);
 		}
 	} catch (err) {
 		logger.error(
