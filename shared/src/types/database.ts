@@ -1,67 +1,112 @@
-export type QueueTableType = {
-	id: number;
-	job: string;
-};
+import type { Generated, Insertable, Selectable, Updateable } from 'kysely';
+import type { TranscodeStage } from './transcode';
 
-// Jobs --------------------------------------------------------------------------------------------
-export type JobsTableType = {
-	job_id: number;
+export interface Database {
+	database_version: DatabaseVersionTable;
+	status: StatusTable;
+	jobs: JobsTable;
+	jobs_status: JobsStatusTable;
+	jobs_order: JobsOrderTable;
+	watchers: WatchersTable;
+	watcher_rules: WatcherRulesTable;
+}
+
+// Database Version Table --------------------------------------------------------------------------
+export interface DatabaseVersionTable {
+	version: number;
+}
+
+export type DatabaseVersionType = Selectable<DatabaseVersionTable>;
+export type UpdateDatabaseVersionType = Updateable<DatabaseVersionTable>;
+
+// Status Table ------------------------------------------------------------------------------------
+export interface StatusTable {
+	id: string;
+	state: number;
+}
+
+export type StatusType = Selectable<StatusTable>;
+export type AddStatusType = Omit<Insertable<StatusTable>, 'id'>;
+export type UpdateStatusType = Omit<Updateable<StatusTable>, 'id'>;
+
+// Jobs Tables -------------------------------------------------------------------------------------
+
+// Jobs --------------------------------------------------------------------------------
+export interface JobsTable {
+	job_id: Generated<number>;
 	input_path: string;
 	output_path: string;
 	preset_category: string;
 	preset_id: string;
-};
+}
 
-export type JobInsertType = {
-	[Property in Exclude<keyof JobsTableType, 'job_id'>]: JobsTableType[Property];
-};
-
-export type JobsStatusTableType = {
-	job_id: number;
+// Jobs Status -------------------------------------------------------------------------
+export interface JobsStatusTable {
+	job_id: Generated<number>;
 	worker_id: string | null;
-	transcode_stage: number;
-	transcode_percentage: number;
-	transcode_eta: number;
-	transcode_fps_current: number;
-	transcode_fps_average: number;
-	time_started: number;
-	time_finished: number;
-};
+	transcode_stage: Generated<TranscodeStage>;
+	transcode_percentage: Generated<number>;
+	transcode_eta: Generated<number>;
+	transcode_fps_current: Generated<number>;
+	transcode_fps_average: Generated<number>;
+	time_started: Generated<number>;
+	time_finished: Generated<number>;
+}
 
-export type JobStatusInsertType = {
-	job_id: number;
-} & {
-	[Property in Exclude<keyof JobsStatusTableType, 'job_id'>]?: JobsStatusTableType[Property];
-};
-
-export type JobOrderTableType = {
-	job_id: number;
+// Jobs Order --------------------------------------------------------------------------
+export interface JobsOrderTable {
+	job_id: Generated<number>;
 	order_index: number;
-};
+}
 
-// Queue Status ------------------------------------------------------------------------------------
-export type StatusTableType = {
-	id: string;
-	state: number;
-};
+// Derived Job Types -------------------------------------------------------------------
+export type JobType = Selectable<JobsTable>;
+export type AddJobType = Omit<Insertable<JobsTable>, 'job_id'>;
+export type UpdateJobType = Omit<Updateable<JobsTable>, 'job_id'>;
 
-// Watchers ----------------------------------------------------------------------------------------
-export type WatcherTableType = {
-	watcher_id: number;
-	watch_path: string;
+export type JobStatusType = Selectable<JobsStatusTable>;
+export type AddJobStatusType = Omit<Insertable<JobsStatusTable>, 'job_id'>;
+export type UpdateJobStatusType = Omit<Updateable<JobsStatusTable>, 'job_id'>;
+
+export type JobOrderType = Selectable<JobsOrderTable>;
+export type AddJobOrderType = Omit<Insertable<JobsOrderTable>, 'job_id'>;
+export type UpdateJobOrderType = Omit<Updateable<JobsOrderTable>, 'job_id'>;
+
+export type DetailedJobType = JobType & JobStatusType & JobOrderType;
+
+// Watcher Tables ----------------------------------------------------------------------------------
+
+// Watchers ----------------------------------------------------------------------------
+export interface WatchersTable {
 	output_path: string | null;
 	preset_category: string;
 	preset_id: string;
-	// default_mask: number;
-};
+	watch_path: string;
+	watcher_id: Generated<number>;
+}
 
-export type WatcherRuleTableType = {
+// Watcher Rules -----------------------------------------------------------------------
+export interface WatcherRulesTable {
+	rule_id: Generated<number>;
 	watcher_id: number;
-	rule_id: number;
 	name: string;
 	mask: number;
 	base_rule_method: number;
 	rule_method: number;
 	comparison_method: number;
 	comparison: string;
+}
+
+// Watcher Derived Types ---------------------------------------------------------------
+export type WatchersType = Selectable<WatchersTable>;
+export type AddWatcherType = Omit<Insertable<WatchersTable>, 'watcher_id'>;
+export type UpdateWatcherType = Omit<Updateable<WatchersTable>, 'watcher_id'>;
+
+export type WatcherRuleType = Selectable<WatcherRulesTable>;
+export type AddWatcherRuleType = Omit<Insertable<WatcherRulesTable>, 'watcher_id' | 'rule_id'>;
+export type UpdateWatcherRuleType = Omit<Updateable<WatcherRulesTable>, 'watcher_id' | 'rule_id'>;
+
+export type DetailedWatcherRuleType = Omit<Selectable<WatcherRulesTable>, 'watcher_id'>;
+export type DetailedWatcherType = WatchersType & {
+	rules: DetailedWatcherRuleType[];
 };

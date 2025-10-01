@@ -1,4 +1,4 @@
-import { JobType } from '@handbrake-web/shared/types/queue';
+import { DetailedJobType } from '@handbrake-web/shared/types/database';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import ResetIcon from '@icons/arrow-counterclockwise.svg?react';
 import LogIcon from '@icons/file-text-fill.svg?react';
@@ -13,7 +13,7 @@ import styles from './styles.module.scss';
 
 interface Properties extends HTMLAttributes<HTMLDivElement> {
 	id: string;
-	job: JobType;
+	job: DetailedJobType;
 	index: number;
 	jobID: number;
 	categoryID: string;
@@ -50,19 +50,19 @@ export default function QueueCard({
 
 	const [draggable, setDraggable] = useState(false);
 
-	const percentage = job.status.transcode_percentage ? job.status.transcode_percentage * 100 : 0;
+	const percentage = job.transcode_percentage ? job.transcode_percentage * 100 : 0;
 
 	const canStop =
-		job.status.transcode_stage == TranscodeStage.Scanning ||
-		job.status.transcode_stage == TranscodeStage.Transcoding;
+		job.transcode_stage == TranscodeStage.Scanning ||
+		job.transcode_stage == TranscodeStage.Transcoding;
 	const canReset =
-		job.status.transcode_stage == TranscodeStage.Stopped ||
-		job.status.transcode_stage == TranscodeStage.Finished;
+		job.transcode_stage == TranscodeStage.Stopped ||
+		job.transcode_stage == TranscodeStage.Finished;
 	const canRemove =
-		job.status.transcode_stage == TranscodeStage.Waiting ||
-		job.status.transcode_stage == TranscodeStage.Finished ||
-		job.status.transcode_stage == TranscodeStage.Stopped ||
-		job.status.worker_id == null;
+		job.transcode_stage == TranscodeStage.Waiting ||
+		job.transcode_stage == TranscodeStage.Finished ||
+		job.transcode_stage == TranscodeStage.Stopped ||
+		job.worker_id == null;
 
 	const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
 		setDraggedID(jobID);
@@ -176,25 +176,21 @@ export default function QueueCard({
 				)}
 				<div className={styles['content']}>
 					<div className={styles['info']}>
-						<QueueCardSection label='Input' title={job.data.input_path}>
-							{job.data.input_path.match(/[^/]+$/)}
+						<QueueCardSection label='Input' title={job.input_path}>
+							{job.input_path.match(/[^/]+$/)}
 						</QueueCardSection>
-						<QueueCardSection label='Output' title={job.data.output_path}>
-							{job.data.output_path.match(/[^/]+$/)}
+						<QueueCardSection label='Output' title={job.output_path}>
+							{job.output_path.match(/[^/]+$/)}
 						</QueueCardSection>
-						<QueueCardSection label='Preset'>{job.data.preset_id}</QueueCardSection>
+						<QueueCardSection label='Preset'>{job.preset_id}</QueueCardSection>
 						<QueueCardSection label='Worker'>
-							{job.status.worker_id ? job.status.worker_id : 'N/A'}
+							{job.worker_id ? job.worker_id : 'N/A'}
 						</QueueCardSection>
 						<QueueCardSection label='Status'>
-							{
-								TranscodeStage[
-									job.status.transcode_stage ? job.status.transcode_stage : 0
-								]
-							}
-							{(job.status.transcode_stage == TranscodeStage.Finished ||
-								job.status.transcode_stage == TranscodeStage.Stopped ||
-								job.status.transcode_stage == TranscodeStage.Error) && (
+							{TranscodeStage[job.transcode_stage ? job.transcode_stage : 0]}
+							{(job.transcode_stage == TranscodeStage.Finished ||
+								job.transcode_stage == TranscodeStage.Stopped ||
+								job.transcode_stage == TranscodeStage.Error) && (
 								<span className={styles['job-log-link']}>
 									<span> - </span>
 									<a
@@ -207,28 +203,26 @@ export default function QueueCard({
 							)}
 						</QueueCardSection>
 					</div>
-					{(job.status.transcode_stage == TranscodeStage.Scanning ||
-						job.status.transcode_stage == TranscodeStage.Transcoding) && (
+					{(job.transcode_stage == TranscodeStage.Scanning ||
+						job.transcode_stage == TranscodeStage.Transcoding) && (
 						<div className={styles['info']}>
 							<QueueCardSection label='FPS'>
-								{job.status.transcode_fps_current
-									? `${job.status.transcode_fps_current.toFixed(1)}fps`
+								{job.transcode_fps_current
+									? `${job.transcode_fps_current.toFixed(1)}fps`
 									: 'N/A'}
 							</QueueCardSection>
 							<QueueCardSection label='Avg. FPS'>
-								{job.status.transcode_fps_average
-									? `${job.status.transcode_fps_average.toFixed(1)}fps`
+								{job.transcode_fps_average
+									? `${job.transcode_fps_average.toFixed(1)}fps`
 									: 'N/A'}
 							</QueueCardSection>
 							<QueueCardSection label='Time Elapsed'>
-								{job.status.time_started
-									? secondsToTime((Date.now() - job.status.time_started) / 1000)
+								{job.time_started
+									? secondsToTime((Date.now() - job.time_started) / 1000)
 									: 'N/A'}
 							</QueueCardSection>
 							<QueueCardSection label='Time Left'>
-								{job.status.transcode_eta
-									? secondsToTime(job.status.transcode_eta)
-									: 'N/A'}
+								{job.transcode_eta ? secondsToTime(job.transcode_eta) : 'N/A'}
 							</QueueCardSection>
 							<QueueCardSection label='Progress'>
 								<ProgressBar percentage={percentage} />

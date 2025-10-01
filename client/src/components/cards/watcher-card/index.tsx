@@ -1,7 +1,10 @@
 import {
-	WatcherDefinitionWithRulesType,
+	AddWatcherRuleType,
+	DetailedWatcherType,
+	UpdateWatcherRuleType,
+} from '@handbrake-web/shared/types/database';
+import {
 	WatcherRuleBaseMethods,
-	WatcherRuleDefinitionType,
 	WatcherRuleFileInfoMethods,
 	WatcherRuleMaskMethods,
 	WatcherRuleStringComparisonMethods,
@@ -15,17 +18,15 @@ import WatcherCardRule from './components/rule-card';
 import styles from './styles.module.scss';
 
 interface Properties extends HTMLAttributes<HTMLDivElement> {
-	watcherID: number;
-	watcher: WatcherDefinitionWithRulesType;
+	watcher: DetailedWatcherType;
 	index: number;
 	handleRemoveWatcher: (id: number) => void;
-	handleAddRule: (id: number, rule: WatcherRuleDefinitionType) => void;
-	handleUpdateRule: (id: number, rule: WatcherRuleDefinitionType) => void;
+	handleAddRule: (id: number, rule: AddWatcherRuleType) => void;
+	handleUpdateRule: (id: number, rule: UpdateWatcherRuleType) => void;
 	handleRemoveRule: (ruleID: number) => void;
 }
 
 export default function WatcherCard({
-	watcherID,
 	watcher,
 	index,
 	handleRemoveWatcher,
@@ -35,7 +36,7 @@ export default function WatcherCard({
 	className,
 	...properties
 }: Properties) {
-	const defaultRuleDefinition: WatcherRuleDefinitionType = {
+	const defaultRuleDefinition: AddWatcherRuleType = {
 		name: 'New Watcher Rule',
 		mask: WatcherRuleMaskMethods.Include,
 		base_rule_method: WatcherRuleBaseMethods.FileInfo,
@@ -61,7 +62,7 @@ export default function WatcherCard({
 							Icon={TrashIcon}
 							color='red'
 							title='Remove Watcher'
-							onClick={() => handleRemoveWatcher(watcherID)}
+							onClick={() => handleRemoveWatcher(watcher.watcher_id)}
 						/>
 					</div>
 					<div className={styles['content']}>
@@ -84,27 +85,25 @@ export default function WatcherCard({
 							Icon={AddIcon}
 							color='blue'
 							title='Add Watcher Rule'
-							onClick={() => handleAddRule(watcherID, defaultRuleDefinition)}
+							onClick={() => handleAddRule(watcher.watcher_id, defaultRuleDefinition)}
 						/>
 					</div>
 					<div className={styles['rule-cards']}>
-						{Object.keys(watcher.rules).length == 0 && (
+						{watcher.rules.length == 0 && (
 							<div className={styles['rule-card']} style={{ textAlign: 'center' }}>
 								N/A
 							</div>
 						)}
-						{Object.keys(watcher.rules)
-							.map((ruleID) => parseInt(ruleID))
-							.map((ruleID, index) => (
-								<WatcherCardRule
-									id={ruleID}
-									rule={watcher.rules[ruleID]}
-									index={index}
-									handleUpdateRule={handleUpdateRule}
-									handleRemoveRule={handleRemoveRule}
-									key={`watcher-${watcherID}-rule-${ruleID}`}
-								/>
-							))}
+						{watcher.rules.map((rule, index) => (
+							<WatcherCardRule
+								id={rule.rule_id}
+								rule={rule}
+								index={index}
+								handleUpdateRule={handleUpdateRule}
+								handleRemoveRule={handleRemoveRule}
+								key={`watcher-${watcher.watcher_id}-rule-${rule.rule_id}`}
+							/>
+						))}
 					</div>
 				</div>
 			</div>

@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import { ConfigType } from '@handbrake-web/shared/types/config';
+import { DetailedWatcherType } from '@handbrake-web/shared/types/database';
 import { HandbrakePresetCategoryType } from '@handbrake-web/shared/types/preset';
 import { QueueStatus, QueueType } from '@handbrake-web/shared/types/queue';
 import { ConnectionIDsType } from '@handbrake-web/shared/types/socket';
-import { WatcherDefinitionObjectType } from '@handbrake-web/shared/types/watcher';
 import { Outlet } from '@tanstack/react-router';
 import { Fragment, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
@@ -24,7 +24,7 @@ export default function PrimaryLayout() {
 
 	const [socket] = useState(io(server, { autoConnect: false }));
 	const [config, setConfig] = useState<ConfigType>();
-	const [queue, setQueue] = useState<QueueType>({});
+	const [queue, setQueue] = useState<QueueType>([]);
 	const [queueStatus, setQueueStatus] = useState<QueueStatus>(QueueStatus.Idle);
 	const [presets, setPresets] = useState<HandbrakePresetCategoryType>({});
 	const [defaultPresets, setDefaultPresets] = useState<HandbrakePresetCategoryType>({});
@@ -32,7 +32,7 @@ export default function PrimaryLayout() {
 		clients: [],
 		workers: [],
 	});
-	const [watchers, setWatchers] = useState<WatcherDefinitionObjectType>([]);
+	const [watchers, setWatchers] = useState<DetailedWatcherType[]>([]);
 	const [showSidebar, setShowSidebar] = useState(false);
 
 	// Connect to server -------------------------------------------------------
@@ -103,8 +103,9 @@ export default function PrimaryLayout() {
 		setConnections(data);
 	};
 
-	const onWatchersUpdate = (watchers: WatcherDefinitionObjectType) => {
+	const onWatchersUpdate = (watchers: DetailedWatcherType[]) => {
 		console.log('[client] Watchers have been updated.');
+		// console.log(watchers);
 		setWatchers(watchers);
 	};
 

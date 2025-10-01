@@ -1,4 +1,11 @@
 import { type ConfigType } from '@handbrake-web/shared/types/config';
+import type {
+	AddJobType,
+	AddWatcherRuleType,
+	AddWatcherType,
+	DetailedWatcherType,
+	UpdateWatcherRuleType,
+} from '@handbrake-web/shared/types/database';
 import {
 	type CreateDirectoryRequestType,
 	type DirectoryItemsType,
@@ -6,21 +13,15 @@ import {
 	type DirectoryType,
 } from '@handbrake-web/shared/types/directory';
 import { type HandbrakePresetType } from '@handbrake-web/shared/types/preset';
-import { type QueueRequestType } from '@handbrake-web/shared/types/queue';
 import { type GithubReleaseResponseType } from '@handbrake-web/shared/types/version';
-import {
-	type WatcherDefinitionObjectType,
-	type WatcherDefinitionType,
-	type WatcherRuleDefinitionType,
-} from '@handbrake-web/shared/types/watcher';
 import logger from 'logging';
 import { GetConfig, WriteConfig } from 'scripts/config';
 import { AddClient, RemoveClient } from 'scripts/connections';
 import {
-	GetJobOrderIndexFromTable,
-	UpdateJobOrderIndexInDatabase,
+	DatabaseGetJobOrderIndexByID,
+	DatabaseUpdateJobOrderIndex,
 } from 'scripts/database/database-queue';
-import { GetWatchersFromDatabase } from 'scripts/database/database-watcher';
+import { DatabaseGetDetailedWatchers } from 'scripts/database/database-watcher';
 import { CheckFilenameCollision, GetDirectoryItems, MakeDirectory } from 'scripts/files';
 import {
 	AddPreset,
@@ -52,13 +53,12 @@ import {
 import { Socket as Client, Server } from 'socket.io';
 
 const initClient = async (socket: Client) => {
-	const queue = GetQueue();
 	socket.emit('config-update', GetConfig());
-	socket.emit('queue-update', queue);
+	socket.emit('queue-update', await GetQueue());
 	socket.emit('presets-update', GetPresets());
 	socket.emit('default-presets-update', GetDefaultPresets());
-	socket.emit('queue-status-update', GetQueueStatus());
-	socket.emit('watchers-update', GetWatchersFromDatabase());
+	socket.emit('queue-status-update', await GetQueueStatus());
+	socket.emit('watchers-update', await DatabaseGetDetailedWatchers());
 };
 
 export default function ClientSocket(io: Server) {
@@ -78,46 +78,47 @@ export default function ClientSocket(io: Server) {
 		});
 
 		// Queue -----------------------------------------------------------------------------------
-		socket.on('start-queue', () => {
-			StartQueue(socket.id);
+		socket.on('start-queue', async () => {
+			await StartQueue(socket.id);
 		});
 
-		socket.on('stop-queue', () => {
-			StopQueue(socket.id);
+		socket.on('stop-queue', async () => {
+			await StopQueue(socket.id);
 		});
 
-		socket.on('clear-queue', (finishedOnly: boolean) => {
-			ClearQueue(socket.id, finishedOnly);
+		socket.on('clear-queue', async (finishedOnly: boolean) => {
+			await ClearQueue(socket.id, finishedOnly);
 		});
 
 		// Jobs ------------------------------------------------------------------------------------
-		socket.on('add-job', (data: QueueRequestType) => {
+		socket.on('add-job', async (data: AddJobType, callback: () => void) => {
 			logger.info(
-				`[socket] Client '${socket.id}' has requested to add a job for '${data.input}' to the queue.`
+				`[socket] Client '${socket.id}' has requested to add a job for '${data.input_path}' to the queue.`
 			);
-			AddJob(data);
+			await AddJob(data);
+			callback();
 		});
 
-		socket.on('stop-job', (jobID: number) => {
-			StopJob(jobID);
+		socket.on('stop-job', async (jobID: number) => {
+			await StopJob(jobID);
 		});
 
-		socket.on('reset-job', (jobID: number) => {
-			ResetJob(jobID);
+		socket.on('reset-job', async (jobID: number) => {
+			await ResetJob(jobID);
 		});
 
-		socket.on('remove-job', (jobID: number) => {
-			RemoveJob(jobID);
+		socket.on('remove-job', async (jobID: number) => {
+			await RemoveJob(jobID);
 		});
 
-		socket.on('reorder-job', (jobID: number, newOrderIndex: number) => {
+		socket.on('reorder-job', async (jobID: number, newOrderIndex: number) => {
 			logger.info(
-				`[socket] Client is requesting job at order index ${GetJobOrderIndexFromTable(
+				`[socket] Client is requesting job at order index ${await DatabaseGetJobOrderIndexByID(
 					jobID
 				)} be reordered to index ${newOrderIndex}.`
 			);
-			UpdateJobOrderIndexInDatabase(jobID, newOrderIndex);
-			UpdateQueue();
+			await DatabaseUpdateJobOrderIndex(jobID, newOrderIndex);
+			await UpdateQueue();
 		});
 
 		// Directory -------------------------------------------------------------------------------
@@ -152,16 +153,16 @@ export default function ClientSocket(io: Server) {
 		);
 
 		// Preset ----------------------------------------------------------------------------------
-		socket.on('add-preset', (preset: HandbrakePresetType, category: string) => {
-			AddPreset(preset, category);
+		socket.on('add-preset', async (preset: HandbrakePresetType, category: string) => {
+			await AddPreset(preset, category);
 		});
 
-		socket.on('remove-preset', (presetName: string, category: string) => {
-			RemovePreset(presetName, category);
+		socket.on('remove-preset', async (presetName: string, category: string) => {
+			await RemovePreset(presetName, category);
 		});
 
-		socket.on('rename-preset', (oldName: string, newName: string, category: string) => {
-			RenamePreset(oldName, newName, category);
+		socket.on('rename-preset', async (oldName: string, newName: string, category: string) => {
+			await RenamePreset(oldName, newName, category);
 		});
 
 		// Version ---------------------------------------------------------------------------------
@@ -184,30 +185,32 @@ export default function ClientSocket(io: Server) {
 		// Watchers --------------------------------------------------------------------------------
 		socket.on(
 			'get-watchers',
-			(callback: (watchers: WatcherDefinitionObjectType | undefined) => void) => {
-				callback(GetWatchersFromDatabase());
+			async (callback: (watchers: DetailedWatcherType[] | undefined) => void) => {
+				const watchers = await DatabaseGetDetailedWatchers();
+				console.log(watchers);
+				callback(watchers);
 			}
 		);
 
-		socket.on('add-watcher', (watcher: WatcherDefinitionType) => {
+		socket.on('add-watcher', async (watcher: AddWatcherType) => {
 			logger.info(watcher);
-			AddWatcher(watcher);
+			await AddWatcher(watcher);
 		});
 
-		socket.on('remove-watcher', (id: number) => {
-			RemoveWatcher(id);
+		socket.on('remove-watcher', async (id: number) => {
+			await RemoveWatcher(id);
 		});
 
-		socket.on('add-watcher-rule', (watcherID: number, rule: WatcherRuleDefinitionType) => {
-			AddWatcherRule(watcherID, rule);
+		socket.on('add-watcher-rule', async (watcherID: number, rule: AddWatcherRuleType) => {
+			await AddWatcherRule(watcherID, rule);
 		});
 
-		socket.on('update-watcher-rule', (ruleID: number, rule: WatcherRuleDefinitionType) => {
-			UpdateWatcherRule(ruleID, rule);
+		socket.on('update-watcher-rule', async (ruleID: number, rule: UpdateWatcherRuleType) => {
+			await UpdateWatcherRule(ruleID, rule);
 		});
 
-		socket.on('remove-watcher-rule', (ruleID: number) => {
-			RemoveWatcherRule(ruleID);
+		socket.on('remove-watcher-rule', async (ruleID: number) => {
+			await RemoveWatcherRule(ruleID);
 		});
 	});
 }

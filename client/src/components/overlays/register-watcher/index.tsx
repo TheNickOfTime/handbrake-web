@@ -1,7 +1,7 @@
 import { FirstLetterUpperCase } from '@handbrake-web/shared/funcs/string.funcs';
+import { AddWatcherType } from '@handbrake-web/shared/types/database';
 import { DirectoryItemType } from '@handbrake-web/shared/types/directory';
 import { FileBrowserMode } from '@handbrake-web/shared/types/file-browser';
-import { WatcherDefinitionType } from '@handbrake-web/shared/types/watcher';
 import { HTMLAttributes, useContext, useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
 import PathInput from '~components/base/inputs/path';
@@ -47,7 +47,7 @@ export default function RegisterWatcher({ onClose }: Properties) {
 	};
 
 	const handleSubmit = () => {
-		const newWatcher: WatcherDefinitionType = {
+		const newWatcher: AddWatcherType = {
 			watch_path: watchPath,
 			output_path: outputPath ? outputPath : null,
 			preset_category: presetCategory,

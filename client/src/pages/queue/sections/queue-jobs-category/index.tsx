@@ -35,37 +35,35 @@ export default function QueueJobsCategory({
 
 	const [isCollapsed, setIsCollapsed] = useState(startCollapsed);
 
-	const orderedJobs = Object.keys(queue)
-		.map((key) => parseInt(key))
-		.sort((a, b) => {
-			const stageA = queue[a].status.transcode_stage;
-			const stageB = queue[b].status.transcode_stage;
-			if (stageA != undefined && stageB != undefined) {
-				// return (
-				// 	statusSorting[queue[a].status.transcode_stage] -
-				// 	statusSorting[queue[b].status.transcode_stage]
-				// );
-				const orderA = queue[a].order_index;
-				const orderB = queue[b].order_index;
+	const orderedJobs = queue.sort((a, b) => {
+		const stageA = a.transcode_stage;
+		const stageB = b.transcode_stage;
+		if (stageA != undefined && stageB != undefined) {
+			// return (
+			// 	statusSorting[queue[a].status.transcode_stage] -
+			// 	statusSorting[queue[b].status.transcode_stage]
+			// );
+			const orderA = a.order_index;
+			const orderB = b.order_index;
 
-				const finishedA = queue[a].status.time_finished || 0;
-				const finishedB = queue[b].status.time_finished || 0;
+			const finishedA = a.time_finished || 0;
+			const finishedB = b.time_finished || 0;
 
-				return stageA == stageB
-					? orderA != null && orderB != null
-						? orderA - orderB
-						: finishedA
-						? finishedB
-							? finishedB - finishedA
-							: 1
-						: finishedB
-						? -1
-						: 0
-					: statusSorting[stageA] - statusSorting[stageB];
-			}
+			return stageA == stageB
+				? orderA != null && orderB != null
+					? orderA - orderB
+					: finishedA
+					? finishedB
+						? finishedB - finishedA
+						: 1
+					: finishedB
+					? -1
+					: 0
+				: statusSorting[stageA] - statusSorting[stageB];
+		}
 
-			return 0;
-		});
+		return 0;
+	});
 
 	// Drag n' drop related stuff
 	const [draggedID, setDraggedID] = useState<number>();
@@ -78,23 +76,21 @@ export default function QueueJobsCategory({
 		}
 	};
 
-	if (Object.keys(queue).length > 0) {
-		const orderIndexOffest = queue[orderedJobs[0]].order_index - 1;
-		const jobCards = orderedJobs.map((jobID, index) => {
-			const job = queue[jobID];
-
+	if (queue.length > 0) {
+		const orderIndexOffest = orderedJobs[0].order_index - 1;
+		const jobCards = orderedJobs.map((job, index) => {
 			return (
 				<QueueCard
-					key={jobID}
-					id={`job-id-${jobID}`}
+					key={job.job_id}
+					id={`job-id-${job.job_id}`}
 					job={job}
 					index={index}
-					jobID={jobID}
+					jobID={job.job_id}
 					categoryID={id}
 					showDragHandles={showHandles}
-					handleStopJob={() => handleStopJob(jobID)}
-					handleResetJob={() => handleResetJob(jobID)}
-					handleRemoveJob={() => handleRemoveJob(jobID)}
+					handleStopJob={() => handleStopJob(job.job_id)}
+					handleResetJob={() => handleResetJob(job.job_id)}
+					handleRemoveJob={() => handleRemoveJob(job.job_id)}
 					setDraggedID={setDraggedID}
 					setDraggedDesiredIndex={setDraggedDesiredIndex}
 					setDraggedInitialIndex={setDraggedInitialIndex}

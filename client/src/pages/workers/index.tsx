@@ -18,17 +18,17 @@ export default function WorkersPage() {
 
 	const workerInfo: WorkerInfo = Object.fromEntries(
 		connections.workers.map((worker) => {
-			const job = Object.values(queue).find((job) => {
-				job.status.worker_id == worker.workerID;
+			const job = queue.find((job) => {
+				job.worker_id == worker.workerID;
 			});
 			return [
 				worker.workerID,
 				{
 					status: job ? 'Working' : 'Idle',
-					job: job ? job.data.input_path : 'N/A',
+					job: job ? job.input_path : 'N/A',
 					progress:
-						job && job.status.transcode_percentage
-							? (job.status.transcode_percentage * 100).toFixed(2)
+						job && job.transcode_percentage
+							? (job.transcode_percentage * 100).toFixed(2)
 							: 'N/A',
 				},
 			];

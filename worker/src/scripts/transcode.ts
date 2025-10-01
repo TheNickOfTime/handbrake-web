@@ -1,3 +1,4 @@
+import type { JobType, UpdateJobStatusType } from '@handbrake-web/shared/types/database';
 import {
 	type HandbrakeOutputType,
 	type Muxing,
@@ -6,7 +7,6 @@ import {
 	type Working,
 } from '@handbrake-web/shared/types/handbrake';
 import { type HandbrakePresetType } from '@handbrake-web/shared/types/preset';
-import { type JobDataType, type JobStatusType } from '@handbrake-web/shared/types/queue';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import { type ChildProcessWithoutNullStreams as ChildProcess, spawn } from 'child_process';
 import { access, mkdir, rename, rm, writeFile } from 'fs/promises';
@@ -22,7 +22,7 @@ import { Socket } from 'socket.io-client';
 let handbrake: ChildProcess | null = null;
 export const isTranscoding = () => handbrake != null;
 
-let currentJob: JobDataType | null = null;
+let currentJob: JobType | null = null;
 export let currentJobID: number | null = null;
 let presetPath: string | undefined;
 
@@ -57,7 +57,7 @@ const getTempOutputName = (output: string) => {
 export async function StartTranscode(jobID: number, socket: Socket) {
 	try {
 		// Get job data from db
-		const jobData: JobDataType = await socket.timeout(5000).emitWithAck('get-job-data', jobID);
+		const jobData: JobType = await socket.timeout(5000).emitWithAck('get-job-data', jobID);
 		currentJob = jobData;
 		currentJobID = jobID;
 
@@ -94,7 +94,7 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 			'--json',
 		]);
 
-		const newStatus: JobStatusType = {
+		const newStatus: UpdateJobStatusType = {
 			transcode_stage: TranscodeStage.Scanning,
 			time_started: Date.now(),
 		};
@@ -122,7 +122,7 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 						switch (outputJSON['State']) {
 							case 'SCANNING':
 								const scanning: Scanning = outputJSON.Scanning!;
-								const scanningStatus: JobStatusType = {
+								const scanningStatus: UpdateJobStatusType = {
 									transcode_stage: TranscodeStage.Scanning,
 									transcode_percentage: scanning.Progress,
 								};
@@ -135,7 +135,7 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 								break;
 							case 'WORKING':
 								const working: Working = outputJSON.Working!;
-								const workingStatus: JobStatusType = {
+								const workingStatus: UpdateJobStatusType = {
 									transcode_stage: TranscodeStage.Transcoding,
 									transcode_percentage: working.Progress,
 									transcode_eta: working.ETASeconds,
@@ -151,7 +151,7 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 								break;
 							case 'MUXING':
 								const muxing: Muxing = outputJSON.Muxing!;
-								const muxingStatus: JobStatusType = {
+								const muxingStatus: UpdateJobStatusType = {
 									transcode_stage: TranscodeStage.Transcoding,
 									transcode_percentage: muxing.Progress,
 								};
@@ -164,7 +164,7 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 								const workDone: WorkDone = outputJSON.WorkDone!;
 
 								if (workDone.Error == 0) {
-									const doneStatus: JobStatusType = {
+									const doneStatus: UpdateJobStatusType = {
 										worker_id: null,
 										transcode_stage: TranscodeStage.Finished,
 										transcode_percentage: 1,
@@ -262,7 +262,7 @@ export function StopTranscode(id: number, socket: Socket) {
 	if (handbrake) {
 		if (currentJob && currentJobID == id) {
 			if (socket.connected) {
-				const newStatus: JobStatusType = {
+				const newStatus: UpdateJobStatusType = {
 					transcode_stage: TranscodeStage.Stopped,
 					transcode_percentage: 0,
 				};

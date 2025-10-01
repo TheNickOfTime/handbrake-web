@@ -1,8 +1,11 @@
 import {
+	DetailedWatcherRuleType,
+	UpdateWatcherRuleType,
+} from '@handbrake-web/shared/types/database';
+import {
 	WatcherRuleBaseMethods,
 	WatcherRuleComparisonLookup,
 	WatcherRuleComparisonMethods,
-	WatcherRuleDefinitionType,
 	WatcherRuleFileInfoMethods,
 	WatcherRuleMaskMethods,
 	WatcherRuleMediaInfoMethods,
@@ -16,9 +19,9 @@ import styles from '../../styles.module.scss';
 
 type Params = {
 	id: number;
-	rule: WatcherRuleDefinitionType;
+	rule: DetailedWatcherRuleType;
 	index: number;
-	handleUpdateRule: (id: number, rule: WatcherRuleDefinitionType) => void;
+	handleUpdateRule: (id: number, rule: UpdateWatcherRuleType) => void;
 	handleRemoveRule: (ruleID: number) => void;
 };
 

@@ -51,35 +51,35 @@ export const WatcherRuleComparisonLookup: { [index: string]: number } = {
 	MediaEncoder: WatcherRuleComparisonMethods.String,
 };
 
-export type WatcherRuleDefinitionType = {
-	name: string;
-	mask: WatcherRuleMaskMethods;
-	base_rule_method: WatcherRuleBaseMethods;
-	rule_method: WatcherRuleFileInfoMethods | WatcherRuleMediaInfoMethods;
-	comparison_method: WatcherRuleStringComparisonMethods | WatcherRuleNumberComparisonMethods;
-	comparison: string;
-};
+// export type WatcherRuleDefinitionType = {
+// 	name: string;
+// 	mask: WatcherRuleMaskMethods;
+// 	base_rule_method: WatcherRuleBaseMethods;
+// 	rule_method: WatcherRuleFileInfoMethods | WatcherRuleMediaInfoMethods;
+// 	comparison_method: WatcherRuleStringComparisonMethods | WatcherRuleNumberComparisonMethods;
+// 	comparison: string;
+// };
 
-export type WatcherRuleDefinitionObjectType = {
-	[index: number]: WatcherRuleDefinitionType;
-};
+// export type WatcherRuleDefinitionObjectType = {
+// 	[index: number]: WatcherRuleDefinitionType;
+// };
 
-export type WatcherDefinitionType = {
-	watch_path: string;
-	output_path: string | null;
-	preset_category: string;
-	preset_id: string;
-	// default_mask: WatcherRuleMaskMethods;
-};
+// export type WatcherDefinitionType = {
+// 	watch_path: string;
+// 	output_path: string | null;
+// 	preset_category: string;
+// 	preset_id: string;
+// 	// default_mask: WatcherRuleMaskMethods;
+// };
 
-export type WatcherDefinitionWithRulesType = WatcherDefinitionType & {
-	rules: WatcherRuleDefinitionObjectType;
-};
+// export type WatcherDefinitionWithRulesType = WatcherDefinitionType & {
+// 	rules: WatcherRuleDefinitionObjectType;
+// };
 
-export type WatcherDefinitionObjectType = {
-	[index: number]: WatcherDefinitionWithRulesType;
-};
+// export type WatcherDefinitionObjectType = {
+// 	[index: number]: WatcherDefinitionWithRulesType;
+// };
 
-export type WatcherDefinitionWithIDType = {
-	id: number;
-} & WatcherDefinitionType;
+// export type WatcherDefinitionWithIDType = {
+// 	id: number;
+// } & WatcherDefinitionType;
