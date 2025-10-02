@@ -15,7 +15,7 @@ import {
 import { type HandbrakePresetType } from '@handbrake-web/shared/types/preset';
 import { type GithubReleaseResponseType } from '@handbrake-web/shared/types/version';
 import logger from 'logging';
-import { GetConfig, WriteConfig } from 'scripts/config';
+import { GetConfig, WriteConfig } from 'scripts/config/config';
 import { AddClient, RemoveClient } from 'scripts/connections';
 import {
 	DatabaseGetJobOrderIndexByID,

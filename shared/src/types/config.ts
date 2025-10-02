@@ -1,3 +1,5 @@
+export type UnknownConfigType = Record<string, Record<string, unknown>>;
+
 export type ConfigType = {
 	config: ConfigMetaType;
 	paths: ConfigPathsType;
