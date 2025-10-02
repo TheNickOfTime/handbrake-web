@@ -7,6 +7,7 @@ import type {
 	DetailedWatcherType,
 	UpdateWatcherRuleType,
 } from '@handbrake-web/shared/types/database';
+import { QueueStatus } from '@handbrake-web/shared/types/queue';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import {
 	WatcherRuleBaseMethods,
@@ -297,7 +298,7 @@ async function onWatcherDetectFileAdd(watcher: DetailedWatcherType, filePath: st
 		AddJob(newJobRequest);
 
 		// Start the queue if the option is enabled on the watcher
-		const isQueueStopped = await GetQueueStatus();
+		const isQueueStopped = (await GetQueueStatus()) == QueueStatus.Stopped;
 		if (watcher.start_queue && isQueueStopped) {
 			logger.info(
 				`[watcher] Watcher for '${watcher.watch_path}' is requesting to start the queue, since it is stopped.`
