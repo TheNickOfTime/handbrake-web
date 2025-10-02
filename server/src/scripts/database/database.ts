@@ -51,10 +51,8 @@ export async function DatabaseConnect() {
 			// Run necessary migrations for existing databases to the latest schema
 			await RunMigrations(migrator, sqliteDatabase);
 		} else {
-			// Initialize the database with the latest schema
+			// Initialize the database with the latest schema, skip prior migrations
 			await InitializeDatabaseTables();
-
-			// New databases are already running the latest schema, skip prior migrations
 			await SkipToLatestMigration(migrator);
 		}
 
