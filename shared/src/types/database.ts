@@ -2,7 +2,8 @@ import type { Generated, Insertable, Selectable, Updateable } from 'kysely';
 import type { TranscodeStage } from './transcode';
 
 export interface Database {
-	database_version: DatabaseVersionTable;
+	migrations: MigrationsTable;
+	migrations_lock: MigrationsLockTable;
 	status: StatusTable;
 	jobs: JobsTable;
 	jobs_status: JobsStatusTable;
@@ -11,13 +12,16 @@ export interface Database {
 	watcher_rules: WatcherRulesTable;
 }
 
-// Database Version Table --------------------------------------------------------------------------
-export interface DatabaseVersionTable {
-	version: number;
+// Migration Tables --------------------------------------------------------------------------------
+export interface MigrationsTable {
+	name: string;
+	timestamp: string;
 }
 
-export type DatabaseVersionType = Selectable<DatabaseVersionTable>;
-export type UpdateDatabaseVersionType = Updateable<DatabaseVersionTable>;
+export interface MigrationsLockTable {
+	id: string;
+	is_locked: number;
+}
 
 // Status Table ------------------------------------------------------------------------------------
 export interface StatusTable {

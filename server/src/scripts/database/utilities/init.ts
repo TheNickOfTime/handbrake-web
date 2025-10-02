@@ -16,14 +16,22 @@ export async function InitializeDatabaseTables() {
 	logger.info(`[server] [database] Initializing the database tables...`);
 
 	try {
+		// Create the migration tables -------------------------------------------------------------
 		await database.schema
-			.createTable('database_version')
+			.createTable('migrations')
 			.ifNotExists()
-			.addColumn('version', 'integer', (col) => col.notNull().primaryKey())
+			.addColumn('name', 'varchar(255)', (col) => col.notNull().primaryKey())
+			.addColumn('timestamp', 'varchar(255)', (col) => col.notNull())
 			.execute();
-		logger.info(`[server] [database] Initialized the 'database_version' table.`);
 
-		// Create the status table
+		await database.schema
+			.createTable('migrations_lock')
+			.ifNotExists()
+			.addColumn('id', 'varchar(255)', (col) => col.notNull().primaryKey())
+			.addColumn('is_locked', 'integer', (col) => col.defaultTo(0).notNull())
+			.execute();
+
+		// Create the status table -----------------------------------------------------------------
 		await database.schema
 			.createTable('status')
 			.ifNotExists()
@@ -32,7 +40,7 @@ export async function InitializeDatabaseTables() {
 			.execute();
 		logger.info(`[server] [database] Initialized the 'status' table.`);
 
-		// Create the jobs table
+		// Create the jobs tables ------------------------------------------------------------------
 		await database.schema
 			.createTable('jobs')
 			.ifNotExists()
@@ -73,7 +81,7 @@ export async function InitializeDatabaseTables() {
 			.execute();
 		logger.info(`[server] [database] Initialized the 'jobs_order' table.`);
 
-		// Create the watchers table
+		// Create the watchers tables --------------------------------------------------------------
 		await database.schema
 			.createTable('watchers')
 			.ifNotExists()

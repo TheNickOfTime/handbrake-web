@@ -1,15 +1,23 @@
 import type { Database } from '@handbrake-web/shared/types/database';
 import SQLite from 'better-sqlite3';
-import { Kysely, ParseJSONResultsPlugin, SqliteDialect } from 'kysely';
+import {
+	FileMigrationProvider,
+	Kysely,
+	Migrator,
+	ParseJSONResultsPlugin,
+	SqliteDialect,
+} from 'kysely';
 import logger from 'logging';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { dataPath } from '../data';
 import { InitializeDatabaseTables, isDatabaseInitialized } from './utilities/init';
-import { CheckDatabaseVersion } from './utilities/version';
+import { RunMigrations, SkipToLatestMigration } from './utilities/migrator';
 
 export const databasePath = path.join(dataPath, 'handbrake.db');
-
 export const databaseVersion = 1;
+
+const databaseFileExists = fs.existsSync(databasePath);
 
 // Create a SQLite connection to the database
 export const sqliteDatabase = new SQLite(databasePath, {});
@@ -24,16 +32,31 @@ export const database = new Kysely<Database>({
 	plugins: [new ParseJSONResultsPlugin()],
 });
 
+const migrator = new Migrator({
+	db: database,
+	provider: new FileMigrationProvider({
+		fs: fs.promises,
+		path: path,
+		migrationFolder: path.resolve(__dirname, 'migrations'),
+	}),
+	migrationTableName: 'migrations',
+	migrationLockTableName: 'migrations_lock',
+});
+
 export async function DatabaseConnect() {
 	try {
-		// Check if database tables exist ----------------------------------------------------------
-		const isInitialized = isDatabaseInitialized(sqliteDatabase);
+		const isInitialized = databaseFileExists && isDatabaseInitialized(sqliteDatabase);
 
-		// Create the tables if they don't exist ---------------------------------------------------
-		await InitializeDatabaseTables();
+		if (isInitialized) {
+			// Run necessary migrations for existing databases to the latest schema
+			await RunMigrations(migrator, sqliteDatabase);
+		} else {
+			// Initialize the database with the latest schema
+			await InitializeDatabaseTables();
 
-		// Check database version ------------------------------------------------------------------
-		await CheckDatabaseVersion(sqliteDatabase, isInitialized);
+			// New databases are already running the latest schema, skip prior migrations
+			await SkipToLatestMigration(migrator);
+		}
 
 		logger.info('[server] [database] The database is ready!');
 	} catch (err) {
