@@ -5,7 +5,7 @@ import { access, readFile, rm, writeFile } from 'fs/promises';
 import logger from 'logging';
 import path, { resolve } from 'path';
 import { cwd } from 'process';
-import { GetConfig } from './config';
+import { GetConfig } from './config/config';
 import { dataPath } from './data';
 import { DatabaseSelectStatusByID, DatabaseUpdateStatus } from './database/database-status';
 

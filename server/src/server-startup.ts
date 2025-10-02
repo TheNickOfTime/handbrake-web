@@ -6,7 +6,7 @@ import { Server as SocketServer } from 'socket.io';
 
 import logger from 'logging';
 import ClientRoutes from 'routes/client';
-import { LoadConfig } from 'scripts/config';
+import { LoadConfig } from 'scripts/config/config';
 import { DatabaseConnect } from 'scripts/database/database';
 import { LoadDefaultPresets, LoadPresets } from 'scripts/presets';
 import { InitializeQueue } from 'scripts/queue';

@@ -5,8 +5,8 @@ import logger from 'logging';
 import path from 'path';
 import { cwd } from 'process';
 import { parse, stringify } from 'yaml';
-import { EmitToAllClients } from './connections';
-import { dataPath } from './data';
+import { EmitToAllClients } from '../connections';
+import { dataPath } from '../data';
 
 const configPath = path.join(dataPath, 'config.yaml');
 const templateConfig: ConfigType = parse(
