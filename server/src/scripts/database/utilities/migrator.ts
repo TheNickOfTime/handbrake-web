@@ -17,7 +17,9 @@ export async function RunMigrations(migrator: Migrator, sqlite: Database) {
 	);
 
 	// Backup the database before migrations
-	DatabaseBackup(sqlite, 'handbrake-migration-backup');
+	if (migrationsToRun.length > 0) {
+		await DatabaseBackup(sqlite, 'handbrake-migration-backup');
+	}
 
 	// Run migrations and check results
 	const { error, results } = await migrator.migrateToLatest();
