@@ -2,10 +2,11 @@ import { FirstLetterUpperCase } from '@handbrake-web/shared/funcs/string.funcs';
 import { AddWatcherType } from '@handbrake-web/shared/types/database';
 import { DirectoryItemType } from '@handbrake-web/shared/types/directory';
 import { FileBrowserMode } from '@handbrake-web/shared/types/file-browser';
-import { HTMLAttributes, useContext, useState } from 'react';
+import React, { HTMLAttributes, useContext, useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
 import PathInput from '~components/base/inputs/path';
 import SelectInput from '~components/base/inputs/select';
+import ToggleInput from '~components/base/inputs/toggle';
 import Overlay from '~components/root/overlay';
 import { PrimaryContext } from '~layouts/primary/context';
 import styles from './styles.module.scss';
@@ -21,6 +22,7 @@ export default function RegisterWatcher({ onClose }: Properties) {
 	const [outputPath, setOutputPath] = useState('');
 	const [presetCategory, setPresetCategory] = useState('');
 	const [presetID, setPresetID] = useState('');
+	const [startQueue, setStartQueue] = useState(false);
 	const [isDefaultPreset, setIsDefaultPreset] = useState(false);
 
 	const canSubmit = watchPath && presetID;
@@ -46,12 +48,19 @@ export default function RegisterWatcher({ onClose }: Properties) {
 		setPresetID(preset);
 	};
 
+	const handleStartQueueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const newState = event.target.checked;
+
+		setStartQueue(newState);
+	};
+
 	const handleSubmit = () => {
 		const newWatcher: AddWatcherType = {
 			watch_path: watchPath,
 			output_path: outputPath ? outputPath : null,
 			preset_category: presetCategory,
 			preset_id: presetID,
+			start_queue: startQueue,
 		};
 		socket.emit('add-watcher', newWatcher);
 		onClose();
@@ -140,6 +149,11 @@ export default function RegisterWatcher({ onClose }: Properties) {
 								</option>
 							))}
 					</SelectInput>
+					<ToggleInput
+						label='Start Queue If Stopped'
+						checked={startQueue}
+						onChange={handleStartQueueChange}
+					/>
 					{/* <div className='inline'>
 						<SelectInput
 							id='watcher-mask-select'
