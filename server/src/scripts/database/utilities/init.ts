@@ -90,6 +90,7 @@ export async function InitializeDatabaseTables() {
 			.addColumn('output_path', 'text')
 			.addColumn('preset_category', 'text', (col) => col.notNull())
 			.addColumn('preset_id', 'text', (col) => col.notNull())
+			.addColumn('start_queue', 'boolean', (col) => col.notNull().defaultTo(false))
 			.execute();
 		logger.info(`[server] [database] Initialized the 'watchers' table.`);
 
