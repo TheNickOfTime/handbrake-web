@@ -16,6 +16,7 @@ const selectFromWatchersDetailed = database
 		'watchers.output_path',
 		'watchers.preset_category',
 		'watchers.preset_id',
+		'watchers.start_queue',
 		jsonArrayFrom(
 			eb
 				.selectFrom('watcher_rules')

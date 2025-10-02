@@ -7,6 +7,7 @@ import type {
 	DetailedWatcherType,
 	UpdateWatcherRuleType,
 } from '@handbrake-web/shared/types/database';
+import { QueueStatus } from '@handbrake-web/shared/types/queue';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import {
 	WatcherRuleBaseMethods,
@@ -37,7 +38,7 @@ import {
 import { CheckFilenameCollision } from './files';
 import { ConvertBitsToKilobits, ConvertBytesToMegabytes, GetMediaInfo } from './media';
 import { GetDefaultPresetByName, GetPresetByName } from './presets';
-import { AddJob, GetQueue, RemoveJob } from './queue';
+import { AddJob, GetQueue, GetQueueStatus, RemoveJob, StartQueue } from './queue';
 
 const watchers: { [index: number]: FSWatcher } = [];
 
@@ -295,6 +296,15 @@ async function onWatcherDetectFileAdd(watcher: DetailedWatcherType, filePath: st
 			`[server] [watcher] Watcher for '${watcher.watch_path}' is requesting a new job be made for the video file '${parsedPath.base}'.`
 		);
 		AddJob(newJobRequest);
+
+		// Start the queue if the option is enabled on the watcher
+		const isQueueStopped = (await GetQueueStatus()) == QueueStatus.Stopped;
+		if (watcher.start_queue && isQueueStopped) {
+			logger.info(
+				`[watcher] Watcher for '${watcher.watch_path}' is requesting to start the queue, since it is stopped.`
+			);
+			await StartQueue();
+		}
 	}
 }
 

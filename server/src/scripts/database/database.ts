@@ -11,6 +11,7 @@ import logger from 'logging';
 import fs from 'node:fs';
 import path from 'node:path';
 import { dataPath } from '../data';
+import { SqliteBooleanPlugin } from './plugins/boolean';
 import { InitializeDatabaseTables, isDatabaseInitialized } from './utilities/init';
 import { RunMigrations, SkipToLatestMigration } from './utilities/migrator';
 
@@ -29,7 +30,7 @@ export const database = new Kysely<Database>({
 	dialect: new SqliteDialect({
 		database: sqliteDatabase,
 	}),
-	plugins: [new ParseJSONResultsPlugin()],
+	plugins: [new ParseJSONResultsPlugin(), new SqliteBooleanPlugin()],
 });
 
 const migrator = new Migrator({

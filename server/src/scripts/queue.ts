@@ -156,7 +156,7 @@ export function SetQueueStatus(newState: QueueStatus) {
 	EmitToAllClients('queue-status-update', newState);
 }
 
-export async function StartQueue(clientID: string) {
+export async function StartQueue(clientID?: string) {
 	const status = await GetQueueStatus();
 	if (status == QueueStatus.Stopped) {
 		try {

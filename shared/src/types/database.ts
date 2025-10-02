@@ -87,6 +87,7 @@ export interface WatchersTable {
 	preset_id: string;
 	watch_path: string;
 	watcher_id: Generated<number>;
+	start_queue: boolean;
 }
 
 // Watcher Rules -----------------------------------------------------------------------
