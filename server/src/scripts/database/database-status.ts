@@ -1,3 +1,4 @@
+import { QueueStatus } from '@handbrake-web/shared/types/queue';
 import logger from 'logging';
 import { database } from './database';
 
@@ -24,7 +25,9 @@ export async function DatabaseUpdateStatus(id: string, state: number) {
 			.onConflict((builder) => builder.doUpdateSet({ state: state }))
 			.executeTakeFirstOrThrow();
 
-		logger.info(`[server] [database] Sucessfully updated the status of '${id}' to '${state}'.`);
+		logger.info(
+			`[server] [database] Sucessfully updated the status of '${id}' to '${QueueStatus[state]}'.`
+		);
 
 		return result;
 	} catch (err) {
