@@ -88,6 +88,7 @@ FROM gcr.io/distroless/base-debian12 AS main
 
 COPY --from=handbrake-build /handbrake/build/HandBrakeCLI /handbrake/HandBrakeCLI
 COPY --from=handbrake-build /handbrake/lib /handbrake/lib
+COPY --from=handbrake-build /handbrake/preset/preset_builtin.json /handbrake/preset_builtin.json
 
 # Copy HandBrake's libraries to /lib so this container can run HandBrake if desired
 COPY --from=handbrake-build /handbrake/lib/* /lib
