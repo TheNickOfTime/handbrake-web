@@ -33,10 +33,13 @@ export async function RunMigrations(latestVersion: number) {
 
 	const version = (currentConfig.config.version as number) || 0;
 
+	console.log(version);
+
 	if (version < latestVersion) {
 		// Get all migrations that need to be run
 		const allMigrations = {
 			'migration-1': (await import('../migrations/migration-1')).default as Migration,
+			'migration-2': (await import('../migrations/migration-2')).default as Migration,
 		};
 		const neededMigrations = Object.fromEntries(
 			Object.entries(allMigrations).filter(([key]) => {
@@ -78,7 +81,7 @@ async function RunMigration(name: string, migration: Migration) {
 			encoding: 'utf-8',
 		});
 
-		logger.info(`[config] [migration] Successfully completed '${name}}'..`);
+		logger.info(`[config] [migration] Successfully completed '${name}'..`);
 	} catch (err) {
 		logger.error(`[config] [migration] Could not complete '${name}'.`);
 		throw err;

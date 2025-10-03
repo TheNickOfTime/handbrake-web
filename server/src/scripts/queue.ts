@@ -1,9 +1,11 @@
+import { QueueStartupBehavior } from '@handbrake-web/shared/types/config';
 import type { AddJobType, DetailedJobType } from '@handbrake-web/shared/types/database';
 import { QueueStatus } from '@handbrake-web/shared/types/queue';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import { error } from 'console';
 import logger, { RemoveJobLogByID } from 'logging';
 import { Socket as Worker } from 'socket.io';
+import { GetConfig } from './config/config';
 import {
 	EmitToAllClients,
 	EmitToWorkerWithID,
@@ -25,17 +27,30 @@ import { DatabaseSelectStatusByID, DatabaseUpdateStatus } from './database/datab
 // Init --------------------------------------------------------------------------------------------
 export async function InitializeQueue() {
 	// Queue Status
-	const status = await GetQueueStatus();
-	if (status != null || status != undefined) {
-		logger.info(
-			`[server] [queue] Existing queue status '${QueueStatus[status]}' retreived from the database.`
-		);
-		EmitToAllClients('queue-status-update', status);
-	} else {
-		SetQueueStatus(QueueStatus.Stopped);
-		logger.error(
-			`[server] [queue] The queue status does not exist in the database, initializing to the state 'stopped'.`
-		);
+	switch (GetConfig().application['queue-startup-behavior']) {
+		case QueueStartupBehavior.Active:
+			logger.info(`[server] [queue] Initializating the queue state to 'Active'.`);
+			SetQueueStatus(QueueStatus.Idle);
+			break;
+		case QueueStartupBehavior.Stopped:
+			logger.info(`[server] [queue] Initializating the queue state to 'Stopped'.`);
+			SetQueueStatus(QueueStatus.Stopped);
+			break;
+		case QueueStartupBehavior.Previous:
+		default:
+			const status = await GetQueueStatus();
+			if (status != null || status != undefined) {
+				logger.info(
+					`[server] [queue] Existing queue status '${QueueStatus[status]}' retreived from the database.`
+				);
+				EmitToAllClients('queue-status-update', status);
+			} else {
+				SetQueueStatus(QueueStatus.Stopped);
+				logger.error(
+					`[server] [queue] The queue status does not exist in the database, initializing to the state 'stopped'.`
+				);
+			}
+			break;
 	}
 
 	// Queue Data
