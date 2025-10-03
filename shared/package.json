@@ -21,13 +21,20 @@
     "./types/*": {
       "default": "./build/types/*.js",
       "types": "./build/types/*.d.ts"
+    },
+    "./logger": {
+      "types": "./build/logger/index.d.ts",
+      "default": "./build/logger/index.js"
     }
+  },
+  "dependencies": {
+    "kysely": "^0.28.7",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0",
+    "winston-transport": "^4.9.0"
   },
   "devDependencies": {
     "@types/node": "^24.5.2",
     "typescript": "^5.9.2"
-  },
-  "dependencies": {
-    "kysely": "^0.28.7"
   }
 }
