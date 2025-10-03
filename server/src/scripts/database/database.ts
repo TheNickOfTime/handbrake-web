@@ -1,17 +1,12 @@
 import type { Database } from '@handbrake-web/shared/types/database';
 import SQLite from 'better-sqlite3';
-import {
-	FileMigrationProvider,
-	Kysely,
-	Migrator,
-	ParseJSONResultsPlugin,
-	SqliteDialect,
-} from 'kysely';
+import { Kysely, Migrator, ParseJSONResultsPlugin, SqliteDialect } from 'kysely';
 import logger from 'logging';
 import fs from 'node:fs';
 import path from 'node:path';
 import { dataPath } from '../data';
 import { SqliteBooleanPlugin } from './plugins/boolean';
+import { CustomMigrationProvider } from './plugins/provider';
 import { InitializeDatabaseTables, isDatabaseInitialized } from './utilities/init';
 import { RunMigrations, SkipToLatestMigration } from './utilities/migrator';
 
@@ -35,11 +30,12 @@ export const database = new Kysely<Database>({
 
 const migrator = new Migrator({
 	db: database,
-	provider: new FileMigrationProvider({
-		fs: fs.promises,
-		path: path,
-		migrationFolder: path.resolve(__dirname, 'migrations'),
-	}),
+	// provider: new FileMigrationProvider({
+	// 	fs: fs.promises,
+	// 	path: path,
+	// 	migrationFolder: path.resolve(__dirname, 'migrations'),
+	// }),
+	provider: new CustomMigrationProvider(),
 	migrationTableName: 'migrations',
 	migrationLockTableName: 'migrations_lock',
 });
