@@ -118,7 +118,9 @@ jobs:
           file: ${{ matrix.file }}
           # platforms: linux/amd64,linux/arm64
           platforms: linux/amd64
-          build-args: DISTROLESS_VARIANT=${{ github.head_ref == '' && 'nonroot' || 'debug-nonroot' }} # use debug variant for PRs
+          build-args: |
+            DISTROLESS_VARIANT=${{ github.head_ref == '' && 'nonroot' || 'debug-nonroot' }} # use debug variant for PRs
+            HANDBRAKE_BUILD_TAG=${{ github.event_name == 'pull_request' && 'dev' || 'latest'}}
           provenance: false
           push: true
           tags: ${{ steps.meta.outputs.tags }}
