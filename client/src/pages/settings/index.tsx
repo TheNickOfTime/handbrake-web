@@ -1,7 +1,6 @@
 import SaveIcon from '@icons/floppy2-fill.svg?react';
 import { useContext, useEffect, useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
-import ToggleInput from '~components/base/inputs/toggle';
 import Page from '~components/root/page';
 import Section from '~components/root/section';
 import { PrimaryContext } from '~layouts/primary/context';
@@ -26,15 +25,6 @@ export default function SettingsPage() {
 		socket.emit('config-update', currentConfig);
 	};
 
-	const handleAutoFixChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setCurrentConfig({
-			...currentConfig,
-			config: {
-				'auto-fix': event.target.checked,
-			},
-		});
-	};
-
 	return (
 		<Page className={styles['settings-page']} heading='Settings'>
 			<SettingsContext
@@ -50,12 +40,6 @@ export default function SettingsPage() {
 						Icon={SaveIcon}
 						onClick={handleSaveConfig}
 						disabled={!canSave}
-					/>
-					<ToggleInput
-						id='auto-fix-toggle'
-						label='Auto-fix Configuration Errors (recommended)'
-						checked={currentConfig.config['auto-fix']}
-						onChange={handleAutoFixChange}
 					/>
 				</Section>
 				<div className={styles['settings-sections']}>

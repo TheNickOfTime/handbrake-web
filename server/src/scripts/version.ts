@@ -27,7 +27,7 @@ export async function CheckForVersionUpdate() {
 		return;
 	}
 
-	const checkIntervalHours = GetConfig().version['check-interval'];
+	const checkIntervalHours = GetConfig().application['update-check-interval'];
 	if (checkIntervalHours == 0) {
 		logger.info(`[version] The check-interval is set to 0, update checking is disabled.`);
 		return;

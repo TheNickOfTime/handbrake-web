@@ -35,7 +35,7 @@ export default function VersionInfo({ socket, config }: Params) {
 			if (socket.connected) {
 				await getCurrentVersionInfo();
 
-				if (config && config.version['check-interval'] != 0) {
+				if (config && config.application['update-check-interval'] != 0) {
 					await getLatestVersionInfo();
 				}
 			}
