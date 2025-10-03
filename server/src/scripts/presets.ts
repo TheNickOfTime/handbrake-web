@@ -67,7 +67,7 @@ const defaultPresetsFileToPresetObject = async () => {
 		await readFile(defaultPresetsPath, { encoding: 'utf-8' })
 	);
 
-	for (let category of defaultPresetsData.PresetList) {
+	for (let category of defaultPresetsData) {
 		const categoryName = category.PresetName;
 		newObject[categoryName] = {};
 
@@ -83,9 +83,6 @@ const defaultPresetsFileToPresetObject = async () => {
 
 			const presetData: HandbrakePresetType = {
 				PresetList: [preset],
-				VersionMajor: defaultPresetsData.VersionMajor,
-				VersionMicro: defaultPresetsData.VersionMicro,
-				VersionMinor: defaultPresetsData.VersionMinor,
 			};
 			newObject[categoryName][presetName] = presetData;
 		}
@@ -101,10 +98,10 @@ export async function LoadDefaultPresets() {
 			`[server] [presets] Default presets have been loaded from '${defaultPresetsPath}'.`
 		);
 	} catch (error) {
-		logger.info(
+		logger.error(
 			`[server] [presets] [error] Could not load the default presets from '${defaultPresetsPath}'.`
 		);
-		console.error(error);
+		throw error;
 	}
 }
 

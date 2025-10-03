@@ -134,9 +134,9 @@ export type HandbrakePresetDataType = {
 
 export type HandbrakePresetType = {
 	PresetList: HandbrakePresetDataType[];
-	VersionMajor: number;
-	VersionMicro: number;
-	VersionMinor: number;
+	VersionMajor?: number;
+	VersionMicro?: number;
+	VersionMinor?: number;
 };
 
 export type HandbrakePresetListType = {
@@ -147,14 +147,9 @@ export type HandbrakePresetCategoryType = {
 	[index: string]: HandbrakePresetListType;
 };
 
-export type HandbrakeDefaultPresetsType = {
-	PresetList: [
-		{
-			ChildrenArray: HandbrakePresetDataType[];
-			PresetName: string;
-		}
-	];
-	VersionMajor: number;
-	VersionMicro: number;
-	VersionMinor: number;
-};
+export type HandbrakeDefaultPresetsType = [
+	{
+		ChildrenArray: HandbrakePresetDataType[];
+		PresetName: string;
+	}
+];
