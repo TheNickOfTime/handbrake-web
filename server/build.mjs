@@ -33,8 +33,6 @@ try {
 		recursive: true,
 		dereference: true,
 	});
-
-	await cp('template', 'build/template', { recursive: true });
 } catch (err) {
 	console.error(`[server] [build] [error] Could not copy all non-bundled dependencies.`);
 	throw err;
