@@ -1,4 +1,4 @@
-import { ConfigPresetsType } from '@handbrake-web/shared/types/config';
+import { ConfigType } from '@handbrake-web/shared/types/config';
 import { useContext } from 'react';
 import ToggleInput from '~components/base/inputs/toggle';
 import Section from '~components/root/section';
@@ -8,9 +8,9 @@ import styles from './styles.module.scss';
 export default function SettingsPreset() {
 	const { currentConfig, setCurrentConfig } = useContext(SettingsContext)!;
 
-	const updatePresetsConfigProperty = <K extends keyof ConfigPresetsType>(
+	const updatePresetsConfigProperty = <K extends keyof ConfigType['presets']>(
 		key: K,
-		value: ConfigPresetsType[K]
+		value: ConfigType['presets'][K]
 	) => {
 		setCurrentConfig({ ...currentConfig, presets: { ...currentConfig.presets, [key]: value } });
 	};

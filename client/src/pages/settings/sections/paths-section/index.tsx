@@ -1,4 +1,4 @@
-import { ConfigPathsType } from '@handbrake-web/shared/types/config';
+import { ConfigType } from '@handbrake-web/shared/types/config';
 import { FileBrowserMode } from '@handbrake-web/shared/types/file-browser';
 import WarningIcon from '@icons/exclamation-circle-fill.svg?react';
 import { HTMLAttributes, useContext, useState } from 'react';
@@ -24,14 +24,14 @@ export default function SettingsPaths({}: HTMLAttributes<HTMLElement>) {
 		'output-path': true,
 	});
 
-	const updatePathProperty = <K extends keyof ConfigPathsType>(
+	const updatePathProperty = <K extends keyof ConfigType['paths']>(
 		key: K,
-		value: ConfigPathsType[K]
+		value: ConfigType['paths'][K]
 	) => {
 		setCurrentConfig({ ...currentConfig, paths: { ...currentConfig.paths, [key]: value } });
 	};
 
-	const checkPathsValid = (paths: ConfigPathsType) => {
+	const checkPathsValid = (paths: ConfigType['paths']) => {
 		const mediaPathRegex = new RegExp(`^${paths['media-path']}`);
 		console.log(mediaPathRegex);
 

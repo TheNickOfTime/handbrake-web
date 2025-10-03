@@ -9,7 +9,7 @@ import { dataPath } from '../data';
 import { RunMigrations } from './utilities/migrator';
 
 // Defines the latest config schema and default values
-const defaultConfig = {
+const defaultConfig: ConfigType = {
 	config: {
 		version: 1,
 	},
@@ -23,7 +23,7 @@ const defaultConfig = {
 		'allow-preset-creator': false,
 	},
 	application: {
-		'check-interval': 12,
+		'update-check-interval': 12,
 	},
 };
 
