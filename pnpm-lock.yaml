@@ -143,12 +143,6 @@ importers:
       tsx:
         specifier: ^4.20.6
         version: 4.20.6
-      winston:
-        specifier: ^3.17.0
-        version: 3.17.0
-      winston-daily-rotate-file:
-        specifier: ^5.0.0
-        version: 5.0.0(winston@3.17.0)
       yaml:
         specifier: ^2.8.1
         version: 2.8.1
