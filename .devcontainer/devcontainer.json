@@ -14,7 +14,8 @@
     "ghcr.io/devcontainers/features/node:1": {
       "version": "24",
       "pnpmVersion": "10"
-    }
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
   },
   "containerEnv": {
     "SERVER_URL": "http://localhost",
@@ -31,7 +32,8 @@
         "dbaeumer.vscode-eslint",
         "christian-kohler.npm-intellisense",
         "esbenp.prettier-vscode",
-        "github.vscode-github-actions"
+        "github.vscode-github-actions",
+        "github.vscode-pull-request-github"
       ]
     }
   }
