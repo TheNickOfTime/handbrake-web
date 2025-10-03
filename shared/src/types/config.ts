@@ -14,6 +14,14 @@ export interface ConfigType extends UnknownConfigType {
 		'allow-preset-creator': boolean;
 	};
 	application: {
+		'queue-startup-behavior': QueueStartupBehavior;
 		'update-check-interval': number;
 	};
+}
+
+// Config property enums ---------------------------------------------------------------------------
+export enum QueueStartupBehavior {
+	Previous,
+	Active,
+	Stopped,
 }

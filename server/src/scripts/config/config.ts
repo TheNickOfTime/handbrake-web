@@ -1,4 +1,8 @@
-import { type ConfigType, type UnknownConfigType } from '@handbrake-web/shared/types/config';
+import {
+	QueueStartupBehavior,
+	type ConfigType,
+	type UnknownConfigType,
+} from '@handbrake-web/shared/types/config';
 import fs from 'fs';
 import { readFile, writeFile } from 'fs/promises';
 import logger from 'logging';
@@ -11,7 +15,7 @@ import { RunMigrations } from './utilities/migrator';
 // Defines the latest config schema and default values
 const defaultConfig: ConfigType = {
 	config: {
-		version: 1,
+		version: 2,
 	},
 	paths: {
 		'media-path': '/video',
@@ -23,6 +27,7 @@ const defaultConfig: ConfigType = {
 		'allow-preset-creator': false,
 	},
 	application: {
+		'queue-startup-behavior': QueueStartupBehavior.Previous,
 		'update-check-interval': 12,
 	},
 };
