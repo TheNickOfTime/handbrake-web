@@ -8,11 +8,10 @@ import {
 import { access, mkdir, readdir, readFile, rm, writeFile } from 'fs/promises';
 import logger from 'logging';
 import path from 'path';
-import { cwd } from 'process';
 import { EmitToAllClients } from './connections';
 import { dataPath } from './data';
 
-const defaultPresetsPath = path.resolve(cwd(), 'template/default-presets.json');
+const defaultPresetsPath = '/var/lib/handbrake/preset_builtin.json';
 export const presetsPath = path.join(dataPath, '/presets');
 
 let presets: HandbrakePresetCategoryType = {};
@@ -68,7 +67,7 @@ const defaultPresetsFileToPresetObject = async () => {
 		await readFile(defaultPresetsPath, { encoding: 'utf-8' })
 	);
 
-	for (let category of defaultPresetsData.PresetList) {
+	for (let category of defaultPresetsData) {
 		const categoryName = category.PresetName;
 		newObject[categoryName] = {};
 
@@ -84,9 +83,6 @@ const defaultPresetsFileToPresetObject = async () => {
 
 			const presetData: HandbrakePresetType = {
 				PresetList: [preset],
-				VersionMajor: defaultPresetsData.VersionMajor,
-				VersionMicro: defaultPresetsData.VersionMicro,
-				VersionMinor: defaultPresetsData.VersionMinor,
 			};
 			newObject[categoryName][presetName] = presetData;
 		}
@@ -102,10 +98,10 @@ export async function LoadDefaultPresets() {
 			`[server] [presets] Default presets have been loaded from '${defaultPresetsPath}'.`
 		);
 	} catch (error) {
-		logger.info(
+		logger.error(
 			`[server] [presets] [error] Could not load the default presets from '${defaultPresetsPath}'.`
 		);
-		console.error(error);
+		throw error;
 	}
 }
 

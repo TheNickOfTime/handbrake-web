@@ -11,6 +11,9 @@ RUN apt-get install -y sqlite3
 # Copy compiled HandBrakeCLI binary from the build stage
 COPY --from=handbrake-build /handbrake/HandBrakeCLI /usr/local/bin
 
+# Copy builtin presets from the build stage
+COPY --from=handbrake-build /handbrake/preset_builtin.json /var/lib/handbrake/preset_builtin.json
+
 # Copy HandBrakeCLI's dependencies from the build stage
 COPY --from=handbrake-build /handbrake/lib/* /lib
 
