@@ -1,3 +1,8 @@
+import {
+	CreateFileLogger,
+	formatJSON,
+	type CustomTransportType,
+} from '@handbrake-web/shared/logger';
 import type { JobType, UpdateJobStatusType } from '@handbrake-web/shared/types/database';
 import {
 	type HandbrakeOutputType,
@@ -8,15 +13,11 @@ import {
 } from '@handbrake-web/shared/types/handbrake';
 import { type HandbrakePresetType } from '@handbrake-web/shared/types/preset';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
-import { type ChildProcessWithoutNullStreams as ChildProcess, spawn } from 'child_process';
+import { spawn, type ChildProcessWithoutNullStreams as ChildProcess } from 'child_process';
 import { access, mkdir, rename, rm, writeFile } from 'fs/promises';
-import logger, {
-	createJobLogger,
-	type CustomTransportType,
-	formatJSON,
-	SendLogToServer,
-} from 'logging';
+import logger, { SendLogToServer } from 'logging';
 import path from 'path';
+import { env } from 'process';
 import { Socket } from 'socket.io-client';
 
 let handbrake: ChildProcess | null = null;
@@ -80,7 +81,11 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 		// Add file transport to the logger
 		// const fileTransport = newJobTransport(jobID);
 		// logger.add(fileTransport);
-		const jobLogger = createJobLogger(jobID);
+		const jobLogger = CreateFileLogger(
+			env.WORKER_ID!,
+			`${env.WORKERID!}-job-${jobID}`,
+			path.join(process.env.DATA_PATH!, 'log')
+		);
 
 		handbrake = spawn('HandBrakeCLI', [
 			'--preset-import-file',

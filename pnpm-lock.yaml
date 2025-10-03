@@ -217,12 +217,6 @@ importers:
       socket.io-client:
         specifier: ^4.8.1
         version: 4.8.1
-      winston:
-        specifier: ^3.17.0
-        version: 3.17.0
-      winston-transport:
-        specifier: ^4.9.0
-        version: 4.9.0
     devDependencies:
       '@types/node':
         specifier: ^24.5.2
