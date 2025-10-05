@@ -5,7 +5,16 @@
 	}
 
 	.mode-section {
+		--button-selected-color: var(--background-six);
+
 		margin-bottom: 1rem;
+
+		border: none;
+		background-color: var(--background-secondary);
+
+		button[data-selected='true'] {
+			font-weight: 800;
+		}
 	}
 
 	.job-form {
@@ -14,17 +23,25 @@
 		gap: 1.25rem;
 
 		fieldset {
+			position: relative;
+
 			padding: 1.5rem 1rem;
+			padding-top: 3.5rem;
 			display: flex;
 			flex-flow: column nowrap;
 			gap: 0.75rem;
 
-			border: 0.1rem solid var(--text-primary);
+			border: none;
 			border-radius: 1rem;
+			background-color: var(--background-secondary);
 
 			legend {
+				position: absolute;
+				top: 1rem;
+				left: 1rem;
+
 				font-family: var(--heading-font);
-				font-size: 1.25;
+				font-size: 1.25rem;
 			}
 		}
 
@@ -131,6 +148,10 @@
 		flex-direction: row wrap;
 		justify-content: right;
 		gap: 1rem;
+	}
+
+	.section-placeholder {
+		color: var(--text-secondary);
 	}
 
 	// .controlled-button {
