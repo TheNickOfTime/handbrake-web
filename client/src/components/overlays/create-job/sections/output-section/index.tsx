@@ -12,7 +12,6 @@ import styles from '../../styles.module.scss';
 export default function OutputSection() {
 	const { config } = useContext(PrimaryContext)!;
 	const {
-		extensions,
 		jobFrom,
 		outputPath,
 		outputFiles,
@@ -21,7 +20,6 @@ export default function OutputSection() {
 		allowCollision,
 		outputChanged,
 		handleOutputNameChange,
-		handleExtensionChange,
 		handleOutputConfirm,
 		handleAllowOverwriteSelect,
 	} = useContext(CreateJobContext)!;
@@ -83,18 +81,6 @@ export default function OutputSection() {
 					disabled={!outputPath}
 				/>
 			)}
-			<SelectInput
-				id='output-extension'
-				label='File Extension: '
-				value={outputExtension}
-				onChange={handleExtensionChange}
-			>
-				{extensions.map((extension) => (
-					<option value={extension} key={extension}>
-						{extension}
-					</option>
-				))}
-			</SelectInput>
 		</fieldset>
 	);
 }

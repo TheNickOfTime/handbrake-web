@@ -1,3 +1,4 @@
+import { PresetFormatDict } from '@handbrake-web/shared/dict/presets.dict';
 import { AddJobType } from '@handbrake-web/shared/types/database';
 import { DirectoryItemType, DirectoryItemsType } from '@handbrake-web/shared/types/directory';
 import { HandbrakeOutputExtensions } from '@handbrake-web/shared/types/file-extensions';
@@ -24,9 +25,13 @@ export enum JobFrom {
 }
 
 export default function CreateJob({ onClose }: Properties) {
-	const { socket, config } = useContext(PrimaryContext)!;
-	const [extensions] = useState<string[]>(Object.values(HandbrakeOutputExtensions));
+	const { socket, config, presets, defaultPresets } = useContext(PrimaryContext)!;
 	const [jobFrom, setJobFrom] = useState(JobFrom.FromFile);
+
+	// Preset ------------------------------------------------------------------
+	const [presetCategory, setPresetCategory] = useState('');
+	const [preset, setPreset] = useState('');
+	const [isDefaultPreset, setIsDefaultPreset] = useState(false);
 
 	// Input -------------------------------------------------------------------
 	const [inputPath, setInputPath] = useState('');
@@ -41,13 +46,13 @@ export default function CreateJob({ onClose }: Properties) {
 	const [outputChanged, setOutputChanged] = useState(false);
 	const [allowCollision, setAllowCollision] = useState(false);
 
-	// Preset ------------------------------------------------------------------
-	const [presetCategory, setPresetCategory] = useState('');
-	const [preset, setPreset] = useState('');
-	const [isDefaultPreset, setIsDefaultPreset] = useState(false);
-
 	// Results -----------------------------------------------------------------
 	const [seeMore, setSeeMore] = useState(false);
+
+	const getOutputExtensionFromPreset = (category: string, name: string) =>
+		PresetFormatDict[
+			(isDefaultPreset ? defaultPresets : presets)[category][name].PresetList[0].FileFormat
+		];
 
 	const canSubmit =
 		inputPath != '' &&
@@ -262,15 +267,65 @@ export default function CreateJob({ onClose }: Properties) {
 		}
 	};
 
-	const handleExtensionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const extension = event.target.value;
+	// const handleExtensionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+	// 	const extension = event.target.value;
 
-		setOutputExtension(extension as HandbrakeOutputExtensions);
-		setOutputChanged(true);
+	// 	setOutputExtension(extension as HandbrakeOutputExtensions);
+	// 	setOutputChanged(true);
+	// 	const newOutputFiles = outputFiles.map((file) => {
+	// 		const oldFileName = file.name + file.extension;
+
+	// 		file.extension = extension;
+
+	// 		const newFileName = file.name + file.extension;
+	// 		file.path = file.path.replace(new RegExp(`${oldFileName}$`), newFileName);
+	// 		return file;
+	// 	});
+
+	// 	console.log(newOutputFiles);
+
+	// 	(async function () {
+	// 		const existingFiles: DirectoryItemsType = (await RequestDirectory(socket, outputPath))
+	// 			.items;
+	// 		if (jobFrom == JobFrom.FromFile) {
+	// 			if (
+	// 				existingFiles
+	// 					.map((item) => item.name + item.extension)
+	// 					.includes(newOutputFiles[0].name + newOutputFiles[0].extension)
+	// 			) {
+	// 				setNameCollision(true);
+	// 			} else if (nameCollision) {
+	// 				setNameCollision(false);
+	// 			}
+	// 			setOutputFiles(newOutputFiles);
+	// 		} else {
+	// 			const dedupedOutputFiles = await socket.emitWithAck(
+	// 				'check-name-collision',
+	// 				outputPath,
+	// 				newOutputFiles
+	// 			);
+	// 			setOutputFiles(dedupedOutputFiles);
+	// 		}
+	// 	})();
+	// };
+
+	const handlePresetCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const category = event.target.value;
+		setPresetCategory(category);
+		setIsDefaultPreset(category.includes('Default: '));
+	};
+
+	const handlePresetChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const newPreset = event.target.value;
+		const newExtension = getOutputExtensionFromPreset(presetCategory, newPreset);
+
+		setPreset(newPreset);
+		setOutputExtension(newExtension);
+
 		const newOutputFiles = outputFiles.map((file) => {
 			const oldFileName = file.name + file.extension;
 
-			file.extension = extension;
+			file.extension = newExtension;
 
 			const newFileName = file.name + file.extension;
 			file.path = file.path.replace(new RegExp(`${oldFileName}$`), newFileName);
@@ -304,24 +359,12 @@ export default function CreateJob({ onClose }: Properties) {
 		})();
 	};
 
-	const handlePresetCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const category = event.target.value;
-		setPresetCategory(category);
-		setIsDefaultPreset(category.includes('Default: '));
-	};
-
-	const handlePresetChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const preset = event.target.value;
-		setPreset(preset);
-	};
-
 	const handleSeeMore = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		event.preventDefault();
 		setSeeMore(!seeMore);
 	};
 
 	const contextValue: CreateJobContextType = {
-		extensions,
 		jobFrom,
 		inputPath,
 		setInputPath,
@@ -360,7 +403,6 @@ export default function CreateJob({ onClose }: Properties) {
 		handleOutputConfirm,
 		handleAllowOverwriteSelect,
 		handleOutputNameChange,
-		handleExtensionChange,
 		handlePresetCategoryChange,
 		handlePresetChange,
 		handleSeeMore,
@@ -372,10 +414,10 @@ export default function CreateJob({ onClose }: Properties) {
 			<CreateJobContext value={contextValue}>
 				<ModeSection />
 				<form action='' className={styles['job-form']}>
+					<PresetSection />
 					<InputSection />
 					<OutputSection />
-					<PresetSection />
-					{inputFiles.length > 0 && outputFiles.length > 0 && <ResultSection />}
+					{preset && inputFiles.length > 0 && outputFiles.length > 0 && <ResultSection />}
 					<ButtonsSection />
 				</form>
 			</CreateJobContext>

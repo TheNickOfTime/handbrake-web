@@ -1,9 +1,13 @@
 import type { ClientLookupDict } from '../types/dict';
+import { HandbrakeOutputExtensions } from '../types/file-extensions';
 
-export const PresetFormatDict: ClientLookupDict = {
-	av_mp4: '.mp4',
-	av_mkv: '.mkv',
-	av_webm: '.webm',
+export const PresetFormatDict: Record<string, HandbrakeOutputExtensions> = {
+	av_mp4: HandbrakeOutputExtensions.mp4,
+	mp4: HandbrakeOutputExtensions.mp4,
+	av_mkv: HandbrakeOutputExtensions.mkv,
+	mkv: HandbrakeOutputExtensions.mkv,
+	av_webm: HandbrakeOutputExtensions.webm,
+	webm: HandbrakeOutputExtensions.webm,
 };
 
 export const PresetEncoderDict: ClientLookupDict = {

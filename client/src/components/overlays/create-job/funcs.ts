@@ -3,7 +3,6 @@ import {
 	DirectoryRequestType,
 	DirectoryType,
 } from '@handbrake-web/shared/types/directory';
-import { HandbrakeOutputExtensions } from '@handbrake-web/shared/types/file-extensions';
 import mime from 'mime';
 import { Socket } from 'socket.io-client';
 
@@ -22,10 +21,7 @@ export function FilterVideoFiles(items: DirectoryItemsType) {
 		.filter((item) => mime.getType(item.path)?.includes('video'));
 }
 
-export function GetOutputItemsFromInputItems(
-	inputItems: DirectoryItemsType,
-	extension: HandbrakeOutputExtensions
-) {
+export function GetOutputItemsFromInputItems(inputItems: DirectoryItemsType, extension: string) {
 	return inputItems.map((item) => {
 		return {
 			path: item.path.replace(item.extension!, extension),

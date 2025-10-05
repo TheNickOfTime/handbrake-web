@@ -4,7 +4,6 @@ import { createContext } from 'react';
 import { JobFrom } from '.';
 
 export interface CreateJobContextType {
-	extensions: string[];
 	jobFrom: JobFrom;
 	inputPath: string;
 	setInputPath: React.Dispatch<React.SetStateAction<string>>;
@@ -43,7 +42,6 @@ export interface CreateJobContextType {
 	handleOutputConfirm: (item: DirectoryItemType) => Promise<void>;
 	handleAllowOverwriteSelect: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 	handleOutputNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-	handleExtensionChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 	handlePresetCategoryChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 	handlePresetChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 	handleSeeMore: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
