@@ -7,7 +7,7 @@ import PresetsList from './sections/list-section';
 import styles from './styles.module.scss';
 
 export default function PresetsPage() {
-	const { config, queue, presets, defaultPresets, socket } = useContext(PrimaryContext)!;
+	const { config, presets, defaultPresets, socket } = useContext(PrimaryContext)!;
 
 	const [showUploadPreset, setShowUploadPreset] = useState(false);
 
