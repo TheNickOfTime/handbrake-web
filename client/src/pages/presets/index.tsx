@@ -7,7 +7,7 @@ import PresetsList from './sections/list-section';
 import styles from './styles.module.scss';
 
 export default function PresetsPage() {
-	const { config, presets, defaultPresets, socket } = useContext(PrimaryContext)!;
+	const { config, queue, presets, defaultPresets, socket } = useContext(PrimaryContext)!;
 
 	const [showUploadPreset, setShowUploadPreset] = useState(false);
 
@@ -43,6 +43,7 @@ export default function PresetsPage() {
 				presets={presets}
 				collapsed={false}
 				canModify={true}
+				canDelete={true}
 				handleRenamePreset={handleRenamePreset}
 				handleRemovePreset={handleRemovePreset}
 			/>
