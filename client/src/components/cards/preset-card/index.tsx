@@ -1,9 +1,11 @@
 import { HandbrakePresetType } from '@handbrake-web/shared/types/preset';
+import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import DownloadIcon from '@icons/download.svg?react';
 import WarningIcon from '@icons/exclamation-circle.svg?react';
 import DeleteIcon from '@icons/trash-fill.svg?react';
-import { HTMLAttributes, useState } from 'react';
+import { HTMLAttributes, useContext, useState } from 'react';
 import ButtonInput from '~components/base/inputs/button';
+import { PrimaryContext } from '~layouts/primary/context';
 import { PresetCardContext } from './context';
 import styles from './styles.module.scss';
 import AudioTab from './tabs/audio';
@@ -18,6 +20,7 @@ interface Properties extends HTMLAttributes<HTMLDivElement> {
 	preset: HandbrakePresetType;
 	category: string;
 	canModify?: boolean;
+	canDelete?: boolean;
 	handleRenamePreset?: (oldName: string, newName: string, category: string) => void;
 	handleRemovePreset: (preset: string, category: string) => void;
 }
@@ -36,16 +39,44 @@ export default function PresetCard({
 	preset,
 	category,
 	canModify = false,
+	canDelete = false,
 	handleRenamePreset,
 	handleRemovePreset,
 	className,
 	...properties
 }: Properties) {
+	const { queue } = useContext(PrimaryContext)!;
+
 	const [currentTab, setCurrentTab] = useState(PresetTabs.Summary);
 	const [presetName, setPresetName] = useState(preset.PresetList[0].PresetName);
 
 	const presetData = preset.PresetList[0];
 	const tabs = ['Summary', 'Dimensions', 'Filters', 'Video', 'Audio', 'Subtitles', 'Chapters'];
+
+	console.log(
+		queue.find(
+			(job) =>
+				category == job.preset_category && preset.PresetList[0].PresetName == job.preset_id
+		)
+	);
+
+	const canModifyDefault = canModify;
+
+	canModify =
+		canModify &&
+		!queue.find(
+			(job) =>
+				job.transcode_stage != TranscodeStage.Finished &&
+				category == job.preset_category &&
+				preset.PresetList[0].PresetName == job.preset_id
+		);
+
+	const noModifyInfo =
+		'The preset is currently in use by a job - it cannot be modified or deleted.';
+
+	const deleteButtonInfo = canModifyDefault && !canModify ? noModifyInfo : 'Delete Preset';
+
+	const renameInfo = canModifyDefault && !canModify ? noModifyInfo : undefined;
 
 	const handleDownloadPreset = () => {
 		const presetBlob = new Blob([JSON.stringify(preset, null, 2)], {
@@ -75,12 +106,14 @@ export default function PresetCard({
 	return (
 		<div className={`preset-card ${styles['preset-card']} ${className || ''}`} {...properties}>
 			<div className={styles['heading']}>
-				{handleRenamePreset ? (
+				{canModifyDefault && handleRenamePreset ? (
 					<form className={styles['label-form']} onSubmit={handleRenameInputSubmit}>
 						<input
 							type='text'
 							className={styles['label-input']}
 							value={presetName}
+							title={renameInfo}
+							disabled={!canModify}
 							onChange={(event) => setPresetName(event.target.value)}
 							onBlur={handleRenameInputSubmit}
 							// onSubmit={handleRenameInputSubmit}
@@ -101,11 +134,12 @@ export default function PresetCard({
 						title='Download Preset'
 						onClick={handleDownloadPreset}
 					/>
-					{canModify && (
+					{canDelete && (
 						<ButtonInput
 							Icon={DeleteIcon}
 							color='red'
-							title='Remove Preset'
+							title={deleteButtonInfo}
+							disabled={!canModify}
 							onClick={() => handleRemovePreset(presetData.PresetName, category)}
 						/>
 					)}

@@ -43,6 +43,7 @@ export default function PresetsPage() {
 				presets={presets}
 				collapsed={false}
 				canModify={true}
+				canDelete={true}
 				handleRenamePreset={handleRenamePreset}
 				handleRemovePreset={handleRemovePreset}
 			/>
