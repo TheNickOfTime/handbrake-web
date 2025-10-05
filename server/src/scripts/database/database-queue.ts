@@ -273,7 +273,7 @@ export async function DatabaseUpdateJobOrderIndex(job_id: number, new_index: num
 		}
 	} catch (err) {
 		logger.error(
-			`[server] [database] Could not reorder job with id '${job_id}' to '${new_index}'.`
+			`[database] [error] Could not reorder job with id '${job_id}' to '${new_index}'.`
 		);
 		throw err;
 	}
@@ -281,17 +281,27 @@ export async function DatabaseUpdateJobOrderIndex(job_id: number, new_index: num
 
 export async function DatabaseRemoveJobByID(job_id: number) {
 	try {
-		await DatabaseUpdateJobOrderIndex(job_id, 0);
+		logger.info(`[database] Removing job '${job_id}' from the database.`);
+
+		try {
+			await DatabaseGetJobOrderIndexByID(job_id);
+			await DatabaseUpdateJobOrderIndex(job_id, 0);
+		} catch (err) {
+			logger.info(
+				`[database] Job '${job_id}' is not in the jobs_order table, nothing to remove.`
+			);
+		}
+
 		const result = await database
 			.deleteFrom('jobs')
 			.where('job_id', '=', job_id)
 			.executeTakeFirstOrThrow();
 
-		logger.info(`[server] [database] Removed job '${job_id}' from the database.`);
+		logger.info(`[database] Successfully removed job '${job_id}' from the database.`);
 
 		return result;
 	} catch (err) {
-		logger.error(`[server] [error] [database] Could not remove job '${job_id}'.`);
+		logger.error(`[database] [error] Could not remove job '${job_id}'.`);
 		throw err;
 	}
 }
