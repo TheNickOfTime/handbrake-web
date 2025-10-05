@@ -1,5 +1,5 @@
 import { FileBrowserMode } from '@handbrake-web/shared/types/file-browser';
-import { useContext } from 'react';
+import { Fragment, useContext } from 'react';
 import CheckboxInput from '~components/base/inputs/checkbox';
 import PathInput from '~components/base/inputs/path';
 import { PrimaryContext } from '~layouts/primary/context';
@@ -9,33 +9,39 @@ import styles from '../../styles.module.scss';
 
 export default function InputSection() {
 	const { config } = useContext(PrimaryContext)!;
-	const { jobFrom, inputPath, handleInputConfirm, isRecursive, handleRecursiveChange } =
+	const { jobFrom, inputPath, handleInputConfirm, isRecursive, handleRecursiveChange, preset } =
 		useContext(CreateJobContext)!;
 
 	return (
 		<fieldset className={styles['input-section']}>
 			<legend>Input</legend>
-			<PathInput
-				id='input-path'
-				label={jobFrom == JobFrom.FromFile ? 'File: ' : 'Directory: '}
-				startPath={config.paths['input-path']}
-				rootPath={config.paths['media-path']}
-				mode={
-					jobFrom == JobFrom.FromFile
-						? FileBrowserMode.SingleFile
-						: FileBrowserMode.Directory
-				}
-				value={inputPath}
-				onConfirm={handleInputConfirm}
-				key={jobFrom == JobFrom.FromFile ? 'input-file' : 'input-directory'}
-			/>
-			{jobFrom == JobFrom.FromDirectory && (
-				<CheckboxInput
-					id='recursive-input'
-					label='Recursive:'
-					value={isRecursive}
-					onChange={handleRecursiveChange}
-				/>
+			{preset ? (
+				<Fragment>
+					<PathInput
+						id='input-path'
+						label={jobFrom == JobFrom.FromFile ? 'File: ' : 'Directory: '}
+						startPath={config.paths['input-path']}
+						rootPath={config.paths['media-path']}
+						mode={
+							jobFrom == JobFrom.FromFile
+								? FileBrowserMode.SingleFile
+								: FileBrowserMode.Directory
+						}
+						value={inputPath}
+						onConfirm={handleInputConfirm}
+						key={jobFrom == JobFrom.FromFile ? 'input-file' : 'input-directory'}
+					/>
+					{jobFrom == JobFrom.FromDirectory && (
+						<CheckboxInput
+							id='recursive-input'
+							label='Recursive:'
+							value={isRecursive}
+							onChange={handleRecursiveChange}
+						/>
+					)}
+				</Fragment>
+			) : (
+				<div className={styles['section-placeholder']}>Select a preset...</div>
 			)}
 		</fieldset>
 	);
