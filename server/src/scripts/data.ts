@@ -1,58 +1,88 @@
-import { access, constants } from 'fs/promises';
-import path from 'path';
+import { access, constants, readdir } from 'fs/promises';
+import logger from 'logging';
+import path, { join } from 'path';
+import { cwd } from 'process';
 
-export const dataPath = process.env.DATA_PATH || path.join(__dirname, '../../data');
+export const getDataPath = () => process.env.DATA_PATH || path.join(cwd(), '../data');
+export const getVideoPath = () => process.env.VIDEO_PATH || path.resolve(cwd(), '../video');
 
-export async function CheckDataDirectoryPermissions() {
-	try {
-		let error = false;
+const paths = [getDataPath(), getVideoPath()];
+
+export async function CheckDirectoryPermissions() {
+	logger.info(`[permissions] Checking necessary directory permissions...`);
+
+	const errors: Error[] = [];
+	const warnings: Error[] = [];
+
+	for await (const directory of paths) {
+		logger.info(`[permissions] Checking permissions for the path '${directory}'.`);
 
 		// Check read permissions
 		try {
-			await access(dataPath, constants.R_OK);
+			await access(directory, constants.R_OK);
 		} catch (err) {
-			console.error(
-				`\x1b[2m${new Date(Date.now()).toLocaleTimeString('en-US', {
-					hour12: false,
-				})}\x1B[22m \x1b[31m[data] [error]\x1B[39m The application does not have read permissions for the directory '${dataPath}':`
-			);
-			console.error(err);
-			error = true;
+			if (err instanceof Error) {
+				errors.push(err);
+				logger.error(
+					`[permissions] [error] The directory mapped to '${directory}' does not have adequate read permissions. This will cause issues.`
+				);
+			}
 		}
 
+		// Check write permissions
 		try {
-			await access(dataPath, constants.W_OK);
+			await access(directory, constants.W_OK);
 		} catch (err) {
-			console.error(
-				`\x1b[2m${new Date(Date.now()).toLocaleTimeString('en-US', {
-					hour12: false,
-				})}\x1B[22m \x1b[31m[data] [error]\x1B[39m The application does not have write permissions for the directory '${dataPath}':`
-			);
-			console.error(err);
-			error = true;
+			if (err instanceof Error) {
+				errors.push(err);
+				logger.error(
+					`[permissions] [error] The directory mapped to '${directory}' does not have adequate write permissions. This will cause issues.`
+				);
+			}
 		}
 
-		if (error) {
-			throw new Error();
-		}
-	} catch (error) {
-		// shut down application
-		console.error(
-			`\x1b[2m${new Date(Date.now()).toLocaleTimeString('en-US', {
-				hour12: false,
-			})}\x1B[22m \x1b[31m[data] [error]\x1B[39m The application does not have adequate permissions for '${dataPath}'.`
-		);
-		console.error(
-			`\x1b[2m${new Date(Date.now()).toLocaleTimeString('en-US', {
-				hour12: false,
-			})}\x1B[22m \x1b[31m[data] [error]\x1B[39m Did you create the directories you mapped in the docker compose file prior to the creation of the container?\n\tIf not, docker creates these directories for you with root permissions.\n\tPlease run 'chown' or otherwise modify permissions to have read & write access for the user you are running this container as.`
-		);
-		console.error(
-			`\x1b[2m${new Date(Date.now()).toLocaleTimeString('en-US', {
-				hour12: false,
-			})}\x1B[22m \x1b[31m[data] [error]\x1B[39m The application cannot run without proper permissions for the data folder. The application will now shutdown.`
-		);
+		// Recursively check read/write permissions within the directory
+		try {
+			const recursivePaths = (await readdir(directory)).map((item) => join(directory, item));
 
-		process.exit(0);
+			for await (const item of recursivePaths) {
+				// Check read permissions
+				try {
+					await access(item, constants.R_OK);
+				} catch (err) {
+					if (err instanceof Error) {
+						warnings.push(err);
+						logger.warn(
+							`[permissions] [warn] The item at '${item}' does not have adequate read permissions. This may cause issues.`
+						);
+					}
+				}
+
+				// Check write permissions
+				try {
+					await access(item, constants.W_OK);
+				} catch (err) {
+					if (err instanceof Error) {
+						warnings.push(err);
+						logger.warn(
+							`[permissions] [warn] The item at '${item}' does not have adequate write permissions. This may cause issues.`
+						);
+					}
+				}
+			}
+		} catch (err) {
+			logger.error(`[permissions] [error] Cannot recurse the directory '${directory}'.`);
+		}
+
+		logger.info(`[permissions] Finished checking permissions for the path '${directory}'.`);
+	}
+
+	logger.info(
+		`[permissions] Finished checking permissions across ${paths.length} paths with ${errors.length} errors and ${warnings.length} warnings.`
+	);
+
+	if (errors.length > 0) {
+		logger.error(`[permissions] There are ${errors.length} critical permissions errors.`);
+		throw new AggregateError(errors);
 	}
 }

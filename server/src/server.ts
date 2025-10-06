@@ -1,8 +1,8 @@
-import { CheckDataDirectoryPermissions } from 'scripts/data';
+import { CheckDirectoryPermissions } from 'scripts/data';
 
 async function Server() {
 	// Check critical permissions
-	await CheckDataDirectoryPermissions();
+	await CheckDirectoryPermissions();
 
 	// Startup only occurs if the previous functions ever finish
 	const startup = await import('./server-startup');
