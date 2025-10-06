@@ -125,7 +125,7 @@ export async function DatabaseInsertJob(values: AddJobType) {
 			.executeTakeFirstOrThrow();
 
 		logger.info(
-			`[database] [error] Inserted a new job with id '${newJob.job_id}' into the database at order index '${nextIndex}'.`
+			`[database] Inserted a new job with id '${newJob.job_id}' into the database at order index '${nextIndex}'.`
 		);
 		return newJob.job_id;
 	} catch (err) {
