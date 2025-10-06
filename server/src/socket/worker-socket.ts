@@ -1,5 +1,6 @@
 import type { JobStatusType, JobType } from '@handbrake-web/shared/types/database';
 import { type HandbrakePresetType } from '@handbrake-web/shared/types/preset';
+import { QueueStatus } from '@handbrake-web/shared/types/queue';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import logger, { logPath, WriteWorkerLogToFile } from 'logging';
 import { AddWorker, RemoveWorker } from 'scripts/connections';
@@ -10,7 +11,14 @@ import {
 	DatabaseUpdateJobStatus,
 } from 'scripts/database/database-queue';
 import { GetDefaultPresetByName, GetPresetByName } from 'scripts/presets';
-import { GetQueue, StopJob, UpdateQueue, WorkerForAvailableJobs } from 'scripts/queue';
+import {
+	GetBusyWorkers,
+	GetQueue,
+	SetQueueStatus,
+	StopJob,
+	UpdateQueue,
+	WorkerForAvailableJobs,
+} from 'scripts/queue';
 import { Server } from 'socket.io';
 
 export default function WorkerSocket(io: Server) {
@@ -106,6 +114,10 @@ export default function WorkerSocket(io: Server) {
 				time_finished: 0,
 			});
 			await UpdateQueue();
+			if ((await GetBusyWorkers()).length == 0) {
+				SetQueueStatus(QueueStatus.Idle);
+				logger.info("[queue] There are no active workers, setting queue to 'Idle'.");
+			}
 
 			callback();
 		});
