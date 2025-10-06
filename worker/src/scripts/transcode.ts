@@ -265,6 +265,8 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 
 export async function StopTranscode(id: number, socket: Socket) {
 	if (handbrake) {
+		handbrake.kill();
+
 		if (currentJob && currentJobID == id) {
 			if (socket.connected) {
 				logger.info(`[transcode] Informing the server that job '${id}' has been stopped.`);
@@ -279,7 +281,6 @@ export async function StopTranscode(id: number, socket: Socket) {
 				"[transcode] Cannot send the event 'transcode-stopped' because the current job is null."
 			);
 		}
-		handbrake.kill();
 	} else {
 		logger.info(
 			`[transcode] The worker is not transcoding anything, there is no transcode to stop.`
