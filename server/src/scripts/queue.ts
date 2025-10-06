@@ -80,13 +80,12 @@ export async function GetBusyWorkers() {
 }
 
 export async function GetAvailableWorkers() {
-	const availableWorkers = GetWorkers().filter(async (worker) => {
-		const queue = await GetQueue();
+	const busyWorkers = await GetBusyWorkers();
 
-		return !Object.values(queue)
-			.filter((job) => job.worker_id != null)
-			.map((job) => job.worker_id)
-			.includes(GetWorkerID(worker));
+	const availableWorkers = GetWorkers().filter((worker) => {
+		const workerID = GetWorkerID(worker);
+
+		return !busyWorkers.includes(workerID);
 	});
 	return availableWorkers;
 }
