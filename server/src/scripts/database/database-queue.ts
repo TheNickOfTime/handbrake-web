@@ -5,6 +5,7 @@ import {
 	type UpdateJobStatusType,
 	type UpdateJobType,
 } from '@handbrake-web/shared/types/database';
+import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import type { NotNull } from 'kysely';
 import logger from 'logging';
 import { database } from './database';
@@ -124,12 +125,12 @@ export async function DatabaseInsertJob(values: AddJobType) {
 			.executeTakeFirstOrThrow();
 
 		logger.info(
-			`[server] [database] Inserted a new job with id '${newJob.job_id}' into the database at order index '${nextIndex}'.`
+			`[database] [error] Inserted a new job with id '${newJob.job_id}' into the database at order index '${nextIndex}'.`
 		);
 		return newJob.job_id;
 	} catch (err) {
 		logger.error(
-			`[server] [error] [database] Could not insert job with input file '${values.input_path}' into jobs table.`
+			`[database] [error] Could not insert job with input file '${values.input_path}' into jobs table.`
 		);
 		throw err;
 	}
@@ -144,13 +145,13 @@ export async function DatabaseInsertJobOrderByID(job_id: number) {
 			.executeTakeFirstOrThrow();
 
 		logger.info(
-			`[server] [database] Inserted existing job '${job_id}' back into the jobs_order table with order_index ${nextIndex}.`
+			`[database] [error] Inserted existing job '${job_id}' back into the jobs_order table with order_index ${nextIndex}.`
 		);
 
 		return result;
 	} catch (err) {
 		logger.error(
-			`[server] [error] [database] Could not insert job '${job_id}' into the jobs_order table.`
+			`[database] [error] Could not insert job '${job_id}' into the jobs_order table.`
 		);
 		throw err;
 	}
@@ -166,13 +167,25 @@ export async function DatabaseUpdateJob(job_id: number, data: UpdateJobType) {
 
 		return result;
 	} catch (err) {
-		logger.error(`[server] [error] [database] Could not update job '${job_id}'s data.`);
+		logger.error(`[database] [error] Could not update job '${job_id}'s data.`);
 		throw err;
 	}
 }
 
 export async function DatabaseUpdateJobStatus(job_id: number, status: UpdateJobStatusType) {
 	try {
+		if (status.transcode_stage) {
+			const previousStatus = await DatabaseGetJobStatusByID(job_id);
+
+			if (previousStatus.transcode_stage != status.transcode_stage) {
+				logger.info(
+					`[database] Status for job with id '${job_id}' has changed from '${
+						TranscodeStage[previousStatus.transcode_stage]
+					}' to '${TranscodeStage[status.transcode_stage]}'.`
+				);
+			}
+		}
+
 		const result = await database
 			.updateTable('jobs_status')
 			.set(status)
@@ -181,7 +194,7 @@ export async function DatabaseUpdateJobStatus(job_id: number, status: UpdateJobS
 
 		return result;
 	} catch (err) {
-		logger.error(`[server] [error] [database] Could not update job '${job_id}'s status.`);
+		logger.error(`[database] [error] Could not update job '${job_id}'s status.`);
 		throw err;
 	}
 }
@@ -207,9 +220,7 @@ export async function DatabaseUpdateJobOrderIndex(job_id: number, new_index: num
 				.deleteFrom('jobs_order')
 				.where('job_id', '=', job_id)
 				.executeTakeFirstOrThrow();
-			logger.info(
-				`[server] [database] Removing job with id '${job_id}' from the 'jobs_order' table.`
-			);
+			logger.info(`[database] Removing job with id '${job_id}' from the 'jobs_order' table.`);
 		} else {
 			// Set the desired job to order -1 (so other jobs can be moved without conflict)
 			await database
@@ -218,7 +229,7 @@ export async function DatabaseUpdateJobOrderIndex(job_id: number, new_index: num
 				.where('job_id', '=', job_id)
 				.executeTakeFirstOrThrow();
 			logger.info(
-				`Temporarily setting job '${job_id}' from order index '${previous_index}' to '-1'.`
+				`[database] Temporarily setting job '${job_id}' from order index '${previous_index}' to '-1'.`
 			);
 		}
 
@@ -262,7 +273,7 @@ export async function DatabaseUpdateJobOrderIndex(job_id: number, new_index: num
 		// Reorder all necessary jobs
 		for await (const job of jobsToReorder) {
 			logger.info(
-				`[server] [database] Updating job with id '${job.job_id}' from order index ${job.order_index} to ${job.new_order_index}.`
+				`[database] Updating job with id '${job.job_id}' from order index ${job.order_index} to ${job.new_order_index}.`
 			);
 
 			await database
