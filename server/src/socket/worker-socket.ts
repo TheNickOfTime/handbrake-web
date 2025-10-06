@@ -88,12 +88,26 @@ export default function WorkerSocket(io: Server) {
 			}
 		);
 
-		socket.on('transcode-stopped', (job_id: number, status: JobStatusType) => {
+		socket.on('transcode-stopped', async (job_id: number, callback: () => void) => {
 			logger.info(
 				`[socket] Worker '${workerID}' with ID '${socket.id}' has stopped transcoding.`
 			);
 
-			// StopJob(job_id);
+			// await StopJob(job_id);
+			await DatabaseUpdateJobOrderIndex(job_id, 0);
+			await DatabaseUpdateJobStatus(job_id, {
+				worker_id: null,
+				transcode_stage: TranscodeStage.Stopped,
+				transcode_percentage: 0,
+				transcode_eta: 0,
+				transcode_fps_current: 0,
+				transcode_fps_average: 0,
+				time_started: 0,
+				time_finished: 0,
+			});
+			await UpdateQueue();
+
+			callback();
 		});
 
 		socket.on('transcode-update', async (job_id: number, status: JobStatusType) => {

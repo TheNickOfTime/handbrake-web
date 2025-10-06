@@ -220,7 +220,7 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 										throw err;
 									}
 
-									TranscodeFileCleanup();
+									await TranscodeFileCleanup();
 									socket.emit('transcode-finished', jobID, doneStatus);
 									jobLogger.info(`[transcode] [finished] 100.00%`);
 								} else {
@@ -263,17 +263,12 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 	}
 }
 
-export function StopTranscode(id: number, socket: Socket) {
+export async function StopTranscode(id: number, socket: Socket) {
 	if (handbrake) {
 		if (currentJob && currentJobID == id) {
 			if (socket.connected) {
-				const newStatus: UpdateJobStatusType = {
-					transcode_stage: TranscodeStage.Stopped,
-					transcode_percentage: 0,
-				};
-				TranscodeFileCleanup();
 				logger.info(`[transcode] Informing the server that job '${id}' has been stopped.`);
-				socket.emit('transcode-stopped', currentJobID, newStatus);
+				await TranscodeFileCleanup();
 			} else {
 				logger.error(
 					"[transcode] Cannot send the event 'transcode-stopped' because the server socket is not connected."
@@ -285,6 +280,37 @@ export function StopTranscode(id: number, socket: Socket) {
 			);
 		}
 		handbrake.kill();
+	} else {
+		logger.info(
+			`[transcode] The worker is not transcoding anything, there is no transcode to stop.`
+		);
+	}
+}
+
+export async function SelfStopTranscode(socket: Socket) {
+	if (handbrake) {
+		handbrake.kill();
+
+		if (currentJob && currentJobID) {
+			if (socket.connected) {
+				logger.info(
+					`[transcode] Informing the server that job '${currentJobID}' has been stopped.`
+				);
+				await socket.emitWithAck('transcode-stopped', currentJobID);
+				logger.info(
+					`[transcode] The server has acknowledged that job '${currentJobID}' has been stopped.`
+				);
+				await TranscodeFileCleanup();
+			} else {
+				logger.error(
+					"[transcode] Cannot send the event 'transcode-stopped' because the server socket is not connected."
+				);
+			}
+		} else {
+			logger.error(
+				"[transcode] Cannot send the event 'transcode-stopped' because the current job is null."
+			);
+		}
 	} else {
 		logger.info(
 			`[transcode] The worker is not transcoding anything, there is no transcode to stop.`
@@ -333,6 +359,7 @@ async function TranscodeFileCleanup() {
 		if (presetExists) {
 			try {
 				await rm(presetPath);
+				console.log('wow', presetPath);
 				logger.info(`[transcode] Removed the preset file '${path.basename(presetPath)}'.`);
 			} catch (err) {
 				logger.error(
