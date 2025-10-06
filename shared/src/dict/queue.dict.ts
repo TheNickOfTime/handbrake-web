@@ -6,5 +6,6 @@ export const statusSorting: { [key in TranscodeStage]: number } = {
 	[TranscodeStage.Waiting]: 3,
 	[TranscodeStage.Stopped]: 4,
 	[TranscodeStage.Error]: 5,
-	[TranscodeStage.Finished]: 6,
+	[TranscodeStage.Unknown]: 6,
+	[TranscodeStage.Finished]: 7,
 };

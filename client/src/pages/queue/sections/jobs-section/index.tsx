@@ -30,7 +30,8 @@ export default function JobsSection({
 	const jobsInProgress: QueueType = queue.filter(
 		(job) =>
 			job.transcode_stage == TranscodeStage.Transcoding ||
-			job.transcode_stage == TranscodeStage.Scanning
+			job.transcode_stage == TranscodeStage.Scanning ||
+			job.transcode_stage == TranscodeStage.Unknown
 	);
 
 	const jobsWaiting: QueueType = queue.filter(

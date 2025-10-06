@@ -1,5 +1,6 @@
 import type { JobStatusType, JobType } from '@handbrake-web/shared/types/database';
 import { type HandbrakePresetType } from '@handbrake-web/shared/types/preset';
+import { QueueStatus } from '@handbrake-web/shared/types/queue';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import logger, { logPath, WriteWorkerLogToFile } from 'logging';
 import { AddWorker, RemoveWorker } from 'scripts/connections';
@@ -10,7 +11,14 @@ import {
 	DatabaseUpdateJobStatus,
 } from 'scripts/database/database-queue';
 import { GetDefaultPresetByName, GetPresetByName } from 'scripts/presets';
-import { GetQueue, StopJob, UpdateQueue, WorkerForAvailableJobs } from 'scripts/queue';
+import {
+	GetBusyWorkers,
+	GetQueue,
+	SetQueueStatus,
+	StopJob,
+	UpdateQueue,
+	WorkerForAvailableJobs,
+} from 'scripts/queue';
 import { Server } from 'socket.io';
 
 export default function WorkerSocket(io: Server) {
@@ -32,11 +40,11 @@ export default function WorkerSocket(io: Server) {
 					workerJob.transcode_stage != TranscodeStage.Transcoding)
 			) {
 				logger.warn(
-					`[socket] [warn] The server's information about job '' is out of date. Setting the job's worker and a generic transcode stage until we hear back from the worker again.`
+					`[socket] [warn] The server's information about job '${workerJob.job_id}' is out of date. Setting the job's worker and to the state 'Unknown' until we hear back from the worker again.`
 				);
 				await DatabaseUpdateJobStatus(existingJobID, {
 					worker_id: workerID,
-					transcode_stage: TranscodeStage.Scanning,
+					transcode_stage: TranscodeStage.Unknown,
 				});
 			}
 		} else {
@@ -44,16 +52,24 @@ export default function WorkerSocket(io: Server) {
 			WorkerForAvailableJobs(workerID);
 		}
 
-		socket.on('disconnect', async () => {
-			logger.info(`[socket] Worker '${workerID}' with ID '${socket.id}' has disconnected.`);
+		socket.on('disconnect', async (reason, details) => {
+			logger.info(
+				`[socket] Worker '${workerID}' with ID '${socket.id}' has disconnected with reason '${reason}'.`
+			);
 			RemoveWorker(socket);
 			const queue = await GetQueue();
 			const workersJob = queue.find((job) => job.worker_id == workerID);
 			if (workersJob) {
-				StopJob(workersJob.job_id);
+				// StopJob(workersJob.job_id);
+				// logger.info(
+				// 	`[socket] Disconnected worker '${workerID}' was working on job '${workersJob.job_id}' when disconnected - setting job to stopped.`
+				// );
 				logger.info(
-					`[socket] Disconnected worker '${workerID}' was working on job '${workersJob.job_id}' when disconnected - setting job to stopped.`
+					`[socket] Disconnected worker '${workerID}' was working on job '${workersJob.job_id}' when disconnected - setting job to 'unknown'.`
 				);
+				DatabaseUpdateJobStatus(workersJob.job_id, {
+					transcode_stage: TranscodeStage.Unknown,
+				});
 			}
 		});
 
@@ -80,12 +96,30 @@ export default function WorkerSocket(io: Server) {
 			}
 		);
 
-		socket.on('transcode-stopped', (job_id: number, status: JobStatusType) => {
+		socket.on('transcode-stopped', async (job_id: number, callback: () => void) => {
 			logger.info(
 				`[socket] Worker '${workerID}' with ID '${socket.id}' has stopped transcoding.`
 			);
 
-			// StopJob(job_id);
+			// await StopJob(job_id);
+			await DatabaseUpdateJobOrderIndex(job_id, 0);
+			await DatabaseUpdateJobStatus(job_id, {
+				worker_id: null,
+				transcode_stage: TranscodeStage.Stopped,
+				transcode_percentage: 0,
+				transcode_eta: 0,
+				transcode_fps_current: 0,
+				transcode_fps_average: 0,
+				time_started: 0,
+				time_finished: 0,
+			});
+			await UpdateQueue();
+			if ((await GetBusyWorkers()).length == 0) {
+				SetQueueStatus(QueueStatus.Idle);
+				logger.info("[queue] There are no active workers, setting queue to 'Idle'.");
+			}
+
+			callback();
 		});
 
 		socket.on('transcode-update', async (job_id: number, status: JobStatusType) => {
