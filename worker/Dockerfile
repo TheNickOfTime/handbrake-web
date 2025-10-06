@@ -45,7 +45,7 @@ COPY --from=worker-build --chown=nonroot /video /video
 
 # Default environment variables
 ENV HANDBRAKE_MODE=worker
-ENV DATA_PATH=/tmp
+ENV DATA_PATH=/tmp/handbrake-web
 ENV VIDEO_PATH=/video
 
 # # Start application
