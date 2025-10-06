@@ -4,13 +4,13 @@ import { Kysely, Migrator, ParseJSONResultsPlugin, SqliteDialect } from 'kysely'
 import logger from 'logging';
 import fs from 'node:fs';
 import path from 'node:path';
-import { dataPath } from '../data';
+import { getDataPath } from 'scripts/data';
 import { SqliteBooleanPlugin } from './plugins/boolean';
 import { CustomMigrationProvider } from './plugins/provider';
 import { InitializeDatabaseTables, isDatabaseInitialized } from './utilities/init';
 import { RunMigrations, SkipToLatestMigration } from './utilities/migrator';
 
-export const databasePath = path.join(dataPath, 'handbrake.db');
+export const databasePath = path.join(getDataPath(), 'handbrake.db');
 export const databaseVersion = 1;
 
 const databaseFileExists = fs.existsSync(databasePath);

@@ -7,9 +7,9 @@ import fs from 'fs';
 import { readFile, writeFile } from 'fs/promises';
 import logger from 'logging';
 import path from 'path';
+import { getDataPath } from 'scripts/data';
 import { parse, stringify } from 'yaml';
 import { EmitToAllClients } from '../connections';
-import { dataPath } from '../data';
 import { RunMigrations } from './utilities/migrator';
 
 // Defines the latest config schema and default values
@@ -32,7 +32,7 @@ const defaultConfig: ConfigType = {
 	},
 };
 
-export const configFilePath = path.join(dataPath, 'config.yaml');
+export const configFilePath = path.join(getDataPath(), 'config.yaml');
 
 // Initialize configuration with defaults
 let config = JSON.parse(JSON.stringify(defaultConfig)) as ConfigType;

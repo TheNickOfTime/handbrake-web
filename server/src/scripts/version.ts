@@ -6,15 +6,15 @@ import logger from 'logging';
 import path, { resolve } from 'path';
 import { cwd } from 'process';
 import { GetConfig } from './config/config';
-import { dataPath } from './data';
+import { getDataPath } from './data';
 import { DatabaseSelectStatusByID, DatabaseUpdateStatus } from './database/database-status';
 
 const currentVersion = `v${
 	JSON.parse(readFileSync(resolve(cwd(), 'package.json'), { encoding: 'utf-8' })).version
 }`;
 
-const currentReleaseInfoPath = path.join(dataPath, 'version-info.json');
-const latestReleaseInfoPath = path.join(dataPath, 'update-info.json');
+const currentReleaseInfoPath = path.join(getDataPath(), 'version-info.json');
+const latestReleaseInfoPath = path.join(getDataPath(), 'update-info.json');
 
 let currentReleaseInfo: GithubReleaseResponseType | null = null;
 let latestReleaseInfo: GithubReleaseResponseType | null = null;
