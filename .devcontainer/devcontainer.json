@@ -22,7 +22,7 @@
     "SERVER_PORT": "9999",
     "CLIENT_PORT": "5173",
     "DATA_PATH": "/workspaces/handbrake-web/data",
-    "VIDEO_PATH": "/video",
+    "VIDEO_PATH": "/workspaces/handbrake-web/data/video",
     "SERVER_ID": "development-server",
     "WORKER_ID": "development-worker"
   },
