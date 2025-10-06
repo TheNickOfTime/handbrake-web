@@ -1,8 +1,11 @@
-import { Server } from 'node:http';
 import { Server as SocketServer } from 'socket.io';
 
-import { DatabaseDisconnect } from 'scripts/database/database';
 import logger from 'logging';
+import {
+	DisconnectAllClientConnections,
+	DisconnectAllWorkerConnections,
+} from 'scripts/connections';
+import { DatabaseDisconnect } from 'scripts/database/database';
 
 export function RegisterExitListeners(socket: SocketServer) {
 	process.on('SIGINT', () => {
@@ -22,6 +25,11 @@ export function RegisterExitListeners(socket: SocketServer) {
 
 export default async function Shutdown(socket: SocketServer) {
 	try {
+		// Close all client and worker connections
+		logger.info(`[shutdown] Closing all socket connections...`);
+		DisconnectAllClientConnections();
+		DisconnectAllWorkerConnections();
+
 		// Shutdown the socket server
 		await new Promise<void>((resolve) => {
 			socket.close((err) => {
