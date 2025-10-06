@@ -18,6 +18,10 @@
       "default": "./build/funcs/*.js",
       "types": "./build/funcs/*.d.ts"
     },
+    "./scripts/*": {
+      "default": "./build/scripts/*.js",
+      "types": "./build/scripts/*.d.ts"
+    },
     "./types/*": {
       "default": "./build/types/*.js",
       "types": "./build/types/*.d.ts"
