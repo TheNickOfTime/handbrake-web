@@ -249,19 +249,25 @@ export async function AddJob(data: AddJobType) {
 export async function StartJob(job: DetailedJobType, worker: Worker) {
 	const workerID = GetWorkerID(worker);
 
-	await DatabaseUpdateJobStatus(job.job_id, {
-		worker_id: workerID,
-		time_started: new Date().getTime(),
-	});
-
-	worker.emit('start-transcode', job.job_id);
+	const returnedJobID: number = await worker.emitWithAck('start-transcode', job.job_id);
+	if (returnedJobID == job.job_id) {
+		logger.info(`[queue] Worker '${workerID}' has started work on job '${job.job_id}'.`);
+		await DatabaseUpdateJobStatus(job.job_id, {
+			worker_id: workerID,
+			time_started: new Date().getTime(),
+		});
+	} else {
+		logger.warn(
+			`[queue] [warn] Worker '${workerID}' is busy with another job and cannot start work on job '${job.job_id}'.`
+		);
+		await JobForAvailableWorkers(job.job_id);
+	}
 }
 
 export async function StopJob(job_id: number, isError: boolean = false) {
 	try {
-		console.log('wow');
 		const job = await DatabaseGetDetailedJobByID(job_id);
-		console.log('wow after');
+
 		// Tell the worker to stop transcoding
 		const worker = job.worker_id;
 		if (worker) {

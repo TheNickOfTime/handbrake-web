@@ -1,7 +1,7 @@
-import { Socket } from 'socket.io-client';
-import { StartTranscode, StopTranscode } from '../scripts/transcode';
-import { serverAddress } from '../worker-startup';
 import logger from 'logging';
+import { Socket } from 'socket.io-client';
+import { currentJobID, StartTranscode, StopTranscode } from '../scripts/transcode';
+import { serverAddress } from '../worker-startup';
 
 const workerID = process.env.WORKER_ID;
 
@@ -26,9 +26,32 @@ export default function ServerSocket(server: Socket) {
 		}
 	});
 
-	server.on('start-transcode', (jobID: number) => {
+	server.on('check-for-existing-job', (callback: (jobID: number | null) => void) => {
+		logger.info(`[socket] The server is requesting the status of this worker...`);
+		currentJobID
+			? logger.info(
+					`[socket] This worker is busy with job '${currentJobID}' - reporting to the server.`
+			  )
+			: logger.info(
+					`[socket] This worker is currently not busy with a job - reporting to the server.`
+			  );
+		callback(currentJobID);
+	});
+
+	server.on('start-transcode', async (jobID: number, callback: (jobID: number) => void) => {
 		logger.info(`[socket] Request to transcode queue entry '${jobID}'.`);
-		StartTranscode(jobID, server);
+		if (currentJobID) {
+			logger.warn(
+				`[socket] [warn] This worker is busy with job '${currentJobID}' - reporting to the server.`
+			);
+		} else {
+			logger.info(
+				`[socket] This worker is currently not busy with a job - starting work on job '${jobID}'.`
+			);
+			await StartTranscode(jobID, server);
+		}
+
+		callback(currentJobID || jobID);
 	});
 
 	server.on('stop-transcode', (jobID: number) => {

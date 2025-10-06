@@ -1,8 +1,10 @@
 import type { JobStatusType, JobType } from '@handbrake-web/shared/types/database';
 import { type HandbrakePresetType } from '@handbrake-web/shared/types/preset';
+import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import logger, { logPath, WriteWorkerLogToFile } from 'logging';
 import { AddWorker, RemoveWorker } from 'scripts/connections';
 import {
+	DatabaseGetJobStatusByID,
 	DatabaseGetSimpleJobByID,
 	DatabaseUpdateJobOrderIndex,
 	DatabaseUpdateJobStatus,
@@ -12,12 +14,35 @@ import { GetQueue, StopJob, UpdateQueue, WorkerForAvailableJobs } from 'scripts/
 import { Server } from 'socket.io';
 
 export default function WorkerSocket(io: Server) {
-	io.of('/worker').on('connection', (socket) => {
+	io.of('/worker').on('connection', async (socket) => {
 		const workerID = socket.handshake.query['workerID'] as string;
 
 		logger.info(`[socket] Worker '${workerID}' has connected with ID '${socket.id}'.`);
 		AddWorker(socket);
-		WorkerForAvailableJobs(workerID);
+
+		logger.info(`[socket] Checking worker '${workerID}' for an existing job in progress...`);
+		const existingJobID = await socket.emitWithAck('check-for-existing-job');
+		if (existingJobID) {
+			logger.info(`[socket] Worker '${workerID}' is busy with job '${existingJobID}'.`);
+
+			const workerJob = await DatabaseGetJobStatusByID(existingJobID);
+			if (
+				workerJob.worker_id != workerID ||
+				(workerJob.transcode_stage != TranscodeStage.Scanning &&
+					workerJob.transcode_stage != TranscodeStage.Transcoding)
+			) {
+				logger.warn(
+					`[socket] [warn] The server's information about job '' is out of date. Setting the job's worker and a generic transcode stage until we hear back from the worker again.`
+				);
+				await DatabaseUpdateJobStatus(existingJobID, {
+					worker_id: workerID,
+					transcode_stage: TranscodeStage.Scanning,
+				});
+			}
+		} else {
+			logger.info(`[socket] Worker '${workerID}' is not busy with an existing job.`);
+			WorkerForAvailableJobs(workerID);
+		}
 
 		socket.on('disconnect', async () => {
 			logger.info(`[socket] Worker '${workerID}' with ID '${socket.id}' has disconnected.`);
@@ -27,7 +52,7 @@ export default function WorkerSocket(io: Server) {
 			if (workersJob) {
 				StopJob(workersJob.job_id);
 				logger.info(
-					`[socket] Disconnected worker '${workerID}' was working on job '${workersJob}' when disconnected - setting job to stopped.`
+					`[socket] Disconnected worker '${workerID}' was working on job '${workersJob.job_id}' when disconnected - setting job to stopped.`
 				);
 			}
 		});
