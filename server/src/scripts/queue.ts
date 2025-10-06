@@ -72,14 +72,10 @@ export async function InitializeQueue() {
 }
 
 export async function GetBusyWorkers() {
-	const busyWorkers = GetWorkers().filter(async (worker) => {
-		const queue = await GetQueue();
+	const busyWorkers = [...new Set((await GetQueue()).map((job) => job.worker_id))].filter(
+		(value) => value != null
+	);
 
-		return queue
-			.filter((job) => job.worker_id != null)
-			.map((job) => job.worker_id)
-			.includes(GetWorkerID(worker));
-	});
 	return busyWorkers;
 }
 
