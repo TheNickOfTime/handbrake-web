@@ -258,7 +258,7 @@ export async function StartJob(job: DetailedJobType, worker: Worker) {
 		});
 	} else {
 		logger.warn(
-			`[queue] [warn] Worker '${workerID}' is busy with another job and cannot start work on job '${job.job_id}'.`
+			`[queue] [warn] Worker '${workerID}' is busy with another job and cannot start work on job '${job.job_id}'. Checking for available workers again...`
 		);
 		await JobForAvailableWorkers(job.job_id);
 	}
