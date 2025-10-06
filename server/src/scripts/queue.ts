@@ -61,10 +61,10 @@ export async function InitializeQueue() {
 			job.transcode_stage == TranscodeStage.Scanning ||
 			job.transcode_stage == TranscodeStage.Transcoding
 		) {
-			StopJob(job.job_id);
+			DatabaseUpdateJobStatus(job.job_id, { transcode_stage: TranscodeStage.Unknown });
 
 			logger.info(
-				`[server] [queue] Job '${job.job_id}' was loaded from the database in an unfinished state. The job will be updated to 'Stopped'.`
+				`[server] [queue] Job '${job.job_id}' was loaded from the database in an unfinished state. The job's state will be updated to 'Unknown'.`
 			);
 		}
 	});

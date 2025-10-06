@@ -32,11 +32,11 @@ export default function WorkerSocket(io: Server) {
 					workerJob.transcode_stage != TranscodeStage.Transcoding)
 			) {
 				logger.warn(
-					`[socket] [warn] The server's information about job '' is out of date. Setting the job's worker and a generic transcode stage until we hear back from the worker again.`
+					`[socket] [warn] The server's information about job '${workerJob.job_id}' is out of date. Setting the job's worker and to the state 'Unknown' until we hear back from the worker again.`
 				);
 				await DatabaseUpdateJobStatus(existingJobID, {
 					worker_id: workerID,
-					transcode_stage: TranscodeStage.Scanning,
+					transcode_stage: TranscodeStage.Unknown,
 				});
 			}
 		} else {
@@ -44,16 +44,24 @@ export default function WorkerSocket(io: Server) {
 			WorkerForAvailableJobs(workerID);
 		}
 
-		socket.on('disconnect', async () => {
-			logger.info(`[socket] Worker '${workerID}' with ID '${socket.id}' has disconnected.`);
+		socket.on('disconnect', async (reason, details) => {
+			logger.info(
+				`[socket] Worker '${workerID}' with ID '${socket.id}' has disconnected with reason '${reason}'.`
+			);
 			RemoveWorker(socket);
 			const queue = await GetQueue();
 			const workersJob = queue.find((job) => job.worker_id == workerID);
 			if (workersJob) {
-				StopJob(workersJob.job_id);
+				// StopJob(workersJob.job_id);
+				// logger.info(
+				// 	`[socket] Disconnected worker '${workerID}' was working on job '${workersJob.job_id}' when disconnected - setting job to stopped.`
+				// );
 				logger.info(
-					`[socket] Disconnected worker '${workerID}' was working on job '${workersJob.job_id}' when disconnected - setting job to stopped.`
+					`[socket] Disconnected worker '${workerID}' was working on job '${workersJob.job_id}' when disconnected - setting job to 'unknown'.`
 				);
+				DatabaseUpdateJobStatus(workersJob.job_id, {
+					transcode_stage: TranscodeStage.Unknown,
+				});
 			}
 		});
 
