@@ -107,7 +107,7 @@ export async function JobForAvailableWorkers(jobID: number) {
 		if (availableWorkers.length > 0) {
 			const selectedWorker = availableWorkers[0];
 			const job = await DatabaseGetDetailedJobByID(jobID);
-			StartJob(job, selectedWorker);
+			await StartJob(job, selectedWorker);
 			if ((await GetQueueStatus()) != QueueStatus.Active) {
 				SetQueueStatus(QueueStatus.Active);
 			}
