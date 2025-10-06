@@ -51,7 +51,9 @@ export default function CreateJob({ onClose }: Properties) {
 
 	const getOutputExtensionFromPreset = (category: string, name: string) =>
 		PresetFormatDict[
-			(isDefaultPreset ? defaultPresets : presets)[category][name].PresetList[0].FileFormat
+			(isDefaultPreset
+				? defaultPresets[category.replace(/[Dd]efault: /, '')]
+				: presets[category])[name].PresetList[0].FileFormat
 		];
 
 	const canSubmit =
