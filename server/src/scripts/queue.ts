@@ -80,13 +80,12 @@ export async function GetBusyWorkers() {
 }
 
 export async function GetAvailableWorkers() {
-	const availableWorkers = GetWorkers().filter(async (worker) => {
-		const queue = await GetQueue();
+	const busyWorkers = await GetBusyWorkers();
 
-		return !Object.values(queue)
-			.filter((job) => job.worker_id != null)
-			.map((job) => job.worker_id)
-			.includes(GetWorkerID(worker));
+	const availableWorkers = GetWorkers().filter((worker) => {
+		const workerID = GetWorkerID(worker);
+
+		return !busyWorkers.includes(workerID);
 	});
 	return availableWorkers;
 }
@@ -108,7 +107,7 @@ export async function JobForAvailableWorkers(jobID: number) {
 		if (availableWorkers.length > 0) {
 			const selectedWorker = availableWorkers[0];
 			const job = await DatabaseGetDetailedJobByID(jobID);
-			StartJob(job, selectedWorker);
+			await StartJob(job, selectedWorker);
 			if ((await GetQueueStatus()) != QueueStatus.Active) {
 				SetQueueStatus(QueueStatus.Active);
 			}
@@ -250,19 +249,25 @@ export async function AddJob(data: AddJobType) {
 export async function StartJob(job: DetailedJobType, worker: Worker) {
 	const workerID = GetWorkerID(worker);
 
-	await DatabaseUpdateJobStatus(job.job_id, {
-		worker_id: workerID,
-		time_started: new Date().getTime(),
-	});
-
-	worker.emit('start-transcode', job.job_id);
+	const returnedJobID: number = await worker.emitWithAck('start-transcode', job.job_id);
+	if (returnedJobID == job.job_id) {
+		logger.info(`[queue] Worker '${workerID}' has started work on job '${job.job_id}'.`);
+		await DatabaseUpdateJobStatus(job.job_id, {
+			worker_id: workerID,
+			time_started: new Date().getTime(),
+		});
+	} else {
+		logger.warn(
+			`[queue] [warn] Worker '${workerID}' is busy with another job and cannot start work on job '${job.job_id}'. Checking for available workers again...`
+		);
+		await JobForAvailableWorkers(job.job_id);
+	}
 }
 
 export async function StopJob(job_id: number, isError: boolean = false) {
 	try {
-		console.log('wow');
 		const job = await DatabaseGetDetailedJobByID(job_id);
-		console.log('wow after');
+
 		// Tell the worker to stop transcoding
 		const worker = job.worker_id;
 		if (worker) {
