@@ -267,6 +267,18 @@ export async function StopTranscode(id: number, socket: Socket) {
 	if (handbrake) {
 		handbrake.kill();
 
+		// Wait until the handbrake process has exited, checking once every 100ms
+		await (async () => {
+			logger.info(`[transcode] Waiting for the HandBrake child process to exit.`);
+
+			while (!handbrake.killed) {
+				logger.info(`[transcode] Still waiting for the HandBrake child process to exit.`);
+				await new Promise((res) => setTimeout(res, 100));
+			}
+
+			logger.info(`[transcode] The HandBrake child process has exited.`);
+		})();
+
 		if (currentJob && currentJobID == id) {
 			if (socket.connected) {
 				logger.info(`[transcode] Informing the server that job '${id}' has been stopped.`);
@@ -291,6 +303,18 @@ export async function StopTranscode(id: number, socket: Socket) {
 export async function SelfStopTranscode(socket: Socket) {
 	if (handbrake) {
 		handbrake.kill();
+
+		// Wait until the handbrake process has exited, checking once every 100ms
+		await (async () => {
+			logger.info(`[transcode] Waiting for the HandBrake child process to exit.`);
+
+			while (!handbrake.killed) {
+				logger.info(`[transcode] Still waiting for the HandBrake child process to exit.`);
+				await new Promise((res) => setTimeout(res, 100));
+			}
+
+			logger.info(`[transcode] The HandBrake child process has exited.`);
+		})();
 
 		if (currentJob && currentJobID) {
 			if (socket.connected) {
