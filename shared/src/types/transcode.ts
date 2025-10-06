@@ -5,4 +5,5 @@ export enum TranscodeStage {
 	Finished,
 	Stopped,
 	Error,
+	Unknown,
 }
