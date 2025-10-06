@@ -29,12 +29,12 @@
   },
   "dependencies": {
     "kysely": "^0.28.7",
-    "winston": "^3.17.0",
+    "winston": "^3.18.3",
     "winston-daily-rotate-file": "^5.0.0",
     "winston-transport": "^4.9.0"
   },
   "devDependencies": {
-    "@types/node": "^24.5.2",
-    "typescript": "^5.9.2"
+    "@types/node": "^24.7.0",
+    "typescript": "^5.9.3"
   }
 }
