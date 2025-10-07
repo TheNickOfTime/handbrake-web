@@ -4,7 +4,7 @@ import {
 	HandbrakePresetType,
 } from '@handbrake-web/shared/types/preset';
 import WarningIcon from '@icons/exclamation-circle-fill.svg?react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Socket } from 'socket.io-client';
 import ButtonInput from '~components/base/inputs/button';
 import SelectInput from '~components/base/inputs/select';
@@ -28,10 +28,6 @@ export default function UploadPreset({ socket, presets, handleClose }: Propertie
 	const [newCategory, setNewCategory] = useState('');
 	const [presetName, setPresetName] = useState('');
 
-	useEffect(() => {
-		console.log(presetCategory, newCategory);
-	}, [presetCategory]);
-
 	const handlePresetFile = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
 		if (file && file.type == 'application/json') {
@@ -41,7 +37,9 @@ export default function UploadPreset({ socket, presets, handleClose }: Propertie
 				const json: HandbrakePresetType = JSON.parse(result!);
 				setPreset(json);
 				setPresetName(json.PresetList[0].PresetName);
-				console.log(`[client] Preset has been updated to '${presetName}'`);
+				console.log(
+					`[client] Preset has been updated to '${json.PresetList[0].PresetName}'`
+				);
 			};
 			reader.readAsText(file);
 		}

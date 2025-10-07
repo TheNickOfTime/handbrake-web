@@ -53,13 +53,6 @@ export default function PresetCard({
 	const presetData = preset.PresetList[0];
 	const tabs = ['Summary', 'Dimensions', 'Filters', 'Video', 'Audio', 'Subtitles', 'Chapters'];
 
-	console.log(
-		queue.find(
-			(job) =>
-				category == job.preset_category && preset.PresetList[0].PresetName == job.preset_id
-		)
-	);
-
 	const canModifyDefault = canModify;
 
 	canModify =

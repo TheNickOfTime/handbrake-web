@@ -385,7 +385,6 @@ async function TranscodeFileCleanup() {
 		if (presetExists) {
 			try {
 				await rm(presetPath);
-				console.log('wow', presetPath);
 				logger.info(`[transcode] Removed the preset file '${path.basename(presetPath)}'.`);
 			} catch (err) {
 				logger.error(

@@ -230,7 +230,6 @@ async function onWatcherDetectFileAdd(watcher: DetailedWatcherType, filePath: st
 							break;
 					}
 
-					console.log(rule.name, comparisonMethod);
 					let result =
 						comparisonMethod == WatcherRuleComparisonMethods.String
 							? WatcherRuleStringComparison(

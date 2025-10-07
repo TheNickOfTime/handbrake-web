@@ -139,7 +139,7 @@ export async function WorkerForAvailableJobs(workerID: string) {
 					SetQueueStatus(QueueStatus.Active);
 				}
 				logger.info(
-					`[server] [queue] Found job with ID '${selectedJob}' for worker with ID '${workerID}'.`
+					`[server] [queue] Found job with ID '${selectedJob.job_id}' for worker with ID '${workerID}'.`
 				);
 			}
 		} else {
@@ -356,7 +356,7 @@ export async function ClearQueue(clientID: string, finishedOnly: boolean = false
 			case TranscodeStage.Finished:
 				await DatabaseRemoveJobByID(job.job_id);
 				logger.info(
-					`[server] Removing job '${job}' from the queue due to being 'Finished'.`
+					`[server] Removing job '${job.job_id}' from the queue due to being 'Finished'.`
 				);
 				break;
 			case TranscodeStage.Stopped:

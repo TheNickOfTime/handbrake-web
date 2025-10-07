@@ -82,10 +82,12 @@ export default function PrimaryLayout() {
 		setQueue(queue);
 	};
 
-	const onQueueStatusUpdate = (queueStatus: QueueStatus) => {
+	const onQueueStatusUpdate = (newQueueStatus: QueueStatus) => {
 		const prevStatus = queueStatus;
-		console.log(`[client] The queue status has changed from ${prevStatus} to ${queueStatus}`);
-		setQueueStatus(queueStatus);
+		console.log(
+			`[client] The queue status has changed from '${QueueStatus[prevStatus]}' to '${QueueStatus[newQueueStatus]}'`
+		);
+		setQueueStatus(newQueueStatus);
 	};
 
 	const onPresetsUpdate = (presets: HandbrakePresetCategoryType) => {
