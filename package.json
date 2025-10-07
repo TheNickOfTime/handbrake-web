@@ -7,7 +7,16 @@
     "url": "https://git.goodforyou.games/ncunningham/handbrake-web.git"
   },
   "scripts": {
-    "cleanup": "git checkout main && git fetch --prune && git branch | grep -v 'main' | xargs git branch -D"
+    "dev:client": "cd client && pnpm dev",
+    "dev:server": "cd server && pnpm dev",
+    "dev:worker": "cd worker && pnpm dev",
+    "build:client": "cd client && pnpm build",
+    "build:server": "cd server && pnpm build",
+    "build:shared": "cd shared && pnpm build",
+    "build:worker": "cd worker && pnpm build",
+    "prod:server": "cd server && pnpm prod",
+    "prod:worker": "cd worker && pnpm prod",
+    "git:cleanup": "git checkout main && git fetch --prune && git branch | grep -v 'main' | xargs git branch -D"
   },
   "packageManager": "pnpm@10.16.1"
 }
