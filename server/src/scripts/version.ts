@@ -45,7 +45,6 @@ export async function CheckForVersionUpdate() {
 
 		const updateInfo = await ReadReleaseInfo(latestReleaseInfoPath);
 		if (updateInfo) {
-			console.log(updateInfo.name);
 			if (compare(updateInfo.name, currentVersion, '>')) {
 				latestReleaseInfo = updateInfo;
 			} else {

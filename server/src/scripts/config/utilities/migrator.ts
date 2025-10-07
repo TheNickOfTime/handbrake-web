@@ -33,8 +33,6 @@ export async function RunMigrations(latestVersion: number) {
 
 	const version = (currentConfig.config.version as number) || 0;
 
-	console.log(version);
-
 	if (version < latestVersion) {
 		// Get all migrations that need to be run
 		const allMigrations = {
