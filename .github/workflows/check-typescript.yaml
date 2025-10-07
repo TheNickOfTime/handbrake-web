@@ -5,6 +5,11 @@ on:
     branches:
       - main
       - release/**
+    paths:
+      - client/**
+      - server/**
+      - shared/**
+      - worker/**
 
 jobs:
   check-typescript:
@@ -15,6 +20,7 @@ jobs:
         application:
           - client
           - server
+          - shared
           - worker
 
     steps:
