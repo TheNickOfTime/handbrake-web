@@ -2,10 +2,10 @@ import type { Database } from 'better-sqlite3';
 import logger from 'logging';
 import { access, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { dataPath } from 'scripts/data';
+import { getDataPath } from 'scripts/data';
 
 export async function DatabaseBackup(sqlite: Database, name: string) {
-	const backupDir = join(dataPath, 'backup');
+	const backupDir = join(getDataPath(), 'backup');
 	const backupName = name + '.db';
 	const backupPath = join(backupDir, backupName);
 

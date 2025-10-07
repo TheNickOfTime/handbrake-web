@@ -1,9 +1,9 @@
 import { CreateRotatingFileLogger } from '@handbrake-web/shared/logger';
 import { readdir, rm, writeFile } from 'fs/promises';
 import path from 'path';
-import { dataPath } from './data';
+import { cwd } from 'process';
 
-export const logPath = path.join(dataPath, 'log');
+export const logPath = path.join(process.env.DATA_PATH || path.join(cwd(), '../data'), 'log');
 
 const logger = CreateRotatingFileLogger('server', 'server', logPath);
 

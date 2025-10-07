@@ -19,6 +19,7 @@ import logger, { SendLogToServer } from 'logging';
 import path from 'path';
 import { env } from 'process';
 import { Socket } from 'socket.io-client';
+import { getDataPath } from './data';
 
 let handbrake: ChildProcess | null = null;
 export const isTranscoding = () => handbrake != null;
@@ -84,7 +85,7 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 		const jobLogger = CreateFileLogger(
 			env.WORKER_ID!,
 			`${env.WORKERID!}-job-${jobID}`,
-			path.join(process.env.DATA_PATH!, 'log')
+			path.join(getDataPath(), 'log')
 		);
 
 		handbrake = spawn('HandBrakeCLI', [

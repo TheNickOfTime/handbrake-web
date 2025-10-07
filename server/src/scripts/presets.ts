@@ -9,10 +9,10 @@ import { access, mkdir, readdir, readFile, rm, writeFile } from 'fs/promises';
 import logger from 'logging';
 import path from 'path';
 import { EmitToAllClients } from './connections';
-import { dataPath } from './data';
+import { getDataPath } from './data';
 
 const defaultPresetsPath = '/var/lib/handbrake/preset_builtin.json';
-export const presetsPath = path.join(dataPath, '/presets');
+export const presetsPath = path.join(getDataPath(), '/presets');
 
 let presets: HandbrakePresetCategoryType = {};
 let defaultPresets: HandbrakePresetCategoryType = {};
@@ -118,7 +118,7 @@ export async function LoadPresets() {
 
 		// account for old presets
 		try {
-			const oldPresetsPath = path.join(dataPath, 'presets.json');
+			const oldPresetsPath = path.join(getDataPath(), 'presets.json');
 
 			await access(oldPresetsPath);
 
