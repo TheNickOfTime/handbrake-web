@@ -51,6 +51,12 @@ All contributions are welcome and would be greatly appreciated. The general proc
 
 All PRs will be subject to review and evaluation before being merged by the project maintainer. Different types of contributions come with additional requirements.
 
+> [!IMPORTANT]
+> AI-Generated contributions are not welcome - sorry this is a matter of principle for me. If you used an AI coding tool/assistant/companion to aid in aspects of a contribution, that is fine as long as the overwhelming majority of your contribution was made by your own hands/intellect. I'm not a machine (that's the whole point here) and I can't catch everything, so your honesty and respect for this would be appreciated.
+>
+> Thanks,
+> Nick (Project Maintainer)
+
 #### Bug Fixes
 
 If you are wanting to contribute a bug fix, please make sure an issue for said bug exists (or create a new one). In the PR, please reference the issue number for the bug you are fixing, and outline the changes your have made to fix the problem. Please label your PR with `type/bug` for clarity.
