@@ -101,9 +101,11 @@ HandBrake Web has three primary projects within it - the `client`, `server`, and
 
 For full application functionality, you will want to run all three components simultaneously. This can be done by opening multiple terminal tabs within Visual Studio Code.
 
-## But I don't want to use Dev Containers
+## But I don't want to use Dev Containers!
 
 Ok, sure - I know developers can be particular about this kind of stuff. You can try to setup your own development environment if you like, but it isn't "officially" supported - which is to say, I'm not sure how much I can help if you run into issues.
+
+### Development Dependencies
 
 To develop and run HandBrake Web, you will need to have the following installed:
 
@@ -113,6 +115,8 @@ To develop and run HandBrake Web, you will need to have the following installed:
 - [SQLite3](https://sqlite.org/) latest stable version
 
 The remainder of dependencies should be handled internally by node/pnpm.
+
+### Environment Variables
 
 You will also need to configure certain environment variables:
 
