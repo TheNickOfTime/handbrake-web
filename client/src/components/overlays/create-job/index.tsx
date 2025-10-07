@@ -334,31 +334,32 @@ export default function CreateJob({ onClose }: Properties) {
 			return file;
 		});
 
-		console.log(newOutputFiles);
-
-		(async function () {
-			const existingFiles: DirectoryItemsType = (await RequestDirectory(socket, outputPath))
-				.items;
-			if (jobFrom == JobFrom.FromFile) {
-				if (
-					existingFiles
-						.map((item) => item.name + item.extension)
-						.includes(newOutputFiles[0].name + newOutputFiles[0].extension)
-				) {
-					setNameCollision(true);
-				} else if (nameCollision) {
-					setNameCollision(false);
+		if (outputPath) {
+			(async function () {
+				const existingFiles: DirectoryItemsType = (
+					await RequestDirectory(socket, outputPath)
+				).items;
+				if (jobFrom == JobFrom.FromFile) {
+					if (
+						existingFiles
+							.map((item) => item.name + item.extension)
+							.includes(newOutputFiles[0].name + newOutputFiles[0].extension)
+					) {
+						setNameCollision(true);
+					} else if (nameCollision) {
+						setNameCollision(false);
+					}
+					setOutputFiles(newOutputFiles);
+				} else {
+					const dedupedOutputFiles = await socket.emitWithAck(
+						'check-name-collision',
+						outputPath,
+						newOutputFiles
+					);
+					setOutputFiles(dedupedOutputFiles);
 				}
-				setOutputFiles(newOutputFiles);
-			} else {
-				const dedupedOutputFiles = await socket.emitWithAck(
-					'check-name-collision',
-					outputPath,
-					newOutputFiles
-				);
-				setOutputFiles(dedupedOutputFiles);
-			}
-		})();
+			})();
+		}
 	};
 
 	const handleSeeMore = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

@@ -56,7 +56,8 @@ export async function GetDirectoryItems(absolutePath: string, recursive: boolean
 		// logger.info(result);
 		return result;
 	} catch (err) {
-		logger.error(err);
+		logger.error(`[files] Cannot get directory '${absolutePath}'.`);
+		throw err;
 	}
 }
 
