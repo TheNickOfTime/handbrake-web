@@ -48,7 +48,9 @@ export default function SettingsApplication() {
 				{Object.values(QueueStartupBehavior)
 					.filter((val) => typeof val != 'string')
 					.map((value) => (
-						<option value={value}>{QueueStartupBehavior[value]}</option>
+						<option value={value} key={value}>
+							{QueueStartupBehavior[value]}
+						</option>
 					))}
 			</SelectInput>
 		</Section>

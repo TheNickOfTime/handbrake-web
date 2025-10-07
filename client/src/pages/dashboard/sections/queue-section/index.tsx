@@ -72,7 +72,7 @@ export default function QueueSection({ queue }: Properties) {
 							// console.log(job.order_index);
 
 							return (
-								<tr key={`queue-job-${job}`}>
+								<tr key={`queue-job-${job.job_id}`}>
 									<td className={styles['order']} align='center'>
 										{job.order_index}
 									</td>

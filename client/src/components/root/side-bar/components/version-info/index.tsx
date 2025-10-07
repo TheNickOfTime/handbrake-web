@@ -18,7 +18,7 @@ export default function VersionInfo({ socket, config }: Params) {
 		const info: GithubReleaseResponseType | null = await socket.emitWithAck(
 			'get-current-version-info'
 		);
-		console.log(info ? info.name : info);
+		// console.log(info ? info.name : info);
 		setCurrentVersion(info);
 	};
 
@@ -26,7 +26,7 @@ export default function VersionInfo({ socket, config }: Params) {
 		const info: GithubReleaseResponseType | null = await socket.emitWithAck(
 			'get-latest-version-info'
 		);
-		console.log(info ? info.name : info);
+		// console.log(info ? info.name : info);
 		setLatestVersion(info);
 	};
 

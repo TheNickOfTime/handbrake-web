@@ -187,13 +187,11 @@ export default function ClientSocket(io: Server) {
 			'get-watchers',
 			async (callback: (watchers: DetailedWatcherType[] | undefined) => void) => {
 				const watchers = await DatabaseGetDetailedWatchers();
-				console.log(watchers);
 				callback(watchers);
 			}
 		);
 
 		socket.on('add-watcher', async (watcher: AddWatcherType) => {
-			logger.info(watcher);
 			await AddWatcher(watcher);
 		});
 

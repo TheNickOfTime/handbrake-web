@@ -85,7 +85,7 @@ export default function CreateJob({ onClose }: Properties) {
 	const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		event.preventDefault();
 
-		console.log(inputFiles, outputFiles);
+		// console.log(inputFiles, outputFiles);
 
 		// inputFiles.forEach(async (file, index) => {
 		// 	const outputFile = outputFiles[index];
@@ -115,11 +115,11 @@ export default function CreateJob({ onClose }: Properties) {
 	};
 
 	const handleFileInputConfirm = async (item: DirectoryItemType) => {
-		const prevPath =
-			inputFiles.length > 0
-				? inputFiles[0].path.replace(inputFiles[0].name + inputFiles[0].extension, '')
-				: undefined;
-		console.log(prevPath == outputPath);
+		// const prevPath =
+		// 	inputFiles.length > 0
+		// 		? inputFiles[0].path.replace(inputFiles[0].name + inputFiles[0].extension, '')
+		// 		: undefined;
+		// console.log(prevPath == outputPath);
 
 		// Set input variables
 		setInputPath(item.path);
