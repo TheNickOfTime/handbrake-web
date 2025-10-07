@@ -76,7 +76,9 @@ export async function CheckDirectoryPermissions(paths: string[], logger: Logger)
 	);
 
 	if (errors.length > 0) {
-		logger.error(`[permissions] There are ${errors.length} critical permissions errors.`);
+		logger.error(
+			`[permissions] There are ${errors.length} critical permissions errors. You can either change the user the container is being run as to one with adequate permissions in your Docker Compose file at the line that reads 'user: <your user>:<your group>' OR modify the permissions of the directories to match the user already speficied in your compose file (with 'sudo chown <your user>:<your group> -R <your directory>' for example).`
+		);
 		throw new AggregateError(errors);
 	}
 }
