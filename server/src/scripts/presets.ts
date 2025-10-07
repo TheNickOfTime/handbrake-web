@@ -8,10 +8,11 @@ import {
 import { access, mkdir, readdir, readFile, rm, writeFile } from 'fs/promises';
 import logger from 'logging';
 import path from 'path';
+import { env } from 'process';
 import { EmitToAllClients } from './connections';
 import { getDataPath } from './data';
 
-const defaultPresetsPath = '/var/lib/handbrake/preset_builtin.json';
+const defaultPresetsPath = env.DEFAULT_PRESETS_PATH || '/var/lib/handbrake/preset_builtin.json';
 export const presetsPath = path.join(getDataPath(), '/presets');
 
 let presets: HandbrakePresetCategoryType = {};
