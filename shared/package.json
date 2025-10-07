@@ -3,6 +3,7 @@
   "description": "HandBrake Web Shared",
   "scripts": {
     "build": "tsc -b",
+    "lint": "tsc --noEmit",
     "postinstall": "tsc -b"
   },
   "repository": {
