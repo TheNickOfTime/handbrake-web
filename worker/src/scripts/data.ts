@@ -1,12 +1,12 @@
+import type { CreateConsoleLogger } from '@handbrake-web/shared/logger';
 import { access, mkdir } from 'fs/promises';
 import path from 'path';
 import { cwd } from 'process';
-import logger from './logging';
 
 export const getDataPath = () => process.env.DATA_PATH || '/tmp/handbrake-web';
 export const getVideoPath = () => process.env.VIDEO_PATH || path.resolve(cwd(), '../video');
 
-export async function InitializeDataPath() {
+export async function InitializeDataPath(logger: ReturnType<typeof CreateConsoleLogger>) {
 	try {
 		await access(getDataPath());
 		if (getDataPath().match(/^\/tmp/)) {
