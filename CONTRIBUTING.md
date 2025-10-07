@@ -1,5 +1,5 @@
 <div align='center'>
-    <h1 style='{text-decoration: none}'>HandBrake Web</h1>
+    <h1 style='{text-decoration: none}'>Contributing to HandBrake Web</h1>
     <div align='center'>
       <a href='https://github.com/TheNickOfTime/handbrake-web/blob/main/LICENSE'>
         <img alt="GitHub License" src="https://img.shields.io/github/license/thenickoftime/handbrake-web?style=flat-square">
@@ -23,8 +23,6 @@
     </div>
     <img src='client/public/handbrake-icon.png' height=256px>
 </div>
-
-# How to contribute to HandBrake Web
 
 ## Guidelines
 
