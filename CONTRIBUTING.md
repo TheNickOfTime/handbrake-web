@@ -28,7 +28,42 @@
 
 ### Guidelines
 
-> This needs work...
+##### Did you find a bug?
+
+First, check if your issue already exists [here](https://github.com/TheNickOfTime/handbrake-web/issues?q=is%3Aissue%20label%3Atype%2Fbug). Be sure to check closed issues as well - issues may be fixed in development and have not seen a release yet!
+
+If your bug doesn't have an issue, go ahead and open a new one. Please use the _Bug Report_ issue template and fill out all possible information.
+
+##### Do you have a feature/improvement request?
+
+First, check if your feature/improvement has already been made/requested [here](https://github.com/TheNickOfTime/handbrake-web/issues?q=is%3Aissue%20label%3Atype%2Ffeature%20label%3Atype%2Fimprovement).
+
+If your feature/improvement request doesn't already have an issue, go ahead and open a new one. Please use the _Feature Request_ issue template and fill out all possible information.
+
+Please understand that development resources are limited right now, and there are a number of features/improvements already planned. Requesting a feature does not guarantee that it will be implemented at all or in a timely manner - though we will do our best to make it happen.
+
+##### Are you wanting to submit a code contribution to the project?
+
+All contributions are welcome and would be greatly appreciated. The general process for contributing involves the standard Git process of:
+
+1. Fork the project
+2. Clone your fork
+3. Work on your contribution in your fork
+4. Submit a pull request in this repository from your fork
+
+All PRs will be subject to review and evaluation before being merged by the project maintainer. Different types of contributions come with additional requirements.
+
+###### Bug Fixes
+
+If you are wanting to contribute a bug fix, please make sure an issue for said bug exists (or create a new one). In the PR, please reference the issue number for the bug you are fixing, and outline the changes your have made to fix the problem. Please label your PR with `type/bug` for clarity.
+
+###### New Features & Improvments
+
+If you are wanting to contribute a new feature or improvement, please make sure that an issue detailing said feature/improvement exists. In your PR, please reference the issue number for the feature/improvement your are addressing, and outline the changes you have made along with a personal evaluation of the risks you believe your code changes may carry. Please label your PR with either `type/feature` or `type/improvment` for clarity.
+
+###### Documentation
+
+If you are wanting to contribute to the project's documentation, feel free to open a pull request of your changes without an accompanying issue. To edit the project's GitHub Wiki, you can edit the files in the repository's `/docs` folder (a workflow publishes the contents of `/docs` to the wiki when merged to main). If you are making a new page in the wiki, please make sure to add a link to your page in `/docs/Home.md` so it can be found by others.
 
 ### Setting the development environment
 
