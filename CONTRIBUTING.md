@@ -12,16 +12,16 @@ HandBrake Web is configured to be developed using [Visual Studio Code Developmen
 
 - [Visual Studio Code](https://code.visualstudio.com/)
   - [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) plugin
-  - **If you are on Windows** - [WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) plugin
+  - [WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) plugin (_If you are on Windows_)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- **If you are on Windows** - [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install)
+- [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) (_If you are on Windows_)
 
 ##### Build and run the Dev Container
 
 1. Clone the repo.
    - If you are on Windows, do this _inside of_ WSL - not on the host system.
-2. Open the repository in Visual Studio Code.
-3. Press `F1` or `Ctrl + Alt + Shift + P` and search for "Dev Containers: Rebuild and Reopen in Container" - select it and push enter.
+2. Open the cloned repository in Visual Studio Code.
+3. Press `F1` or `Ctrl + Alt + Shift + P` and search for `Dev Containers: Rebuild and Reopen in Container` - select it and push enter.
 
 ##### Working with the monorepo
 
@@ -33,6 +33,8 @@ HandBrake Web has three primary projects within it - the `client`, `server`, and
    - `cd server`
    - `cd worker`
 3. Run `pnpm dev` inside that folder.
+
+For full application functionality, you will want to run all three components simultaneously. This can be done by opening multiple terminal tabs within Visual Studio Code.
 
 ### But I don't want to use Dev Containers
 
