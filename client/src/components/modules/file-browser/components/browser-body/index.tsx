@@ -88,7 +88,7 @@ export default function FileBrowserBody({
 				directory.items.map((child) => {
 					const isSelected = selectedItem?.path == child.path;
 					const mimeType = mime.getType(child.path);
-					// console.log(mimeType);
+					console.log(mimeType);
 
 					const onClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 						event.preventDefault();
@@ -104,7 +104,9 @@ export default function FileBrowserBody({
 
 					const disabled =
 						(!child.isDirectory && mode == FileBrowserMode.Directory) ||
-						(!child.isDirectory && !mimeType?.includes('video'));
+						(!child.isDirectory &&
+							!mimeType?.match(/^video\//) &&
+							!mimeType?.match(/application\/octet-stream/));
 
 					return (
 						<button
