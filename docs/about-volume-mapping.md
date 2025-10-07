@@ -2,6 +2,16 @@
 
 HandBrake Web relies on a consistent volume mapping across containers in order to ensure files are where the individual component programs expect them to be. This can be a little bit confusing, especially if you are newer to the self-hosting scene, or new to how Docker works. This page will hopefully cover everything you need to know about how volume mapping works with HandBrake Web.
 
+## TL;DR
+
+The server container and any worker containers use `/video` to read your input files and write your output files. It is necessary for both the contents and content structure of `/video` to be the same across all containers.
+
+For example, if your _server_ creates a job for a file at `/video/my-video.mov`, the _worker(s)_ also needs to be able to see a file at `/video/my-video.mov` in order to process it. Similarly, if a _worker_ writes a file to `/video/my-transcoded-video.mkv`, the _server_ expects to be able to see that file at `/video/my-transcoded-video.mkv`.
+
+If your server or worker are not on the same machine as your video files (on a NAS, for example), you can use SMB/NFS or another network protocol to make them accessible to the container's host machine, and pass the directory of that network mount into the server/worker container.
+
+It is recommended that you map an externally accessible (SMB, NFS, SFTP, WebDav, etc) directory to inside each container, so you can easily access/modify the files mapped to `/video`.
+
 ## What is volume mapping?
 
 Docker containers are essentially sandboxes, which means they only have access to the resources you give them. Storage is one of these resources, and if you do not map volumes to the inside of your container, those files will not persist once the container is shut down.
