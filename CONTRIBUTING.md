@@ -124,6 +124,6 @@ You will also need to configure certain environment variables:
 - `SERVER_ID`: The name/id of the development server.
 - `WORKER_ID`: The name/id of the development worker.
 
-Finally, you will need to download a copy of [preset_builtin.json](https://github.com/HandBrake/HandBrake/blob/master/preset/preset_builtin.json) from HandBrake's official repository. The application expects it to be stored at `/var/lib/handbrake-web/preset_builtin.json` but you can override this with the environment variable `DEFAULT_PRESETS_LOCATION`.
+Finally, you will need to download a copy of [preset_builtin.json](https://github.com/HandBrake/HandBrake/blob/master/preset/preset_builtin.json) from HandBrake's official repository. The application expects it to be stored at `/var/lib/handbrake/preset_builtin.json` but you can override this with the environment variable `DEFAULT_PRESETS_PATH`.
 
 I _think_ that should do it, but there may be things I have missed when thinking this through. If that is the case, let me know, and I will do my best to amend this guide or make changes to accommodate other development environments.
