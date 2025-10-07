@@ -24,17 +24,17 @@
     <img src='client/public/handbrake-icon.png' height=256px>
 </div>
 
-## How to contribute to HandBrake Web
+# How to contribute to HandBrake Web
 
-### Guidelines
+## Guidelines
 
-##### Did you find a bug?
+### Did you find a bug?
 
 First, check if your issue already exists [here](https://github.com/TheNickOfTime/handbrake-web/issues?q=is%3Aissue%20label%3Atype%2Fbug). Be sure to check closed issues as well - issues may be fixed in development and have not seen a release yet!
 
 If your bug doesn't have an issue, go ahead and open a new one. Please use the _Bug Report_ issue template and fill out all possible information.
 
-##### Do you have a feature/improvement request?
+### Do you have a feature/improvement request?
 
 First, check if your feature/improvement has already been made/requested [here](https://github.com/TheNickOfTime/handbrake-web/issues?q=is%3Aissue%20label%3Atype%2Ffeature%20label%3Atype%2Fimprovement).
 
@@ -42,7 +42,7 @@ If your feature/improvement request doesn't already have an issue, go ahead and 
 
 Please understand that development resources are limited right now, and there are a number of features/improvements already planned. Requesting a feature does not guarantee that it will be implemented at all or in a timely manner - though we will do our best to make it happen.
 
-##### Are you wanting to submit a code contribution to the project?
+### Are you wanting to submit a code contribution to the project?
 
 All contributions are welcome and would be greatly appreciated. The general process for contributing involves the standard Git process of:
 
@@ -53,23 +53,23 @@ All contributions are welcome and would be greatly appreciated. The general proc
 
 All PRs will be subject to review and evaluation before being merged by the project maintainer. Different types of contributions come with additional requirements.
 
-###### Bug Fixes
+#### Bug Fixes
 
 If you are wanting to contribute a bug fix, please make sure an issue for said bug exists (or create a new one). In the PR, please reference the issue number for the bug you are fixing, and outline the changes your have made to fix the problem. Please label your PR with `type/bug` for clarity.
 
-###### New Features & Improvments
+#### New Features & Improvments
 
 If you are wanting to contribute a new feature or improvement, please make sure that an issue detailing said feature/improvement exists. In your PR, please reference the issue number for the feature/improvement your are addressing, and outline the changes you have made along with a personal evaluation of the risks you believe your code changes may carry. Please label your PR with either `type/feature` or `type/improvment` for clarity.
 
-###### Documentation
+#### Documentation
 
 If you are wanting to contribute to the project's documentation, feel free to open a pull request of your changes without an accompanying issue. To edit the project's GitHub Wiki, you can edit the files in the repository's `/docs` folder (a workflow publishes the contents of `/docs` to the wiki when merged to main). If you are making a new page in the wiki, please make sure to add a link to your page in `/docs/Home.md` so it can be found by others.
 
-### Setting the development environment
+## Setting the development environment
 
 HandBrake Web is configured to be developed using [Visual Studio Code Development Containers](https://containers.dev/). If you are unfamiliar with Dev Containers, essentially they allow you to create a reproducible & sandboxed development environment inside of a Docker Container that Visual Studio Code can seamlessly interface with. Dev Containers provide a variety of benefits (and some hurdles too, admittedly), but most importantly, it makes getting setup relatively easy/straight-forward and ensures your development environment is exactly what it should be.
 
-##### Install prerequisites
+### Install prerequisites
 
 - [Visual Studio Code](https://code.visualstudio.com/)
   - [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) plugin
@@ -77,14 +77,14 @@ HandBrake Web is configured to be developed using [Visual Studio Code Developmen
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) (_If you are on Windows_)
 
-##### Build and run the Dev Container
+### Build and run the Dev Container
 
 1. Clone the repo.
    - If you are on Windows, do this _inside of_ WSL - not on the host system.
 2. Open the cloned repository in Visual Studio Code.
 3. Press `F1` or `Ctrl + Alt + Shift + P` and search for `Dev Containers: Rebuild and Reopen in Container` - select it and push enter.
 
-##### Working with the monorepo
+### Working with the monorepo
 
 HandBrake Web has three primary projects within it - the `client`, `server`, and `worker` projects. There's also a "bonus" project `shared` that contains common resources for the three core projects. To run the various projects components, open a terminal inside of VS Code and:
 
@@ -97,7 +97,7 @@ HandBrake Web has three primary projects within it - the `client`, `server`, and
 
 For full application functionality, you will want to run all three components simultaneously. This can be done by opening multiple terminal tabs within Visual Studio Code.
 
-### But I don't want to use Dev Containers
+## But I don't want to use Dev Containers
 
 Ok, sure - I know developers can be particular about this kind of stuff. You can try to setup your own development environment if you like, but it isn't "officially" supported - which is to say, I'm not sure how much I can help if you run into issues.
 
