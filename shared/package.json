@@ -12,24 +12,24 @@
   },
   "exports": {
     "./dict/*": {
-      "default": "./build/dict/*.js",
-      "types": "./build/dict/*.d.ts"
+      "types": "./build/dict/*.d.ts",
+      "default": "./build/dict/*.js"
     },
     "./funcs/*": {
-      "default": "./build/funcs/*.js",
-      "types": "./build/funcs/*.d.ts"
+      "types": "./build/funcs/*.d.ts",
+      "default": "./build/funcs/*.js"
     },
     "./scripts/*": {
-      "default": "./build/scripts/*.js",
-      "types": "./build/scripts/*.d.ts"
+      "types": "./build/scripts/*.d.ts",
+      "default": "./build/scripts/*.js"
     },
     "./types/*": {
-      "default": "./build/types/*.js",
-      "types": "./build/types/*.d.ts"
+      "types": "./build/types/*.d.ts",
+      "default": "./build/types/*.js"
     },
     "./logger": {
-      "types": "./build/logger/index.d.ts",
-      "default": "./build/logger/index.js"
+      "default": "./build/logger/index.js",
+      "types": "./build/logger/index.d.ts"
     }
   },
   "dependencies": {
