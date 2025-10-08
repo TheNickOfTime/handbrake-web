@@ -1,5 +1,3 @@
-# About Volume Mapping
-
 HandBrake Web relies on a consistent volume mapping across containers in order to ensure files are where the individual component programs expect them to be. This can be a little bit confusing, especially if you are newer to the self-hosting scene, or new to how Docker works. This page will hopefully cover everything you need to know about how volume mapping works with HandBrake Web.
 
 ## TL;DR
