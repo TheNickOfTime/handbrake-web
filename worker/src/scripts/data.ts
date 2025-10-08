@@ -22,7 +22,7 @@ export async function InitializeDataPath(logger: ReturnType<typeof CreateConsole
 		if (getDataPath().match(/^\/tmp/)) {
 			try {
 				logger.info(`Creating the data path at '${getDataPath()}'.`);
-				mkdir(getDataPath());
+				await mkdir(getDataPath());
 			} catch (err) {
 				logger.error(`[error] Could not create the data path at '${getDataPath()}'.`);
 				throw err;
