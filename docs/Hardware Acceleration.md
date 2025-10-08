@@ -1,5 +1,5 @@
 > [!WARNING]
-> Hardware Accelerated encoding is supported, but not recommended by the project. **Using hardware encoding will generally result in larger files with worse quality** at the same settings as CPU Transcoding, with the advantage of transcoding (sometimes significantly) faster. **_If your goals are to produce the highest quality transcodes at the smallest file sizes, stick to CPU transcoding_**.
+> Hardware Accelerated encoding is supported by HandBrake itself, but not recommended for use by HandBrake Web. **_Using hardware encoding will generally result in larger files with worse quality_** at the same settings as CPU Transcoding, with the advantage of transcoding (sometimes significantly) faster. **_If your goals are to produce the highest quality output files at the smallest file sizes, stick to CPU encoding_**.
 
 HandBrake has support for 5 different hardware encoders. HandBrake Web (due to it's Linux base) is theoretically compatible with Intel, Nvidia, and AMD hardware:
 
