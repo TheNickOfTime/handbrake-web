@@ -50,6 +50,7 @@ RUN apt-get install -y \
 
 # Install Intel QSV dependencies
 RUN apt-get install -y \
+	intel-media-va-driver-non-free \
 	libva-dev \
 	libdrm-dev
 
@@ -92,6 +93,10 @@ COPY --from=handbrake-build /handbrake/preset/preset_builtin.json /handbrake/pre
 
 # Copy HandBrake's libraries to /lib so this container can run HandBrake if desired
 COPY --from=handbrake-build /handbrake/lib/* /lib
+
+COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/dri/iHD_drv_video.so /usr/lib/x86_64-linux-gnu/dri/iHD_drv_video.so
+# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libva.so.2.2200.0 /usr/lib/x86_64-linux-gnu/libva.so.2.2200.0
+# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libigdgmm.so.12.7.0 /usr/lib/x86_64-linux-gnu/libigdgmm.so.12.7.0
 
 # Set the entrypoint to HandBrakeCLI so HandBrake can be run if desired
 ENTRYPOINT [ "/handbrake/HandBrakeCLI" ]
