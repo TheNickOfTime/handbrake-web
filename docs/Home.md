@@ -5,4 +5,4 @@
 
 ### Quick Links
 
-- [About Volume Mapping](./about-volume-mapping.md)
+- [[about-volume-mapping|About Volume Mapping]]
