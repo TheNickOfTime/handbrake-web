@@ -8,7 +8,7 @@ The server container and any worker containers use `/video` to read your input f
 
 For example, if your _server_ creates a job for a file at `/video/my-video.mov`, the _worker(s)_ also needs to be able to see a file at `/video/my-video.mov` in order to process it. Similarly, if a _worker_ writes a file to `/video/my-transcoded-video.mkv`, the _server_ expects to be able to see that file at `/video/my-transcoded-video.mkv`.
 
-If your server or worker are not on the same machine as your video files (on a NAS, for example), you can use SMB/NFS or another network protocol to make them accessible to the container's host machine, and pass the directory of that network mount into the server/worker container.
+If your server or worker are not on the same machine as your video files (on a NAS, for example), you can use SMB/NFS or another network protocol to make them accessible to the container's host machine, and map the directory of that network mount into the server/worker container.
 
 It is recommended that you map an externally accessible (SMB, NFS, SFTP, WebDav, etc) directory to inside each container, so you can easily access/modify the files mapped to `/video`.
 
@@ -127,3 +127,20 @@ In this scenario, the server and worker are both running on one machine (let's s
 - The worker has `/mnt/cloud/media/video` mapped to `/video`
 
 This is likely to fail, for many of the same reasons that network synchronization would also fail. Moreover, the mechanisms that cloud storage providers use to load/offload files from/to the cloud are inconsistent and unpredictable.
+
+## Accessing your `/video` files outside of the containers
+
+This is really up to you and determined by your setup, but the most convenient way of doing this would be to make the directory you have mapped to `/video` accessible via a network file protocol. Some common options for this would be:
+
+- SMB
+- NFS
+- FTP/SFTP
+- WebDAV
+
+## A note on permissions
+
+HandBrake Web recommends that you specify a user to run the containers as, which left unspecified defaults to `root` (which is increasingly considered bad practice). If you do specify a user (as recommended) you need to ensure that user has read & write permissions for the directories you map into the container.
+
+Upon startup, HandBrake Web performs a robust permissions check on `/data` and `/video`. If those root directories don't have adequate permissions, the application will not start up (it won't be able to perform basic actions like create log files, etc). For any other files/folders within those directories that don't have adequate permissions, warnings will be logged to the console.
+
+If you are running into permissions issues, you will have to fix these yourself. You will want to make sure that the permissions match the user you are running the containers as. So if you have `user: 1000:1000` written in your compose file, you could run the following command on your host machine `sudo chown 1000:1000 -R /your/directory/path`. There are other methods of modifying permissions without changing ownership, but that is beyond the scope of this.
