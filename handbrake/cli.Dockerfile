@@ -6,6 +6,6 @@ FROM handbrake-build:dev AS handbrake-build
 FROM gcr.io/distroless/base-debian12 AS main
 
 COPY --from=handbrake-build /rootfs/base/ /
-# COPY --from=handbrake-build /rootfs/extra/ /
+COPY --from=handbrake-build /rootfs/extra/ /
 
 ENTRYPOINT [ "/usr/local/bin/HandBrakeCLI" ]
