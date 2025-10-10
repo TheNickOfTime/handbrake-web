@@ -90,25 +90,25 @@ RUN apt-get install -y \
 	intel-media-va-driver-non-free
 
 # Prepare rootfs for final image
-RUN mkdir /finalfs
-WORKDIR /finalfs
+RUN mkdir /rootfs
+WORKDIR /rootfs
 
 # Copy HandBrake to rootfs
-RUN mkdir -p /finalfs/usr/local/bin && \
-	cp /handbrake/build/HandBrakeCLI /finalfs/usr/local/bin/HandBrakeCLI
-RUN mkdir -p /finalfs/var/lib/handbrake && \
-	cp /handbrake/preset/preset_builtin.json /finalfs/var/lib/handbrake/preset_builtin.json
+RUN mkdir -p /rootfs/usr/local/bin && \
+	cp /handbrake/build/HandBrakeCLI /rootfs/usr/local/bin/HandBrakeCLI
+RUN mkdir -p /rootfs/var/lib/handbrake && \
+	cp /handbrake/preset/preset_builtin.json /rootfs/var/lib/handbrake/preset_builtin.json
 
 # Copy HandBrake's dependencies to rootfs
 RUN ldd /handbrake/build/HandBrakeCLI | \
 	grep -oP '(?<=\s=>\s)(.+)(?=\s\()' | \
-	xargs -I {} cp -LR --parents {} /finalfs/usr
+	xargs -I {} cp -LR --parents {} /rootfs/usr
 
 # Copy Intel QSV dependencies to rootfs
 RUN for DEP in libigdgmm12 libmfx1 libmfx-gen1.2 libvpl2 i965-va-driver intel-media-va-driver-non-free; do \
 	dpkg -L $DEP | \
 	grep -oP '\/usr\/lib\/x86_64-linux-gnu.+\.so.*' | \
-	xargs -I {} cp -P --parents {} /finalfs \
+	xargs -I {} cp -P --parents {} /rootfs \
 ; \
 done
 
@@ -116,7 +116,7 @@ done
 # Final image --------------------------------------------------------------------------------------
 FROM gcr.io/distroless/base-debian12 AS main
 
-COPY --from=handbrake-build /finalfs/ /
+COPY --from=handbrake-build /rootfs/ /
 
 # Set the entrypoint to HandBrakeCLI so HandBrake can be run if desired
 ENTRYPOINT [ "/usr/local/bin/HandBrakeCLI" ]
