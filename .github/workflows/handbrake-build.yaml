@@ -25,13 +25,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  handbrake-version:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
   handbrake-build:
     runs-on: ubuntu-latest
 
