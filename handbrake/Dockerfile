@@ -108,7 +108,7 @@ RUN ldd /handbrake/build/HandBrakeCLI | \
 RUN for DEP in libigdgmm12 libmfx1 libmfx-gen1.2 libvpl2 i965-va-driver intel-media-va-driver-non-free; do \
 	dpkg -L $DEP | \
 	grep -oP '\/usr\/lib\/x86_64-linux-gnu.+\.so.*' | \
-	xargs -I {} cp -LR --parents {} /finalfs \
+	xargs -I {} cp -P --parents {} /finalfs \
 ; \
 done
 
