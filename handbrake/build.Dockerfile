@@ -1,3 +1,12 @@
+#### SUMMARY ####
+# This Dockerfile builds HandBrakeCLI from it's source (https://github.com/HandBrake/HandBrake) with
+# support for all necessary hardware acceleration platforms (Intel, Nvidia, AMD). This image is not
+# meant to be run, but instead meant to be copied from by other Dockerfiles. The final image outputs
+# HandBrakeCLI and the bare minimum required dependencies for it to run to '/rootfs/base'.
+# Additional dependencies (primarily dependencies to make Intel QSV work) are output to
+# '/rootfs/extra' for contextual copying.
+
+
 # Build HandBrake ----------------------------------------------------------------------------------
 FROM debian:bookworm-slim AS handbrake-build
 
@@ -89,37 +98,39 @@ RUN apt-get install -y \
 	i965-va-driver \
 	intel-media-va-driver-non-free
 
-# Prepare rootfs for final image
-RUN mkdir /rootfs
-WORKDIR /rootfs
+# Prepare base rootfs for the final image
+RUN mkdir -p /rootfs/base
 
 # Copy HandBrake to rootfs
-RUN mkdir -p /rootfs/usr/local/bin && \
-	cp /handbrake/build/HandBrakeCLI /rootfs/usr/local/bin/HandBrakeCLI
-RUN mkdir -p /rootfs/var/lib/handbrake && \
-	cp /handbrake/preset/preset_builtin.json /rootfs/var/lib/handbrake/preset_builtin.json
+RUN mkdir -p /rootfs/base/usr/local/bin && \
+	cp /handbrake/build/HandBrakeCLI /rootfs/base/usr/local/bin/HandBrakeCLI
+RUN mkdir -p /rootfs/base/var/lib/handbrake && \
+	cp /handbrake/preset/preset_builtin.json /rootfs/base/var/lib/handbrake/preset_builtin.json
 
 # Copy HandBrake's dependencies to rootfs
 RUN ldd /handbrake/build/HandBrakeCLI | \
 	grep -oP '(?<=\s=>\s)(.+)(?=\s\()' | \
-	xargs -I {} cp -LR --parents {} /rootfs/usr
+	xargs -I {} cp -LR --parents {} /rootfs/base/usr
+
+# Prepare extra rootfs for the final image
+RUN mkdir -p /rootfs/extra
 
 # Copy Intel QSV dependencies to rootfs
 RUN for DEP in libigdgmm12 libmfx1 libmfx-gen1.2 libvpl2 i965-va-driver intel-media-va-driver-non-free; do \
 	dpkg -L $DEP | \
 	grep -oP '\/usr\/lib\/x86_64-linux-gnu.+\.so.*' | \
-	xargs -I {} cp -P --parents {} /rootfs \
+	xargs -I {} cp -P --parents {} /rootfs/extra \
 ; \
 done
 
 
 # Final image --------------------------------------------------------------------------------------
-FROM gcr.io/distroless/base-debian12 AS main
+FROM scratch AS main
 
-COPY --from=handbrake-build /rootfs/ /
+COPY --from=handbrake-build /rootfs /rootfs
 
 # Set the entrypoint to HandBrakeCLI so HandBrake can be run if desired
-ENTRYPOINT [ "/usr/local/bin/HandBrakeCLI" ]
+# ENTRYPOINT [ "/usr/local/bin/HandBrakeCLI" ]
 
 # Files Needed For QSV to work for reference later (*** means might not be needed)
 # /usr/lib/x86_64-linux-gnu/libigdgmm.so.12
