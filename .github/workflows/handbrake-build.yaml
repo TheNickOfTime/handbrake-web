@@ -6,16 +6,17 @@ on:
       - main
     paths:
       - .github/workflows/handbrake-build.yaml
-      - handbrake/Dockerfile
+      - handbrake/build.Dockerfile
+      - handbrake/cli.Dockerfile
   pull_request:
     branches:
       - main
     paths:
       - .github/workflows/handbrake-build.yaml
-      - handbrake/Dockerfile
+      - handbrake/build.Dockerfile
+      - handbrake/cli.Dockerfile
 
 env:
-  IMAGE: handbrake-build
   REGISTRY: ghcr.io
   REPO_OWNER: ${{ github.repository_owner }}
 
@@ -24,6 +25,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  handbrake-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get HandBrake version
+        run: cat handbrake/build.Dockerfile | grep -oP '(?<=ARG\s)(HANDBRAKE_VERSION=.+)' >> $GITHUB_ENV
+
   handbrake-build:
     runs-on: ubuntu-latest
 
@@ -50,14 +61,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get HandBrake version
-        run: cat handbrake/Dockerfile | grep -oP '(?<=ARG\s)(HANDBRAKE_VERSION=.+)' >> $GITHUB_ENV
-
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.IMAGE }}
+          images: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/handbrake-build
           tags: |
             type=raw,value=latest,enable={{ is_default_branch }}
             type=raw,value=${{ env.HANDBRAKE_VERSION }},enable={{ is_default_branch }}
@@ -68,18 +76,59 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: 'handbrake/Dockerfile'
+          file: 'handbrake/build.Dockerfile'
           # platforms: linux/amd64,linux/arm64
           platforms: linux/amd64
-          provenance: false
+          provenance: mode=max
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)."
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v1
+  handbrake-cli:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
         with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.REPO_OWNER}}/${{ env.IMAGE }}
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/handbrake-cli
+          tags: |
+            type=raw,value=latest,enable={{ is_default_branch }}
+            type=raw,value=${{ env.HANDBRAKE_VERSION }},enable={{ is_default_branch }}
+            type=raw,value=dev,enable={{ is_not_default_branch }}
+
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: 'handbrake/cli.Dockerfile'
+          # platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
+          provenance: mode=max
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
