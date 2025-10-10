@@ -85,50 +85,68 @@ RUN ./configure --launch \
 	--enable-vce
 	# --enable-libdovi
 
-# Make a tarball of HandBrake's dependency libraries for copying later
-RUN ldd /handbrake/build/HandBrakeCLI | \
-	grep -oP '(?<=\s=>\s)(.+)(?=\s\()' | \
-	xargs tar -hcvf dependencies.tar && \
-	mkdir lib && \
-	tar -xvf dependencies.tar -C lib
-
 RUN apt-get install -y \
 	i965-va-driver \
 	intel-media-va-driver-non-free
+
+# Prepare rootfs for final image
+RUN mkdir /finalfs
+WORKDIR /finalfs
+
+# Copy HandBrake to rootfs
+RUN mkdir -p /finalfs/usr/local/bin && \
+	cp /handbrake/build/HandBrakeCLI /finalfs/usr/local/bin/HandBrakeCLI
+RUN mkdir -p /finalfs/var/lib/handbrake && \
+	cp /handbrake/preset/preset_builtin.json /finalfs/var/lib/handbrake/preset_builtin.json
+
+# Copy HandBrake's dependencies to rootfs
+RUN ldd /handbrake/build/HandBrakeCLI | \
+	grep -oP '(?<=\s=>\s)(.+)(?=\s\()' | \
+	xargs -I {} cp -LR --parents {} /finalfs/usr
+
+# Copy Intel QSV dependencies to rootfs
+RUN for DEP in libigdgmm12 libmfx1 libmfx-gen1.2 libvpl2 i965-va-driver intel-media-va-driver-non-free; do \
+	dpkg -L $DEP | \
+	grep -oP '\/usr\/lib\/x86_64-linux-gnu.+\.so.*' | \
+	xargs -I {} cp -LR --parents {} /finalfs \
+; \
+done
 
 
 # Final image --------------------------------------------------------------------------------------
 FROM debian:bookworm-slim AS main
 
-COPY --from=handbrake-build /handbrake/build/HandBrakeCLI /usr/local/bin/HandBrakeCLI
-COPY --from=handbrake-build /handbrake/preset/preset_builtin.json /handbrake/preset_builtin.json
-# COPY --from=handbrake-build /handbrake/lib /handbrake/lib
+COPY --from=handbrake-build /finalfs/ /
 
-# Copy HandBrake's libraries to /lib so this container can run HandBrake if desired
-COPY --from=handbrake-build /handbrake/lib/* /lib
+# COPY --from=handbrake-build /handbrake/build/HandBrakeCLI /usr/local/bin/HandBrakeCLI
+# COPY --from=handbrake-build /handbrake/preset/preset_builtin.json /handbrake/preset_builtin.json
+# # COPY --from=handbrake-build /handbrake/lib /handbrake/lib
 
-# libigdgmm12
-COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libigdgmm.so.12 /usr/lib/x86_64-linux-gnu/libigdgmm.so.12
+# # Copy HandBrake's libraries to /lib so this container can run HandBrake if desired
+# COPY --from=handbrake-build /handbrake/lib/* /lib
 
-# libmfx1
-COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libmfx-tracer.so.1 /usr/lib/x86_64-linux-gnu/libmfx-tracer.so.1
-COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libmfx-gen.so /usr/lib/x86_64-linux-gnu/libmfx-gen.so
-COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libmfxhw64.so.1 /usr/lib/x86_64-linux-gnu/libmfxhw64.so.1
-COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/mfx/* /usr/lib/x86_64-linux-gnu/mfx
+# # libigdgmm12
+# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libigdgmm.so.12 /usr/lib/x86_64-linux-gnu/libigdgmm.so.12
 
-# libmfx-gen1.2
-COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libmfx-gen.so.1.2 /usr/lib/x86_64-linux-gnu/libmfx-gen.so.1.2
-COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libmfx-gen/enctools.so /usr/lib/x86_64-linux-gnu/libmfx-gen/enctools.so
+# # libmfx1
+# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libmfx-tracer.so.1 /usr/lib/x86_64-linux-gnu/libmfx-tracer.so.1
+# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libmfx-gen.so /usr/lib/x86_64-linux-gnu/libmfx-gen.so
+# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libmfxhw64.so.1 /usr/lib/x86_64-linux-gnu/libmfxhw64.so.1
+# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/mfx/* /usr/lib/x86_64-linux-gnu/mfx
 
-# libvpl2
-COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libvpl.so.2 /usr/lib/x86_64-linux-gnu/libvpl.so.2
-COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/vpl/libvpl_wayland.so /usr/lib/x86_64-linux-gnu/vpl/libvpl_wayland.so
+# # libmfx-gen1.2
+# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libmfx-gen.so.1.2 /usr/lib/x86_64-linux-gnu/libmfx-gen.so.1.2
+# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libmfx-gen/enctools.so /usr/lib/x86_64-linux-gnu/libmfx-gen/enctools.so
 
-# i965-va-driver
-COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so
+# # libvpl2
+# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libvpl.so.2 /usr/lib/x86_64-linux-gnu/libvpl.so.2
+# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/vpl/libvpl_wayland.so /usr/lib/x86_64-linux-gnu/vpl/libvpl_wayland.so
 
-# intel-media-va-driver-non-free
-COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/dri/iHD_drv_video.so /usr/lib/x86_64-linux-gnu/dri/iHD_drv_video.so
+# # i965-va-driver
+# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so
+
+# # intel-media-va-driver-non-free
+# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/dri/iHD_drv_video.so /usr/lib/x86_64-linux-gnu/dri/iHD_drv_video.so
 
 # Set the entrypoint to HandBrakeCLI so HandBrake can be run if desired
 # ENTRYPOINT [ "/handbrake/HandBrakeCLI" ]
