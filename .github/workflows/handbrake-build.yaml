@@ -46,11 +46,10 @@ jobs:
 
     steps:
       - name: Check for version env variable
+        if: ${{ env.HANDBRAKE_VERSION == '' }}
         run: |
-          if [[ -z ${{ env.HANDBRAKE_VERSION }} ]]; then
-            echo "Critical environment variable 'HANDBRAKE_VERSION' does not exist. Exiting job with error."
-            exit 1
-          fi
+          echo "Critical environment variable 'HANDBRAKE_VERSION' does not exist. Exiting job with error."
+          exit 1
 
       - name: Checkout repository
         uses: actions/checkout@v4
