@@ -45,6 +45,13 @@ jobs:
       attestations: write
 
     steps:
+      - name: Check for version env variable
+        run: |
+          if [[ -z ${{ env.HANDBRAKE_VERSION }} ]]; then
+            echo "Critical environment variable 'HANDBRAKE_VERSION' does not exist. Exiting job with error."
+            exit 1
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
