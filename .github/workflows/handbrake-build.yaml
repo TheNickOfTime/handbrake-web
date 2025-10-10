@@ -32,9 +32,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Get HandBrake version
-        run: cat handbrake/build.Dockerfile | grep -oP '(?<=ARG\s)(HANDBRAKE_VERSION=.+)' >> $GITHUB_ENV
-
   handbrake-build:
     runs-on: ubuntu-latest
 
@@ -45,14 +42,17 @@ jobs:
       attestations: write
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get HandBrake version
+        run: cat handbrake/build.Dockerfile | grep -oP '(?<=ARG\s)(HANDBRAKE_VERSION=.+)' >> $GITHUB_ENV
+
       - name: Check for version env variable
         if: ${{ env.HANDBRAKE_VERSION == '' }}
         run: |
           echo "Critical environment variable 'HANDBRAKE_VERSION' does not exist. Exiting job with error."
           exit 1
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -104,6 +104,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Get HandBrake version
+        run: cat handbrake/build.Dockerfile | grep -oP '(?<=ARG\s)(HANDBRAKE_VERSION=.+)' >> $GITHUB_ENV
+
+      - name: Check for version env variable
+        if: ${{ env.HANDBRAKE_VERSION == '' }}
+        run: |
+          echo "Critical environment variable 'HANDBRAKE_VERSION' does not exist. Exiting job with error."
+          exit 1
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
