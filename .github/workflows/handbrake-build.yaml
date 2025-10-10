@@ -87,6 +87,8 @@ jobs:
   handbrake-cli:
     runs-on: ubuntu-latest
 
+    needs: handbrake-build
+
     permissions:
       contents: read
       packages: write
