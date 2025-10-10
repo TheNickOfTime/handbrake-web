@@ -132,5 +132,8 @@ jobs:
           platforms: linux/amd64
           provenance: mode=max
           push: true
+          build-args: |
+            DISTROLESS_VARIANT=${{ github.head_ref == '' && 'nonroot' || 'debug-nonroot' }}
+            HANDBRAKE_BUILD_TAG=${{ github.event_name == 'pull_request' && 'dev' || 'latest'}}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
