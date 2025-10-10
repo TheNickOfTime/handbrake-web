@@ -114,39 +114,22 @@ done
 
 
 # Final image --------------------------------------------------------------------------------------
-FROM debian:bookworm-slim AS main
+FROM gcr.io/distroless/base-debian12 AS main
 
 COPY --from=handbrake-build /finalfs/ /
 
-# COPY --from=handbrake-build /handbrake/build/HandBrakeCLI /usr/local/bin/HandBrakeCLI
-# COPY --from=handbrake-build /handbrake/preset/preset_builtin.json /handbrake/preset_builtin.json
-# # COPY --from=handbrake-build /handbrake/lib /handbrake/lib
-
-# # Copy HandBrake's libraries to /lib so this container can run HandBrake if desired
-# COPY --from=handbrake-build /handbrake/lib/* /lib
-
-# # libigdgmm12
-# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libigdgmm.so.12 /usr/lib/x86_64-linux-gnu/libigdgmm.so.12
-
-# # libmfx1
-# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libmfx-tracer.so.1 /usr/lib/x86_64-linux-gnu/libmfx-tracer.so.1
-# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libmfx-gen.so /usr/lib/x86_64-linux-gnu/libmfx-gen.so
-# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libmfxhw64.so.1 /usr/lib/x86_64-linux-gnu/libmfxhw64.so.1
-# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/mfx/* /usr/lib/x86_64-linux-gnu/mfx
-
-# # libmfx-gen1.2
-# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libmfx-gen.so.1.2 /usr/lib/x86_64-linux-gnu/libmfx-gen.so.1.2
-# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libmfx-gen/enctools.so /usr/lib/x86_64-linux-gnu/libmfx-gen/enctools.so
-
-# # libvpl2
-# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/libvpl.so.2 /usr/lib/x86_64-linux-gnu/libvpl.so.2
-# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/vpl/libvpl_wayland.so /usr/lib/x86_64-linux-gnu/vpl/libvpl_wayland.so
-
-# # i965-va-driver
-# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so
-
-# # intel-media-va-driver-non-free
-# COPY --from=handbrake-build /usr/lib/x86_64-linux-gnu/dri/iHD_drv_video.so /usr/lib/x86_64-linux-gnu/dri/iHD_drv_video.so
-
 # Set the entrypoint to HandBrakeCLI so HandBrake can be run if desired
-# ENTRYPOINT [ "/handbrake/HandBrakeCLI" ]
+ENTRYPOINT [ "/usr/local/bin/HandBrakeCLI" ]
+
+# Files Needed For QSV to work for reference later (*** means might not be needed)
+# /usr/lib/x86_64-linux-gnu/libigdgmm.so.12
+# /usr/lib/x86_64-linux-gnu/libmfx-tracer.so.1 ***
+# /usr/lib/x86_64-linux-gnu/libmfx-gen.so
+# /usr/lib/x86_64-linux-gnu/libmfxhw64.so.1 ***
+# /usr/lib/x86_64-linux-gnu/mfx/* ***
+# /usr/lib/x86_64-linux-gnu/libmfx-gen.so.1.2
+# /usr/lib/x86_64-linux-gnu/libmfx-gen/enctools.so
+# /usr/lib/x86_64-linux-gnu/libvpl.so.2
+# /usr/lib/x86_64-linux-gnu/vpl/libvpl_wayland.so ***
+# /usr/lib/x86_64-linux-gnu/dri/i965_drv_video.so
+# /usr/lib/x86_64-linux-gnu/dri/iHD_drv_video.so
