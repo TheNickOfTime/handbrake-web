@@ -33,13 +33,13 @@
     }
   },
   "dependencies": {
-    "kysely": "^0.28.7",
+    "kysely": "^0.28.8",
     "winston": "^3.18.3",
     "winston-daily-rotate-file": "^5.0.0",
     "winston-transport": "^4.9.0"
   },
   "devDependencies": {
-    "@types/node": "^24.7.0",
+    "@types/node": "^24.8.1",
     "typescript": "^5.9.3"
   }
 }
