@@ -34,7 +34,7 @@ RUN mkdir /data && mkdir /video
 # Final image --------------------------------------------------------------------------------------
 FROM gcr.io/distroless/nodejs24-debian12:${DISTROLESS_VARIANT} AS main
 
-COPY --from=handbrake-build /handbrake/preset_builtin.json /var/lib/handbrake/preset_builtin.json
+COPY --from=handbrake-build /rootfs/base/var/lib/handbrake/preset_builtin.json /var/lib/handbrake/preset_builtin.json
 COPY --from=client-build /handbrake-web/client/build /handbrake-web/client
 COPY --from=server-build /handbrake-web/server/build /handbrake-web/server
 COPY --from=server-build --chown=nonroot /video /data /
