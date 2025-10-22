@@ -5,7 +5,7 @@ ARG HANDBRAKE_BUILD_TAG=latest
 FROM ghcr.io/thenickoftime/handbrake-build:${HANDBRAKE_BUILD_TAG} AS handbrake-build
 
 # Build Worker -------------------------------------------------------------------------------------
-FROM node:bookworm-slim AS worker-build
+FROM node:24-bookworm-slim AS worker-build
 
 # Install nodejs and pnpm
 # RUN apk add nodejs pnpm

@@ -5,7 +5,7 @@ ARG HANDBRAKE_BUILD_TAG=latest
 FROM ghcr.io/thenickoftime/handbrake-build:${HANDBRAKE_BUILD_TAG} AS handbrake-build
 
 # Build client -------------------------------------------------------------------------------------
-FROM node:bookworm-slim AS client-build
+FROM node:24-bookworm-slim AS client-build
 COPY client /handbrake-web/client
 COPY shared /handbrake-web/shared
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /handbrake-web/
