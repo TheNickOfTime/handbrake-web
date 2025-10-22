@@ -33,7 +33,8 @@
         "christian-kohler.npm-intellisense",
         "esbenp.prettier-vscode",
         "github.vscode-github-actions",
-        "github.vscode-pull-request-github"
+        "github.vscode-pull-request-github",
+        "bierner.github-markdown-preview"
       ]
     }
   }
