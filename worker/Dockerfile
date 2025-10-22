@@ -5,7 +5,7 @@ ARG HANDBRAKE_BUILD_TAG=latest
 FROM ghcr.io/thenickoftime/handbrake-build:${HANDBRAKE_BUILD_TAG} AS handbrake-build
 
 # Build Worker -------------------------------------------------------------------------------------
-FROM node:bookworm-slim AS worker-build
+FROM node:24-bookworm-slim AS worker-build
 
 # Install nodejs and pnpm
 # RUN apk add nodejs pnpm
@@ -34,10 +34,8 @@ FROM gcr.io/distroless/nodejs24-debian12:${DISTROLESS_VARIANT} AS main
 ARG TARGETARCH
 
 # Copy compiled HandBrakeCLI binary from the build step
-COPY --from=handbrake-build /handbrake/HandBrakeCLI /usr/local/bin/HandBrakeCLI
-
-# Copy HandBrakeCLI's dependencies from the build stage
-COPY --from=handbrake-build /handbrake/lib/* /lib
+COPY --from=handbrake-build /rootfs/base/ /
+COPY --from=handbrake-build /rootfs/extra/ /
 
 # Copy project from build
 COPY --from=worker-build /handbrake-web/worker/build /handbrake-web/worker

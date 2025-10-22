@@ -5,10 +5,10 @@ ARG HANDBRAKE_BUILD_TAG=latest
 FROM ghcr.io/thenickoftime/handbrake-build:${HANDBRAKE_BUILD_TAG} AS handbrake-build
 
 # Build client -------------------------------------------------------------------------------------
-FROM node:bookworm-slim AS client-build
+FROM node:24-bookworm-slim AS client-build
 COPY client /handbrake-web/client
 COPY shared /handbrake-web/shared
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /handbrake-web
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /handbrake-web/
 WORKDIR /handbrake-web/client
 
 RUN npm install -g pnpm
@@ -16,11 +16,11 @@ RUN pnpm install
 RUN pnpm build
 
 # Main ---------------------------------------------------------------------------------------------
-FROM node:bookworm-slim AS server-build
+FROM node:24-bookworm-slim AS server-build
 
 COPY server /handbrake-web/server
 COPY shared /handbrake-web/shared
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /handbrake-web
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /handbrake-web/
 WORKDIR /handbrake-web/server
 
 # Install node dependencies
@@ -34,7 +34,7 @@ RUN mkdir /data && mkdir /video
 # Final image --------------------------------------------------------------------------------------
 FROM gcr.io/distroless/nodejs24-debian12:${DISTROLESS_VARIANT} AS main
 
-COPY --from=handbrake-build /handbrake/preset_builtin.json /var/lib/handbrake/preset_builtin.json
+COPY --from=handbrake-build /rootfs/base/var/lib/handbrake/preset_builtin.json /var/lib/handbrake/preset_builtin.json
 COPY --from=client-build /handbrake-web/client/build /handbrake-web/client
 COPY --from=server-build /handbrake-web/server/build /handbrake-web/server
 COPY --from=server-build --chown=nonroot /video /data /
