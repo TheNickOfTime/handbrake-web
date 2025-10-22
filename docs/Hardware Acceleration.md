@@ -14,7 +14,7 @@ As of right now, **only Intel QSV and Nvidia NVENC are supported**. **_Support f
 Intel QSV is available for hardware encoding support on supported platforms.
 
 > [!NOTE]
-> At the time of writing, the HandBrake [docs](https://handbrake.fr/docs/en/latest/technical/video-qsv.html) confusingly state "_Intel Skylake (9th Generation) CPU or later_" as the minimum GPU generation requirement for iGPUs (I have opened [an issue](https://github.com/HandBrake/HandBrake-docs/issues/243) and [a pull request]() to hopefully address this). **Intel Skylake** is _6th Generation Core_, and **Intel Coffee Lake** is _9th Generation Core_ - so something is off here. For now, I think it is best to assume that "_Intel Skylake (9th Generation) CPU or later_" is the intent.
+> At the time of writing, the HandBrake [docs](https://handbrake.fr/docs/en/latest/technical/video-qsv.html) confusingly state "_Intel Skylake (9th Generation) CPU or later_" as the minimum GPU generation requirement for iGPUs (I have opened [an issue](https://github.com/HandBrake/HandBrake-docs/issues/243) and [a pull request](https://github.com/HandBrake/HandBrake-docs/pull/244) to hopefully address this). **Intel Skylake** is _6th Generation Core_, and **Intel Coffee Lake** is _9th Generation Core_ - so something is off here. For now, I think it is best to assume that "_Intel Skylake (9th Generation) CPU or later_" is the intent.
 
 > [!NOTE]
 > The HandBrake [docs](https://handbrake.fr/docs/en/latest/technical/video-qsv.html) also state "_Please note, these are not hard limits. Hardware encoding via Intel QSV might work on older series GPUs and older operating systems, but this is not officially supported._" - so generations older than Coffee Lake may work but there is no guarantee.
