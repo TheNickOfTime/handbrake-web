@@ -8,7 +8,7 @@ FROM ghcr.io/thenickoftime/handbrake-build:${HANDBRAKE_BUILD_TAG} AS handbrake-b
 FROM node:bookworm-slim AS client-build
 COPY client /handbrake-web/client
 COPY shared /handbrake-web/shared
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /handbrake-web
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /handbrake-web/
 WORKDIR /handbrake-web/client
 
 RUN npm install -g pnpm
@@ -16,11 +16,11 @@ RUN pnpm install
 RUN pnpm build
 
 # Main ---------------------------------------------------------------------------------------------
-FROM node:bookworm-slim AS server-build
+FROM node:24-bookworm-slim AS server-build
 
 COPY server /handbrake-web/server
 COPY shared /handbrake-web/shared
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /handbrake-web
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /handbrake-web/
 WORKDIR /handbrake-web/server
 
 # Install node dependencies
