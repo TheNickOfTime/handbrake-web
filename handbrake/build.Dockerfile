@@ -8,7 +8,7 @@
 
 
 # Build HandBrake ----------------------------------------------------------------------------------
-FROM debian:bookworm-slim AS handbrake-build
+FROM debian:trixie-slim AS handbrake-build
 
 # renovate: datasource=github-releases depName=HandBrake packageName=HandBrake/HandBrake
 ARG HANDBRAKE_VERSION=1.10.2
@@ -68,7 +68,7 @@ RUN apt-get install -y \
 	libva-dev \
 	libdrm-dev \
 	libvpl-dev \
-	libmfx-dev \
+	# libmfx-dev \
 	libmfx-gen-dev \
 	libigdgmm-dev
 
