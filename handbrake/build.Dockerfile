@@ -8,7 +8,7 @@
 
 
 # Build HandBrake ----------------------------------------------------------------------------------
-FROM debian:bookworm-slim AS handbrake-build
+FROM debian:trixie-slim AS handbrake-build
 
 # renovate: datasource=github-releases depName=HandBrake packageName=HandBrake/HandBrake
 ARG HANDBRAKE_VERSION=1.10.2
