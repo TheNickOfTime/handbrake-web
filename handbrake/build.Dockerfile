@@ -68,7 +68,7 @@ RUN apt-get install -y \
 	libva-dev \
 	libdrm-dev \
 	libvpl-dev \
-	libmfx-dev \
+	# libmfx-dev \
 	libmfx-gen-dev \
 	libigdgmm-dev
 
