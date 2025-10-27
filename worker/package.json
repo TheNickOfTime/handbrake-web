@@ -18,7 +18,7 @@
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
-    "@types/node": "^24.8.1",
+    "@types/node": "^24.9.1",
     "esbuild": "^0.25.11",
     "eslint": "^9.38.0",
     "tsconfig-paths": "^4.2.0",
