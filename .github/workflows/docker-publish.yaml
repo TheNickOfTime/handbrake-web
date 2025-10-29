@@ -99,7 +99,7 @@ jobs:
           ) ]]; then \
             echo "The job 'handbrake-build' does not exist for this job."; \
           else \
-            echo HANDBRAKE_BUILD=true >> $GITHUB_ENV \
+            echo HANDBRAKE_BUILD=true >> $GITHUB_ENV && \
             until [[ $( \
                 gh api /repos/${{ github.repository }}/commits/${{ github.head_ref || github.ref }}/check-runs | \
                 jq -r '.check_runs[] | select(.name=="handbrake-build") | .status' \
