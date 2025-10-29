@@ -142,6 +142,6 @@ jobs:
           push: true
           build-args: |
             DISTROLESS_VARIANT=${{ github.head_ref == '' && 'nonroot' || 'debug-nonroot' }}
-            HANDBRAKE_BUILD_TAG=${{ github.event_name == 'pull_request' && 'dev' || 'latest'}}
+            HANDBRAKE_BUILD_TAG=${{ github.event_name == 'pull_request' && 'pr-${{ github.event.number }}' || 'latest'}}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
