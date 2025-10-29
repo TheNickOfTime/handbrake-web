@@ -120,7 +120,7 @@ jobs:
           platforms: linux/amd64
           build-args: |
             DISTROLESS_VARIANT=${{ github.head_ref == '' && 'nonroot' || 'debug-nonroot' }}
-            HANDBRAKE_BUILD_TAG=${{ github.event_name == 'pull_request' && 'pr-${{ github.event.number }}' || 'latest'}}
+            HANDBRAKE_BUILD_TAG=${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || 'latest'}}
           provenance: false
           push: true
           tags: ${{ steps.meta.outputs.tags }}
