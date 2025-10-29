@@ -68,7 +68,7 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{ is_default_branch }}
             type=raw,value=${{ env.HANDBRAKE_VERSION }},enable={{ is_default_branch }}
-            type=raw,value=dev,enable={{ is_not_default_branch }}
+            type=ref,event=pr            
 
       - name: Build and push Docker image
         id: push
@@ -128,7 +128,7 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{ is_default_branch }}
             type=raw,value=${{ env.HANDBRAKE_VERSION }},enable={{ is_default_branch }}
-            type=raw,value=dev,enable={{ is_not_default_branch }}
+            type=ref,event=pr
 
       - name: Build and push Docker image
         id: push
