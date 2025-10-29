@@ -19,7 +19,7 @@ RUN pnpm install
 RUN pnpm build
 
 # Node ---------------------------------------------------------------------------------------------
-FROM gcr.io/distroless/base-debian13:${DISTROLESS_VARIANT} AS main
+FROM gcr.io/distroless/cc-debian13:${DISTROLESS_VARIANT} AS main
 
 ARG TARGETARCH
 
