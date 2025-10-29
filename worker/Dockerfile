@@ -5,13 +5,7 @@ ARG HANDBRAKE_BUILD_TAG=latest
 FROM ghcr.io/thenickoftime/handbrake-build:${HANDBRAKE_BUILD_TAG} AS handbrake-build
 
 # Build Worker -------------------------------------------------------------------------------------
-FROM node:24-bookworm-slim AS worker-build
-
-# Install nodejs and pnpm
-# RUN apk add nodejs pnpm
-
-# Install dumb-init (to copy to the final image)
-# RUN apk add dumb-init
+FROM node:24-trixie-slim AS worker-build
 
 # Copy project dependencies
 COPY worker /handbrake-web/worker
@@ -20,18 +14,17 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /handbrake-web/
 WORKDIR /handbrake-web/worker
 
 # Install node dependencies
-ENV NODE_ENV=production
 RUN npm install -g pnpm
 RUN pnpm install
 RUN pnpm build
 
-# Create directories
-RUN mkdir /video
-
 # Node ---------------------------------------------------------------------------------------------
-FROM gcr.io/distroless/nodejs24-debian12:${DISTROLESS_VARIANT} AS main
+FROM gcr.io/distroless/cc-debian13:${DISTROLESS_VARIANT} AS main
 
 ARG TARGETARCH
+
+# Copy nodejs binary from the build step
+COPY --from=worker-build /usr/local/bin/node /usr/local/bin/node
 
 # Copy compiled HandBrakeCLI binary from the build step
 COPY --from=handbrake-build /rootfs/base/ /
@@ -39,13 +32,13 @@ COPY --from=handbrake-build /rootfs/extra/ /
 
 # Copy project from build
 COPY --from=worker-build /handbrake-web/worker/build /handbrake-web/worker
-COPY --from=worker-build --chown=nonroot /video /video
 
 # Default environment variables
 ENV HANDBRAKE_MODE=worker
 ENV DATA_PATH=/tmp/handbrake-web
 ENV VIDEO_PATH=/video
 
-# # Start application
+# Start application
 WORKDIR /handbrake-web/worker
+ENTRYPOINT [ "/usr/local/bin/node" ]
 CMD ["/handbrake-web/worker/worker.js"]

@@ -5,18 +5,21 @@ ARG HANDBRAKE_BUILD_TAG=latest
 FROM ghcr.io/thenickoftime/handbrake-build:${HANDBRAKE_BUILD_TAG} AS handbrake-build
 
 # Build client -------------------------------------------------------------------------------------
-FROM node:24-bookworm-slim AS client-build
+FROM node:24-trixie-slim AS client-build
+
+# Copy project dependencies
 COPY client /handbrake-web/client
 COPY shared /handbrake-web/shared
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /handbrake-web/
 WORKDIR /handbrake-web/client
 
+# Install node dependencies
 RUN npm install -g pnpm
 RUN pnpm install
 RUN pnpm build
 
-# Main ---------------------------------------------------------------------------------------------
-FROM node:24-bookworm-slim AS server-build
+# Build server -------------------------------------------------------------------------------------
+FROM node:24-trixie-slim AS server-build
 
 COPY server /handbrake-web/server
 COPY shared /handbrake-web/shared
@@ -32,8 +35,12 @@ RUN pnpm build
 RUN mkdir /data && mkdir /video
 
 # Final image --------------------------------------------------------------------------------------
-FROM gcr.io/distroless/nodejs24-debian12:${DISTROLESS_VARIANT} AS main
+FROM gcr.io/distroless/cc-debian13:${DISTROLESS_VARIANT} AS main
 
+# Copy nodejs binary from the build step
+COPY --from=server-build /usr/local/bin/node /usr/local/bin/node
+
+# Copy project from build
 COPY --from=handbrake-build /rootfs/base/var/lib/handbrake/preset_builtin.json /var/lib/handbrake/preset_builtin.json
 COPY --from=client-build /handbrake-web/client/build /handbrake-web/client
 COPY --from=server-build /handbrake-web/server/build /handbrake-web/server
@@ -48,4 +55,5 @@ ENV VIDEO_PATH=/video
 
 # Start application
 WORKDIR /handbrake-web/server
+ENTRYPOINT [ "/usr/local/bin/node" ]
 CMD ["/handbrake-web/server/server.js"]
