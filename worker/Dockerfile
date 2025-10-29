@@ -32,7 +32,6 @@ COPY --from=handbrake-build /rootfs/extra/ /
 
 # Copy project from build
 COPY --from=worker-build /handbrake-web/worker/build /handbrake-web/worker
-COPY --from=worker-build --chown=nonroot /video /video
 
 # Default environment variables
 ENV HANDBRAKE_MODE=worker
