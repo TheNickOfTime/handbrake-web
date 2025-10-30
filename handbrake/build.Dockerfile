@@ -10,6 +10,8 @@
 # Build HandBrake ----------------------------------------------------------------------------------
 FROM debian:trixie-slim AS handbrake-build
 
+ARG TARGETARCH
+
 # renovate: datasource=github-releases depName=HandBrake packageName=HandBrake/HandBrake
 ARG HANDBRAKE_VERSION=1.10.2
 
@@ -64,19 +66,25 @@ RUN apt-get install -y \
 	zlib1g-dev
 
 # Install Intel QSV dependencies
-RUN apt-get install -y \
-	libva-dev \
-	libdrm-dev \
-	libvpl-dev \
-	# libmfx-dev \
-	libmfx-gen-dev \
-	libigdgmm-dev
+RUN if [ $TARGETARCH = "amd64" ]; \
+	then \
+		apt-get install -y \
+			libva-dev \
+			libdrm-dev \
+			libvpl-dev \
+			# libmfx-dev \
+			libmfx-gen-dev \
+			libigdgmm-dev \
+	; fi
 
 # Install Nvidia NVENC/NVDEC dependencies
-RUN apt-get install -y \
-	llvm \
-	nvidia-cuda-dev \
-	nvidia-cuda-toolkit
+RUN if [ $TARGETARCH = "amd64" ]; \
+	then \
+		apt-get install -y \
+			llvm \
+			nvidia-cuda-dev \
+			nvidia-cuda-toolkit \
+	; fi
 
 # Clone the HandBrake git repo, checkout the specified version
 RUN mkdir /handbrake
@@ -85,18 +93,34 @@ RUN git clone https://github.com/HandBrake/HandBrake.git . && \
 	git switch --detach ${HANDBRAKE_VERSION}
 
 # Build HandBrake
-RUN ./configure --launch \
-	--launch-jobs=$(nproc) \
-	--disable-gtk \
-	--enable-qsv \
-	--enable-nvenc \
-	--enable-nvdec \
-	--enable-vce
-	# --enable-libdovi
+RUN if [ $TARGETARCH = "amd64" ]; \
+	then \
+		./configure --launch \
+			--launch-jobs=$(nproc) \
+			--disable-gtk \
+			--enable-qsv \
+			--enable-nvenc \
+			--enable-nvdec \
+			--enable-vce \
+			# --enable-libdovi \
+	; else \
+		./configure --launch \
+			--launch-jobs=$(nproc) \
+			--disable-gtk \
+			--disable-qsv \
+			--disable-nvenc \
+			--disable-nvdec \
+			--disable-vce \
+			# --enable-libdovi \
+	; fi
+	
 
-RUN apt-get install -y \
-	i965-va-driver \
-	intel-media-va-driver-non-free
+RUN if [ $TARGETARCH = "amd64" ]; \
+	then \
+		apt-get install -y \
+			i965-va-driver \
+			intel-media-va-driver-non-free \
+	; fi
 
 # Prepare base rootfs for the final image
 RUN mkdir -p /rootfs/base
@@ -116,12 +140,14 @@ RUN ldd /handbrake/build/HandBrakeCLI | \
 RUN mkdir -p /rootfs/extra
 
 # Copy Intel QSV dependencies to rootfs
-RUN for DEP in libigdgmm12 libmfx1 libmfx-gen1.2 libvpl2 i965-va-driver intel-media-va-driver-non-free; do \
-	dpkg -L $DEP | \
-	grep -oP '\/usr\/lib\/x86_64-linux-gnu.+\.so.*' | \
-	xargs -I {} cp -P --parents {} /rootfs/extra \
-; \
-done
+RUN if [ $TARGETARCH = "amd64" ]; \
+	then \
+		for DEP in libigdgmm12 libmfx1 libmfx-gen1.2 libvpl2 i965-va-driver intel-media-va-driver-non-free; do \
+			dpkg -L $DEP | \
+			grep -oP '\/usr\/lib\/x86_64-linux-gnu.+\.so.*' | \
+			xargs -I {} cp -P --parents {} /rootfs/extra \
+		; done \
+	; fi
 
 
 # Final image --------------------------------------------------------------------------------------
