@@ -2,7 +2,7 @@
 FROM ghcr.io/thenickoftime/handbrake-build:latest AS handbrake-build
 
 # Configure Dev Container Image --------------------------------------------------------------------
-FROM mcr.microsoft.com/vscode/devcontainers/base:bookworm as main
+FROM mcr.microsoft.com/vscode/devcontainers/base:trixie as main
 
 # Install dev dependencies
 RUN apt-get update
