@@ -33,15 +33,15 @@
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
     "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.4",
+    "@types/express": "^5.0.5",
     "@types/ffprobe": "^1.1.8",
     "@types/ffprobe-static": "^2.0.3",
-    "@types/node": "^24.9.1",
+    "@types/node": "^24.10.0",
     "@types/object-hash": "^3.0.6",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
-    "esbuild": "^0.25.11",
-    "eslint": "^9.38.0",
+    "esbuild": "^0.25.12",
+    "eslint": "^9.39.0",
     "typescript": "^5.9.3"
   }
 }
