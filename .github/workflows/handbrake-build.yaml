@@ -68,7 +68,7 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{ is_default_branch }}
             type=raw,value=${{ env.HANDBRAKE_VERSION }},enable={{ is_default_branch }}
-            type=ref,event=pr            
+            type=ref,event=pr
 
       - name: Build and push Docker image
         id: push
@@ -76,8 +76,7 @@ jobs:
         with:
           context: .
           file: 'handbrake/build.Dockerfile'
-          # platforms: linux/amd64,linux/arm64
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           provenance: mode=max
           push: true
           tags: ${{ steps.meta.outputs.tags }}
@@ -136,8 +135,7 @@ jobs:
         with:
           context: .
           file: 'handbrake/cli.Dockerfile'
-          # platforms: linux/amd64,linux/arm64
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           provenance: mode=max
           push: true
           build-args: |
