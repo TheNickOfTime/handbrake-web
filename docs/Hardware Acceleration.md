@@ -36,7 +36,7 @@ You will want to verify that your OS is detecting your GPU - run `ls /dev/dri`. 
 
 #### Windows
 
-\*\*NEEDS DOCUMENTATION
+**_NEEDS DOCUMENTATION_**
 
 ### Container Configuration
 
@@ -68,3 +68,33 @@ The HandBrake [docs](https://handbrake.fr/docs/en/latest/technical/video-qsv.htm
 - Add `"VideoOptionExtra": "lowpower=0",` to the alphabetically appropriate location within your preset's `.json` file.
 
 ## Nvidia (NVENC)
+
+### Host Machine
+
+In order for NVENC support to be available within the container, your host machine must be properly configured with the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html). To do this you must:
+
+1. Install the NVIDIA CUDA driver ([guide](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/))
+2. Install the NVIDIA Container Toolkit ([guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/))
+
+This allows your NVIDIA GPU's resources to be accessible within Docker containers.
+
+### Container Configuration
+
+You will need to add the following to your Docker Compose configuration for any worker that has NVIDIA hardware capabilities:
+
+```yaml
+services:
+  # ...
+  handbrake-worker:
+    # ...
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities:
+                - gpu
+                - compute
+                - video
+```
