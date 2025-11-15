@@ -98,12 +98,9 @@ services:
 
 - Use a reverse proxy (traefik, nginx, etc) to access your interface at a custom url over https.
 
-#### Hardware Transcoding Support (experimental)
+#### Hardware Encoding Support
 
-> [!Warning]
-> Hardware Transcoding will generally result in larger files with worse quality at the same settings as CPU Transcoding, with the advantage of transcoding (sometimes significantly) faster. If your goals are to produce the highest quality transcodes at the smallest file sizes, stick to CPU transcoding.
-
-Currently NVENC and QSV hardware transcoding are supported, though the extent to which they work is experimental sdince my testing occurred on a very limited set of hardware available to me. Both of these require additional configuration. Please see the comments on [this issue](https://github.com/TheNickOfTime/handbrake-web/issues/88) for setup instructions while official documentation is being made.
+Please see the wiki page on [Hardware Acceleration](https://github.com/TheNickOfTime/handbrake-web/wiki/hardware-acceleration) for more information.
 
 #### Additional Workers
 
