@@ -19,18 +19,12 @@ In order to get Intel QSV working, multiple additional steps must be taken on th
 
 In order for QSV support to be available within the container, your host machine must be properly configured with the [Intel Media Driver](https://github.com/intel/media-driver).
 
-#### Linux
-
 The process of installing this driver will vary by platform, though it is most likely that you will be able to do so via your distribution's package manager.
 
 > [!IMPORTANT]
 > If your distribution has a distinct/diffrentiated "non-free" version of the _Intel Media Driver_, please be sure to install the "non-free" version (supports hardware decoding and encoding) over the "free" version (only supports decoding).
 
 You will want to verify that your OS is detecting your GPU - run `ls /dev/dri`. The output should include devices like `card0` and `renderD128` - though the numbers might be slightly different depending on your hardware configuration.
-
-#### Windows
-
-**_NEEDS DOCUMENTATION_**
 
 ### Container Configuration
 
