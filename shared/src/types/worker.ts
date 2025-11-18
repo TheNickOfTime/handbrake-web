@@ -14,3 +14,5 @@ export interface WorkerCapabilities {
 	nvenc: boolean;
 	vcn: boolean;
 }
+
+export type WorkerPropertiesMap = Record<string, WorkerProperties>;

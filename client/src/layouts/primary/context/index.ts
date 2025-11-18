@@ -3,6 +3,7 @@ import { DetailedJobType, DetailedWatcherType } from '@handbrake-web/shared/type
 import { HandbrakePresetCategoryType } from '@handbrake-web/shared/types/preset';
 import { QueueStatus } from '@handbrake-web/shared/types/queue';
 import { ConnectionIDsType } from '@handbrake-web/shared/types/socket';
+import { WorkerPropertiesMap } from '@handbrake-web/shared/types/worker';
 import { createContext } from 'react';
 import { Socket } from 'socket.io-client';
 
@@ -14,6 +15,7 @@ export interface PrimaryOutletContextType {
 	presets: HandbrakePresetCategoryType;
 	defaultPresets: HandbrakePresetCategoryType;
 	connections: ConnectionIDsType;
+	properties: WorkerPropertiesMap;
 	config: ConfigType;
 	watchers: DetailedWatcherType[];
 }

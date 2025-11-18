@@ -5,6 +5,7 @@ import { DetailedWatcherType } from '@handbrake-web/shared/types/database';
 import { HandbrakePresetCategoryType } from '@handbrake-web/shared/types/preset';
 import { QueueStatus, QueueType } from '@handbrake-web/shared/types/queue';
 import { ConnectionIDsType } from '@handbrake-web/shared/types/socket';
+import { WorkerPropertiesMap } from '@handbrake-web/shared/types/worker';
 import { Outlet } from '@tanstack/react-router';
 import { Fragment, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
@@ -32,6 +33,7 @@ export default function PrimaryLayout() {
 		clients: [],
 		workers: [],
 	});
+	const [properties, setProperties] = useState<WorkerPropertiesMap>({});
 	const [watchers, setWatchers] = useState<DetailedWatcherType[]>([]);
 	const [showSidebar, setShowSidebar] = useState(false);
 
@@ -105,6 +107,11 @@ export default function PrimaryLayout() {
 		setConnections(data);
 	};
 
+	const onPropertiesUpdate = (data: WorkerPropertiesMap) => {
+		console.log(`[client] Worker properties have been updated.`);
+		setProperties(data);
+	};
+
 	const onWatchersUpdate = (watchers: DetailedWatcherType[]) => {
 		console.log('[client] Watchers have been updated.');
 		// console.log(watchers);
@@ -118,6 +125,7 @@ export default function PrimaryLayout() {
 		socket.on('presets-update', onPresetsUpdate);
 		socket.on('default-presets-update', onDefaultPresetsUpdate);
 		socket.on('connections-update', onConnectionsUpdate);
+		socket.on('properties-update', onPropertiesUpdate);
 		socket.on('watchers-update', onWatchersUpdate);
 
 		return () => {
@@ -127,6 +135,7 @@ export default function PrimaryLayout() {
 			socket.off('presets-update', onPresetsUpdate);
 			socket.off('default-presets-update', onDefaultPresetsUpdate);
 			socket.off('connections-update', onConnectionsUpdate);
+			socket.off('properties-update', onPropertiesUpdate);
 			socket.off('watchers-update', onWatchersUpdate);
 		};
 	});
@@ -149,6 +158,7 @@ export default function PrimaryLayout() {
 						presets,
 						defaultPresets,
 						connections,
+						properties,
 						config,
 						watchers,
 					}}
