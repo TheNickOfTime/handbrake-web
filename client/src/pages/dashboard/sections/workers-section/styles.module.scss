@@ -6,4 +6,13 @@
 	[data-working='false'] {
 		color: var(--handbrake-yellow);
 	}
+
+	.capability {
+		margin: 0 0.15rem;
+		padding: 0.25rem 0.5rem;
+		font-size: 0.9rem;
+		font-weight: 600;
+		border-radius: 50cqh;
+		background-color: var(--background-four);
+	}
 }
