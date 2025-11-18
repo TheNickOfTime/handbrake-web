@@ -24,4 +24,13 @@ try {
 	throw err;
 }
 
+// Copy non-bundled dependencies
+console.info(`[server] [build] Copying non-bundled dependencies to the build output location...`);
+try {
+	await copyFile('package.json', 'build/package.json');
+} catch (err) {
+	console.error(`[server] [build] [error] Could not copy all non-bundled dependencies.`);
+	throw err;
+}
+
 console.info(`[worker] [build] Finished worker application build process.`);

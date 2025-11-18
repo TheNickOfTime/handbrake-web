@@ -1,6 +1,7 @@
 import 'dotenv/config';
-import { io } from 'socket.io-client';
 import logger from 'logging';
+import { GetWorkerProperties } from 'scripts/properties';
+import { io } from 'socket.io-client';
 import ServerSocket from 'socket/server-socket';
 import { RegisterExitListeners } from './worker-shutdown';
 
@@ -17,6 +18,9 @@ export default async function WorkerStartup() {
 		);
 		process.exit(0);
 	}
+
+	// Init worker properties
+	await GetWorkerProperties();
 
 	// Setup the server ------------------------------------------------------------
 	const serverURL = process.env.SERVER_URL;
