@@ -1,11 +1,11 @@
 import { QueueType } from '@handbrake-web/shared/types/queue';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import Section from '~components/root/section';
-import { WorkerInfo } from '../..';
+import { WorkerInfoMap } from '../..';
 import styles from './styles.module.scss';
 
 type Params = {
-	workerInfo: WorkerInfo;
+	workerInfo: WorkerInfoMap;
 	queue: QueueType;
 };
 

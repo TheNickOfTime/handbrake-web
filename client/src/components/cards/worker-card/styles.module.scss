@@ -1,0 +1,48 @@
+.worker-card {
+	padding: 1rem;
+	border-radius: 0.75rem;
+	background-color: var(--background-tertiary);
+
+	.heading {
+		margin-bottom: 1rem;
+	}
+
+	.subheading {
+		margin-bottom: 0.5rem;
+		color: var(--text-tertiary);
+	}
+
+	.subsection {
+		margin-bottom: 1rem;
+
+		.content {
+			display: flex;
+			flex-flow: row wrap;
+			gap: 0.5rem;
+
+			.text-info {
+				flex-grow: 1;
+				border-radius: 1.5rem;
+
+				background-color: var(--background-four);
+				padding: 0.5rem 1rem;
+
+				&[data-supported='true'] {
+					color: var(--handbrake-blue);
+				}
+
+				&[data-supported='false'] {
+					color: var(--text-disabled);
+				}
+
+				&[data-status='idle'] {
+					color: var(--handbrake-yellow);
+				}
+
+				&[data-status='working'] {
+					color: var(--handbrake-blue);
+				}
+			}
+		}
+	}
+}
