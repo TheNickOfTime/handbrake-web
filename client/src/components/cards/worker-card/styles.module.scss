@@ -43,6 +43,11 @@
 					color: var(--handbrake-blue);
 				}
 			}
+
+			.progress {
+				display: inline-block;
+				vertical-align: top;
+			}
 		}
 	}
 }

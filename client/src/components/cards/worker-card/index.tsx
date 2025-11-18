@@ -68,7 +68,10 @@ export default function WorkerCard({ worker, info, className, ...properties }: P
 						</TextInfo>
 						<TextInfo className={styles['text-info']} label='Current Progress'>
 							{info.job != 'N/A' ? (
-								<ProgressBar percentage={parseFloat(info.progress)} />
+								<ProgressBar
+									className={styles['progress']}
+									percentage={parseFloat(info.progress)}
+								/>
 							) : (
 								info.progress
 							)}

@@ -20,9 +20,7 @@ export default function WorkersPage() {
 
 	const workerInfo: WorkerInfoMap = Object.fromEntries(
 		connections.workers.map((worker) => {
-			const job = queue.find((job) => {
-				job.worker_id == worker.workerID;
-			});
+			const job = queue.find((job) => job.worker_id == worker.workerID);
 			return [
 				worker.workerID,
 				{
