@@ -32,7 +32,7 @@ export default function WorkerSocket(io: Server) {
 
 		logger.info(`[socket] Getting worker '${workerID}' properties...`);
 		const properties: WorkerProperties = await socket.emitWithAck('get-properties');
-		AddWorkerProperties(socket.id, properties);
+		AddWorkerProperties(workerID, properties);
 		logger.info(`[socket] Worker properties = ${JSON.stringify(properties, null, 2)}`);
 
 		logger.info(`[socket] Checking worker '${workerID}' for an existing job in progress...`);

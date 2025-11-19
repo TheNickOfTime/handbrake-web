@@ -24,7 +24,7 @@ export default function WorkersPage() {
 			return [
 				worker.workerID,
 				{
-					properties: properties[worker.connectionID],
+					properties: properties[worker.workerID],
 					status: job ? 'Working' : 'Idle',
 					job: job ? job.input_path : 'N/A',
 					progress:

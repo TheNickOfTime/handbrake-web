@@ -34,13 +34,13 @@ export default function WorkersSection({ queue, workers, properties }: Propertie
 							<tr key={`worker-${worker}`}>
 								<td>{worker.workerID}</td>
 								<td align='center'>
-									{properties[worker.connectionID].version.application}
+									{properties[worker.workerID].version.application}
 								</td>
 								<td align='center'>
-									{properties[worker.connectionID].version.handbrake}
+									{properties[worker.workerID].version.handbrake}
 								</td>
 								<td align='center'>
-									{Object.entries(properties[worker.connectionID].capabilities)
+									{Object.entries(properties[worker.workerID].capabilities)
 										.filter(([_, available]) => available)
 										.map(([capability]) => (
 											<span className={styles['capability']}>
