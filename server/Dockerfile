@@ -35,10 +35,7 @@ RUN pnpm build
 RUN mkdir /data && mkdir /video
 
 # Final image --------------------------------------------------------------------------------------
-FROM gcr.io/distroless/cc-debian13:${DISTROLESS_VARIANT} AS main
-
-# Copy nodejs binary from the build step
-COPY --from=server-build /usr/local/bin/node /usr/local/bin/node
+FROM gcr.io/distroless/nodejs24-debian13:${DISTROLESS_VARIANT} AS main
 
 # Copy project from build
 COPY --from=handbrake-build /rootfs/base/var/lib/handbrake/preset_builtin.json /var/lib/handbrake/preset_builtin.json
