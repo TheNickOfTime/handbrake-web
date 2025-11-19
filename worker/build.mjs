@@ -1,5 +1,5 @@
 import esbuild from 'esbuild';
-import { rm } from 'node:fs/promises';
+import { copyFile, rm } from 'node:fs/promises';
 
 console.info(`[worker] [build] Starting worker application build process...`);
 
