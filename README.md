@@ -49,9 +49,12 @@ The server component primarily acts as a coordinator for the workers. Additional
 
 ### Worker(s)
 
-The worker component does the heavy lifting via HandBrakeCLI. Jobs are sent to workers by the server, and the workers will process the provided media based on a provided HandBrake preset configuration. **The work done by the worker is very computationally expensive** - it is recommended that you **run a single worker instance per machine**, and that machine either have a high core-count CPU _or_ have GPU hardware transcoding features available to the worker.
+The worker component does the heavy lifting via HandBrakeCLI. Jobs are sent to workers by the server, and the workers will process the provided media based on a provided HandBrake preset configuration. **The work done by the worker is very computationally expensive** - it is recommended that you **run a single worker instance per machine**, and that machine either have a high core-count CPU _or_ have GPU hardware encoding features available to the worker.
 
 ## Setup
+
+> [!CAUTION]
+> These instructions (here and on the [wiki](https://github.com/TheNickOfTime/handbrake-web/wiki)) are in a transitional period approaching the release of v0.8.0 and will not be accurate if you are attempting to deploy the latest stable release (v0.7.3). Please reference [the tag for v0.7.3](https://github.com/TheNickOfTime/handbrake-web/tree/v0.7.3) for working instructions.
 
 HandBrake Web is deployed via docker, and most easily via `docker compose`. The below setup will guide you to have the server and a single worker instance running on the same machine.
 
@@ -98,16 +101,13 @@ services:
 
 - Use a reverse proxy (traefik, nginx, etc) to access your interface at a custom url over https.
 
-#### Hardware Transcoding Support (experimental)
+#### Hardware Encoding Support
 
-> [!Warning]
-> Hardware Transcoding will generally result in larger files with worse quality at the same settings as CPU Transcoding, with the advantage of transcoding (sometimes significantly) faster. If your goals are to produce the highest quality transcodes at the smallest file sizes, stick to CPU transcoding.
-
-Currently NVENC and QSV hardware transcoding are supported, though the extent to which they work is experimental sdince my testing occurred on a very limited set of hardware available to me. Both of these require additional configuration. Please see the comments on [this issue](https://github.com/TheNickOfTime/handbrake-web/issues/88) for setup instructions while official documentation is being made.
+Please see the wiki page on [Hardware Acceleration](https://github.com/TheNickOfTime/handbrake-web/wiki/hardware-acceleration) for more information.
 
 #### Additional Workers
 
-To run additional workers, simply launch additional worker container instances on different machines by omitting the `handbrake-server` service from the example compose file. **Reminder** - It is recommended to run only one worker instance per machine, as a single worker will very likely push most CPUs to 100% utilization during transcoding.
+To run additional workers, simply launch additional worker container instances on different machines by omitting the `handbrake-server` service from the example compose file. **Reminder** - It is recommended to run only one worker instance per machine, as a single worker will very likely push most CPUs to 100% utilization during encoding.
 
 Because of this, your server instance must be reachable outside of the machine it is running on. In most cases the port mapping should make this work, but if you are running an additional firewall, ets. please configure accordingly.
 
@@ -116,7 +116,7 @@ Because of this, your server instance must be reachable outside of the machine i
 ### Presets
 
 HandBrake Web currently uses presets configured in the desktop application of HandBrake and
-exported to .json files to configure transcoding jobs. Exported presets can then be uploaded via the web interface in the 'Presets' section.
+exported to .json files to configure encoding jobs. Exported presets can then be uploaded via the web interface in the 'Presets' section.
 
 <table>
 	<thead>
@@ -139,10 +139,10 @@ exported to .json files to configure transcoding jobs. Exported presets can then
 
 ### Current Features
 
-- Distributed Transcoding - leverage multiple devices to tackle transcoding as workers
+- Distributed Encoding - leverage multiple devices to tackle encoding
 - Web Interface - Interact with HandBrake Web via your web browser
-- Transcode Queue - queue up multiple transcode jobs for your workers to tackle in order
-- Add Jobs Via Directory - bulk add videos to transcode
+- Job Queue - queue up multiple jobs for your workers to tackle in order
+- Add Jobs Via Directory - bulk add videos from a directory
 - Preset Manager - Upload, Rename, and Delete HandBrake presets in the web interface
 - Directory Monitoring - for automatic job creation
 
