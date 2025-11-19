@@ -58,7 +58,8 @@ export default function QueueCard({
 		job.transcode_stage == TranscodeStage.Unknown;
 	const canReset =
 		job.transcode_stage == TranscodeStage.Stopped ||
-		job.transcode_stage == TranscodeStage.Finished;
+		job.transcode_stage == TranscodeStage.Finished ||
+		job.transcode_stage == TranscodeStage.Error;
 	const canRemove =
 		job.transcode_stage == TranscodeStage.Waiting ||
 		job.transcode_stage == TranscodeStage.Finished ||
