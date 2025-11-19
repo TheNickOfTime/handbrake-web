@@ -44,8 +44,8 @@ Additionally, you will often need to ensure your container has adequate `video` 
 services:
   handbrake-worker:
     # ...
-	group_add:
-     - 44
+  group_add:
+    - 44
 ```
 
 ### Preset Configutation
