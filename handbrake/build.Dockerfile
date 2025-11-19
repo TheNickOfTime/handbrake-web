@@ -86,6 +86,13 @@ RUN if [ $TARGETARCH = "amd64" ]; \
 			nvidia-cuda-toolkit \
 	; fi
 
+# Install lidovi dependencies
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+	chmod +x "$HOME/.cargo/env" && \
+	."$HOME/.cargo/env"
+ENV PATH="/root/.cargo/bin:$PATH"
+RUN cargo install cargo-c
+
 # Clone the HandBrake git repo, checkout the specified version
 RUN mkdir /handbrake
 WORKDIR /handbrake
@@ -102,7 +109,7 @@ RUN if [ $TARGETARCH = "amd64" ]; \
 			--enable-nvenc \
 			--enable-nvdec \
 			--enable-vce \
-			# --enable-libdovi \
+			--enable-libdovi \
 	; else \
 		./configure --launch \
 			--launch-jobs=$(nproc) \
@@ -111,7 +118,7 @@ RUN if [ $TARGETARCH = "amd64" ]; \
 			--disable-nvenc \
 			--disable-nvdec \
 			--disable-vce \
-			# --enable-libdovi \
+			--enable-libdovi \
 	; fi
 	
 
