@@ -9,4 +9,18 @@
 
 	.cards {
 	}
+
+	.pending-warning {
+		padding: 1rem;
+		border-radius: 0.75rem;
+		background-color: color-mix(in srgb, var(--handbrake-yellow), transparent 90%);
+
+		strong {
+			color: var(--handbrake-yellow);
+		}
+
+		p {
+			margin: 0;
+		}
+	}
 }
