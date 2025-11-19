@@ -84,7 +84,7 @@ export async function StartTranscode(jobID: number, socket: Socket) {
 		// logger.add(fileTransport);
 		const jobLogger = CreateFileLogger(
 			env.WORKER_ID!,
-			`${env.WORKERID!}-job-${jobID}`,
+			`${env.WORKER_ID!}-job-${jobID}`,
 			path.join(getDataPath(), 'log')
 		);
 
