@@ -19,12 +19,9 @@ RUN pnpm install
 RUN pnpm build
 
 # Node ---------------------------------------------------------------------------------------------
-FROM gcr.io/distroless/cc-debian13:${DISTROLESS_VARIANT} AS main
+FROM gcr.io/distroless/nodejs24-debian13:${DISTROLESS_VARIANT} AS main
 
 ARG TARGETARCH
-
-# Copy nodejs binary from the build step
-COPY --from=worker-build /usr/local/bin/node /usr/local/bin/node
 
 # Copy compiled HandBrakeCLI binary from the build step
 COPY --from=handbrake-build /rootfs/base/ /
@@ -40,5 +37,4 @@ ENV VIDEO_PATH=/video
 
 # Start application
 WORKDIR /handbrake-web/worker
-ENTRYPOINT [ "/usr/local/bin/node" ]
 CMD ["/handbrake-web/worker/worker.js"]
