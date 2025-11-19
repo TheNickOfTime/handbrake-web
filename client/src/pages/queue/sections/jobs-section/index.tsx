@@ -1,4 +1,4 @@
-import { QueueType } from '@handbrake-web/shared/types/queue';
+import { QueueStatus, QueueType } from '@handbrake-web/shared/types/queue';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import ClearAllIcon from '@icons/check2-all.svg?react';
 import ClearFinishedIcon from '@icons/check2.svg?react';
@@ -29,7 +29,7 @@ export default function JobsSection({
 	handleResetJob,
 	handleRemoveJob,
 }: Params) {
-	const { connections } = useContext(PrimaryContext)!;
+	const { connections, queueStatus } = useContext(PrimaryContext)!;
 
 	const jobsInProgress: QueueType = queue.filter(
 		(job) =>
@@ -74,7 +74,8 @@ export default function JobsSection({
 					const workerJob = queue.find((job) => job.worker_id == worker.workerID);
 
 					return workerJob == null;
-				}).length > 0 && (
+				}).length > 0 &&
+				queueStatus != QueueStatus.Stopped && (
 					<div className={styles['pending-warning']}>
 						<strong>Attention!</strong>
 						<p>
