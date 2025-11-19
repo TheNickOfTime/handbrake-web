@@ -9,6 +9,8 @@ HandBrake has support for 5 different hardware encoders. HandBrake Web (due to i
 
 As of right now, **only Intel QSV and Nvidia NVENC are supported**. **_Support for AMD VCN is planned, but not yet implemented_**.
 
+Additionally, it should be noted that the following instructions are for setting up on a bare-metal installation Linux host. Alternative installation methods such as using a VM hypervisor, or something like Windows Subsystem for Linux (WSL/WSL2) should work, but the steps will likely differ or have additional requirements (please feel free to contribute to the docs!!!).
+
 ## Intel (QSV)
 
 Intel QSV is available for hardware encoding support on supported platforms.
