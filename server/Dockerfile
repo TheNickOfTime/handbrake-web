@@ -52,5 +52,4 @@ ENV VIDEO_PATH=/video
 
 # Start application
 WORKDIR /handbrake-web/server
-ENTRYPOINT [ "/usr/local/bin/node" ]
 CMD ["/handbrake-web/server/server.js"]
