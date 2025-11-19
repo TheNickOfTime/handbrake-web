@@ -1,5 +1,5 @@
 import esbuild from 'esbuild';
-import { rm } from 'node:fs/promises';
+import { copyFile, rm } from 'node:fs/promises';
 
 console.info(`[worker] [build] Starting worker application build process...`);
 
@@ -21,6 +21,15 @@ try {
 	console.info(`[server] [build] Successfully bundled the worker application.`);
 } catch (err) {
 	console.error(`[server] [build] [error] Could not bundle the worker application.`);
+	throw err;
+}
+
+// Copy non-bundled dependencies
+console.info(`[server] [build] Copying non-bundled dependencies to the build output location...`);
+try {
+	await copyFile('package.json', 'build/package.json');
+} catch (err) {
+	console.error(`[server] [build] [error] Could not copy all non-bundled dependencies.`);
 	throw err;
 }
 

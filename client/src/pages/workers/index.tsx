@@ -1,3 +1,4 @@
+import { WorkerProperties } from '@handbrake-web/shared/types/worker';
 import { useContext } from 'react';
 import Page from '~components/root/page';
 import { PrimaryContext } from '~layouts/primary/context';
@@ -6,24 +7,24 @@ import SummarySection from './sections/summary-section';
 import styles from './styles.module.scss';
 
 export type WorkerInfo = {
-	[index: string]: {
-		status: string;
-		job: string;
-		progress: string;
-	};
+	properties: WorkerProperties;
+	status: string;
+	job: string;
+	progress: string;
 };
 
-export default function WorkersPage() {
-	const { connections, queue } = useContext(PrimaryContext)!;
+export type WorkerInfoMap = Record<string, WorkerInfo>;
 
-	const workerInfo: WorkerInfo = Object.fromEntries(
+export default function WorkersPage() {
+	const { connections, queue, properties } = useContext(PrimaryContext)!;
+
+	const workerInfo: WorkerInfoMap = Object.fromEntries(
 		connections.workers.map((worker) => {
-			const job = queue.find((job) => {
-				job.worker_id == worker.workerID;
-			});
+			const job = queue.find((job) => job.worker_id == worker.workerID);
 			return [
 				worker.workerID,
 				{
+					properties: properties[worker.workerID],
 					status: job ? 'Working' : 'Idle',
 					job: job ? job.input_path : 'N/A',
 					progress:

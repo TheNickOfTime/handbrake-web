@@ -3,8 +3,10 @@ import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
 import ClearAllIcon from '@icons/check2-all.svg?react';
 import ClearFinishedIcon from '@icons/check2.svg?react';
 import AddNewIcon from '@icons/plus-lg.svg?react';
+import { useContext } from 'react';
 import ButtonInput from '~components/base/inputs/button';
 import Section from '~components/root/section';
+import { PrimaryContext } from '~layouts/primary/context';
 import QueueJobsCategory from '../queue-jobs-category';
 import styles from './styles.module.scss';
 
@@ -27,6 +29,8 @@ export default function JobsSection({
 	handleResetJob,
 	handleRemoveJob,
 }: Params) {
+	const { connections } = useContext(PrimaryContext)!;
+
 	const jobsInProgress: QueueType = queue.filter(
 		(job) =>
 			job.transcode_stage == TranscodeStage.Transcoding ||
@@ -65,6 +69,24 @@ export default function JobsSection({
 				/>
 				<ButtonInput label='Add New Job' Icon={AddNewIcon} onClick={handleAddNewJob} />
 			</div>
+			{jobsWaiting.length > 0 &&
+				connections.workers.filter((worker) => {
+					const workerJob = queue.find((job) => job.worker_id == worker.workerID);
+
+					return workerJob == null;
+				}).length > 0 && (
+					<div className={styles['pending-warning']}>
+						<strong>Attention!</strong>
+						<p>
+							<em>
+								You have pending jobs and available workers at the same time! This
+								usually occurs when the currently pending jobs require a hardware
+								encoder that none of the available workers are capable of. If that
+								is the case, this behavior is intended.
+							</em>
+						</p>
+					</div>
+				)}
 			<div className='cards'>
 				<QueueJobsCategory
 					queue={jobsInProgress}

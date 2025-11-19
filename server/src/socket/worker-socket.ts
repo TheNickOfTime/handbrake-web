@@ -2,6 +2,7 @@ import type { JobStatusType, JobType } from '@handbrake-web/shared/types/databas
 import { type HandbrakePresetType } from '@handbrake-web/shared/types/preset';
 import { QueueStatus } from '@handbrake-web/shared/types/queue';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
+import type { WorkerProperties } from '@handbrake-web/shared/types/worker';
 import logger, { logPath, WriteWorkerLogToFile } from 'logging';
 import { AddWorker, RemoveWorker } from 'scripts/connections';
 import {
@@ -11,6 +12,7 @@ import {
 	DatabaseUpdateJobStatus,
 } from 'scripts/database/database-queue';
 import { GetDefaultPresetByName, GetPresetByName } from 'scripts/presets';
+import { AddWorkerProperties } from 'scripts/properties';
 import {
 	GetBusyWorkers,
 	GetQueue,
@@ -27,6 +29,11 @@ export default function WorkerSocket(io: Server) {
 
 		logger.info(`[socket] Worker '${workerID}' has connected with ID '${socket.id}'.`);
 		AddWorker(socket);
+
+		logger.info(`[socket] Getting worker '${workerID}' properties...`);
+		const properties: WorkerProperties = await socket.emitWithAck('get-properties');
+		AddWorkerProperties(workerID, properties);
+		logger.info(`[socket] Worker properties = ${JSON.stringify(properties, null, 2)}`);
 
 		logger.info(`[socket] Checking worker '${workerID}' for an existing job in progress...`);
 		const existingJobID = await socket.emitWithAck('check-for-existing-job');

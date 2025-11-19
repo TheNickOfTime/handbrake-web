@@ -1,4 +1,6 @@
+import type { WorkerProperties } from '@handbrake-web/shared/types/worker';
 import logger from 'logging';
+import { GetWorkerProperties } from 'scripts/properties';
 import { Socket } from 'socket.io-client';
 import { currentJobID, StartTranscode, StopTranscode } from '../scripts/transcode';
 import { serverAddress } from '../worker-startup';
@@ -24,6 +26,11 @@ export default function ServerSocket(server: Socket) {
 		if (details) {
 			logger.info(details);
 		}
+	});
+
+	server.on('get-properties', async (callback: (properties: WorkerProperties) => void) => {
+		logger.info(`[socket] The server is requesting this worker's properties...`);
+		callback(await GetWorkerProperties());
 	});
 
 	server.on('check-for-existing-job', (callback: (jobID: number | null) => void) => {

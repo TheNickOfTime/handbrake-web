@@ -1,7 +1,9 @@
 import { QueueStartupBehavior } from '@handbrake-web/shared/types/config';
 import type { AddJobType, DetailedJobType } from '@handbrake-web/shared/types/database';
+import type { HandbrakePresetDataType } from '@handbrake-web/shared/types/preset';
 import { QueueStatus } from '@handbrake-web/shared/types/queue';
 import { TranscodeStage } from '@handbrake-web/shared/types/transcode';
+import type { WorkerCapabilities } from '@handbrake-web/shared/types/worker';
 import { error } from 'console';
 import logger, { RemoveJobLogByID } from 'logging';
 import { Socket as Worker } from 'socket.io';
@@ -16,6 +18,7 @@ import {
 import {
 	DatabaseGetDetailedJobByID,
 	DatabaseGetDetailedJobs,
+	DatabaseGetSimpleJobByID,
 	DatabaseInsertJob,
 	DatabaseInsertJobOrderByID,
 	DatabaseRemoveJobByID,
@@ -23,6 +26,20 @@ import {
 	DatabaseUpdateJobStatus,
 } from './database/database-queue';
 import { DatabaseSelectStatusByID, DatabaseUpdateStatus } from './database/database-status';
+import { GetDefaultPresetByName, GetPresetByName } from './presets';
+import { GetWorkerProperties } from './properties';
+
+const getJobRequiredCapability: (
+	encoder: HandbrakePresetDataType['VideoEncoder']
+) => keyof WorkerCapabilities = (encoder) => {
+	if (encoder.match(/qsv/)) {
+		return 'qsv';
+	} else if (encoder.match(/nvenc/)) {
+		return 'nvenc';
+	} else {
+		return 'cpu';
+	}
+};
 
 // Init --------------------------------------------------------------------------------------------
 export async function InitializeQueue() {
@@ -90,6 +107,19 @@ export async function GetAvailableWorkers() {
 	return availableWorkers;
 }
 
+export function GetEligibleWorkers(
+	availableWorkers: Worker[],
+	requiredCapability: keyof WorkerCapabilities
+) {
+	const eligibleWorkers = availableWorkers.filter((worker) => {
+		const workerID = GetWorkerID(worker);
+		const workerCapabilities = GetWorkerProperties()[workerID].capabilities;
+		return workerCapabilities[requiredCapability];
+	});
+
+	return eligibleWorkers;
+}
+
 export async function GetAvailableJobs() {
 	const queue = await DatabaseGetDetailedJobs();
 	const availableJobs = queue
@@ -98,14 +128,41 @@ export async function GetAvailableJobs() {
 	return availableJobs;
 }
 
+export function GetEligibleJobs(
+	availableJobs: DetailedJobType[],
+	workerCapabilities: WorkerCapabilities
+) {
+	const eligibleJobs = availableJobs.filter((job) => {
+		const jobPreset = job.preset_category.match(/Default:\s/)
+			? GetDefaultPresetByName(job.preset_category.replace(/Default:\s/, ''), job.preset_id)
+			: GetPresetByName(job.preset_category, job.preset_id);
+
+		const requiredCapability = getJobRequiredCapability(jobPreset.PresetList[0].VideoEncoder);
+
+		return workerCapabilities[requiredCapability];
+	});
+
+	return eligibleJobs;
+}
+
 export async function JobForAvailableWorkers(jobID: number) {
 	if ((await GetQueueStatus()) != QueueStatus.Stopped) {
 		logger.info(
 			`[server] [queue] Job with ID '${jobID}' is available, checking for available workers...`
 		);
+		const jobInfo = await DatabaseGetSimpleJobByID(jobID);
+		const jobPreset = jobInfo.preset_category.match(/Default:\s/)
+			? GetDefaultPresetByName(
+					jobInfo.preset_category.replace(/Default:\s/, ''),
+					jobInfo.preset_id
+			  )
+			: GetPresetByName(jobInfo.preset_category, jobInfo.preset_id);
+		const requiredCapability = getJobRequiredCapability(jobPreset.PresetList[0].VideoEncoder);
 		const availableWorkers = await GetAvailableWorkers();
-		if (availableWorkers.length > 0) {
-			const selectedWorker = availableWorkers[0];
+		const eligibleWorkers = GetEligibleWorkers(availableWorkers, requiredCapability);
+
+		if (eligibleWorkers.length > 0) {
+			const selectedWorker = eligibleWorkers[0];
 			const job = await DatabaseGetDetailedJobByID(jobID);
 			await StartJob(job, selectedWorker);
 			if ((await GetQueueStatus()) != QueueStatus.Active) {
@@ -115,6 +172,10 @@ export async function JobForAvailableWorkers(jobID: number) {
 				`[server] [queue] Found worker with ID '${GetWorkerID(
 					selectedWorker
 				)}' for job with ID '${jobID}'.`
+			);
+		} else if (availableWorkers.length > 0 && eligibleWorkers.length == 0) {
+			logger.info(
+				`[queue] There are available workers, but none with the capability '${requiredCapability}' for job with id '${jobID}'.`
 			);
 		} else {
 			logger.info(
@@ -129,10 +190,15 @@ export async function WorkerForAvailableJobs(workerID: string) {
 		logger.info(
 			`[server] [queue] Worker with ID '${workerID}' is available, checking for available jobs...`
 		);
+
+		const workerCapabilities = GetWorkerProperties()[workerID].capabilities;
+
 		const availableJobs = await GetAvailableJobs();
-		if (availableJobs.length > 0) {
+		const eligibleJobs = GetEligibleJobs(availableJobs, workerCapabilities);
+
+		if (eligibleJobs.length > 0) {
 			const worker = GetWorkerWithID(workerID);
-			const selectedJob = availableJobs[0];
+			const selectedJob = eligibleJobs[0];
 			if (selectedJob && worker) {
 				StartJob(selectedJob, worker);
 				if ((await GetQueueStatus()) != QueueStatus.Active) {
@@ -141,6 +207,15 @@ export async function WorkerForAvailableJobs(workerID: string) {
 				logger.info(
 					`[server] [queue] Found job with ID '${selectedJob.job_id}' for worker with ID '${workerID}'.`
 				);
+			}
+		} else if (availableJobs.length > 0 && eligibleJobs.length == 0) {
+			logger.info(
+				`[queue] There are available jobs, but none that require the capabilities of worker with ID '${workerID}'.`
+			);
+			// Set queue to idle if there are no other busy workers
+			if ((await GetBusyWorkers()).length == 0) {
+				SetQueueStatus(QueueStatus.Idle);
+				logger.info("[queue] There are no active workers, setting queue to 'Idle'.");
 			}
 		} else {
 			logger.info(
@@ -172,40 +247,44 @@ export async function StartQueue(clientID?: string) {
 		try {
 			const availableWorkers = await GetAvailableWorkers();
 			const availableJobs = await GetAvailableJobs();
-			const moreJobs = availableWorkers.length < availableJobs.length;
-			const maxConcurrent = moreJobs ? availableWorkers.length : availableJobs.length;
-			logger.info(
-				`[server] [queue] There are more ${moreJobs ? 'jobs' : 'workers'} than ${
-					moreJobs ? 'workers' : 'jobs'
-				}, the max amount of concurrent jobs is ${maxConcurrent} job(s).`
-			);
 
-			if (maxConcurrent > 0) {
-				for (let i = 0; i < maxConcurrent; i++) {
-					const selectedJob = availableJobs[i];
-					const selectedWorker = availableWorkers[i];
-					const selectedWorkerID = GetWorkerID(selectedWorker);
+			for (const worker of availableWorkers) {
+				const workerID = GetWorkerID(worker);
+				const workerCapabilities = GetWorkerProperties()[workerID].capabilities;
+				const eligibleJobs = GetEligibleJobs(availableJobs, workerCapabilities);
+				if (eligibleJobs.length > 0) {
+					const selectedJob = eligibleJobs[0];
+					logger.info(
+						`[queue] Assigning worker with ID '${workerID}' to job with id '${selectedJob.job_id}'.`
+					);
+					StartJob(selectedJob, worker);
 
-					if (selectedJob) {
-						StartJob(selectedJob, selectedWorker);
+					// Remove job from available jobs for the next iteration
+					availableJobs.splice(availableJobs.indexOf(selectedJob));
 
+					SetQueueStatus(QueueStatus.Active);
+				} else if (availableJobs.length > 0 && eligibleJobs.length == 0) {
+					logger.info(
+						`[queue] There are available jobs, but none that require the capabilities of worker with ID '${workerID}'.`
+					);
+					if ((await GetBusyWorkers()).length == 0) {
+						SetQueueStatus(QueueStatus.Idle);
 						logger.info(
-							`[server] [queue] Assigning worker '${selectedWorkerID}' to job '${selectedJob}'.`
+							"[queue] There are no active workers, setting queue to 'Idle'."
 						);
-					} else {
-						throw new Error(
-							`[server] [queue] Cannot find job with ID '${selectedJob}' in the database.`
+					}
+				} else {
+					logger.info(
+						`[server] [queue] There are no jobs available for worker with ID '${workerID}'.`
+					);
+					// Set queue to idle if there are no other busy workers
+					if ((await GetBusyWorkers()).length == 0) {
+						SetQueueStatus(QueueStatus.Idle);
+						logger.info(
+							"[queue] There are no active workers, setting queue to 'Idle'."
 						);
 					}
 				}
-				SetQueueStatus(QueueStatus.Active);
-			} else {
-				logger.info(
-					`[server] [queue] Setting the queue to idle because there are no ${
-						moreJobs ? 'workers' : 'jobs'
-					} available for ${moreJobs ? 'jobs' : 'workers'}.`
-				);
-				SetQueueStatus(QueueStatus.Idle);
 			}
 		} catch (err) {
 			logger.error(err);
