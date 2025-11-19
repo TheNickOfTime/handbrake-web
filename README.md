@@ -53,6 +53,9 @@ The worker component does the heavy lifting via HandBrakeCLI. Jobs are sent to w
 
 ## Setup
 
+> [!CAUTION]
+> These instructions (here and on the [wiki](https://github.com/TheNickOfTime/handbrake-web/wiki)) are in a transitional period approaching the release of v0.8.0 and will not be accurate if you are attempting to deploy the latest stable release (v0.7.3). Please reference [the tag for v0.7.3](https://github.com/TheNickOfTime/handbrake-web/tree/v0.7.3) for working instructions.
+
 HandBrake Web is deployed via docker, and most easily via `docker compose`. The below setup will guide you to have the server and a single worker instance running on the same machine.
 
 ### Docker Compose
