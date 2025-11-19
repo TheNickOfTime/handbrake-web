@@ -1,11 +1,14 @@
 name: Wiki Publish
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - docs/**
-      - .github/workflows/wiki-publish.yml
+  release:
+    types:
+      - published
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - docs/**
+  #     - .github/workflows/wiki-publish.yml
 
 concurrency:
   group: wiki-publish
@@ -17,6 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: Andrew-Chen-Wang/github-wiki-action@v4
+      - uses: Andrew-Chen-Wang/github-wiki-action@v5
         with:
           path: docs/
