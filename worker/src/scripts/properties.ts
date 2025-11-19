@@ -4,18 +4,18 @@ import type {
 	WorkerProperties,
 	WorkerVersion,
 } from '@handbrake-web/shared/types/worker';
-import { exec } from 'node:child_process';
+import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import logger from './logging';
 
-const execPromise = promisify(exec);
+const execFilePromise = promisify(execFile);
 
 let info: WorkerProperties | null = null;
 
 export async function GetWorkerProperties(): Promise<WorkerProperties> {
 	if (info == null) {
 		try {
-			const handbrake = await execPromise('HandBrakeCLI --version');
+			const handbrake = await execFilePromise('HandBrakeCLI', ['--version']);
 
 			const version = GetWorkerVersions(handbrake);
 			logger.info(`[properties] HandBrake Web Application Version = ${version.application}`);
