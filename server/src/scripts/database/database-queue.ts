@@ -1,5 +1,6 @@
 import {
 	type AddJobType,
+	type DetailedJobType,
 	type JobsOrderTable,
 	type JobsStatusTable,
 	type UpdateJobStatusType,
@@ -28,7 +29,7 @@ const getNextOrderIndex = async () =>
 
 export async function DatabaseGetDetailedJobs() {
 	try {
-		const jobs = await selectFromJobsDetailed
+		const jobs: DetailedJobType[] = await selectFromJobsDetailed
 			.selectAll()
 			.$narrowType<{ [index in keyof (JobsStatusTable & JobsOrderTable)]: NotNull }>()
 			.execute();
