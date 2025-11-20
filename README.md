@@ -62,7 +62,7 @@ See the [Installation](https://github.com/TheNickOfTime/handbrake-web/wiki/Insta
 
 ### Quick Start
 
-If you are very familiar with Docker/Docker Compose and want to get started as fast as possible, check out the base configuration below:
+If you are very familiar with Docker/Docker Compose and want to get started as fast as possible with a server and a single worker, check out the base configuration below:
 
 ```yaml
 services:
