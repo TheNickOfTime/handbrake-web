@@ -56,11 +56,13 @@ The worker component does the heavy lifting via HandBrakeCLI. Jobs are sent to w
 > [!CAUTION]
 > These instructions (here and on the [wiki](https://github.com/TheNickOfTime/handbrake-web/wiki)) are in a transitional period approaching the release of v0.8.0 and will not be accurate if you are attempting to deploy the latest stable release (v0.7.3). Please reference [the tag for v0.7.3](https://github.com/TheNickOfTime/handbrake-web/tree/v0.7.3) for working instructions.
 
-HandBrake Web is deployed via docker, and most easily via `docker compose`. The below setup will guide you to have the server and a single worker instance running on the same machine.
+### Setup Guide
 
-### Docker Compose
+See the [Setup Guide](https://github.com/TheNickOfTime/handbrake-web/wiki/Setup-Guide) wiki page for a detailed walkthrough on getting HandBrake Web setup and configured.
 
-1. Copy the example docker compose
+### Quick Start
+
+If you are very familiar with Docker/Docker Compose and want to get started as fast as possible with a server and a single worker, check out the base configuration below:
 
 ```yaml
 services:
@@ -87,29 +89,6 @@ services:
     depends_on:
       - handbrake-server
 ```
-
-2. Configure the following:
-   - **Server Port Mapping**: 9999 by default (change the lefthand side of `9999:9999` if you have a conflict)
-   - **User Mapping**: 1000:1000 by default (change to run as a user that will have adequate permissions to access the media directories that you map). 0:0 or removing this line will run the container as root - this is generally not recommended but will almost guarantee no permission issues.
-   - **Volume Mappings**: The same media must be mapped to `/video` across the server and _all_ worker instances. See [here](https://github.com/TheNickOfTime/handbrake-web/wiki/about-volume-mapping) for more information.
-   - **Worker Environment Variables**: Tell your worker where to connect to the server via the `SERVER_URL` and `SERVER_PORT` environment variables. Ensure the port is set to the external mapping you set earlier.
-3. Run `docker compose up`.
-   - The client interface will be available at the address & port you configured.
-   - The worker(s) will automatically connect to the server and wait for jobs.
-
-#### Recommended Additional Steps
-
-- Use a reverse proxy (traefik, nginx, etc) to access your interface at a custom url over https.
-
-#### Hardware Encoding Support
-
-Please see the wiki page on [Hardware Acceleration](https://github.com/TheNickOfTime/handbrake-web/wiki/hardware-acceleration) for more information.
-
-#### Additional Workers
-
-To run additional workers, simply launch additional worker container instances on different machines by omitting the `handbrake-server` service from the example compose file. **Reminder** - It is recommended to run only one worker instance per machine, as a single worker will very likely push most CPUs to 100% utilization during encoding.
-
-Because of this, your server instance must be reachable outside of the machine it is running on. In most cases the port mapping should make this work, but if you are running an additional firewall, ets. please configure accordingly.
 
 ## Usage
 
