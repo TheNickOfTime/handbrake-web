@@ -56,9 +56,9 @@ The worker component does the heavy lifting via HandBrakeCLI. Jobs are sent to w
 > [!CAUTION]
 > These instructions (here and on the [wiki](https://github.com/TheNickOfTime/handbrake-web/wiki)) are in a transitional period approaching the release of v0.8.0 and will not be accurate if you are attempting to deploy the latest stable release (v0.7.3). Please reference [the tag for v0.7.3](https://github.com/TheNickOfTime/handbrake-web/tree/v0.7.3) for working instructions.
 
-### Installation Guide
+### Setup Guide
 
-See the [Installation](https://github.com/TheNickOfTime/handbrake-web/wiki/Installation) wiki page for a detailed guide to get HandBrake Web setup, installed, and configured.
+See the [Setup Guide](https://github.com/TheNickOfTime/handbrake-web/wiki/Setup-Guide) wiki page for a detailed walkthrough on getting HandBrake Web setup and configured.
 
 ### Quick Start
 
