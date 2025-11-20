@@ -6,5 +6,6 @@
 ### Quick Links
 
 - [[Setup Guide]]
-- [[About Volume Mapping]]
+- [[Presets]]
 - [[Hardware Acceleration]]
+- [[About Volume Mapping]]
