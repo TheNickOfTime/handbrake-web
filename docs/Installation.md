@@ -4,7 +4,7 @@ Currently, Docker/Docker Compose are the only officially supported methods of in
 
 ### Minimum Requirements
 
-##### Host Machine/Operating System
+#### Host Machine/Operating System
 
 You will need a host machine capable of running the Docker Engine:
 
@@ -14,7 +14,7 @@ You will need a host machine capable of running the Docker Engine:
 
 You may face additional hurdles on Windows and MacOS.
 
-##### Software/Drivers
+#### Software/Drivers
 
 You will need to have the following installed/available on your host system:
 
@@ -29,11 +29,11 @@ If you have a GPU you wish to use for hardware accelerated encoding, please ensu
 
 HandBrake Web has three Docker Compose configuration file templates available:
 
-| Configuation File                                                                                           | Description                                                    |
-| ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| [compose.base.yaml](https://github.com/TheNickOfTime/handbrake-web/blob/main/compose/compose.base.yaml)     | Basic configuration for CPU encoding                           |
-| [compose.intel.yaml](https://github.com/TheNickOfTime/handbrake-web/blob/main/compose/compose.intel.yaml)   | Modified configuration for Intel QSV support for Intel GPUs    |
-| [compose.nvidia.yaml](https://github.com/TheNickOfTime/handbrake-web/blob/main/compose/compose.nvidia.yaml) | Modified configuation for NVIDIA NVENC support for NVIDIA GPUs |
+| Configuation File                                                                                           | Description                                                     |
+| ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| [compose.base.yaml](https://github.com/TheNickOfTime/handbrake-web/blob/main/compose/compose.base.yaml)     | Basic configuration for CPU encoding                            |
+| [compose.intel.yaml](https://github.com/TheNickOfTime/handbrake-web/blob/main/compose/compose.intel.yaml)   | Modified configuration for Intel QSV support for Intel GPUs     |
+| [compose.nvidia.yaml](https://github.com/TheNickOfTime/handbrake-web/blob/main/compose/compose.nvidia.yaml) | Modified configuration for NVIDIA NVENC support for NVIDIA GPUs |
 
 You can either copy/paste the contents of these files into a file called `compose.yaml`, or run the following commands to download the templates directly to your current directory. All of these templates will guide you to deploy a single server instance, and a single worker instance - both running on the same machine.
 
@@ -59,7 +59,7 @@ wget -O compose.yaml https://raw.githubusercontent.com/TheNickOfTime/handbrake-w
 
 You will want to modify/configure the following options in your `compose.yaml`:
 
-##### `user` Mapping
+#### `user` Mapping
 
 ```yaml
 user: 1000:1000
@@ -69,7 +69,7 @@ The container will run as UID `1000` and GID `1000` by default. Depending on you
 
 You may opt to run the container as root `0:0` to almost certainly bypass any permissions issues, but this is not recommended.
 
-##### `ports` Mapping
+#### `ports` Mapping
 
 ```yaml
 ports:
@@ -78,7 +78,7 @@ ports:
 
 The server will be accessible on port `9999` by default. You may change the left-hand side of this statement if you have a conflicting service already using this port.
 
-##### `volumes` Mapping
+#### `volumes` Mapping
 
 ```yaml
 volumes:
@@ -90,7 +90,7 @@ HandBrake Web expects paths to be mapped to `/data` and `/video` on the server, 
 
 The same media must be mapped to `/video` across the server and _all_ worker instances. See [here](https://github.com/TheNickOfTime/handbrake-web/wiki/about-volume-mapping) for more information.
 
-##### `environment` Variables
+#### `environment` Variables
 
 ```yaml
 environment:
