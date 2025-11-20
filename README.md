@@ -98,7 +98,7 @@ HandBrake Web currently uses presets configured in the desktop application of Ha
 
 ### Hardware Accelerated Encoding
 
-Additional configuration is required to enable hardware accelerated encoding for GPUs - please see the [Hardware Acceleration](https://github.com/TheNickOfTime/handbrake-web/wiki/Setup-Guide) wiki page for additional information. Currently Intel QSV and NVIDIA NVENC hardware encoding are supported. Support for AMD VCN is planned, but not yet implimented.
+Additional configuration is required to enable hardware accelerated encoding for GPUs - please see the [Hardware Acceleration](https://github.com/TheNickOfTime/handbrake-web/wiki/Hardware-Acceleration) wiki page for additional information. Currently Intel QSV and NVIDIA NVENC hardware encoding are supported. Support for AMD VCN is planned, but not yet implimented.
 
 ## Features
 
