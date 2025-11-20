@@ -5,6 +5,6 @@
 
 ### Quick Links
 
-- [[Installation Guide]]
+- [[Setup Guide]]
 - [[About Volume Mapping]]
 - [[Hardware Acceleration]]
