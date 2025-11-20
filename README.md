@@ -58,7 +58,7 @@ The worker component does the heavy lifting via HandBrakeCLI. Jobs are sent to w
 
 ### Installation Guide
 
-See the [[Installation]] wiki page for a detailed guide to getting HandBrake web setup, installed, and configured.
+See the [Installation](https://github.com/TheNickOfTime/handbrake-web/wiki/Installation) wiki page for a detailed guide to get HandBrake web setup, installed, and configured.
 
 ### Quick Start
 
