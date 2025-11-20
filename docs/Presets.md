@@ -31,7 +31,7 @@ exported to .json files to configure encoding jobs. Exported presets can then be
 4. Select the category (or create a new category) to organize your preset under.
 5. Edit the preset's name if desired.
    - If the preset name _and_ category match a previously exisiting preset, the old preset will be overwritten.
-6. Click `Upload`
+6. Click `Upload`.
 
 ![](/images/docs/presets/preset-upload.png)
 
@@ -50,7 +50,7 @@ This project uses a different approach to using HandBrake on headless devices vi
 - Deploy the [jlesage/docker-handbrake](https://github.com/jlesage/docker-handbrake) image on your desired host machine.
 - Create your preset with the necessary hardware accelerated encoding options.
 - Export the preset to a mapped volume on your host machine.
-- Transfer the preset file to your client device, and upload it to HandBrake Web
+- Transfer the preset file to your client device, and upload it to HandBrake Web.
 
 ##### Temporarily Boot a Live ISO
 
