@@ -94,25 +94,7 @@ services:
 
 ### Presets
 
-HandBrake Web currently uses presets configured in the desktop application of HandBrake and
-exported to .json files to configure encoding jobs. Exported presets can then be uploaded via the web interface in the 'Presets' section.
-
-<table>
-	<thead>
-		<tr>
-			<th width=33% align='center'>Configure & Save Preset</th>
-			<th width=33% align='center'>Export Preset To File</th>
-			<th width=33% align='center'>Upload Preset to HandBrake Web</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td><img src='images/readme/readme-preset-save.png' width=100%></td>
-			<td><img src='images/readme/readme-preset-export.png' width=100%></td>
-			<td><img src='images/readme/readme-preset-upload.png' width=100%></td>
-		</tr>
-	</tbody>
-</table>
+HandBrake Web currently uses presets configured in the desktop application of HandBrake and exported to .json files to configure encoding jobs. Exported presets can then be uploaded via the web interface in the 'Presets' section. Please see the [Presets](https://github.com/TheNickOfTime/handbrake-web/wiki/Presets) wiki page for additional information.
 
 ## Features
 
