@@ -30,12 +30,12 @@
 <div align='center' width=100%>
   <details>
     <summary>Screenshots (click to expand)</summary>
-    <img src='images/screenshots/screenshot-dashboard.png' width=90%>
-    <img src='images/screenshots/screenshot-queue.png' width=90%>
-    <img src='images/screenshots/screenshot-presets.png' width=90%>
-    <img src='images/screenshots/screenshot-watchers.png' width=90%>
-    <img src='images/screenshots/screenshot-workers.png' width=90%>
-    <img src='images/screenshots/screenshot-settings.png' width=90%>
+    <img src='/docs/images/screenshots/screenshot-dashboard.png' width=90%>
+    <img src='/docs/images/images/screenshots/screenshot-queue.png' width=90%>
+    <img src='/docs/images/images/screenshots/screenshot-presets.png' width=90%>
+    <img src='/docs/images/images/screenshots/screenshot-watchers.png' width=90%>
+    <img src='/docs/images/images/screenshots/screenshot-workers.png' width=90%>
+    <img src='/docs/images/images/screenshots/screenshot-settings.png' width=90%>
   </details>
 </div>
 
