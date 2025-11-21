@@ -16,6 +16,8 @@ docker run --rm ghcr.io/thenickoftime/handbrake-cli:latest --help
 
 This command is essentially equivalent to `HandBrakeCLI --help` if it were natively installed. The first part `docker run --rm ghcr.io/thenickoftime/handbrake-cli:latest` are the arguments for running the docker image, and everything after it (just `--help` in this case), are arguments passed to HandBrakeCLI. The container will run the command once, and then remove itself afterwards (`--rm` argument).
 
+If you are new to/learning `HandBrakeCLI`, this command is incredibly helpful for understanding what your options are.
+
 ##### Realistic Example
 
 ```bash
@@ -37,7 +39,7 @@ This command:
 ```bash
 docker run --rm \
 	--user 1000:1000 \
-	-d /dev/dri:/dev/dri \
+	--device /dev/dri:/dev/dri \
 	-v ./video:/video \
 	ghcr.io/thenickoftime/handbrake-cli:latest \
 	-i /video/Input/video.mov \
@@ -45,10 +47,15 @@ docker run --rm \
 	-Z "H.265 QSV 1080p"
 ```
 
-In the following example, much is the same as the previous command, but we are passing an Intel GPU device into the container, and using a built-in Intel QSV preset.
+In the following example, much is the same as the previous command, but:
+
+- `--device /dev/dri:/dev/dri` passes an Intel GPU device into the container.
+- Uses the built-in preset `H.265 QSV 1080p` as the encoding preset to leverage the GPU device's capabilities.
+
+Additionally, formatting is improved with line breaks, as the list of arguments is getting long. Alternatively, with more advanced commands that have numerous arguments, it might be worth writing a script file.
 
 ## Conclusion
 
 `HandBrakeCLI` is a complicated and robust program. While this page hopefully has given you an understanding of how to go about using this specific image, I would recommend using the `--help` command and reference the [HandBrake Docs](https://handbrake.fr/docs/en/latest/cli/cli-options.html) for more detailed information about advanced use.
 
-You can (as far as I have tested) accomplish anything with the `handbrake-cli` image that you would be able to accomplish with a native install of `HandBrakeCLI`. As you take advantage of more and more features, your command will get longer and less readable. It might be worthwhile to run these advanced commands via a bash script, or at the very least use a multi-line command in your console.
+You can (as far as I have tested) accomplish anything with the `handbrake-cli` image that you would be able to accomplish with a native install of `HandBrakeCLI`.
