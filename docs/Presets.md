@@ -12,7 +12,7 @@ exported to .json files to configure encoding jobs. Exported presets can then be
 2. Modify the preset to your liking.
 3. Save your modified preset by clicking `Save New Preset` next to the preset selection area.
 
-![](/images/docs/presets/preset-save.png)
+![](images/docs/presets/preset-save.png)
 
 ### Step 2 - Export Preset To File
 
@@ -21,7 +21,7 @@ exported to .json files to configure encoding jobs. Exported presets can then be
 3. Click `Export to file` in the dialog.
 4. Save your preset with your desired name and location.
 
-![](/images/docs/presets/preset-export.png)
+![](images/docs/presets/preset-export.png)
 
 ### Step 3 - Upload Preset To HandBrake Web
 
@@ -33,7 +33,7 @@ exported to .json files to configure encoding jobs. Exported presets can then be
    - If the preset name _and_ category match a previously exisiting preset, the old preset will be overwritten.
 6. Click `Upload`.
 
-![](/images/docs/presets/preset-upload.png)
+![](images/docs/presets/preset-upload.png)
 
 Your preset from HandBrake will now be available to use in jobs!
 
