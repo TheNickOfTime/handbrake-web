@@ -102,25 +102,24 @@ Additional configuration is required to enable hardware accelerated encoding for
 
 ## Features
 
+_These lists are not comprehensive, please see the [development project](https://github.com/users/TheNickOfTime/projects/3) for more information..._
+
 ### Current Features
 
-- Distributed Encoding - leverage multiple devices to tackle encoding
-- Web Interface - Interact with HandBrake Web via your web browser
-- Job Queue - queue up multiple jobs for your workers to tackle in order
-- Add Jobs Via Directory - bulk add videos from a directory
-- Preset Manager - Upload, Rename, and Delete HandBrake presets in the web interface
-- Directory Monitoring - for automatic job creation
+- **Web Interface** - Interact with HandBrake on a headless device via a web browser.
+- **Job Queue** - Create and manage a queue of jobs for your workers to tackle in order.
+- **Bulk Job Creation** - Easily create multiple jobs at once for videos in the same directory.
+- **Preset Management** - Upload, Rename, and Delete HandBrake presets in the web interface.
+- **Directory Monitoring** - Create directory _"Watchers"_ to automatically create jobs based on various criteria.
+- **Distributed Encoding** - Leverage multiple devices/nodes/workers to tackle encoding tasks concurrently.
+- **Hardware Accelerated Encoding** - Use a GPU to speed up encoding times.
+  - **Intel QSV** - Use your discrete and/or integrated Intel GPU.
+  - **NVIDIA NVENC** - Use your discrete NVIDIA GPU.
 
 ### Planned Features (not yet implemented)
 
-- Preset Creator - create presets directly in the web interface
-- User Sessions - logging in required to access the web interface
-
-## Known Issues & Current Limitations
-
-### Current Limitations
-
-Please see the planned features section, as all of these are intended to be addressed.
-
-- Presets have to be created externally and uploaded to HandBrake Web
-- No security features on the client interface
+- **Preset Creator** - Create presets directly in the web interface.
+- **Upload Files** - Upload video files to the server via the web interface.
+- **Hardware Accelerated Encoding** - Use a GPU to speed up encoding times.
+  - **AMD VCN** - Use your discrete and/or integrated AMD GPU.
+- **User Sessions** - Logging in required to access the web interface.
