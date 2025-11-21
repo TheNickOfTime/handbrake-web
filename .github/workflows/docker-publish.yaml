@@ -7,8 +7,10 @@ on:
       - release/**
     paths:
       - .github/workflows/docker-publish.yaml
+      - .github/workflows/handbrake-build.yaml
       - client/**
       - docker/**
+      - handbrake/build.Dockerfile
       - server/**
       - shared/**
       - worker/**
@@ -21,8 +23,10 @@ on:
       - release/**
     paths:
       - .github/workflows/docker-publish.yaml
+      - .github/workflows/handbrake-build.yaml
       - client/**
       - docker/**
+      - handbrake/build.Dockerfile
       - server/**
       - shared/**
       - worker/**
