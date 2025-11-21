@@ -123,3 +123,9 @@ _These lists are not comprehensive, please see the [development project](https:/
 - **Hardware Accelerated Encoding** - Use a GPU to speed up encoding times.
   - **AMD VCN** - Use your discrete and/or integrated AMD GPU.
 - **User Sessions** - Logging in required to access the web interface.
+
+## Bonus Tool (Minimal HandBrakeCLI Image)
+
+If you are looking for a dockerized/containerized way to directly use HandBrakeCLI (via terminal), you can use an additional image this project provides -`ghcr.io/thenickoftime/handbrake-cli`. You can find additional information about using it on the [HandBrakeCLI Image]() wiki page.
+
+This "bonus" image was incredibly simple to make by using the existing outputs of this project's build process, so it felt rude to not make it available to anyone who might want to use it.
