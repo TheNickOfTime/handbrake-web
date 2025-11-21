@@ -126,6 +126,6 @@ _These lists are not comprehensive, please see the [development project](https:/
 
 ## Bonus Tool (Minimal HandBrakeCLI Image)
 
-If you are looking for a dockerized/containerized way to directly use HandBrakeCLI (via terminal), you can use an additional image this project provides -`ghcr.io/thenickoftime/handbrake-cli`. You can find additional information about using it on the [HandBrakeCLI Image]() wiki page.
+If you are looking for a dockerized/containerized way to directly use HandBrakeCLI (via terminal), you can use an additional image this project provides -`ghcr.io/thenickoftime/handbrake-cli`. You can find additional information about using it on the [HandBrakeCLI Image](https://github.com/TheNickOfTime/handbrake-web/wiki/HandBrakeCLI-Image) wiki page.
 
 This "bonus" image was incredibly simple to make by using the existing outputs of this project's build process, so it felt rude to not make it available to anyone who might want to use it.
