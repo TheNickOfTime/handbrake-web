@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@handbrake-web/shared": "workspace:*",
-    "better-sqlite3": "^12.4.1",
+    "better-sqlite3": "^12.4.6",
     "chokidar": "^4.0.3",
     "compare-versions": "^6.1.1",
     "cors": "^2.8.5",

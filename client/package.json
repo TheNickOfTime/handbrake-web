@@ -17,8 +17,8 @@
     "@fontsource-variable/inter": "^5.2.8",
     "@fontsource-variable/noto-sans": "^5.2.10",
     "@handbrake-web/shared": "workspace:*",
-    "@tanstack/react-router": "^1.136.15",
-    "@tanstack/react-router-devtools": "^1.136.15",
+    "@tanstack/react-router": "^1.139.3",
+    "@tanstack/react-router-devtools": "^1.139.3",
     "bootstrap-icons": "^1.13.1",
     "mime": "^4.1.0",
     "modern-normalize": "^3.0.1",
@@ -27,10 +27,10 @@
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
-    "@tanstack/router-cli": "^1.136.15",
-    "@tanstack/router-plugin": "^1.136.15",
+    "@tanstack/router-cli": "^1.139.3",
+    "@tanstack/router-plugin": "^1.139.3",
     "@types/node": "^24.10.1",
-    "@types/react": "^19.2.6",
+    "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.47.0",
     "@typescript-eslint/parser": "^8.47.0",
@@ -38,10 +38,10 @@
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.24",
-    "sass": "^1.94.1",
+    "sass": "^1.94.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3",
-    "vite": "^7.2.2",
+    "vite": "^7.2.4",
     "vite-plugin-svgr": "^4.5.0",
     "vite-tsconfig-paths": "^5.1.4"
   }
