@@ -5,7 +5,11 @@
 		flex-flow: row wrap;
 		gap: 1rem;
 		align-items: center;
-		justify-content: space-between;
+
+		.status {
+			color: var(--text-tertiary);
+			font-size: 0.9rem;
+		}
 	}
 
 	.settings-sections {

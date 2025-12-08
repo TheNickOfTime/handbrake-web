@@ -40,7 +40,13 @@ export default function SettingsPage() {
 						Icon={SaveIcon}
 						onClick={handleSaveConfig}
 						disabled={!canSave}
+						title={!canSave ? 'Nothing to Save' : undefined}
 					/>
+					<div className={styles['status']}>
+						{canSave
+							? 'Unsaved configuration changes...'
+							: 'Configuration is up to date.'}
+					</div>
 				</Section>
 				<div className={styles['settings-sections']}>
 					<SettingsPaths />
