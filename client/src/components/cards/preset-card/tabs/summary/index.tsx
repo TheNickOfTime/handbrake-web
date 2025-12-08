@@ -49,7 +49,9 @@ export default function SummaryTab() {
 				</TextInfo>
 			</PresetTabSection>
 			<PresetTabSection label='Video Track'>
-				<TextInfo label='Encoder'>{PresetEncoderDict[preset.VideoEncoder]}</TextInfo>
+				<TextInfo label='Encoder'>
+					{PresetEncoderDict[preset.VideoEncoder] || preset.VideoEncoder}
+				</TextInfo>
 				<TextInfo label='Resolution'>
 					{preset.PictureWidth}x{preset.PictureHeight}
 				</TextInfo>
