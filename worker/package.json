@@ -19,10 +19,10 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
-    "esbuild": "^0.27.0",
+    "esbuild": "^0.27.1",
     "eslint": "^9.39.1",
     "tsconfig-paths": "^4.2.0",
-    "tsx": "^4.20.6",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }
