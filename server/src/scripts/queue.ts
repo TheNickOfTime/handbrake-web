@@ -267,7 +267,7 @@ export async function StartQueue(clientID?: string) {
 					StartJob(selectedJob, worker);
 
 					// Remove job from available jobs for the next iteration
-					availableJobs.splice(availableJobs.indexOf(selectedJob));
+					availableJobs.splice(availableJobs.indexOf(selectedJob), 1);
 
 					SetQueueStatus(QueueStatus.Active);
 				} else if (availableJobs.length > 0 && eligibleJobs.length == 0) {
