@@ -248,15 +248,13 @@ export async function StartQueue(clientID?: string) {
 			const availableWorkers = await GetAvailableWorkers();
 			const availableJobs = await GetAvailableJobs();
 
-			logger.warn(`There are ${availableJobs.length} available jobs.`);
-
 			for (const worker of availableWorkers) {
 				const workerID = GetWorkerID(worker);
 				const workerCapabilities = GetWorkerProperties()[workerID].capabilities;
 				const eligibleJobs = GetEligibleJobs(availableJobs, workerCapabilities);
 
-				logger.warn(
-					`There are ${availableJobs.length} available jobs and ${eligibleJobs.length} eligible for '${workerID}'.`
+				logger.info(
+					`[queue] There are ${availableJobs.length} available jobs and ${eligibleJobs.length} eligible for '${workerID}'.`
 				);
 
 				if (eligibleJobs.length > 0) {
