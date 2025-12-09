@@ -252,6 +252,11 @@ export async function StartQueue(clientID?: string) {
 				const workerID = GetWorkerID(worker);
 				const workerCapabilities = GetWorkerProperties()[workerID].capabilities;
 				const eligibleJobs = GetEligibleJobs(availableJobs, workerCapabilities);
+
+				logger.info(
+					`[queue] There are ${availableJobs.length} available jobs and ${eligibleJobs.length} eligible for '${workerID}'.`
+				);
+
 				if (eligibleJobs.length > 0) {
 					const selectedJob = eligibleJobs[0];
 					logger.info(
@@ -260,7 +265,7 @@ export async function StartQueue(clientID?: string) {
 					StartJob(selectedJob, worker);
 
 					// Remove job from available jobs for the next iteration
-					availableJobs.splice(availableJobs.indexOf(selectedJob));
+					availableJobs.splice(availableJobs.indexOf(selectedJob), 1);
 
 					SetQueueStatus(QueueStatus.Active);
 				} else if (availableJobs.length > 0 && eligibleJobs.length == 0) {
