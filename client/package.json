@@ -36,7 +36,7 @@
     "@typescript-eslint/parser": "^8.48.1",
     "@vitejs/plugin-react": "^5.1.2",
     "eslint": "^9.39.1",
-    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "sass": "^1.94.2",
     "tsconfig-paths": "^4.2.0",
