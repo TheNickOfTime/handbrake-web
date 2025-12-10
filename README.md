@@ -32,7 +32,7 @@
 <div align='center' width=100%>
   <img src='/docs/images/screenshots/screenshot-queue.png' width=90%>
   <details>
-    <summary><strong>See More Screenshots (click to expand)</strong></summary>
+    <summary><strong>See More Screenshots (<em>click to expand</em>)</strong></summary>
     <img src='/docs/images/screenshots/screenshot-dashboard.png' width=90%>
     <img src='/docs/images/screenshots/screenshot-presets.png' width=90%>
     <img src='/docs/images/screenshots/screenshot-watchers.png' width=90%>
