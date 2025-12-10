@@ -45,7 +45,11 @@ export default function VersionInfo({ socket, config }: Params) {
 	return (
 		<div className={styles['version-info']}>
 			{currentVersion ? (
-				<a className='current-version' href={currentVersion.html_url} target='_blank'>
+				<a
+					className={styles['current-version']}
+					href={currentVersion.html_url}
+					target='_blank'
+				>
 					{currentVersion.name}
 				</a>
 			) : (
