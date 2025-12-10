@@ -27,10 +27,12 @@
     <img src='client/public/handbrake-icon.png' height=256px>
 </div>
 
+## Summary
+
 <div align='center' width=100%>
   <img src='/docs/images/screenshots/screenshot-queue.png' width=90%>
   <details>
-    <summary>See More Screenshots (click to expand)</summary>
+    <summary><strong>See More Screenshots (click to expand)</strong></summary>
     <img src='/docs/images/screenshots/screenshot-dashboard.png' width=90%>
     <img src='/docs/images/screenshots/screenshot-presets.png' width=90%>
     <img src='/docs/images/screenshots/screenshot-watchers.png' width=90%>
@@ -38,8 +40,6 @@
     <img src='/docs/images/screenshots/screenshot-settings.png' width=90%>
   </details>
 </div>
-
-## Summary
 
 HandBrake Web is a program for interfacing with handbrake across multiple machines via a web browser. It consists of two components: the **server** and one or more **worker**(s). **_Warning_** - This application is still under heavy development, use at your own risk, to learn more please see the [Known Issues & Limitations](#planned-features-not-yet-implemented) section.
 
