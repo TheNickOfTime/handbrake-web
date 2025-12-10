@@ -28,10 +28,10 @@
 </div>
 
 <div align='center' width=100%>
+  <img src='/docs/images/screenshots/screenshot-queue.png' width=90%>
   <details>
-    <summary>Screenshots (click to expand)</summary>
+    <summary>See More Screenshots (click to expand)</summary>
     <img src='/docs/images/screenshots/screenshot-dashboard.png' width=90%>
-    <img src='/docs/images/screenshots/screenshot-queue.png' width=90%>
     <img src='/docs/images/screenshots/screenshot-presets.png' width=90%>
     <img src='/docs/images/screenshots/screenshot-watchers.png' width=90%>
     <img src='/docs/images/screenshots/screenshot-workers.png' width=90%>
