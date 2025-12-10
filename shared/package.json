@@ -1,5 +1,6 @@
 {
   "name": "@handbrake-web/shared",
+  "version": "0.8.1",
   "description": "HandBrake Web Shared",
   "scripts": {
     "build": "tsc -b",

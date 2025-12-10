@@ -1,6 +1,6 @@
 {
   "name": "@handbrake-web/worker",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "HandBrake Web Worker",
   "scripts": {
     "dev": "tsx watch src/worker.ts",
