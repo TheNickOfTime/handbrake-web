@@ -7,11 +7,11 @@
       <a href='https://github.com/TheNickOfTime/handbrake-web/releases/latest'>
         <img alt="GitHub Release" src="https://img.shields.io/github/v/release/thenickoftime/handbrake-web?style=flat-square">
       </a>
-      <a href='https://github.com/TheNickOfTime/handbrake-web/milestone/5'>
-        <img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/thenickoftime/handbrake-web?filename=server%2Fpackage.json&style=flat-square&label=development&color=goldenrod">
+      <a href='https://github.com/TheNickOfTime/handbrake-web/milestone/7'>
+        <img alt="GitHub package.json version" src="https://img.shields.io/badge/development-v0.9.0-goldenrod?style=flat-square">
       </a>
-      <a href='https://github.com/TheNickOfTime/handbrake-web/milestone/5'>
-        <img alt="GitHub milestone details" src="https://img.shields.io/github/milestones/progress-percent/thenickoftime/handbrake-web/5?style=flat-square&label=progress&color=goldenrod">
+      <a href='https://github.com/TheNickOfTime/handbrake-web/milestone/7'>
+        <img alt="GitHub milestone details" src="https://img.shields.io/github/milestones/progress-percent/thenickoftime/handbrake-web/7?style=flat-square&label=progress&color=goldenrod">
       </a>
       <a href='https://github.com/TheNickOfTime/handbrake-web/actions/workflows/docker-publish.yaml?query=branch%3Amain'>
         <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/thenickoftime/handbrake-web/docker-publish.yaml?branch=main&style=flat-square">
