@@ -63,6 +63,20 @@ function GetWorkerVersions(handbrake: { stdout: string; stderr: string }): Worke
 
 function GetWorkerCapabilities(handbrake: { stdout: string; stderr: string }): WorkerCapabilities {
 	try {
+		const capabilities: WorkerCapabilities = {
+			cpu: true, // always true (for now)
+			qsv: false,
+			nvenc: false,
+			vcn: false, // always false (for now)
+		};
+
+		if (process.arch.match(/arm/)) {
+			logger.info(
+				`[capabilities] The proccess architecture is ARM/ARM64. Skipping hardware capabilities check.`
+			);
+			return capabilities;
+		}
+
 		const qsvRegex = /qsv:\s(\w+)\savailable\son\sthis\ssystem/;
 		const qsvMatch = handbrake.stderr.match(qsvRegex);
 		if (qsvMatch == null)
@@ -70,6 +84,7 @@ function GetWorkerCapabilities(handbrake: { stdout: string; stderr: string }): W
 				`No version match in:\n${handbrake.stderr}\n for regex '${qsvRegex.toString()}'.`
 			);
 		const qsvResult = qsvMatch[1]! == 'is';
+		capabilities.qsv = qsvResult;
 
 		const nvencRegex = /nvenc:\sversion\s\d+\.\d+\s(\w+)\savailable/;
 		const nvencNegativeRegex = /Cannot\sload\slibnvidia-encode\.so\.1/;
@@ -82,13 +97,7 @@ function GetWorkerCapabilities(handbrake: { stdout: string; stderr: string }): W
 				}\n for regex '${nvencRegex.toString()}' or '${nvencNegativeRegex.toString()}'.`
 			);
 		const nvencResult = nvencMatch != null;
-
-		const capabilities: WorkerCapabilities = {
-			cpu: true, // always true (for now)
-			qsv: qsvResult,
-			nvenc: nvencResult,
-			vcn: false, // always false (for now)
-		};
+		capabilities.nvenc = nvencResult;
 
 		return capabilities;
 	} catch (err) {
