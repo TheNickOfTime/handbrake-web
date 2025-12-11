@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - release/**
+      - dev
     paths:
       - .github/workflows/docker-publish.yaml
       - .github/workflows/handbrake-build.yaml
@@ -20,7 +20,7 @@ on:
   pull_request:
     branches:
       - main
-      - release/**
+      - dev
     paths:
       - .github/workflows/docker-publish.yaml
       - .github/workflows/handbrake-build.yaml
