@@ -22,7 +22,7 @@ jobs:
         with:
           account: user
           token: ${{ secrets.GITHUB_TOKEN }}
-          image-names: handbrake-web handbrake-web-server handbrake-web-worker
+          image-names: handbrake-web-server handbrake-web-worker handbrake-build handbrake-cli
           tag-selection: tagged
           image-tags: 'pr-*'
           cut-off: 1w
@@ -32,7 +32,7 @@ jobs:
         with:
           account: user
           token: ${{ secrets.GITHUB_TOKEN }}
-          image-names: handbrake-web handbrake-web-server handbrake-web-worker
+          image-names: handbrake-web-server handbrake-web-worker handbrake-build handbrake-cli
           tag-selection: tagged
           image-tags: 'pr-${{github.event.number}}'
           cut-off: 0s
@@ -42,7 +42,7 @@ jobs:
         with:
           account: user
           token: ${{ secrets.GITHUB_TOKEN }}
-          image-names: handbrake-web handbrake-web-server handbrake-web-worker
+          image-names: handbrake-web-server handbrake-web-worker handbrake-build handbrake-cli
           tag-selection: tagged
           image-tags: 'sha256-*'
           cut-off: 0s
