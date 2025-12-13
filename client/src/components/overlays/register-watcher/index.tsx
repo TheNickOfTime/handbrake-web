@@ -24,6 +24,7 @@ export default function RegisterWatcher({ onClose }: Properties) {
 	const [presetID, setPresetID] = useState('');
 	const [startQueue, setStartQueue] = useState(false);
 	const [isDefaultPreset, setIsDefaultPreset] = useState(false);
+	const [usePolling, setUsePolling] = useState(false);
 
 	const canSubmit = watchPath && presetID;
 
@@ -54,6 +55,12 @@ export default function RegisterWatcher({ onClose }: Properties) {
 		setStartQueue(newState);
 	};
 
+	const handleUsePollingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const newState = event.target.checked;
+
+		setUsePolling(newState);
+	};
+
 	const handleSubmit = () => {
 		const newWatcher: AddWatcherType = {
 			watch_path: watchPath,
@@ -61,6 +68,7 @@ export default function RegisterWatcher({ onClose }: Properties) {
 			preset_category: presetCategory,
 			preset_id: presetID,
 			start_queue: startQueue,
+			use_polling: usePolling,
 		};
 		socket.emit('add-watcher', newWatcher);
 		onClose();
@@ -153,6 +161,11 @@ export default function RegisterWatcher({ onClose }: Properties) {
 						label='Start Queue If Stopped'
 						checked={startQueue}
 						onChange={handleStartQueueChange}
+					/>
+					<ToggleInput
+						label='Use Polling (for network mounted drives)'
+						checked={usePolling}
+						onChange={handleUsePollingChange}
 					/>
 					{/* <div className='inline'>
 						<SelectInput

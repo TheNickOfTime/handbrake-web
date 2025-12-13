@@ -47,6 +47,7 @@ export function RegisterWatcher(watcher: DetailedWatcherType) {
 		awaitWriteFinish: true,
 		ignoreInitial: true,
 		ignorePermissionErrors: true,
+		usePolling: watcher.use_polling,
 	});
 
 	newWatcher.on('add', (path) => {
