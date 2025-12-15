@@ -22,7 +22,7 @@
     "express": "^5.2.1",
     "ffprobe": "^1.1.2",
     "ffprobe-static": "^3.1.0",
-    "kysely": "^0.28.8",
+    "kysely": "^0.28.9",
     "mime": "^4.1.0",
     "object-hash": "^3.0.0",
     "socket.io": "^4.8.1",
@@ -38,10 +38,10 @@
     "@types/ffprobe-static": "^2.0.3",
     "@types/node": "^24.10.1",
     "@types/object-hash": "^3.0.6",
-    "@typescript-eslint/eslint-plugin": "^8.48.1",
-    "@typescript-eslint/parser": "^8.48.1",
+    "@typescript-eslint/eslint-plugin": "^8.49.0",
+    "@typescript-eslint/parser": "^8.49.0",
     "esbuild": "^0.27.1",
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.2",
     "typescript": "^5.9.3"
   }
 }
