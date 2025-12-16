@@ -36,10 +36,10 @@
     "@types/express": "^5.0.6",
     "@types/ffprobe": "^1.1.8",
     "@types/ffprobe-static": "^2.0.3",
-    "@types/node": "^24.10.1",
+    "@types/node": "^24.10.4",
     "@types/object-hash": "^3.0.6",
-    "@typescript-eslint/eslint-plugin": "^8.49.0",
-    "@typescript-eslint/parser": "^8.49.0",
+    "@typescript-eslint/eslint-plugin": "^8.50.0",
+    "@typescript-eslint/parser": "^8.50.0",
     "esbuild": "^0.27.1",
     "eslint": "^9.39.2",
     "typescript": "^5.9.3"
