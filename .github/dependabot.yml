@@ -18,3 +18,7 @@ updates:
         update-types:
           - 'patch'
           - 'minor'
+    ignore:
+      - dependency-name: '@types/node'
+        versions:
+          - '>= 25.x'
