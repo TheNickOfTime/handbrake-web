@@ -2,18 +2,17 @@ import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
 import { createServer } from 'http';
-import { Server as SocketServer } from 'socket.io';
-
 import logger from 'logging';
-import ClientRoutes from 'routes/client';
 import { LoadConfig } from 'scripts/config/config';
 import { DatabaseConnect } from 'scripts/database/database';
 import { LoadDefaultPresets, LoadPresets } from 'scripts/presets';
 import { InitializeQueue } from 'scripts/queue';
 import { CheckForVersionUpdate } from 'scripts/version';
 import { InitializeWatchers } from 'scripts/watcher';
+import { Server as SocketServer } from 'socket.io';
 import ClientSocket from 'socket/client-socket';
 import WorkerSocket from 'socket/worker-socket';
+import { routes } from './routes';
 import { RegisterExitListeners } from './server-shutdown';
 
 export default async function ServerStartup() {
@@ -42,7 +41,7 @@ export default async function ServerStartup() {
 	app.use(cors());
 
 	// Routes ------------------------------------------------------------------------------
-	ClientRoutes(app);
+	app.use(routes);
 
 	// Socket Listeners --------------------------------------------------------------------
 	ClientSocket(socket);
