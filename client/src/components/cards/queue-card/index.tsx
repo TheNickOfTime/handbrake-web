@@ -196,7 +196,7 @@ export default function QueueCard({
 								<span className={styles['job-log-link']}>
 									<span> - </span>
 									<a
-										href={`${serverURL}logs/jobs?id=${jobID}`}
+										href={`${serverURL}api/log/job?id=${jobID}`}
 										title='Download Log'
 									>
 										<LogIcon />
