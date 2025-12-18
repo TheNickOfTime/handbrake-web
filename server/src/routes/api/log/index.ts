@@ -3,7 +3,7 @@ import { GetJobLogByID } from 'logging';
 
 const router = Router();
 
-router.get('/job', async (req: Request<{}, {}, {}, { id: number }>, res) => {
+router.get('/log/job', async (req: Request<{}, {}, {}, { id: number }>, res) => {
 	const id = req.query.id;
 	if (id) {
 		const log = await GetJobLogByID(id);
