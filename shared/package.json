@@ -28,6 +28,10 @@
       "types": "./build/types/*.d.ts",
       "default": "./build/types/*.js"
     },
+    "./types/api/*": {
+      "types": "./build/types/api/*.d.ts",
+      "default": "./build/types/api/*.js"
+    },
     "./logger": {
       "default": "./build/logger/index.js",
       "types": "./build/logger/index.d.ts"
