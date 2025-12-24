@@ -6,12 +6,8 @@ services:
     image: ghcr.io/thenickoftime/handbrake-web-server:latest
     container_name: handbrake-web-server
     user: 1000:1000 # edit to run as user (uuid:guid) with permissions to access your media. 0:0 to run as root (not recommended).
-    group_add:
-      - 44 # ensure this matches your group ID for 'video' with the command 'getent group video'
     ports:
       - 9999:9999
-    devices:
-      - /dev/dri:/dev/dri # this maps your GPU device into the container
     volumes:
       - /path/to/your/data:/data
       - /path/to/your/media:/video # ensure this path is the same across all containers
@@ -20,6 +16,10 @@ services:
     image: ghcr.io/thenickoftime/handbrake-web-worker:latest
     container_name: handbrake-web-worker
     user: 1000:1000 # edit to run as user (uuid:guid) with permissions to access your media. 0:0 to run as root (not recommended).
+    group_add:
+      - 44 # ensure this matches your group ID for 'video' with the command 'getent group video'
+    devices:
+      - /dev/dri:/dev/dri # this maps your GPU device into the container
     environment:
       - WORKER_ID=handbrake-worker-intel # give your worker a unique name
       - SERVER_URL=handbrake-server # change if setting up a standalone worker, prefix with http(s):// if necessary
