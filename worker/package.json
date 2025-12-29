@@ -15,7 +15,7 @@
   "dependencies": {
     "@handbrake-web/shared": "workspace:*",
     "dotenv": "^17.2.3",
-    "socket.io-client": "^4.8.1"
+    "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
     "@types/node": "^24.10.4",
