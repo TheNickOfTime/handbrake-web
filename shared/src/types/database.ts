@@ -88,6 +88,7 @@ export interface WatchersTable {
 	watch_path: string;
 	watcher_id: Generated<number>;
 	start_queue: boolean;
+	use_polling: boolean;
 }
 
 // Watcher Rules -----------------------------------------------------------------------
