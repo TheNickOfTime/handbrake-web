@@ -15,10 +15,10 @@
   "dependencies": {
     "@handbrake-web/shared": "workspace:*",
     "dotenv": "^17.2.3",
-    "socket.io-client": "^4.8.1"
+    "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
-    "@types/node": "^24.10.4",
+    "@types/node": "^24.10.7",
     "esbuild": "^0.27.2",
     "eslint": "^9.39.2",
     "tsconfig-paths": "^4.2.0",
