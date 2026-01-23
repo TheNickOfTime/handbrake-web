@@ -5,6 +5,7 @@ export class CustomMigrationProvider implements MigrationProvider {
 		const migrations: Record<string, Migration> = {
 			'migration-1': await import('../migrations/migration-1'),
 			'migration-2': await import('../migrations/migration-2'),
+			'migration-3': await import('../migrations/migration-3'),
 		};
 
 		return migrations;
