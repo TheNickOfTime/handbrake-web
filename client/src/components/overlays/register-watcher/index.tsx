@@ -163,7 +163,7 @@ export default function RegisterWatcher({ onClose }: Properties) {
 						onChange={handleStartQueueChange}
 					/>
 					<ToggleInput
-						label='Use Polling (for network mounted drives)'
+						label='Poll for Changes (use with network mounts)'
 						checked={usePolling}
 						onChange={handleUsePollingChange}
 					/>

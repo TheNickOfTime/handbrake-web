@@ -78,7 +78,7 @@ export default function WatcherCard({
 						<TextInfo className={styles['text-info']} label='Start Queue'>
 							{Boolean(watcher.start_queue) ? 'Yes' : 'No'}
 						</TextInfo>
-						<TextInfo className={styles['text-info']} label='Use Polling'>
+						<TextInfo className={styles['text-info']} label='Poll for Changes'>
 							{Boolean(watcher.use_polling) ? 'Yes' : 'No'}
 						</TextInfo>
 					</div>

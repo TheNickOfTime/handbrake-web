@@ -2,7 +2,7 @@ import { Kysely } from 'kysely';
 import logger from 'logging';
 
 export async function up(db: Kysely<any>): Promise<void> {
-	logger.info(`[database] [migration-2] Adding column 'use_polling' to the table 'watchers'.`);
+	logger.info(`[database] [migration-3] Adding column 'use_polling' to the table 'watchers'.`);
 
 	await db.schema
 		.alterTable('watchers')
@@ -12,7 +12,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 
 export async function down(db: Kysely<any>): Promise<void> {
 	logger.info(
-		`[database] [migration-2] Removing the column 'use_polling' from the table 'watchers'.`
+		`[database] [migration-3] Removing the column 'use_polling' from the table 'watchers'.`
 	);
 
 	await db.schema.alterTable('watchers').dropColumn('use_polling').execute();
